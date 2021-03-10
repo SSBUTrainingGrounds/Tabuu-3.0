@@ -42,7 +42,7 @@ async def on_ready():
 
 
 
-@tasks.loop(seconds=30) #the status loop, every 10 secs, could maybe crank that up to 20 or so
+@tasks.loop(seconds=30) #the status loop, every 30 secs, could maybe increase it further
 async def change_status():
     await bot.change_presence(activity=discord.Game(next(status)))
 
