@@ -3,7 +3,7 @@ A discord bot specifically made for the SSBU Training Grounds discord server. Ma
 
 Lots of hardcoded values and no setup command because this bot is only intended to run on the SSBUTG server. If you want to run it on your server you want to change these manually. discord.py is required
 
-Join us at discord.gg/sbbutg
+Join us at discord.gg/ssbutg
 
 Features include:
 - General purpose moderation commands
