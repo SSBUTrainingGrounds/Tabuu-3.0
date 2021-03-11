@@ -13,6 +13,10 @@ class Matchmaking(commands.Cog):
     def __init__(self, bot):
         self.bot = bot
 
+    @commands.Cog.listener()
+    async def on_ready(self):
+        await self.clear_mmrequests() #clears the mm files on bot startup, otherwise pings would get stuck in there forever when i shut the bot down
+
 
     @commands.command(aliases=['matchmaking', 'matchmakingsingles', 'mmsingles', 'Singles'])
     @commands.cooldown(1, 600, commands.BucketType.user) #1 use, 10m cooldown, per user
@@ -334,7 +338,62 @@ class Matchmaking(commands.Cog):
 
 
 
+    #this clears the mm files so that no ping gets stuck if i restart the bot
+    async def clear_mmrequests(self):
 
+        #deleting singles file
+
+        with open(r'/root/tabuu bot/json/singles.json', 'r') as f:
+            singles = json.load(f)
+        
+        singles_requests = []
+
+        for user in singles:
+            singles_requests.append(user)
+
+        for user in singles_requests:
+            del singles[user]
+        
+        with open(r'/root/tabuu bot/json/singles.json', 'w') as f:
+            json.dump(singles, f, indent=4)
+
+        print("singles file cleared!")
+
+        #deleting doubles file
+
+        with open(r'/root/tabuu bot/json/doubles.json', 'r') as f:
+            doubles = json.load(f)
+        
+        doubles_requests = []
+
+        for user in doubles:
+            doubles_requests.append(user)
+
+        for user in doubles_requests:
+            del doubles[user]
+        
+        with open(r'/root/tabuu bot/json/doubles.json', 'w') as f:
+            json.dump(doubles, f, indent=4)
+
+        print("doubles file cleared!")
+
+        #deleting funnies file
+
+        with open(r'/root/tabuu bot/json/funnies.json', 'r') as f:
+            funnies = json.load(f)
+        
+        funnies_requests = []
+
+        for user in funnies:
+            funnies_requests.append(user)
+
+        for user in funnies_requests:
+            del funnies[user]
+        
+        with open(r'/root/tabuu bot/json/funnies.json', 'w') as f:
+            json.dump(funnies, f, indent=4)
+
+        print("funnies file cleared!")
 
 
 def setup(bot):
