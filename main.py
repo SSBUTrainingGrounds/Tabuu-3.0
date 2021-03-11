@@ -1,7 +1,7 @@
 #Tabuu 3.0
 #by Phxenix for SSBU Training Grounds
-#Version: 3.0.2
-#Last Changes: 10 March 2021
+#Version: 3.1.2
+#Last Changes: 11 March 2021
 #Report any bugs to: Phxenix#1104
 #
 #To do list:
@@ -20,7 +20,7 @@ import os
 
 
 #
-#this main file here contains everything needed for bot startup + the custom help command
+#this main file here contains our background tasks and the custom help command, also loads all the cogs and starts the bot obviously
 #
 
 intents=intents=discord.Intents.all() #intents so the bot can track its users
@@ -35,16 +35,9 @@ status = cycle(["type %help","Always watching 👀","Use the %modmail command in
 @bot.event
 async def on_ready():
     await bot.change_presence(status=discord.Status.online)
-    await clear_mmrequests() #clears the mm files, so no ping gets stuck in there when you restart the bot, function is below the mm commands
     change_status.start() #starts the status loop
     warnloop.start() #and the warning check
     print ("Lookin' good, connected as", bot.user) #prints to the console that its ready
-
-
-
-@tasks.loop(seconds=30) #the status loop, every 30 secs, could maybe increase it further
-async def change_status():
-    await bot.change_presence(activity=discord.Game(next(status)))
 
 
 
@@ -100,10 +93,13 @@ async def help(ctx): #add an admin check for these commands optimally
 
 
 
+#our background tasks, first the change status loop, and then the expired warning check
 
 
+@tasks.loop(seconds=30) #the status loop, every 30 secs, could maybe increase it further
+async def change_status():
+    await bot.change_presence(activity=discord.Game(next(status)))
 
-#here are the functions that get called on startup, the check for expired warnings and the clear mm files below
 
 @tasks.loop(hours=24) #this here deletes warnings after 30 days, checks once on startup and then daily
 async def warnloop():
@@ -141,66 +137,6 @@ async def warnloop():
     
     with open(r'/root/tabuu bot/json/warns.json', 'w') as f:
         json.dump(users, f, indent=4)
-
-
-
-
-#clear the mm files so that no ping gets stuck if i restart the bot
-async def clear_mmrequests():
-
-    #deleting singles file
-
-    with open(r'/root/tabuu bot/json/singles.json', 'r') as f:
-        singles = json.load(f)
-    
-    singles_requests = []
-
-    for user in singles:
-        singles_requests.append(user)
-
-    for user in singles_requests:
-        del singles[user]
-    
-    with open(r'/root/tabuu bot/json/singles.json', 'w') as f:
-        json.dump(singles, f, indent=4)
-
-    print("singles file cleared!")
-
-    #deleting doubles file
-
-    with open(r'/root/tabuu bot/json/doubles.json', 'r') as f:
-        doubles = json.load(f)
-    
-    doubles_requests = []
-
-    for user in doubles:
-        doubles_requests.append(user)
-
-    for user in doubles_requests:
-        del doubles[user]
-    
-    with open(r'/root/tabuu bot/json/doubles.json', 'w') as f:
-        json.dump(doubles, f, indent=4)
-
-    print("doubles file cleared!")
-
-    #deleting funnies file
-
-    with open(r'/root/tabuu bot/json/funnies.json', 'r') as f:
-        funnies = json.load(f)
-    
-    funnies_requests = []
-
-    for user in funnies:
-        funnies_requests.append(user)
-
-    for user in funnies_requests:
-        del funnies[user]
-    
-    with open(r'/root/tabuu bot/json/funnies.json', 'w') as f:
-        json.dump(funnies, f, indent=4)
-
-    print("funnies file cleared!")
 
 
 
