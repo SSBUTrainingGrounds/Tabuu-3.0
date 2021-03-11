@@ -15,6 +15,11 @@ class Warn(commands.Cog):
         self.bot = bot
 
 
+    @commands.Cog.listener()
+    async def on_ready(self): #the pylint below is required, so that we dont get a false error
+        self.warnloop.start() #pylint: disable=no-member
+
+
 
     async def add_mute(self, muted_users, user):
         if not f'{user.id}' in muted_users:
@@ -229,6 +234,51 @@ class Warn(commands.Cog):
         if isinstance(error, commands.MissingPermissions):
             ctx.send("Nice try, but you don't have the permissions to do that!")
         raise error
+
+
+
+
+
+    #this here checks if a warning is older than 30 days and has expired, then deletes the expired warnings
+    #gets called once on bot startup and then every 24 hours
+    @tasks.loop(hours=24)
+    async def warnloop(self):
+        with open(r'/root/tabuu bot/json/warns.json', 'r') as f:
+            users = json.load(f)
+
+        tbd_users = []
+        tbd_ids = []
+
+        for i in users: #checks every user
+            warned_user = i
+            warn_id = users[warned_user].keys()
+            for warn_id in users[warned_user].keys(): #checks every warning for every user
+                timestamp = users[warned_user][warn_id]['timestamp']
+                timestamp = datetime.strptime(timestamp, "%A, %B %d %Y @ %H:%M:%S %p")
+                timenow = time.strftime("%A, %B %d %Y @ %H:%M:%S %p")
+                timenow = str(timenow)
+                timenow = datetime.strptime(timenow, "%A, %B %d %Y @ %H:%M:%S %p") #have to do this shit, otherwise it doesnt read the right value for whatever reason
+                timediff = timenow - timestamp
+                daydiff = timediff.days #gets the time difference in days, if its over 30, it appends it to the "to be deleted"-list
+                if daydiff > 29:
+                    tbd_users.append(warned_user)
+                    tbd_ids.append(warn_id)
+                    print(f"deleting warn_id #{warn_id} for user {warned_user} after 30 days")
+                    
+
+        i = 0
+        for x in tbd_ids: #deletes every entry in the list determined above, have to do it seperately, otherwise the length of the for loop changes, and that throws an error
+            warned_user = tbd_users[i]
+            warn_id = tbd_ids[i]
+            print(warned_user, x)
+            del users[warned_user][warn_id]
+            print(f"deleted warn#{warn_id}!")
+            i += 1
+        
+        with open(r'/root/tabuu bot/json/warns.json', 'w') as f:
+            json.dump(users, f, indent=4)
+
+
 
 
 

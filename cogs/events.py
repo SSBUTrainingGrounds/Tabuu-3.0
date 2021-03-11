@@ -1,15 +1,31 @@
 import discord
 from discord.ext import commands, tasks
 import json
+from itertools import cycle
 
 #
-#this file here contains our event listeners, the welcome message, auto role, and booster message
+#this file here contains our event listeners, the welcome/booster messages, autorole and status updates
 #
+
+#status cycles through these, update these once in a while to keep it fresh
+status = cycle(["type %help",
+"Always watching 👀",
+"Use the %modmail command in my DM's to privately contact the moderator team"])
+
 
 class Events(commands.Cog):
     def __init__(self, bot):
         self.bot = bot
 
+    @commands.Cog.listener()
+    async def on_ready(self): #the pylint below is required, so that we dont get a false error
+        self.change_status.start() #pylint: disable=no-member
+        
+    @tasks.loop(seconds=30) #the status loop, every 30 secs, could maybe increase it further
+    async def change_status(self):
+        await self.bot.change_presence(activity=discord.Game(next(status)))
+
+    
     
     #member join msg
     @commands.Cog.listener()
