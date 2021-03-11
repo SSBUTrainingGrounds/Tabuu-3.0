@@ -11,32 +11,24 @@
 import discord
 from discord.ext import commands, tasks
 from discord.ext.commands import Bot
-from itertools import cycle
 import asyncio
-import json
-import time
-from datetime import datetime, timedelta
 import os
 
 
 #
-#this main file here contains our background tasks and the custom help command, also loads all the cogs and starts the bot obviously
+#this main file here loads all the cogs and starts the bot obviously, also includes our custom help command as a sort of glossary
 #
 
 intents=intents=discord.Intents.all() #intents so the bot can track its users
 bot = Bot(command_prefix='%', intents=intents) # prefix for commands, we picked %(i use * for testing), intents same as above
 client = discord.Client(intents=intents) 
 bot.remove_command('help') #for a custom help command
-status = cycle(["type %help","Always watching 👀","Use the %modmail command in my DM's to privately contact the moderator team"]) #status cycles through these, update these once in a while to keep it fresh
-
 
 
 #bot startup, and some event triggers without commands
 @bot.event
 async def on_ready():
     await bot.change_presence(status=discord.Status.online)
-    change_status.start() #starts the status loop
-    warnloop.start() #and the warning check
     print ("Lookin' good, connected as", bot.user) #prints to the console that its ready
 
 
@@ -59,9 +51,7 @@ async def help(ctx): #add an admin check for these commands optimally
             ```%warndetails <@user>``` - Shows detailed warnings of a user. \n \
             ```%deletewarn <@user> <warn_id>``` - Deletes a specific warning.\n \
             ```%clearwarns <@user>``` - Clears all the warnings of a user.\n \
-            ```%records``` - Shows ban records'
-            
-        )
+            ```%records``` - Shows ban records')
     await ctx.author.send(embed=embed)
 #second embed
     embed=discord.Embed(title= "💻Other commands💻 - For the working class", color = discord.Color.green(), description='\n \
@@ -91,66 +81,14 @@ async def help(ctx): #add an admin check for these commands optimally
             ```%tabuwu``` - For the dumb people')
     await ctx.author.send(embed=embed)
 
-
-
-#our background tasks, first the change status loop, and then the expired warning check
-
-
-@tasks.loop(seconds=30) #the status loop, every 30 secs, could maybe increase it further
-async def change_status():
-    await bot.change_presence(activity=discord.Game(next(status)))
-
-
-@tasks.loop(hours=24) #this here deletes warnings after 30 days, checks once on startup and then daily
-async def warnloop():
-    with open(r'/root/tabuu bot/json/warns.json', 'r') as f:
-        users = json.load(f)
-
-    tbd_users = []
-    tbd_ids = []
-
-    for i in users: #checks every user
-        warned_user = i
-        warn_id = users[warned_user].keys()
-        for warn_id in users[warned_user].keys(): #checks every warning for every user
-            timestamp = users[warned_user][warn_id]['timestamp']
-            timestamp = datetime.strptime(timestamp, "%A, %B %d %Y @ %H:%M:%S %p")
-            timenow = time.strftime("%A, %B %d %Y @ %H:%M:%S %p")
-            timenow = str(timenow)
-            timenow = datetime.strptime(timenow, "%A, %B %d %Y @ %H:%M:%S %p") #have to do this shit, otherwise it doesnt read the right value for whatever reason
-            timediff = timenow - timestamp
-            daydiff = timediff.days #gets the time difference in days, if its over 30, it appends it to the "to be deleted"-list
-            if daydiff > 29:
-                tbd_users.append(warned_user)
-                tbd_ids.append(warn_id)
-                print(f"deleting warn_id #{warn_id} for user {warned_user} after 30 days")
-                
-
-    i = 0
-    for x in tbd_ids: #deletes every entry in the list determined above, have to do it seperately, otherwise the length of the for loop changes, and that throws an error
-        warned_user = tbd_users[i]
-        warn_id = tbd_ids[i]
-        print(warned_user, x)
-        del users[warned_user][warn_id]
-        print(f"deleted warn#{warn_id}!")
-        i += 1
-    
-    with open(r'/root/tabuu bot/json/warns.json', 'w') as f:
-        json.dump(users, f, indent=4)
-
-
-
-
     
 #loads all of our cogs
-
 for filename in os.listdir(r'/root/tabuu bot/cogs'):
     if filename.endswith('.py'):
         bot.load_extension(f'cogs.{filename[:-3]}')
 
 
 #run token, in different file because of security
-
 with open(r'/root/tabuu bot/files/token.txt') as f:
     TOKEN = f.readline()
 
