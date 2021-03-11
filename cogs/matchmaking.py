@@ -28,7 +28,6 @@ class Matchmaking(commands.Cog):
 
         singles_role = discord.utils.get(guild.roles, name="Singles")
         if ctx.message.channel.id in arena_channels: #code for the public arenas
-            await ctx.send(f"{ctx.author.mention} is looking for {singles_role.mention} games!")
             with open(r'/root/tabuu bot/json/singles.json', 'r') as f:
                 singles = json.load(f)
             singles_mm = ctx.message.author
@@ -51,7 +50,7 @@ class Matchmaking(commands.Cog):
             list_of_searches.reverse()
             searches = ''.join(list_of_searches) #stores the requests in a string, not a list
             embed = discord.Embed(title="Singles pings in the last 30 Minutes:", description=searches, colour=discord.Colour.dark_red())
-            await ctx.send(embed=embed) #sends a neat embed out with every active request in it
+            await ctx.send(f"{ctx.author.mention} is looking for {singles_role.mention} games!", embed=embed)
 
             with open(r'/root/tabuu bot/json/singles.json', 'w') as f:
                 json.dump(singles, f, indent=4) #writes it to the file
@@ -83,8 +82,7 @@ class Matchmaking(commands.Cog):
             if len(searches) == 0:
                 searches = "Looks like no one has pinged recently :("
             embed = discord.Embed(title="Singles pings in the last 30 Minutes:", description=searches, colour=discord.Colour.dark_red())
-            await ctx.send(f"{ctx.author.mention} is looking for {singles_role.mention} games!\nHere are the most recent Singles pings in our open arenas:")
-            await ctx.send(embed=embed)
+            await ctx.send(f"{ctx.author.mention} is looking for {singles_role.mention} games!\nHere are the most recent Singles pings in our open arenas:", embed=embed)
 
         else: #code for every other channel
             await ctx.send("Please only use this command in our arena channels!")
@@ -116,8 +114,7 @@ class Matchmaking(commands.Cog):
                 if len(searches) == 0:
                     searches = "Looks like no one has pinged recently :("
                 embed = discord.Embed(title="Singles pings in the last 30 Minutes:", description=searches, colour=discord.Colour.dark_red())
-                await ctx.send(f"{ctx.author.mention}, you are on cooldown for another {round((error.retry_after)/60)} minutes to use this command. \nIn the meantime, here are the most recent Singles pings in our open arenas:")
-                await ctx.send(embed=embed)
+                await ctx.send(f"{ctx.author.mention}, you are on cooldown for another {round((error.retry_after)/60)} minutes to use this command. \nIn the meantime, here are the most recent Singles pings in our open arenas:", embed=embed)
             else:
                 await ctx.send("Please only use this command in our arena channels!")
         raise error
@@ -135,7 +132,6 @@ class Matchmaking(commands.Cog):
 
         doubles_role = discord.utils.get(guild.roles, name="Doubles")
         if ctx.message.channel.id in arena_channels:
-            await ctx.send(f"{ctx.author.mention} is looking for {doubles_role.mention} games!")
             with open(r'/root/tabuu bot/json/doubles.json', 'r') as f:
                 doubles = json.load(f)
 
@@ -159,7 +155,7 @@ class Matchmaking(commands.Cog):
             list_of_searches.reverse()
             searches = ''.join(list_of_searches)
             embed = discord.Embed(title="Doubles pings in the last 30 Minutes:", description=searches, colour=discord.Colour.dark_blue())
-            await ctx.send(embed=embed)
+            await ctx.send(f"{ctx.author.mention} is looking for {doubles_role.mention} games!", embed=embed)
 
             with open(r'/root/tabuu bot/json/doubles.json', 'w') as f:
                 json.dump(doubles, f, indent=4)
@@ -191,8 +187,7 @@ class Matchmaking(commands.Cog):
             if len(searches) == 0:
                 searches = "Looks like no one has pinged recently :("
             embed = discord.Embed(title="Doubles pings in the last 30 Minutes:", description=searches, colour=discord.Colour.dark_blue())
-            await ctx.send(f"{ctx.author.mention} is looking for {doubles_role.mention} games!\nHere are the most recent Doubles pings in our open arenas:")
-            await ctx.send(embed=embed)
+            await ctx.send(f"{ctx.author.mention} is looking for {doubles_role.mention} games!\nHere are the most recent Doubles pings in our open arenas:", embed=embed)
 
         else:
             await ctx.send("Please only use this command in our arena channels!")
@@ -223,8 +218,7 @@ class Matchmaking(commands.Cog):
                 if len(searches) == 0:
                     searches = "Looks like no one has pinged recently :("
                 embed = discord.Embed(title="Doubles pings in the last 30 Minutes:", description=searches, colour=discord.Colour.dark_blue())
-                await ctx.send(f"{ctx.author.mention}, you are on cooldown for another {round((error.retry_after)/60)} minutes to use this command. \nIn the meantime, here are the most recent Doubles pings in our open arenas:")
-                await ctx.send(embed=embed)
+                await ctx.send(f"{ctx.author.mention}, you are on cooldown for another {round((error.retry_after)/60)} minutes to use this command. \nIn the meantime, here are the most recent Doubles pings in our open arenas:", embed=embed)
             else:
                 await ctx.send("Please only use this command in our arena channels!")
         raise error
@@ -241,7 +235,6 @@ class Matchmaking(commands.Cog):
 
         funnies_role = discord.utils.get(guild.roles, name="Funnies")
         if ctx.message.channel.id in arena_channels:
-            await ctx.send(f"{ctx.author.mention} is looking for {funnies_role.mention} games!")
             with open(r'/root/tabuu bot/json/funnies.json', 'r') as f:
                 funnies = json.load(f)
 
@@ -265,7 +258,7 @@ class Matchmaking(commands.Cog):
             list_of_searches.reverse()
             searches = ''.join(list_of_searches)
             embed = discord.Embed(title="Funnies pings in the last 30 Minutes:", description=searches, colour=discord.Colour.green())
-            await ctx.send(embed=embed)
+            await ctx.send(f"{ctx.author.mention} is looking for {funnies_role.mention} games!", embed=embed)
 
             with open(r'/root/tabuu bot/json/funnies.json', 'w') as f:
                 json.dump(funnies, f, indent=4)
@@ -297,8 +290,7 @@ class Matchmaking(commands.Cog):
             if len(searches) == 0:
                 searches = "Looks like no one has pinged recently :("
             embed = discord.Embed(title="Funnies pings in the last 30 Minutes:", description=searches, colour=discord.Colour.green())
-            await ctx.send(f"{ctx.author.mention} is looking for {funnies_role.mention} games!\nHere are the most recent Funnies pings in our open arenas:")
-            await ctx.send(embed=embed)
+            await ctx.send(f"{ctx.author.mention} is looking for {funnies_role.mention} games!\nHere are the most recent Funnies pings in our open arenas:", embed=embed)
 
         else:
             await ctx.send("Please only use this command in our arena channels!")
@@ -329,8 +321,7 @@ class Matchmaking(commands.Cog):
                 if len(searches) == 0:
                     searches = "Looks like no one has pinged recently :("
                 embed = discord.Embed(title="Funnies pings in the last 30 Minutes:", description=searches, colour=discord.Colour.green())
-                await ctx.send(f"{ctx.author.mention}, you are on cooldown for another {round((error.retry_after)/60)} minutes to use this command. \nIn the meantime, here are the most recent Funnies pings in our open arenas:")
-                await ctx.send(embed=embed)
+                await ctx.send(f"{ctx.author.mention}, you are on cooldown for another {round((error.retry_after)/60)} minutes to use this command. \nIn the meantime, here are the most recent Funnies pings in our open arenas:", embed=embed)
             else:
                 await ctx.send("Please only use this command in our arena channels!")
         raise error
