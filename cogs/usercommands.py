@@ -130,6 +130,28 @@ class Usercommands(commands.Cog):
         await ctx.send(member.avatar_url)
 
 
+    @commands.command()
+    async def poll(self, ctx, question, *options: str):
+        if len(options) < 2:
+            await ctx.send("You need at least 2 options to make a poll!") #obviously
+            return
+        if len(options) > 10:
+            await ctx.send("You can only have 10 options at most!") #reaction emoji limit
+            return
+        await ctx.message.delete()
+
+        reactions = ['1️⃣','2️⃣','3️⃣','4️⃣','5️⃣','6️⃣','7️⃣','8️⃣','9️⃣','0️⃣'] #in order
+        description = []
+
+        for x, option in enumerate(options):
+            description += f'\n{reactions[x]}: {option}' #adds the emoji: option to the embed
+        embed = discord.Embed(title=question, description=''.join(description), colour=discord.Colour.dark_purple())
+        embed.set_footer(text=f'Poll by {ctx.author}')
+        embed_message = await ctx.send(embed=embed) #sends the embed out
+        for reaction in reactions[:len(options)]: #and then reacts with the correct number of emojis
+            await embed_message.add_reaction(reaction)
+
+
     #pic with our stagelist on it, change file when it changes
     @commands.command()
     async def stagelist(self, ctx):
@@ -219,6 +241,12 @@ class Usercommands(commands.Cog):
     async def avatar_error(self, ctx, error):
         if isinstance(error, commands.MemberNotFound):
             await ctx.send("You need to mention a member, or just leave it blank.")
+        raise error
+
+    @poll.error
+    async def poll_error(self, ctx, error):
+        if isinstance(error, commands.MissingRequiredArgument):
+            await ctx.send("You need to specify a question, and then at least 2 options!")
         raise error
 
 
