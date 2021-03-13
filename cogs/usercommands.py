@@ -104,8 +104,11 @@ class Usercommands(commands.Cog):
         await ctx.send(embed=embed)
 
     #userinfo
-    @commands.command()
-    async def userinfo(self, ctx, member:discord.Member):
+    @commands.command(aliases=['user'])
+    async def userinfo(self, ctx, member:discord.Member = None):
+        if member is None:
+            member = ctx.author
+
         embed=discord.Embed()
         embed = discord.Embed(title="Userinfo of {}".format(member.name), color=discord.Color.dark_gold())
         embed.add_field(name="Name:", value=member.name, inline=True)
@@ -118,6 +121,13 @@ class Usercommands(commands.Cog):
         embed.add_field(name="Activity Status", value=member.activity, inline=True)
         embed.set_thumbnail(url=member.avatar_url)
         await ctx.send(embed=embed)
+
+
+    @commands.command(aliases=['icon'])
+    async def avatar(self, ctx, member:discord.Member = None):
+        if member is None:
+            member = ctx.author
+        await ctx.send(member.avatar_url)
 
 
     #pic with our stagelist on it, change file when it changes
@@ -200,25 +210,16 @@ class Usercommands(commands.Cog):
         
 
     @userinfo.error
-    async def userinfo_error(self, ctx, error): #if a member fails to mention another member, it uses them as the argument, just copied the command
-        if isinstance(error, commands.MissingRequiredArgument):
-            member = ctx.author
-            embed=discord.Embed()
-            embed = discord.Embed(title="Userinfo of {}".format(member.name), color=discord.Color.dark_gold())
-            embed.add_field(name="Name:", value=member.name, inline=True)
-            embed.add_field(name="ID:", value=member.id, inline=True)
-            embed.add_field(name="Number of Roles:", value=len(member.roles), inline=True)
-            embed.add_field(name="Top Role:", value=member.top_role.mention, inline=True)
-            embed.add_field(name="Joined Server at:", value=member.joined_at.strftime("%A, %B %d %Y @ %H:%M:%S %p"), inline=True)
-            embed.add_field(name="Joined Discord at:", value=member.created_at.strftime("%A, %B %d %Y @ %H:%M:%S %p"), inline=True)
-            embed.add_field(name="Online Status:", value=member.status, inline=True)
-            embed.add_field(name="Activity Status", value=member.activity, inline=True)
-            embed.set_thumbnail(url=member.avatar_url)
-            await ctx.send(embed=embed)
+    async def userinfo_error(self, ctx, error):
         if isinstance(error, commands.MemberNotFound):
             await ctx.send("You need to mention a member, or just leave it blank.")
         raise error
 
+    @avatar.error
+    async def avatar_error(self, ctx, error):
+        if isinstance(error, commands.MemberNotFound):
+            await ctx.send("You need to mention a member, or just leave it blank.")
+        raise error
 
 
     @modmail.error
