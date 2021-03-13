@@ -69,6 +69,7 @@ async def help(ctx): #add an admin check for these commands optimally
             ```%stagelist``` - Our Stagelist for Crew Battles\n \
             ```%coin``` - Throws a coin\n \
             ```%roll <NdN>``` - Rolling dice, format %roll 1d100\n \
+            ```%poll <"question"> <"option 1"> <"option 2">``` - Starts a poll with a maximum of 10 choices\n \
             ```%invite``` - For those looking for an invite\n \
             ```%avatar <user>``` - Gets you the avatar of a user\n \
             ```%ping``` - Gets the ping of the bot.\n \
