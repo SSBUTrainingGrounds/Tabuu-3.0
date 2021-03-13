@@ -1,7 +1,7 @@
 #Tabuu 3.0
 #by Phxenix for SSBU Training Grounds
-#Version: 3.1.2
-#Last Changes: 11 March 2021
+#Version: 3.2.0
+#Last Changes: 13 March 2021
 #Report any bugs to: Phxenix#1104
 #
 #To do list:
@@ -70,6 +70,7 @@ async def help(ctx): #add an admin check for these commands optimally
             ```%coin``` - Throws a coin\n \
             ```%roll <NdN>``` - Rolling dice, format %roll 1d100\n \
             ```%invite``` - For those looking for an invite\n \
+            ```%avatar <user>``` - Gets you the avatar of a user\n \
             ```%ping``` - Gets the ping of the bot.\n \
             ```%mp4<move>``` - Tells you the Mana Cost of any of Hero\'s moves\n \
             ```%joke``` - Jokes\n \
