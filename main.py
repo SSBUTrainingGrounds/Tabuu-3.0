@@ -1,7 +1,7 @@
 #Tabuu 3.0
 #by Phxenix for SSBU Training Grounds
-#Version: 3.2.0
-#Last Changes: 13 March 2021
+#Version: 3.3.0
+#Last Changes: 15 March 2021
 #Report any bugs to: Phxenix#1104
 #
 #To do list:
@@ -20,9 +20,11 @@ import os
 #
 
 intents=intents=discord.Intents.all() #intents so the bot can track its users
-bot = Bot(command_prefix='%', intents=intents) # prefix for commands, we picked %(i use * for testing), intents same as above
+bot = Bot(command_prefix='%', intents=intents) # prefix for commands, we picked %, intents same as above
 client = discord.Client(intents=intents) 
 bot.remove_command('help') #for a custom help command
+
+bot.version_number = "3.3.0" #the "version", maintain every now and then
 
 
 #bot startup, and some event triggers without commands
@@ -62,25 +64,26 @@ async def help(ctx): #add an admin check for these commands optimally
             ```%roleinfo <role>``` - Displays Role info.\n \
             ```%listrole <role>``` - Displays all the members with a certain Role.\n \
             ```%warns <@user>``` - Displays the number of warnings of a user.\n \
-            ```%calendar``` - Calendar with our schedule \n \
-            ```%server``` - Info about the server\n \
+            ```%calendar``` - Calendar with our schedule.\n \
+            ```%server``` - Info about the server.\n \
             ```%userinfo <member>``` - Shows user info of a mentioned member.\n \
-            ```%coaching``` - Coaching requirements\n\
-            ```%stagelist``` - Our Stagelist for Crew Battles\n \
-            ```%coin``` - Throws a coin\n \
-            ```%roll <NdN>``` - Rolling dice, format %roll 1d100\n \
-            ```%poll <"question"> <"option 1"> <"option 2">``` - Starts a poll with a maximum of 10 choices\n \
-            ```%invite``` - For those looking for an invite\n \
-            ```%avatar <user>``` - Gets you the avatar of a user\n \
+            ```%stats``` - Stats about the bot.\n \
+            ```%coaching``` - Coaching requirements.\n\
+            ```%stagelist``` - Our Stagelist for Crew Battles.\n \
+            ```%coin``` - Throws a coin.\n \
+            ```%roll <NdN>``` - Rolling dice, format %roll 1d100.\n \
+            ```%poll <"question"> <"option 1"> <"option 2">``` - Starts a poll with a maximum of 10 choices.\n \
+            ```%invite``` - For those looking for an invite.\n \
+            ```%avatar <user>``` - Gets you the avatar of a user.\n \
             ```%ping``` - Gets the ping of the bot.\n \
-            ```%mp4<move>``` - Tells you the Mana Cost of any of Hero\'s moves\n \
-            ```%joke``` - Jokes\n \
-            ```%randomquote``` - Quotes\n \
-            ```%pickmeup``` - Nice words\n \
-            ```%wisdom``` - It\'s wisdom\n \
+            ```%mp4<move>``` - Tells you the Mana Cost of any of Hero\'s moves.\n \
+            ```%joke``` - Jokes.\n \
+            ```%randomquote``` - Quotes.\n \
+            ```%pickmeup``` - Nice words.\n \
+            ```%wisdom``` - Some wisdom.\n \
             ```%boo``` - Looking for a scare, huh?\n \
-            ```%uwu``` - For the silly people\n \
-            ```%tabuwu``` - For the dumb people')
+            ```%uwu``` - For the silly people.\n \
+            ```%tabuwu``` - For the dumb people.')
     await ctx.author.send(embed=embed)
 
     
