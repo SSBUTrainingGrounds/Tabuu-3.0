@@ -3,6 +3,7 @@ from discord.ext import commands, tasks
 import random
 import difflib
 from discord.utils import get
+import platform
 
 #
 #this file here contains most useful commands that don't need special permissions
@@ -120,6 +121,25 @@ class Usercommands(commands.Cog):
         embed.add_field(name="Online Status:", value=member.status, inline=True)
         embed.add_field(name="Activity Status", value=member.activity, inline=True)
         embed.set_thumbnail(url=member.avatar_url)
+        await ctx.send(embed=embed)
+
+    #some bot stats
+    @commands.command(aliases=['stats'])
+    async def botstats(self, ctx):
+        pyversion = platform.python_version() #get the python version
+        dpyversion = discord.__version__ #get the discord.py version
+        servercount = len(self.bot.guilds) #get total guilds
+        membercount = len(set(self.bot.get_all_members())) #get total members in these guilds
+        tabuu3 = self.bot.get_user(785303736582012969) #the bot
+        embed = discord.Embed(title="Tabuu 3.0 Stats", color=0x007377, url="https://github.com/sonnenbankpimp/Tabuu-3.0-Bot") #links to the github, its private rn but maybe not in the future
+        embed.add_field(name="Name:", value=f"{tabuu3.mention}", inline=True)
+        embed.add_field(name="Servers:", value=servercount, inline=True)
+        embed.add_field(name="Total Users:", value=membercount, inline=True)
+        embed.add_field(name="Bot Version:", value=self.bot.version_number, inline=True)
+        embed.add_field(name="Python Version:", value=pyversion, inline=True)
+        embed.add_field(name="discord.py Version:", value=dpyversion, inline=True)
+        embed.set_footer(text="Creator: Phxenix#1104") #cool dude credits
+        embed.set_thumbnail(url=tabuu3.avatar_url)
         await ctx.send(embed=embed)
 
 
