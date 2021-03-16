@@ -32,14 +32,14 @@ class Usercommands(commands.Cog):
         #the above block searches all roles for the closest match, as seen in the admin cog
 
         creationdate = role.created_at.strftime("%A, %B %d %Y @ %H:%M:%S %p")
-        embed = discord.Embed(color = discord.Color.light_gray())
+        embed = discord.Embed(color = role.colour)
         embed.add_field(name="Role Name:", value=role.mention, inline=True)
         embed.add_field(name="Role ID:", value=role.id, inline=True)
         embed.add_field(name="Users with role:", value=len(role.members), inline=True)
         embed.add_field(name="Mentionable:", value=role.mentionable, inline=True)
         embed.add_field(name="Displayed Seperately:", value=role.hoist, inline=True)
         embed.add_field(name="Color:", value=role.color, inline=True)
-        embed.set_footer(text=f"Role created at: {creationdate}")
+        embed.set_footer(text=f"Role created on: {creationdate} CET")
         await ctx.send(embed=embed)
 
     @commands.command(aliases=['listroles']) #lists every member in the role if there arent more than 60 members, to prevent spam
@@ -95,7 +95,7 @@ class Usercommands(commands.Cog):
     async def server(self, ctx):
         server = ctx.guild
         embed = discord.Embed(title=f"{server.name}({server.id})", color=discord.Color.green())
-        embed.add_field(name="Created at:", value=server.created_at.strftime("%A, %B %d %Y @ %H:%M:%S %p CET"), inline=True) #same as above
+        embed.add_field(name="Created on:", value=server.created_at.strftime("%A, %B %d %Y @ %H:%M:%S %p CET"), inline=True) #same as above
         embed.add_field(name="Owner:", value=server.owner.mention, inline=True)
         embed.add_field(name="Channels:", value=len(server.channels), inline=True)
         embed.add_field(name="Members:", value=f"{sum(not member.bot for member in server.members)} (Bots: {sum(member.bot for member in server.members)})")
@@ -111,13 +111,13 @@ class Usercommands(commands.Cog):
             member = ctx.author
 
         embed=discord.Embed()
-        embed = discord.Embed(title="Userinfo of {}".format(member.name), color=discord.Color.dark_gold())
-        embed.add_field(name="Name:", value=member.name, inline=True)
+        embed = discord.Embed(title=f"Userinfo of {member.name}#{member.discriminator}", color=member.top_role.color)
+        embed.add_field(name="Name:", value=member.mention, inline=True)
         embed.add_field(name="ID:", value=member.id, inline=True)
         embed.add_field(name="Number of Roles:", value=len(member.roles), inline=True) #gives the number of roles to prevent listing like 35 roles
         embed.add_field(name="Top Role:", value=member.top_role.mention, inline=True) #instead only gives out the important role
-        embed.add_field(name="Joined Server at:", value=member.joined_at.strftime("%A, %B %d %Y @ %H:%M:%S %p"), inline=True) #the strftime and so on are for nice formatting
-        embed.add_field(name="Joined Discord at:", value=member.created_at.strftime("%A, %B %d %Y @ %H:%M:%S %p"), inline=True) #would look ugly otherwise
+        embed.add_field(name="Joined Server on:", value=member.joined_at.strftime("%A, %B %d %Y @ %H:%M:%S %p CET"), inline=True) #the strftime and so on are for nice formatting
+        embed.add_field(name="Joined Discord on:", value=member.created_at.strftime("%A, %B %d %Y @ %H:%M:%S %p CET"), inline=True) #would look ugly otherwise
         embed.add_field(name="Online Status:", value=member.status, inline=True)
         embed.add_field(name="Activity Status", value=member.activity, inline=True)
         embed.set_thumbnail(url=member.avatar_url)
