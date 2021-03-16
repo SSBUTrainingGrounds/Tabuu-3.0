@@ -13,3 +13,5 @@ Features include:
 - Autorole with membership screening
 - Lots of useful general user commands
 - Lots of not so useful general user commands
+
+The full list of commands can be found in the help command within the main.py file.
