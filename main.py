@@ -1,6 +1,6 @@
 #Tabuu 3.0
 #by Phxenix for SSBU Training Grounds
-#Version: 3.3.1
+#Version: 3.4.0
 #Last Changes: 17 March 2021
 #Report any bugs to: Phxenix#1104
 #
@@ -24,7 +24,7 @@ bot = Bot(command_prefix='%', intents=intents) # prefix for commands, we picked 
 client = discord.Client(intents=intents) 
 bot.remove_command('help') #for a custom help command
 
-bot.version_number = "3.3.1" #the "version", maintain every now and then
+bot.version_number = "3.4.0" #the "version", maintain every now and then
 
 
 #bot startup, and some event triggers without commands
@@ -35,57 +35,116 @@ async def on_ready():
 
 
 
-#help command, to tidy things up instead of using the normal shitty help command
-@bot.command()
-async def help(ctx): #add an admin check for these commands optimally
-    embed = discord.Embed(title = "💻Admin Commands💻 - You need permissions for these!", color = discord.Color.red(), description='\n \
-            ```%ban <@user> <reason>``` - Bans a member from the server.\n \
-            ```%unban <@user>``` - Revokes a ban from the server.\n \
-            ```%kick <@user> <reason>``` - Kicks a user from the server.\n \
-            ```%clear <amount>``` - Purges X messages from the channel (default:1)\n \
-            ```%delete <message IDs>``` - Deletes certain messages by ID\n \
-            ```%mute <@user> <reason>``` - Mutes a user in the server.\n \
-            ```%unmute <@user>``` - Unmutes a user in the server.\n \
-            ```%tempmute <@user> X <reason>``` - Temporarily mutes a user for X minutes\n \
-            ```%addrole <@user> <role>``` - Adds a role to a User.\n \
-            ```%removerole <@user> <role>``` - Removes a role from a User.\n \
-            ```%warn <@user> <reason>``` - Warns a user.\n \
-            ```%warndetails <@user>``` - Shows detailed warnings of a user. \n \
-            ```%deletewarn <@user> <warn_id>``` - Deletes a specific warning.\n \
-            ```%clearwarns <@user>``` - Clears all the warnings of a user.\n \
-            ```%records``` - Shows ban records')
+#help command, to tidy things up a bit i broke it into subcommands
+@bot.group(invoke_without_command=True)
+async def help(ctx):
+    embed = discord.Embed(title="Help menu, available subcommands:", colour=0x007377, description='\n \
+        `%help admin` - Moderation commands\n \
+        `%help info` - Informational commands\n \
+        `%help mm` - Matchmaking commands\n \
+        `%help util` - Utility commands\n \
+        `%help misc` - Miscellaneous commands\n \
+        `%help fun` - Fun commands')
+    await ctx.send(embed=embed)
+
+
+#the subcommands, mentioned above
+@help.command()
+@commands.has_permissions(administrator=True) #only making these visible for the mods
+async def admin(ctx):
+    embed = discord.Embed(title = "💻Admin Commands💻 - You need permissions for these!", color=0xff0000, description='\n \
+        ```%ban <@user> <reason>``` - Bans a member from the server.\n \
+        ```%unban <@user>``` - Revokes a ban from the server.\n \
+        ```%kick <@user> <reason>``` - Kicks a user from the server.\n \
+        ```%clear <amount>``` - Purges X messages from the channel (default:1)\n \
+        ```%delete <message IDs>``` - Deletes certain messages by ID\n \
+        ```%mute <@user> <reason>``` - Mutes a user in the server.\n \
+        ```%unmute <@user>``` - Unmutes a user in the server.\n \
+        ```%tempmute <@user> X <reason>``` - Temporarily mutes a user for X minutes\n \
+        ```%addrole <@user> <role>``` - Adds a role to a User.\n \
+        ```%removerole <@user> <role>``` - Removes a role from a User.\n \
+        ```%warn <@user> <reason>``` - Warns a user.\n \
+        ```%warndetails <@user>``` - Shows detailed warnings of a user. \n \
+        ```%deletewarn <@user> <warn_id>``` - Deletes a specific warning.\n \
+        ```%clearwarns <@user>``` - Clears all the warnings of a user.\n \
+        ```%records``` - Shows ban records\n \
+        ')
     await ctx.author.send(embed=embed)
-#second embed
-    embed=discord.Embed(title= "💻Other commands💻 - For the working class", color = discord.Color.green(), description='\n \
-            ```%modmail <your message>``` - A private way to communicate with the moderator team. Only works in my DM channel.\n \
-            ```%singles``` - Used for 1v1 matchmaking in our arena channels.\n \
-            ```%doubles``` - Used for 2v2 matchmaking in our arena channels.\n \
-            ```%funnies``` - Used for non-competitive matchmaking in our arena channels.\n \
-            ```%roleinfo <role>``` - Displays Role info.\n \
-            ```%listrole <role>``` - Displays all the members with a certain Role.\n \
-            ```%warns <@user>``` - Displays the number of warnings of a user.\n \
-            ```%calendar``` - Calendar with our schedule.\n \
-            ```%server``` - Info about the server.\n \
-            ```%userinfo <member>``` - Shows user info of a mentioned member.\n \
-            ```%stats``` - Stats about the bot.\n \
-            ```%coaching``` - Coaching requirements.\n\
-            ```%stagelist``` - Our Stagelist for Crew Battles.\n \
-            ```%coin``` - Throws a coin.\n \
-            ```%roll <NdN>``` - Rolling dice, format %roll 1d100.\n \
-            ```%countdown <number>``` - Counts down from number.\n \
-            ```%poll <"question"> <"option 1"> <"option 2">``` - Starts a poll with a maximum of 10 choices.\n \
-            ```%invite``` - For those looking for an invite.\n \
-            ```%avatar <user>``` - Gets you the avatar of a user.\n \
-            ```%ping``` - Gets the ping of the bot.\n \
-            ```%mp4<move>``` - Tells you the Mana Cost of any of Hero\'s moves.\n \
-            ```%joke``` - Jokes.\n \
-            ```%randomquote``` - Quotes.\n \
-            ```%pickmeup``` - Nice words.\n \
-            ```%wisdom``` - Some wisdom.\n \
-            ```%boo``` - Looking for a scare, huh?\n \
-            ```%uwu``` - For the silly people.\n \
-            ```%tabuwu``` - For the dumb people.')
+    await ctx.message.add_reaction('👍')
+
+@help.command()
+async def info(ctx):
+    embed = discord.Embed(title="❓Info Commands❓", color=0x06515f, description='\n \
+        ```%roleinfo <role>``` - Displays Role info.\n \
+        ```%listrole <role>``` - Displays all the members with a certain Role.\n \
+        ```%userinfo <member>``` - Shows user info of a mentioned member.\n \
+        ```%warns <@user>``` - Displays the number of warnings of a user.\n \
+        ```%calendar``` - Calendar with our schedule \n \
+        ```%server``` - Info about the server\n \
+        ```%coaching``` - Coaching requirements\n\
+        ')
     await ctx.author.send(embed=embed)
+    await ctx.message.add_reaction('👍')
+
+@help.command()
+async def mm(ctx):
+    embed = discord.Embed(title="⚔️Matchmaking Commands⚔️", color=0x420202, description='\n \
+        ```%singles``` - Used for 1v1 matchmaking in our arena channels.\n \
+        ```%doubles``` - Used for 2v2 matchmaking in our arena channels.\n \
+        ```%funnies``` - Used for non-competitive matchmaking in our arena channels.\n \
+        ')
+    await ctx.author.send(embed=embed)
+    await ctx.message.add_reaction('👍')
+
+@help.command()
+async def util(ctx):
+    embed = discord.Embed(title="🔧Utility Commands🔧", color=0x424242, description='\n \
+        ```%coin``` - Throws a coin\n \
+        ```%roll <NdN>``` - Rolling dice, format %roll 1d100\n \
+        ```%countdown <number>``` - Counts down from number.\n \
+        ```%poll <"question"> <"option 1"> <"option 2">``` - Starts a poll with a maximum of 10 choices\n \
+        ')
+    await ctx.author.send(embed=embed)
+    await ctx.message.add_reaction('👍')
+
+
+@help.command()
+async def misc(ctx):
+    embed = discord.Embed(title="📋Miscellaneous Commands📋", color=0x155a00, description='\n \
+        ```%modmail <your message>``` - A private way to communicate with the moderator team. Only works in my DM channel.\n \
+        ```%stagelist``` - Our Stagelist for Crew Battles\n \
+        ```%invite``` - For those looking for an invite\n \
+        ```%ping``` - Gets the ping of the bot.\n \
+        ```%mp4<move>``` - Tells you the Mana Cost of any of Hero\'s moves\n \
+        ')
+    await ctx.author.send(embed=embed)
+    await ctx.message.add_reaction('👍')
+
+
+@help.command()
+async def fun(ctx):
+    embed = discord.Embed(title="😂Fun Commands😂", color=0x841e8b, description='\n \
+        ```%joke``` - Jokes\n \
+        ```%randomquote``` - Quotes\n \
+        ```%pickmeup``` - Nice words\n \
+        ```%wisdom``` - It\'s wisdom\n \
+        ```%boo``` - Looking for a scare, huh?\n \
+        ```%uwu``` - For the silly people\n \
+        ```%tabuwu``` - For the dumb people\n \
+        ')
+    await ctx.author.send(embed=embed)
+    await ctx.message.add_reaction('👍')
+
+
+
+#error handling for the admin subcommand
+@admin.error
+async def admin_error(ctx, error):
+    if isinstance(error, commands.MissingPermissions):
+        await ctx.send("You are not a moderator on this server.")
+    raise error
+
+
 
     
 #loads all of our cogs
