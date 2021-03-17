@@ -109,7 +109,7 @@ class Warn(commands.Cog):
     @commands.command(aliases=['warnings', 'infractions'])
     async def warns(self, ctx, user:discord.Member): #doesnt need an admin check imo
         try:
-            with open(r'/root/tabuu bot/json/warns.json', 'r') as f: #change path later, /root/tabuu 3.0 bot/warns.json
+            with open(r'/root/tabuu bot/json/warns.json', 'r') as f:
                 users = json.load(f) #loads .json file into memory
 
             user_data = users[str(user.id)]
@@ -200,7 +200,7 @@ class Warn(commands.Cog):
 
                 user_data = users[str(user.id)]
 
-                await ctx.send(f'{user.mention} has {len(user_data)} warnings.')
+                await ctx.send(f'{user.mention} has {len(user_data)} warning(s).')
             except:
                 await ctx.send(f"{user.mention} doesn't have any warnings (yet).")
         if isinstance(error, commands.MemberNotFound):
