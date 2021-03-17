@@ -77,6 +77,15 @@ class Events(commands.Cog):
         except AttributeError:
             pass
 
+
+    #general error if the bot didnt find the command specified
+    @commands.Cog.listener()
+    async def on_command_error(self, ctx, error):
+        if isinstance(error, commands.CommandNotFound):
+            await ctx.send("I did not find this command. Type %help for all available commands.")
+
+
+
 def setup(bot):
     bot.add_cog(Events(bot))
     print("Events cog loaded")
