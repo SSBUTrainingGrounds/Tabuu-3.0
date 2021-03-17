@@ -1,7 +1,7 @@
 #Tabuu 3.0
 #by Phxenix for SSBU Training Grounds
-#Version: 3.3.0
-#Last Changes: 15 March 2021
+#Version: 3.3.1
+#Last Changes: 17 March 2021
 #Report any bugs to: Phxenix#1104
 #
 #To do list:
@@ -24,7 +24,7 @@ bot = Bot(command_prefix='%', intents=intents) # prefix for commands, we picked 
 client = discord.Client(intents=intents) 
 bot.remove_command('help') #for a custom help command
 
-bot.version_number = "3.3.0" #the "version", maintain every now and then
+bot.version_number = "3.3.1" #the "version", maintain every now and then
 
 
 #bot startup, and some event triggers without commands
@@ -72,6 +72,7 @@ async def help(ctx): #add an admin check for these commands optimally
             ```%stagelist``` - Our Stagelist for Crew Battles.\n \
             ```%coin``` - Throws a coin.\n \
             ```%roll <NdN>``` - Rolling dice, format %roll 1d100.\n \
+            ```%countdown <number>``` - Counts down from number.\n \
             ```%poll <"question"> <"option 1"> <"option 2">``` - Starts a poll with a maximum of 10 choices.\n \
             ```%invite``` - For those looking for an invite.\n \
             ```%avatar <user>``` - Gets you the avatar of a user.\n \
