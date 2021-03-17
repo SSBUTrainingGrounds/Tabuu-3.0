@@ -83,6 +83,7 @@ class Events(commands.Cog):
     async def on_command_error(self, ctx, error):
         if isinstance(error, commands.CommandNotFound):
             await ctx.send("I did not find this command. Type %help for all available commands.")
+        raise error
 
 
 
