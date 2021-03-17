@@ -4,6 +4,8 @@ import random
 import difflib
 from discord.utils import get
 import platform
+import asyncio
+
 
 #
 #this file here contains most useful commands that don't need special permissions
@@ -228,6 +230,28 @@ class Usercommands(commands.Cog):
             await ctx.send(f"Rolling **1**-**{sides}** **{r+1}** times \nResults: **{results}** \nTotal: **{sum(results)}**")
 
 
+    @commands.command()
+    async def countdown(self, ctx, count:int):
+        if count > 50:
+            await ctx.send("Please don't use numbers that big.")
+            return
+        if count < 1:
+            await ctx.send("Invalid number!")
+            return
+        
+        initial_count = count
+
+        countdown_message = await ctx.send(f"Counting down from {initial_count}...\n{count}")
+
+        while count > 1:
+            count -= 1
+            await asyncio.sleep(2) #sleeps 2 secs instead of 1
+            await countdown_message.edit(content=f"Counting down from {initial_count}...\n{count}") #edits the message with the new count
+
+        await asyncio.sleep(2) #sleeps again before sending the final message
+        await countdown_message.edit(content=f"Counting down from {initial_count}...\nFinished!")
+
+
 
     #error handling for the above
     @listrole.error
@@ -282,6 +306,13 @@ class Usercommands(commands.Cog):
             await ctx.send("Wrong format!\nTry something like: %roll 1d100")
         raise error
 
+    @countdown.error
+    async def countdown_error(self, ctx, error):
+        if isinstance(error, commands.MissingRequiredArgument):
+            await ctx.send("You need to input a number!")
+        if isinstance(error, commands.BadArgument):
+            await ctx.send("Invalid number!")
+        raise error
 
 
 
