@@ -328,6 +328,21 @@ class Matchmaking(commands.Cog):
 
 
 
+    #added this command so that if a ping gets stuck in the files i dont have to restart the bot
+    @commands.command(aliases=['clearmmrequests', 'clearmm', 'clearmatchmaking'])
+    @commands.has_permissions(administrator=True)
+    async def clearmmpings(self, ctx):
+        await self.clear_mmrequests() #just calls the function below
+        await ctx.send("Cleared the matchmaking pings!")
+
+    @clearmmpings.error
+    async def clearmmpings_error(self, ctx, error):
+        if isinstance(error, commands.MissingPermissions):
+            await ctx.send("Nice try, but you don't have the permissions to do that!")
+        raise error
+
+
+
 
     #this clears the mm files so that no ping gets stuck if i restart the bot
     async def clear_mmrequests(self):
