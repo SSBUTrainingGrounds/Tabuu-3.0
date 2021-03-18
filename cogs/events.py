@@ -50,7 +50,6 @@ class Events(commands.Cog):
 
 
         except:
-            await member.add_roles(cadet) #turning this back on temporarily, until the membership screening thing is resolved
             await channel.send(f"{member.mention} has joined the ranks! What's shaking?\nPlease take a look at the {rules.mention} channel for information about server events/functions!")
             
 
