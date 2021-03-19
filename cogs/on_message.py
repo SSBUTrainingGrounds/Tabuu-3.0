@@ -87,7 +87,7 @@ class On_message(commands.Cog):
                 warns = len(user_data)
 
 
-                await message.channel.send(f"{message.author.mention} has been warned!")
+                await message.channel.send(f"{message.author.mention} has been automatically warned for using a blacklisted word!")
                 try:
                     await message.author.send(f"You have been automatically warned in the SSBU Training Grounds Server for sending the following message: \n```{message.content}```\nIf you would like to discuss your punishment, please contact Tabuu#0720, Karma!#6636 or Maddy#1833")
                 except:
