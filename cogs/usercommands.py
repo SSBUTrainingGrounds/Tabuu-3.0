@@ -62,7 +62,7 @@ class Usercommands(commands.Cog):
         memberlist = []
 
         if len(members) > 60:
-            await ctx.send("Too many members to list")
+            await ctx.send(f"Users with the {role} role:\nToo many users to list!")
             return
         if len(members) == 0:
             await ctx.send(f"No user currently has the {role} role!")
