@@ -1,7 +1,7 @@
 import discord
 from discord.ext import commands, tasks
 import json
-import difflib
+from fuzzywuzzy import process
 import asyncio
 from discord.utils import get
 
@@ -97,9 +97,8 @@ class Admin(commands.Cog):
         try:
             role = get(ctx.guild.roles, id=int(input_role)) #this executes when you use the id, or mention the role
         except:
-            closest_role = difflib.get_close_matches(input_role, all_roles) #otherwise, this searches for the closest match
-            role1 = closest_role[0]
-            role = get(ctx.guild.roles, name=role1)
+            match = process.extractOne(input_role, all_roles, score_cutoff=30)[0] #otherwise this executes, getting the closest match
+            role = get(ctx.guild.roles, name=match)
         
         #the whole block above is searching for matching roles, its repeated in every role command below, does the same thing everytime
 
@@ -119,9 +118,8 @@ class Admin(commands.Cog):
         try:
             role = get(ctx.guild.roles, id=int(input_role))
         except:
-            closest_role = difflib.get_close_matches(input_role, all_roles)
-            role1 = closest_role[0]
-            role = get(ctx.guild.roles, name=role1)
+            match = process.extractOne(input_role, all_roles, score_cutoff=30)[0]
+            role = get(ctx.guild.roles, name=match)
 
         await member.remove_roles(role) #same as above here
         await ctx.send(f"{member.mention} no longer has the {role} role")

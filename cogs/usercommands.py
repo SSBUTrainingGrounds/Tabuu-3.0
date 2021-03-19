@@ -1,7 +1,7 @@
 import discord
 from discord.ext import commands, tasks
 import random
-import difflib
+from fuzzywuzzy import process
 from discord.utils import get
 import platform
 import asyncio
@@ -27,9 +27,8 @@ class Usercommands(commands.Cog):
         try:
             role = get(ctx.guild.roles, id=int(input_role))
         except:
-            closest_role = difflib.get_close_matches(input_role, all_roles)
-            role1 = closest_role[0]
-            role = get(ctx.guild.roles, name=role1)
+            match = process.extractOne(input_role, all_roles, score_cutoff=30)[0]
+            role = get(ctx.guild.roles, name=match)
 
         #the above block searches all roles for the closest match, as seen in the admin cog
 
@@ -56,9 +55,8 @@ class Usercommands(commands.Cog):
         try:
             role = get(ctx.guild.roles, id=int(input_role))
         except:
-            closest_role = difflib.get_close_matches(input_role, all_roles)
-            role1 = closest_role[0]
-            role = get(ctx.guild.roles, name=role1)
+            match = process.extractOne(input_role, all_roles, score_cutoff=30)[0]
+            role = get(ctx.guild.roles, name=match)
 
         members = role.members
         memberlist = []
