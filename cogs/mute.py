@@ -63,9 +63,32 @@ class Mute(commands.Cog):
 
     @commands.command()
     @commands.has_permissions(administrator=True) #checking permissions
-    async def tempmute(self, ctx, member:discord.Member, mute_time : int, *, args): #this is pretty much just the mute command, then a x min waiting period and then the unmute command
+    async def tempmute(self, ctx, member:discord.Member, mute_time, *, args): #this is pretty much just the mute command, then a x min waiting period and then the unmute command
         reason = ''.join(args)
-        
+        #this block here gets the time
+        if mute_time.lower().endswith("d"):
+            seconds = int(mute_time[:-1]) * 60 * 60 * 24
+            time_muted = f"{seconds // 60 // 60 // 24} day(s)"
+        elif mute_time.lower().endswith("h"):
+            seconds = int(mute_time[:-1]) * 60 * 60
+            time_muted = f"{seconds // 60 // 60} hour(s)"
+        elif mute_time.lower().endswith("m"):
+            seconds = int(mute_time[:-1]) * 60
+            time_muted = f"{seconds // 60} minute(s)"
+        elif mute_time.lower().endswith("s"):
+            seconds = int(mute_time[:-1])
+            time_muted = f"{seconds} seconds"
+        else:
+            await ctx.send("Invalid time format! Please use a number followed by d/h/m/s for days/hours/minutes/seconds.")
+            return
+
+        if seconds < 30: #makes sure there are no negative values
+            await ctx.send("Invalid time format! Minimum value is 30 seconds.")
+            return
+        if seconds > 86401: #1 day + 1 sec
+            await ctx.send("Invalid time format! Maximum value is 1 day.")
+            return
+  
         role = discord.utils.get(ctx.guild.roles, name="Muted")
         with open (r'/root/tabuu bot/json/muted.json', 'r') as f:
             muted_users = json.load(f)
@@ -73,18 +96,14 @@ class Mute(commands.Cog):
         await member.add_roles(role)
         with open(r'/root/tabuu bot/json/muted.json', 'w') as f:
             json.dump(muted_users, f, sort_keys=True, ensure_ascii=False, indent=4) #dont need the sort_keys and ensure_ascii, works without
-        if mute_time < 0: #makes sure there are no negative values
-            mute_time = 1
-        if mute_time > 1440: #makes sure there arent any insane values, 1440 mins is 1 day
-            mute_time = 1440
-        mute_time = mute_time*60 #default time is in seconds, we need to change that to minutes, could just change the sleep(mute_time) but eh, now it's in place
-        await ctx.send(f"{member.mention} has been muted for {round(mute_time/60)} minutes!") #now we need to change that back just for the message
+
+        await ctx.send(f"{member.mention} has been muted for {time_muted}!") #now we need to change that back just for the message
         try:
-            await member.send(f"You have been muted in the SSBU Training Grounds Server for ***{round(mute_time/60)}*** minutes for the following reason: \n```{reason}``` \nIf you would like to discuss your punishment, please contact Tabuu#0720, Karma!#6636 or Maddy#1833")
+            await member.send(f"You have been muted in the SSBU Training Grounds Server for ***{time_muted}*** for the following reason: \n```{reason}``` \nIf you would like to discuss your punishment, please contact Tabuu#0720, Karma!#6636 or Maddy#1833")
         except:
             print("user has blocked me :(")
 
-        await asyncio.sleep(mute_time) #waits the specified amount of time
+        await asyncio.sleep(seconds) #waits the specified amount of time
         await member.remove_roles(role) #reverses the action above, could move it into the if statement, doesnt really matter tho if you remove a role thats not there
         with open(r'/root/tabuu bot/json/muted.json', 'r') as f:
             muted_users = json.load(f)
@@ -127,13 +146,13 @@ class Mute(commands.Cog):
     @tempmute.error
     async def tempmute_error(self, ctx,error):
         if isinstance(error, commands.MissingRequiredArgument):
-            await ctx.send("You need to mention a member, an amount of time in minutes, and a reason!")
+            await ctx.send("You need to mention a member, an amount of time, and a reason!")
         if isinstance(error, commands.MemberNotFound):
             await ctx.send("You need to mention a member!")
         if isinstance(error, commands.MissingPermissions):
             await ctx.send("Nice try, but you don't have the permissions to do that!")
         if isinstance(error, commands.BadArgument):
-            await ctx.send("You need to type the amount of minutes as a number!")
+            await ctx.send("Invalid time format! Please use a number followed by d/h/m/s for days/hours/minutes/seconds.")
         raise error
 
 def setup(bot):

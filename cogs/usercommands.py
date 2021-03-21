@@ -255,13 +255,13 @@ class Usercommands(commands.Cog):
         #this here gets the time
         if time.lower().endswith("d"):
             seconds = int(time[:-1]) * 60 * 60 * 24
-            reminder_time = f"{seconds // 60 // 60 // 24} days"
+            reminder_time = f"{seconds // 60 // 60 // 24} day(s)"
         elif time.lower().endswith("h"):
             seconds = int(time[:-1]) * 60 * 60
-            reminder_time = f"{seconds // 60 // 60} hours"
+            reminder_time = f"{seconds // 60 // 60} hour(s)"
         elif time.lower().endswith("m"):
             seconds = int(time[:-1]) * 60
-            reminder_time = f"{seconds // 60} minutes"
+            reminder_time = f"{seconds // 60} minute(s)"
         elif time.lower().endswith("s"):
             seconds = int(time[:-1])
             reminder_time = f"{seconds} seconds"
@@ -269,7 +269,7 @@ class Usercommands(commands.Cog):
             await ctx.send("Invalid time format! Please use a number followed by d/h/m/s for days/hours/minutes/seconds.")
             return
         
-        if seconds < 60:
+        if seconds < 30:
             await ctx.send("Duration is too short! I'm sure you can remember that yourself.")
             return
         if seconds > 2592000: #30 days
