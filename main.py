@@ -60,7 +60,7 @@ async def admin(ctx):
         ```%delete <message IDs>``` - Deletes certain messages by ID.\n \
         ```%mute <@user> <reason>``` - Mutes a user in the server.\n \
         ```%unmute <@user>``` - Unmutes a user in the server.\n \
-        ```%tempmute <@user> X <reason>``` - Temporarily mutes a user for X minutes.\n \
+        ```%tempmute <@user> <time> <reason>``` - Temporarily mutes a user.\n \
         ```%addrole <@user> <role>``` - Adds a role to a user.\n \
         ```%removerole <@user> <role>``` - Removes a role from a User.\n \
         ```%warn <@user> <reason>``` - Warns a user.\n \
