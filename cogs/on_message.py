@@ -65,7 +65,7 @@ class On_message(commands.Cog):
                 embed = discord.Embed(title="⚠️New Warning⚠️", color = discord.Color.dark_red())
                 embed.add_field(name="Warned User", value=message.author.mention, inline=True)
                 embed.add_field(name="Moderator", value=tabuu3.mention, inline=True)
-                embed.add_field(name="Reason", value=f"Automatic warning for using a blacklisted word: {message.content}", inline=True)
+                embed.add_field(name="Reason", value=f"Automatic warning for using a blacklisted word", inline=True)
                 embed.add_field(name="ID", value=warn_id, inline=True)
                 embed.set_footer(text=f"{warndate} CET") 
                 await channel.send(embed=embed) #logs the message to the channel
@@ -74,7 +74,7 @@ class On_message(commands.Cog):
                     users = json.load(f) #loads .json file into memory
 
 
-                warn_reason = (f"Automatic warning for using a blacklisted word:\n{message.content}")
+                warn_reason = (f"Automatic warning for using a blacklisted word")
                 
                 try: #most of this is just copied/adapted from the warn command
                     user_data = users[str(message.author.id)]
@@ -89,7 +89,7 @@ class On_message(commands.Cog):
 
                 await message.channel.send(f"{message.author.mention} has been automatically warned for using a blacklisted word!")
                 try:
-                    await message.author.send(f"You have been automatically warned in the SSBU Training Grounds Server for sending the following message: \n```{message.content}```\nIf you would like to discuss your punishment, please contact Tabuu#0720, Karma!#6636 or Maddy#1833")
+                    await message.author.send(f"You have been automatically warned in the SSBU Training Grounds Server for sending a message containing a blacklisted word.\nIf you would like to discuss your punishment, please contact Tabuu#0720, Karma!#6636 or Maddy#1833")
                 except:
                     print("user has blocked me :(")
                 if warns > 9: #auto ban for more than 10 warns

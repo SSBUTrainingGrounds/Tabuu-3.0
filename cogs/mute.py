@@ -41,13 +41,13 @@ class Mute(commands.Cog):
     @commands.has_permissions(administrator=True) #checking permissions
     async def unmute(self, ctx, member:discord.Member): #just the reverse mute command
         role = discord.utils.get(ctx.guild.roles, name="Muted") #specific name for the role, needs changing when the role name changes
-        await member.remove_roles(role)
         with open(r'/root/tabuu bot/json/muted.json', 'r') as f:
             muted_users = json.load(f)
 
         if f'{member.id}' in muted_users: #have to check if the user is muted in the json file, otherwise the delete function would corrupt the file
             del muted_users[f'{member.id}']['muted']
             del muted_users[f'{member.id}']
+            await member.remove_roles(role)
             await ctx.send(f"{member.mention} was unmuted!")
             try:
                 await member.send("You have been unmuted in the SSBU Training Grounds Server! Don't break the rules again")
@@ -104,12 +104,12 @@ class Mute(commands.Cog):
             print("user has blocked me :(")
 
         await asyncio.sleep(seconds) #waits the specified amount of time
-        await member.remove_roles(role) #reverses the action above, could move it into the if statement, doesnt really matter tho if you remove a role thats not there
         with open(r'/root/tabuu bot/json/muted.json', 'r') as f:
             muted_users = json.load(f)
         if f'{member.id}' in muted_users: #checks if they already have been unmuted, so the muted file doesnt break
             del muted_users[f'{member.id}']['muted']
             del muted_users[f'{member.id}']
+            await member.remove_roles(role)
             await ctx.send(f"{member.mention} has been automatically unmuted!")
             try:
                 await member.send(f"You have been unmuted in the SSBU Training Grounds Server! Don't break the rules again")
