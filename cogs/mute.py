@@ -151,8 +151,6 @@ class Mute(commands.Cog):
             await ctx.send("You need to mention a member!")
         if isinstance(error, commands.MissingPermissions):
             await ctx.send("Nice try, but you don't have the permissions to do that!")
-        if isinstance(error, commands.BadArgument):
-            await ctx.send("Invalid time format! Please use a number followed by d/h/m/s for days/hours/minutes/seconds.")
         raise error
 
 def setup(bot):
