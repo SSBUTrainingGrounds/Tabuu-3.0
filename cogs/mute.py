@@ -47,7 +47,10 @@ class Mute(commands.Cog):
         if f'{member.id}' in muted_users: #have to check if the user is muted in the json file, otherwise the delete function would corrupt the file
             del muted_users[f'{member.id}']['muted']
             del muted_users[f'{member.id}']
-            await member.remove_roles(role)
+            try:
+                await member.remove_roles(role)
+            except:
+                print("user left the server")
             await ctx.send(f"{member.mention} was unmuted!")
             try:
                 await member.send("You have been unmuted in the SSBU Training Grounds Server! Don't break the rules again")
@@ -109,7 +112,10 @@ class Mute(commands.Cog):
         if f'{member.id}' in muted_users: #checks if they already have been unmuted, so the muted file doesnt break
             del muted_users[f'{member.id}']['muted']
             del muted_users[f'{member.id}']
-            await member.remove_roles(role)
+            try:
+                await member.remove_roles(role)
+            except:
+                print("user left the server")
             await ctx.send(f"{member.mention} has been automatically unmuted!")
             try:
                 await member.send(f"You have been unmuted in the SSBU Training Grounds Server! Don't break the rules again")
