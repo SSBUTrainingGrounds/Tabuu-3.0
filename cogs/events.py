@@ -51,7 +51,30 @@ class Events(commands.Cog):
 
         except:
             await channel.send(f"{member.mention} has joined the ranks! What's shaking?\nPlease take a look at the {rules.mention} channel for information about server events/functions!")
-            
+
+
+    #if you join a voice channel, you get this role here
+    @commands.Cog.listener()
+    async def on_voice_state_update(self, member, before, after):
+        if after.channel is not None:
+            if before.channel is None:
+                guild = self.bot.get_guild(739299507795132486)
+                vc_role = discord.utils.get(guild.roles, id=824258210101198889)
+                try:
+                    await member.add_roles(vc_role)
+                except:
+                    pass
+        #and if you leave, the role gets removed
+        if before.channel is not None:
+            if after.channel is None:
+                guild = self.bot.get_guild(739299507795132486)
+                vc_role = discord.utils.get(guild.roles, id=824258210101198889)
+                try:
+                    await member.remove_roles(vc_role)
+                except:
+                    pass
+
+
 
 
     #if a new booster boosts the server, checks role changes
