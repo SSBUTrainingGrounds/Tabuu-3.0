@@ -56,19 +56,19 @@ class Events(commands.Cog):
     #if you join a voice channel, you get this role here
     @commands.Cog.listener()
     async def on_voice_state_update(self, member, before, after):
-        if after.channel is not None:
-            if before.channel is None:
-                guild = self.bot.get_guild(739299507795132486)
-                vc_role = discord.utils.get(guild.roles, id=824258210101198889)
+        voice_channel = 765625841861394442
+        guild = self.bot.get_guild(739299507795132486)
+        vc_role = discord.utils.get(guild.roles, id=824258210101198889)
+        if before.channel is None or before.channel.id != voice_channel:
+            if after.channel is not None and after.channel.id == voice_channel: #have to do the not None thing in both occasions, otherwise the console gets flooded with errors
                 try:
                     await member.add_roles(vc_role)
                 except:
                     pass
+
         #and if you leave, the role gets removed
-        if before.channel is not None:
-            if after.channel is None:
-                guild = self.bot.get_guild(739299507795132486)
-                vc_role = discord.utils.get(guild.roles, id=824258210101198889)
+        if after.channel is None or after.channel.id != voice_channel:
+            if before.channel is not None and before.channel.id == voice_channel:
                 try:
                     await member.remove_roles(vc_role)
                 except:
