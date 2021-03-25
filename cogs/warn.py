@@ -210,29 +210,29 @@ class Warn(commands.Cog):
     @clearwarns.error
     async def clearwarns_error(self, ctx, error):
         if isinstance(error, commands.MissingRequiredArgument):
-            ctx.send("You need to mention a member!")
+            await ctx.send("You need to mention a member!")
         if isinstance(error, commands.MissingPermissions):
-            ctx.send("Nice try, but you don't have the permissions to do that!")
+            await ctx.send("Nice try, but you don't have the permissions to do that!")
         raise error
 
     @deletewarn.error
     async def deletewarn_error(self, ctx, error):
         if isinstance(error, commands.MissingRequiredArgument):
-            ctx.send("You need to mention a member and specify a warn_id.")
+            await ctx.send("You need to mention a member and specify a warn_id.")
         if isinstance(error, commands.MemberNotFound):
-            ctx.send("You need to mention a valid member.")
+            await ctx.send("You need to mention a valid member.")
         if isinstance(error, commands.MissingPermissions):
-            ctx.send("Nice try, but you don't have the permissions to do that!")
+            await ctx.send("Nice try, but you don't have the permissions to do that!")
         raise error
 
     @warndetails.error
     async def warndetails_error(self, ctx, error):
         if isinstance(error, commands.MissingRequiredArgument):
-            ctx.send("You need to mention a valid member.")
+            await ctx.send("You need to mention a valid member.")
         if isinstance(error, commands.MemberNotFound):
-            ctx.send("You need to mention a valid member.")
+            await ctx.send("You need to mention a valid member.")
         if isinstance(error, commands.MissingPermissions):
-            ctx.send("Nice try, but you don't have the permissions to do that!")
+            await ctx.send("Nice try, but you don't have the permissions to do that!")
         raise error
 
 
