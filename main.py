@@ -81,6 +81,7 @@ async def info(ctx):
         ```%userinfo <member>``` - Shows user info of a mentioned member.\n \
         ```%warns <@user>``` - Displays the number of warnings of a user.\n \
         ```%server``` - Info about the server.\n \
+        ```%stats``` - Stats about the bot.\n \
         ')
     await ctx.author.send(embed=embed)
     await ctx.message.add_reaction('👍')
@@ -116,6 +117,7 @@ async def misc(ctx):
         ```%coaching``` - Coaching requirements.\n \
         ```%calendar``` - Calendar with our schedule.\n \
         ```%invite``` - For those looking for an invite.\n \
+        ```%icon <@user>``` - Gets you the avatar of a user.\n \
         ```%ping``` - Gets the ping of the bot.\n \
         ```%mp4<move>``` - Tells you the Mana Cost of any of Hero\'s moves.\n \
         ')
