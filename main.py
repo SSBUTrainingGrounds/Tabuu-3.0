@@ -1,7 +1,7 @@
 #Tabuu 3.0
 #by Phxenix for SSBU Training Grounds
-#Version: 3.5.2
-#Last Changes: 21 March 2021
+#Version: 3.6.0
+#Last Changes: 27 March 2021
 #Report any bugs to: Phxenix#1104
 #
 #To do list:
@@ -24,7 +24,7 @@ bot = Bot(command_prefix='%', intents=intents) # prefix for commands, we picked 
 client = discord.Client(intents=intents) 
 bot.remove_command('help') #for a custom help command
 
-bot.version_number = "3.5.2" #the "version", maintain every now and then
+bot.version_number = "3.6.0" #the "version", maintain every now and then
 
 
 #bot startup, and some event triggers without commands
@@ -82,6 +82,7 @@ async def info(ctx):
         ```%warns <@user>``` - Displays the number of warnings of a user.\n \
         ```%server``` - Info about the server.\n \
         ```%stats``` - Stats about the bot.\n \
+        ```%emote <emoji>``` - Info about an emoji.\n \
         ')
     await ctx.author.send(embed=embed)
     await ctx.message.add_reaction('👍')
@@ -92,6 +93,7 @@ async def mm(ctx):
         ```%singles``` - Used for 1v1 matchmaking in our arena channels.\n \
         ```%doubles``` - Used for 2v2 matchmaking in our arena channels.\n \
         ```%funnies``` - Used for non-competitive matchmaking in our arena channels.\n \
+        ```%recentpings <type>``` - Gets you the recent pings of any matchmaking type.\n \
         ')
     await ctx.author.send(embed=embed)
     await ctx.message.add_reaction('👍')
