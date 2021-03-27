@@ -69,14 +69,14 @@ class Warn(commands.Cog):
             await user.send(f"You have been warned in the SSBU Training Grounds Server for the following reason: \n```{reason}```\nIf you would like to discuss your punishment, please contact Tabuu#0720, Karma!#6636 or Maddy#1833")
         except:
             print("user has blocked me :(")
-        if warns > 9: #auto ban for more than 10 warns
+        if warns > 6: #auto ban for more than 7 warns
             try:
                 await user.send(f"You have been automatically banned from the SSBU Training Grounds Server for reaching #***{warns}***.\nPlease contact Tabuu#0720 for an appeal.\nhttps://docs.google.com/spreadsheets/d/1EZhyKa69LWerQl0KxeVJZuLFFjBIywMRTNOPUUKyVCc/")
             except:
                 print("user has blocked me :(")
             await ctx.send(f"{user.mention} has reached warning #{warns}. They have been automatically banned.")
             await user.ban(reason=f"Automatic ban for reaching {warns} warnings")
-        if warns > 4 and warns < 10: #auto kick for more than 5 warns, stops at 10 so you dont get dumb errors
+        if warns > 4 and warns < 7: #auto kick for more than 5 warns, stops at 7 so you dont get dumb errors
             try:
                 await user.send(f"You have been automatically kicked from the SSBU Training Grounds Server for reaching warning #***{warns}***. \nIf you would like to discuss your punishment, please contact Tabuu#0720, Karma!#6636 or Maddy#1833")
             except:
