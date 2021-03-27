@@ -342,6 +342,86 @@ class Matchmaking(commands.Cog):
         raise error
 
 
+    @commands.command()
+    async def recentpings(self, ctx, mm_type):
+        timestamp = time.strftime("%H:%M")
+        if mm_type.lower() == "singles":
+            with open(r'/root/tabuu bot/json/singles.json', 'r') as f:
+                singles = json.load(f)
+            list_of_searches = []
+            for singles_mm in singles:
+                channel_mm = singles[f'{singles_mm}']['channel']
+                timecode = singles[f'{singles_mm}']['time']
+                old_ping = datetime.strptime(timecode, "%H:%M")
+                new_ping = datetime.strptime(timestamp, "%H:%M")
+                timedelta = new_ping - old_ping
+                seconds = timedelta.total_seconds()
+                minutes = round(seconds/60)
+                if minutes < -1000:
+                    minutes = minutes + 1440
+                list_of_searches.append(f"<@!{singles_mm}>, in <#{channel_mm}>, {minutes} minutes ago\n")
+            list_of_searches.reverse()
+            searches = ''.join(list_of_searches)
+            if len(searches) == 0:
+                searches = "Looks like no one has pinged recently :("
+            embed = discord.Embed(title="Singles pings in the last 30 Minutes:", description=searches, colour=discord.Colour.dark_red())
+            await ctx.send(embed=embed)
+            return
+        if mm_type.lower() == "doubles":
+            with open(r'/root/tabuu bot/json/doubles.json', 'r') as f:
+                doubles = json.load(f)
+            list_of_searches = []
+            for doubles_mm in doubles:
+                channel_mm = doubles[f'{doubles_mm}']['channel']
+                timecode = doubles[f'{doubles_mm}']['time']
+                old_ping = datetime.strptime(timecode, "%H:%M")
+                new_ping = datetime.strptime(timestamp, "%H:%M")
+                timedelta = new_ping - old_ping
+                seconds = timedelta.total_seconds()
+                minutes = round(seconds/60)
+                if minutes < -1000:
+                    minutes = minutes + 1440
+                list_of_searches.append(f"<@!{doubles_mm}>, in <#{channel_mm}>, {minutes} minutes ago\n")
+            list_of_searches.reverse()
+            searches = ''.join(list_of_searches)
+            if len(searches) == 0:
+                searches = "Looks like no one has pinged recently :("
+            embed = discord.Embed(title="Doubles pings in the last 30 Minutes:", description=searches, colour=discord.Colour.dark_blue())
+            await ctx.send(embed=embed)
+            return
+        if mm_type.lower() == "funnies":
+            with open(r'/root/tabuu bot/json/funnies.json', 'r') as f:
+                funnies = json.load(f)
+            list_of_searches = []
+            for funnies_mm in funnies:
+                channel_mm = funnies[f'{funnies_mm}']['channel']
+                timecode = funnies[f'{funnies_mm}']['time']
+                old_ping = datetime.strptime(timecode, "%H:%M")
+                new_ping = datetime.strptime(timestamp, "%H:%M")
+                timedelta = new_ping - old_ping
+                seconds = timedelta.total_seconds()
+                minutes = round(seconds/60)
+                if minutes < -1000:
+                    minutes = minutes + 1440
+                list_of_searches.append(f"<@!{funnies_mm}>, in <#{channel_mm}>, {minutes} minutes ago\n")
+            list_of_searches.reverse()
+            searches = ''.join(list_of_searches)
+            if len(searches) == 0:
+                searches = "Looks like no one has pinged recently :("
+            embed = discord.Embed(title="Funnies pings in the last 30 Minutes:", description=searches, colour=discord.Colour.green())
+            await ctx.send(embed=embed)
+            return
+        else:
+            await ctx.send("Invalid input! Please choose either singles, doubles or funnies.")
+            pass
+
+    @recentpings.error
+    async def recentpings_error(self, ctx, error):
+        if isinstance(error, commands.MissingRequiredArgument):
+            await ctx.send("Invalid input! Please choose either singles, doubles or funnies.")
+        raise error
+
+
 
 
     #this clears the mm files so that no ping gets stuck if i restart the bot

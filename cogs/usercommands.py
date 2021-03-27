@@ -283,6 +283,19 @@ class Usercommands(commands.Cog):
         await ctx.send(f"{ctx.author.mention}, you wanted me to remind you of {remind_message}, {reminder_time} ago.")
 
 
+    @commands.command(aliases=['emoji'])
+    async def emote(self, ctx, emoji:discord.Emoji):
+        embed = discord.Embed(title="Emoji Info", colour=discord.Colour.orange(), description=f"\
+            Server: {emoji.guild} ({emoji.guild.id})\n \
+            Url: {emoji.url}\n \
+            Name: {emoji.name}\n \
+            ID: {emoji.id}\n \
+            ")
+        embed.set_image(url=emoji.url)
+        await ctx.send(embed=embed)
+
+
+
 
 
     #error handling for the above
@@ -353,6 +366,15 @@ class Usercommands(commands.Cog):
         if isinstance(error, commands.CommandInvokeError):
             await ctx.send("Invalid time format! Please use a number followed by d/h/m/s for days/hours/minutes/seconds.")
         raise error
+
+    @emote.error
+    async def emote_errpr(self, ctx, error):
+        if isinstance(error, commands.MissingRequiredArgument):
+            await ctx.send("You need to specify an emoji!")
+        if isinstance(error, commands.EmojiNotFound):
+            await ctx.send("I couldn't find information on this emoji!")
+        raise error
+
 
 
 
