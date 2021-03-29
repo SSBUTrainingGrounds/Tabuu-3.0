@@ -286,14 +286,13 @@ class Usercommands(commands.Cog):
     @commands.command(aliases=['emoji'])
     async def emote(self, ctx, emoji:discord.Emoji):
         embed = discord.Embed(title="Emoji Info", colour=discord.Colour.orange(), description=f"\
-**Server:** {emoji.guild} ({emoji.guild.id})\n \
-**Url:** {emoji.url}\n \
-**Name:** {emoji.name}\n \
-**ID:** {emoji.id}\n \
+**Server:** {emoji.guild} ({emoji.guild.id})\n\
+**Url:** {emoji.url}\n\
+**Name:** {emoji.name}\n\
+**ID:** {emoji.id}\n\
             ")
         embed.set_image(url=emoji.url)
         await ctx.send(embed=embed)
-
 
 
 
