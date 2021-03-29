@@ -2,6 +2,7 @@ import discord
 from discord.ext import commands, tasks
 import json
 from itertools import cycle
+from discord.utils import get
 
 #
 #this file here contains our event listeners, the welcome/booster messages, autorole and status updates
@@ -86,6 +87,16 @@ class Events(commands.Cog):
 
             if newRole.name == "「Grounds Funders」": #checks if its the booster role, specific name needs changing when the role name changes
                 await channel.send(f"{after.mention} has boosted the server!🥳🎉")
+
+
+        if len(before.roles) > len(after.roles): #if you stop boosting, your color roles get removed
+            color_roles = (774290821842862120, 774290823340359721, 774290825927458816, 774290826896605184, 774290829128105984, 774290831271002164, 794726232616206378, 794726234231013437, 794726235518795797)
+            oldRole = next(role for role in before.roles if role not in after.roles) #gets the removed role
+
+            if oldRole.name == "「Grounds Funders」": #if its the booster role, all of the above color roles will get removed
+                for role in color_roles:
+                    removerole = get(after.guild.roles, id=role)
+                    await after.remove_roles(removerole)
         
         #this here gives out the cadet role on a successful member screening, on join was terrible because of shitty android app
         try:
