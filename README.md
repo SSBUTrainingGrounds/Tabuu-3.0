@@ -11,6 +11,7 @@ Features include:
 - Custom matchmaking system for Smash Ultimate
 - Badword and invite link filtering
 - Autorole with membership screening and on joining VC
+- Bypasses the need for Mee6 Premium, assigns Roles based on Level
 - Lots of useful general user commands
 - Lots of not so useful general user commands
 
