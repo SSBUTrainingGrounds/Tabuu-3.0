@@ -34,8 +34,8 @@ class Events(commands.Cog):
         channel = self.bot.get_channel(739299507937738849) #ssbutg general: 739299507937738849
         rules = self.bot.get_channel(739299507937738843) #rules-and-info channel on ssbutg
         guild = self.bot.get_guild(739299507795132486) #ssbutg smash discord
-        role = discord.utils.get(guild.roles, name="Muted") #role name for muted role
-        cadet = discord.utils.get(guild.roles, name="「Cadet」") #cadet role, auto get on join
+        role = discord.utils.get(guild.roles, id=739391329779581008) #role name for muted role
+        cadet = discord.utils.get(guild.roles, id=739299507799326843) #cadet role, auto get on join
 
         try: #basically if the user id is in the muted.json this executes
             with open(r'/root/tabuu bot/json/muted.json', 'r') as f:
@@ -100,7 +100,7 @@ class Events(commands.Cog):
         
         #this here gives out the cadet role on a successful member screening, on join was terrible because of shitty android app
         try:
-            cadetrole = discord.utils.get(before.guild.roles, name="「Cadet」")
+            cadetrole = discord.utils.get(before.guild.roles, id=739299507799326843)
             member = self.bot.get_guild(before.guild.id).get_member(before.id)
             if before.bot or after.bot:
                 return
