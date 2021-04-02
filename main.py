@@ -1,7 +1,7 @@
 #Tabuu 3.0
 #by Phxenix for SSBU Training Grounds
 #Version: 3.6.1
-#Last Changes: 29 March 2021
+#Last Changes: 2 April 2021
 #Report any bugs to: Phxenix#1104
 #
 #To do list:
@@ -24,7 +24,7 @@ bot = Bot(command_prefix='%', intents=intents) # prefix for commands, we picked 
 client = discord.Client(intents=intents) 
 bot.remove_command('help') #for a custom help command
 
-bot.version_number = "3.6.1" #the "version", maintain every now and then
+bot.version_number = "3.7.0" #the "version", maintain every now and then
 
 
 #bot startup, and some event triggers without commands
@@ -116,6 +116,7 @@ async def util(ctx):
 async def misc(ctx):
     embed = discord.Embed(title="📋Miscellaneous Commands📋", color=0x155a00, description='\n\
 ```%modmail <your message>``` - A private way to communicate with the moderator team. Only works in my DM channel.\n\
+```%updatelevel``` - Updates your level role manually.\n \
 ```%stagelist``` - Our Stagelist for Crew Battles.\n\
 ```%coaching``` - Coaching requirements.\n\
 ```%calendar``` - Calendar with our schedule.\n\
