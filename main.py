@@ -1,6 +1,6 @@
 #Tabuu 3.0
 #by Phxenix for SSBU Training Grounds
-#Version: 3.6.1
+#Version: 3.7.0
 #Last Changes: 2 April 2021
 #Report any bugs to: Phxenix#1104
 #
