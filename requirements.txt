@@ -1,3 +1,4 @@
 discord.py
 fuzzywuzzy
 mee6-py-api
+psutil
