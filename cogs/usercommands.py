@@ -8,6 +8,7 @@ import asyncio
 import psutil
 import datetime
 import os
+import time
 
 
 #
@@ -129,13 +130,15 @@ class Usercommands(commands.Cog):
     #some bot stats
     @commands.command(aliases=['stats'])
     async def botstats(self, ctx):
-        pyversion = platform.python_version() #get the python version
-        dpyversion = discord.__version__ #get the discord.py version
-        servercount = len(self.bot.guilds) #get total guilds
-        membercount = len(set(self.bot.get_all_members())) #get total members in these guilds
-        uptime = psutil.Process(os.getpid()) #this only gets the unix time, have to convert below
+        pyversion = platform.python_version() #python version
+        dpyversion = discord.__version__ #discord.py version
+        servercount = len(self.bot.guilds) #total servers
+        membercount = len(set(self.bot.get_all_members())) #total members
+        proc = psutil.Process(os.getpid()) #gets process id
+        uptimeSeconds = time.time() - proc.create_time() #gets uptime in seconds
+        delta = datetime.timedelta(seconds=uptimeSeconds) #converts that to a timedelta object
         tabuu3 = self.bot.get_user(785303736582012969) #the bot
-        embed = discord.Embed(title="Tabuu 3.0 Stats", color=0x007377, url="https://github.com/sonnenbankpimp/Tabuu-3.0-Bot") #links to the github, its private rn but maybe not in the future
+        embed = discord.Embed(title="Tabuu 3.0 Stats", color=0x007377, url="https://github.com/sonnenbankpimp/Tabuu-3.0-Bot") #link to the github, its still private but maybe not in the future, who knows
         embed.add_field(name="Name:", value=f"{tabuu3.mention}", inline=True)
         embed.add_field(name="Servers:", value=servercount, inline=True)
         embed.add_field(name="Total Users:", value=membercount, inline=True)
@@ -143,8 +146,8 @@ class Usercommands(commands.Cog):
         embed.add_field(name="Python Version:", value=pyversion, inline=True)
         embed.add_field(name="discord.py Version:", value=dpyversion, inline=True)
         embed.add_field(name="CPU Usage:", value=f"{psutil.cpu_percent(interval=1)}%", inline=True) #only gets the % value
-        embed.add_field(name="RAM Usage:", value=f"{psutil.virtual_memory()[2]}%", inline=True) #only gets the % value
-        embed.add_field(name="Last restart:", value=datetime.datetime.fromtimestamp(uptime.create_time()).strftime("%B %d %Y @ %H:%M:%S %p CET"), inline=True)
+        embed.add_field(name="RAM Usage:", value=f"{psutil.virtual_memory()[2]}%", inline=True) #only gets the % value, thats what the [2] is for
+        embed.add_field(name="Uptime:", value=str(delta).split(".")[0], inline=True) #the split thing is to get rid of the microseconds, who cares about uptime in microseconds
         embed.set_footer(text="Creator: Phxenix#1104, hosted on: Raspberry Pi 3B+")
         embed.set_thumbnail(url=tabuu3.avatar_url)
         await ctx.send(embed=embed)
