@@ -114,6 +114,11 @@ class Usercommands(commands.Cog):
         if member is None:
             member = ctx.author
 
+        try:
+            activity = member.activity.name
+        except:
+            activity = "None"
+
         embed=discord.Embed()
         embed = discord.Embed(title=f"Userinfo of {member.name}#{member.discriminator}", color=member.top_role.color)
         embed.add_field(name="Name:", value=member.mention, inline=True)
@@ -123,7 +128,7 @@ class Usercommands(commands.Cog):
         embed.add_field(name="Joined Server on:", value=member.joined_at.strftime("%A, %B %d %Y @ %H:%M:%S %p CET"), inline=True) #the strftime and so on are for nice formatting
         embed.add_field(name="Joined Discord on:", value=member.created_at.strftime("%A, %B %d %Y @ %H:%M:%S %p CET"), inline=True) #would look ugly otherwise
         embed.add_field(name="Online Status:", value=member.status, inline=True)
-        embed.add_field(name="Activity Status", value=member.activity.name, inline=True)
+        embed.add_field(name="Activity Status", value=activity, inline=True)
         embed.set_thumbnail(url=member.avatar_url)
         await ctx.send(embed=embed)
 
