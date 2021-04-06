@@ -95,8 +95,11 @@ class Events(commands.Cog):
 
             if oldRole.name == "「Grounds Funders」": #if its the booster role, all of the above color roles will get removed
                 for role in color_roles:
-                    removerole = get(after.guild.roles, id=role)
-                    await after.remove_roles(removerole)
+                    try:
+                        removerole = get(after.guild.roles, id=role)
+                        await after.remove_roles(removerole)
+                    except:
+                        pass
         
         #this here gives out the cadet role on a successful member screening, on join was terrible because of shitty android app
         try:
