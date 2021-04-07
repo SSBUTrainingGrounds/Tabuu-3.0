@@ -84,7 +84,7 @@ class Warn(commands.Cog):
             await ctx.send(f"{user.mention} has reached warning #{warns}. They have been automatically kicked.")        
             await user.kick(reason=f"Automatic kick for reaching {warns} warnings")
         if warns > 2 and warns < 5: #auto mute if a user reaches 3 warns, stops at 5 so you dont get dumb errors
-            role = discord.utils.get(ctx.guild.roles, name="Muted") #specific names for the roles, if the role name gets changed,
+            role = discord.utils.get(ctx.guild.roles, id=739391329779581008) #muted role
             with open (r'/root/tabuu bot/json/muted.json', 'r') as fp: #the fp muted is for the mute database
                 muted_users = json.load(fp)
             await user.add_roles(role)

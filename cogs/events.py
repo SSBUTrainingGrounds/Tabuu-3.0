@@ -22,7 +22,7 @@ class Events(commands.Cog):
     async def on_ready(self): #the pylint below is required, so that we dont get a false error
         self.change_status.start() #pylint: disable=no-member
         
-    @tasks.loop(seconds=30) #the status loop, every 30 secs, could maybe increase it further
+    @tasks.loop(seconds=120) #the status loop, every 120 secs, could maybe increase it further
     async def change_status(self):
         await self.bot.change_presence(activity=discord.Game(next(status)))
 
@@ -34,8 +34,8 @@ class Events(commands.Cog):
         channel = self.bot.get_channel(739299507937738849) #ssbutg general: 739299507937738849
         rules = self.bot.get_channel(739299507937738843) #rules-and-info channel on ssbutg
         guild = self.bot.get_guild(739299507795132486) #ssbutg smash discord
-        role = discord.utils.get(guild.roles, id=739391329779581008) #role name for muted role
-        cadet = discord.utils.get(guild.roles, id=739299507799326843) #cadet role, auto get on join
+        role = discord.utils.get(guild.roles, id=739391329779581008) #muted role
+        cadet = discord.utils.get(guild.roles, id=739299507799326843) #cadet role
 
         try: #basically if the user id is in the muted.json this executes
             with open(r'/root/tabuu bot/json/muted.json', 'r') as f:
@@ -85,7 +85,7 @@ class Events(commands.Cog):
         if len(before.roles) < len(after.roles):
             newRole = next(role for role in after.roles if role not in before.roles) #gets the new role
 
-            if newRole.name == "「Grounds Funders」": #checks if its the booster role, specific name needs changing when the role name changes
+            if newRole.id == 739344833738571868: #checks if its the booster role
                 await channel.send(f"{after.mention} has boosted the server!🥳🎉")
 
 
@@ -93,7 +93,7 @@ class Events(commands.Cog):
             color_roles = (774290821842862120, 774290823340359721, 774290825927458816, 774290826896605184, 774290829128105984, 774290831271002164, 794726232616206378, 794726234231013437, 794726235518795797)
             oldRole = next(role for role in before.roles if role not in after.roles) #gets the removed role
 
-            if oldRole.name == "「Grounds Funders」": #if its the booster role, all of the above color roles will get removed
+            if oldRole.id == 739344833738571868: #if its the booster role, all of the above color roles will get removed
                 for role in color_roles:
                     try:
                         removerole = get(after.guild.roles, id=role)

@@ -26,7 +26,7 @@ class Matchmaking(commands.Cog):
         guild = self.bot.get_guild(739299507795132486) #ssbutg server
         timestamp = time.strftime("%H:%M") #timestamp for storing, simplified to only hours/mins
 
-        singles_role = discord.utils.get(guild.roles, name="Singles")
+        singles_role = discord.utils.get(guild.roles, id=739299507799326842)
         if ctx.message.channel.id in arena_channels: #code for the public arenas
             with open(r'/root/tabuu bot/json/singles.json', 'r') as f:
                 singles = json.load(f)
@@ -130,7 +130,7 @@ class Matchmaking(commands.Cog):
         guild = self.bot.get_guild(739299507795132486)
         timestamp = time.strftime("%H:%M")
 
-        doubles_role = discord.utils.get(guild.roles, name="Doubles")
+        doubles_role = discord.utils.get(guild.roles, id=739299507799326841)
         if ctx.message.channel.id in arena_channels:
             with open(r'/root/tabuu bot/json/doubles.json', 'r') as f:
                 doubles = json.load(f)
@@ -233,7 +233,7 @@ class Matchmaking(commands.Cog):
         guild = self.bot.get_guild(739299507795132486)
         timestamp = time.strftime("%H:%M")
 
-        funnies_role = discord.utils.get(guild.roles, name="Funnies")
+        funnies_role = discord.utils.get(guild.roles, id=739299507795132495)
         if ctx.message.channel.id in arena_channels:
             with open(r'/root/tabuu bot/json/funnies.json', 'r') as f:
                 funnies = json.load(f)

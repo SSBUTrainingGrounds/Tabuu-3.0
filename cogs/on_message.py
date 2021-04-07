@@ -38,8 +38,8 @@ class On_message(commands.Cog):
         excluded = string.ascii_letters+string.digits #add/remove these depending on strictness, do +'/'+'-' and so on for urls in the future maybe
 
         guild = self.bot.get_guild(739299507795132486) #our guild
-        mod_role = discord.utils.get(guild.roles, name="「Grounds Warrior」") #mod role, and promoter role
-        promoter_role = discord.utils.get(guild.roles, name="Promoter")
+        mod_role = discord.utils.get(guild.roles, id=739299507816366106) #mod role, and promoter role
+        promoter_role = discord.utils.get(guild.roles, id=739299507799326847)
         allowed_channels = (739299509670248502, 739299508902559811, 739299508403437623, 739299508197917060, 739299509670248505) #excepted channels
         if "discord.gg" in message.content or "discordapp.com/invite" in message.content: #ugly 4-nested if statements, havent found a more elegant way
             if mod_role not in message.author.roles: #also the above are the 2-most common invite links and are only used for invites, shouldnt get any false positives
@@ -107,7 +107,7 @@ class On_message(commands.Cog):
                     await message.author.kick(reason=f"Automatic kick for reaching {warns} warnings")
                     await message.channel.send(f"{message.author.mention} has reached warning #{warns}. They have been automatically kicked.")
                 if warns > 2 and warns < 5: #auto mute if a user reaches 3 warns, stops at 5 so you dont get dumb errors
-                    role = discord.utils.get(server.roles, name="Muted") #specific names for the roles, if the role name gets changed,
+                    role = discord.utils.get(server.roles, id=739391329779581008) #muted role
                     await message.author.add_roles(role)
                     with open (r'/root/tabuu bot/json/muted.json', 'r') as fp:
                         muted_users = json.load(fp)

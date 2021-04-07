@@ -21,7 +21,7 @@ class Mute(commands.Cog):
     @commands.command()
     @commands.has_permissions(administrator=True) #checking permissions
     async def mute(self, ctx, member:discord.Member, *, args):
-        role = discord.utils.get(ctx.guild.roles, name="Muted") #specific name for the role, needs changing when the role name changes
+        role = discord.utils.get(ctx.guild.roles, id=739391329779581008) #muted role
         reason = ''.join(args)
         with open (r'/root/tabuu bot/json/muted.json', 'r') as f:
             muted_users = json.load(f)
@@ -40,7 +40,7 @@ class Mute(commands.Cog):
     @commands.command()
     @commands.has_permissions(administrator=True) #checking permissions
     async def unmute(self, ctx, member:discord.Member): #just the reverse mute command
-        role = discord.utils.get(ctx.guild.roles, name="Muted") #specific name for the role, needs changing when the role name changes
+        role = discord.utils.get(ctx.guild.roles, id=739391329779581008) #muted role
         with open(r'/root/tabuu bot/json/muted.json', 'r') as f:
             muted_users = json.load(f)
 
@@ -92,7 +92,7 @@ class Mute(commands.Cog):
             await ctx.send("Invalid time format! Maximum value is 1 day.")
             return
   
-        role = discord.utils.get(ctx.guild.roles, name="Muted")
+        role = discord.utils.get(ctx.guild.roles, id=739391329779581008)
         with open (r'/root/tabuu bot/json/muted.json', 'r') as f:
             muted_users = json.load(f)
         await self.add_mute(muted_users, member)

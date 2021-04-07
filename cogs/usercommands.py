@@ -84,7 +84,7 @@ class Usercommands(commands.Cog):
         if str(ctx.channel.type) == 'private': #only works in dm's
             guild = self.bot.get_guild(739299507795132486) #ssbu tg server
             modmail_channel = self.bot.get_channel(806860630073409567) #modmail channel
-            mod_role = discord.utils.get(guild.roles, name="「Grounds Warrior」")
+            mod_role = discord.utils.get(guild.roles, id=739299507816366106)
             await modmail_channel.send(f"**✉️ New Modmail {mod_role.mention}! ✉️**\nFrom: {ctx.author} \nMessage:\n{args}")
             await ctx.send("Your message has been sent to the Moderator Team. They will get back to you shortly.")
 
