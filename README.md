@@ -10,7 +10,7 @@ Features include:
 - Custom warning and muting system
 - Custom matchmaking system for Smash Ultimate
 - Badword and invite link filtering
-- Modmail system
+- Basic modmail system
 - Autorole with membership screening and on joining VC
 - Bypasses the need for Mee6 Premium, assigns Roles based on Level
 - Lots of useful general user commands
