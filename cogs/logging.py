@@ -104,6 +104,9 @@ class Logging(commands.Cog):
 
         if after.author.bot: #also dont care about bot message edits
             return
+
+        if before.content == after.content:
+            return
         
         embed = discord.Embed(title=f"**✍️ Edited Message in {after.channel.name}! ✍️**", description=f"**New Content:**\n{after.content}", colour=discord.Colour.orange())
         embed.set_author(name=f"{str(after.author)} ({after.author.id})", icon_url=after.author.avatar_url)
