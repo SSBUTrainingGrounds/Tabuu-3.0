@@ -5,7 +5,7 @@ from discord.utils import get
 from math import ceil
 
 #
-#this file here gets the mee6 level and assigns the matching role, WIP
+#this file here gets the mee6 level and assigns the matching role
 #
 
 mee6API = API(739299507795132486) #ssbutg leaderboard
@@ -119,7 +119,6 @@ class Mee6api(commands.Cog):
                             member = [guildMember for guildMember in guild.members if guildMember.id == int(user["id"])]
                             await member[0].add_roles(level25)
                             await member[0].remove_roles(defaultrole)
-                        if level10 in [roleId for roleId in [guildMember.roles for guildMember in guild.members if guildMember.id == int(user["id"])]]:
                             await member[0].remove_roles(level10)
                         
                     elif user["level"] > 49 and user["level"] < 75:
@@ -127,8 +126,6 @@ class Mee6api(commands.Cog):
                             member = [guildMember for guildMember in guild.members if guildMember.id == int(user["id"])]
                             await member[0].add_roles(level50)
                             await member[0].remove_roles(defaultrole)
-                        if level25 in [roleId for roleId in [guildMember.roles for guildMember in guild.members if guildMember.id == int(user["id"])]]:
-                            member = [guildMember for guildMember in guild.members if guildMember.id == int(user["id"])]
                             await member[0].remove_roles(level25)
                     
                     elif user["level"] > 74:
@@ -136,8 +133,6 @@ class Mee6api(commands.Cog):
                             member = [guildMember for guildMember in guild.members if guildMember.id == int(user["id"])]
                             await member[0].add_roles(level75)
                             await member[0].remove_roles(defaultrole)
-                        if level50 in [roleId for roleId in [guildMember.roles for guildMember in guild.members if guildMember.id == int(user["id"])]]:
-                            member = [guildMember for guildMember in guild.members if guildMember.id == int(user["id"])]
                             await member[0].remove_roles(level50)
         
         print("level roles updated!")
