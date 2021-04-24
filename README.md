@@ -6,9 +6,9 @@ Lots of hardcoded values and no setup command because this bot is only intended 
 Join us at discord.gg/ssbutg
 
 Features include:
+- Custom matchmaking system for Smash Ultimate, ranked and unranked
 - General purpose moderation commands
 - Custom warning and muting system
-- Custom matchmaking system for Smash Ultimate
 - Badword and invite link filtering
 - Basic modmail system
 - Logging system
