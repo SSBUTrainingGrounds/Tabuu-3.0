@@ -17,7 +17,7 @@ class Ranking(commands.Cog):
     @commands.guild_only()
     async def rankedmm(self, ctx):
         #this is a basic mm command, just pings the role and checks the channel. also has a cooldown
-        allowed_channels = (835582101926969344, 835582155446681620)
+        allowed_channels = (835582101926969344, 835582155446681620, 836018137119850557, 836018172238495744, 836018255113748510)
         if ctx.channel.id not in allowed_channels:
             await ctx.send("Please only use this command in the ranked matchmaking arenas.")
             return
@@ -51,7 +51,7 @@ class Ranking(commands.Cog):
     async def reportmatch(self, ctx, user: discord.Member):
         #the winning person should use this command to report a match
 
-        allowed_channels = (835582101926969344, 835582155446681620)
+        allowed_channels = (835582101926969344, 835582155446681620, 836018137119850557, 836018172238495744, 836018255113748510)
         if ctx.channel.id not in allowed_channels:
             await ctx.send("Please only use this command in the ranked matchmaking arenas.")
             return
