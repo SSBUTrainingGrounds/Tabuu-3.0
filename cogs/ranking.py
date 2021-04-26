@@ -120,7 +120,7 @@ class Ranking(commands.Cog):
             json.dump(ranking, f, indent=4)
 
         async def updaterankroles(user): #checks the elo of the user, and assigns the elo role based on that
-            elo = ranking[f'{ctx.author.id}']['elo']
+            elo = ranking[f'{user.id}']['elo']
             elo800role = discord.utils.get(ctx.guild.roles, id=835559992965988373)
             elo950role = discord.utils.get(ctx.guild.roles, id=835559996221554728)
             elo1050role = discord.utils.get(ctx.guild.roles, id=835560000658341888)
@@ -228,7 +228,7 @@ class Ranking(commands.Cog):
 
 
         async def updaterankroles(user):
-            elo = ranking[f'{ctx.author.id}']['elo']
+            elo = ranking[f'{user.id}']['elo']
             elo800role = discord.utils.get(ctx.guild.roles, id=835559992965988373)
             elo950role = discord.utils.get(ctx.guild.roles, id=835559996221554728)
             elo1050role = discord.utils.get(ctx.guild.roles, id=835560000658341888)
