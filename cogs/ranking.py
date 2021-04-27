@@ -20,6 +20,7 @@ class Ranking(commands.Cog):
         allowed_channels = (835582101926969344, 835582155446681620, 836018137119850557, 836018172238495744, 836018255113748510)
         if ctx.channel.id not in allowed_channels:
             await ctx.send("Please only use this command in the ranked matchmaking arenas.")
+            ctx.command.reset_cooldown(ctx)
             return
         
         with open(r'/root/tabuu bot/json/ranking.json', 'r') as f:
@@ -54,6 +55,7 @@ class Ranking(commands.Cog):
         allowed_channels = (835582101926969344, 835582155446681620, 836018137119850557, 836018172238495744, 836018255113748510)
         if ctx.channel.id not in allowed_channels:
             await ctx.send("Please only use this command in the ranked matchmaking arenas.")
+            ctx.command.reset_cooldown(ctx)
             return
 
         if user is ctx.author: #to prevent any kind of abuse
