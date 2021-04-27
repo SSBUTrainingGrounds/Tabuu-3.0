@@ -45,7 +45,7 @@ class Ranking(commands.Cog):
         await ctx.send(f"{ctx.author.mention} is looking for ranked matchmaking games! {pingrole.mention}")
 
 
-    @commands.command(aliases=['reportgame'])
+    @commands.command(aliases=['reportgame'], cooldown_after_parsing=True)
     @commands.cooldown(1, 41, commands.BucketType.user) #1 use, 41s cooldown, per user
     @commands.guild_only() #cant be used in dms
     async def reportmatch(self, ctx, user: discord.Member):
@@ -58,10 +58,12 @@ class Ranking(commands.Cog):
 
         if user is ctx.author: #to prevent any kind of abuse
             await ctx.send("Don't report matches with yourself please.")
+            ctx.command.reset_cooldown(ctx)
             return
         
         if user.bot: #same here
             await ctx.send("Are you trying to play a match with bots?")
+            ctx.command.reset_cooldown(ctx)
             return
 
 
@@ -167,7 +169,7 @@ class Ranking(commands.Cog):
         await ctx.send(f"Game successfully reported!\n{ctx.author.mention} won!\nUpdated Elo score: {ctx.author.mention} = {winnerupdate} | {user.mention} = {loserupdate}")
 
 
-    @commands.command(aliases=['forcereportgame'])
+    @commands.command(aliases=['forcereportgame'], cooldown_after_parsing=True)
     @commands.has_permissions(administrator=True)
     @commands.cooldown(1, 41, commands.BucketType.user) #1 use, 41s cooldown, per user
     async def forcereportmatch(self, ctx, user1: discord.Member, user2: discord.Member):
