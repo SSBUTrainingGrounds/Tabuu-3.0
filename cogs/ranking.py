@@ -46,7 +46,7 @@ class Ranking(commands.Cog):
 
 
     @commands.command(aliases=['reportgame'])
-    @commands.cooldown(1, 120, commands.BucketType.user) #1 use, 2m cooldown, per user
+    @commands.cooldown(1, 41, commands.BucketType.user) #1 use, 41s cooldown, per user
     @commands.guild_only() #cant be used in dms
     async def reportmatch(self, ctx, user: discord.Member):
         #the winning person should use this command to report a match
@@ -66,11 +66,11 @@ class Ranking(commands.Cog):
 
 
         def check(message):
-            return message.content.lower() == "y" and message.author == user
+            return message.content.lower() == "y" and message.author == user and message.channel == ctx.channel
 
         await ctx.send(f"The winner of the match {ctx.author.mention} vs. {user.mention} is: {ctx.author.mention}! \n{user.mention} do you agree with the results? **Type y to verify.**")
         try:
-            await self.bot.wait_for("message", timeout=60.0, check=check)
+            await self.bot.wait_for("message", timeout=40.0, check=check)
         except asyncio.TimeoutError:
             await ctx.send("You took too long to respond! Please try reporting the match again.")
             return
@@ -169,16 +169,17 @@ class Ranking(commands.Cog):
 
     @commands.command(aliases=['forcereportgame'])
     @commands.has_permissions(administrator=True)
+    @commands.cooldown(1, 41, commands.BucketType.user) #1 use, 41s cooldown, per user
     async def forcereportmatch(self, ctx, user1: discord.Member, user2: discord.Member):
         #if someone abandons the game, a mod can step in and report that game for them
         #most of this command is just copied from the one above, with a few tweaks
 
         def check(message):
-            return message.content.lower() == "y" and message.author == ctx.author
+            return message.content.lower() == "y" and message.author == ctx.author and message.channel == ctx.channel
 
         await ctx.send(f"The winner of the match {user1.mention} vs. {user2.mention} is: {user1.mention}! \n{ctx.author.mention}, is that result correct? **Type y to verify.**")
         try:
-            await self.bot.wait_for("message", timeout=60.0, check=check)
+            await self.bot.wait_for("message", timeout=40.0, check=check)
         except asyncio.TimeoutError:
             await ctx.send("You took too long to respond! Please try reporting the match again.")
             return
@@ -321,6 +322,8 @@ class Ranking(commands.Cog):
             await ctx.send("Please mention the 2 members that have played in this match. First mention the winner, second mention the loser.")
         if isinstance(error, commands.MemberNotFound):
             await ctx.send("Please mention the 2 members that have played in this match. First mention the winner, second mention the loser.")
+        if isinstance(error, commands.CommandOnCooldown):
+            await ctx.send(f"You are on cooldown! Try again in {round(error.retry_after)} seconds.")
         raise error
 
     @rankstats.error
