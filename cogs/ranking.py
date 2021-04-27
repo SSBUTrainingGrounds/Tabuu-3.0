@@ -111,6 +111,9 @@ class Ranking(commands.Cog):
         winnerupdate = round(elo(ranking[f'{ctx.author.id}']['elo'], winnerexpected, 1)) #1 is a win, 0 is a loss. 0.5 would be a draw but there are no draws here
         loserupdate = round(elo(ranking[f'{user.id}']['elo'], loserexpected, 0))
 
+        winnerdiff = winnerupdate - ranking[f'{ctx.author.id}']['elo']
+        loserdiff = ranking[f'{user.id}']['elo'] - loserupdate
+
         ranking[f'{ctx.author.id}']['wins'] += 1 #updating their win/lose count
         ranking[f'{user.id}']['losses'] += 1
 
@@ -168,7 +171,7 @@ class Ranking(commands.Cog):
 
 
 
-        await ctx.send(f"Game successfully reported!\n{ctx.author.mention} won!\nUpdated Elo score: {ctx.author.mention} = {winnerupdate} | {user.mention} = {loserupdate}")
+        await ctx.send(f"Game successfully reported!\n{ctx.author.mention} won!\nUpdated Elo score: {ctx.author.mention} = {winnerupdate} (+{winnerdiff}) | {user.mention} = {loserupdate} (-{loserdiff})")
 
 
     @commands.command(aliases=['forcereportgame'], cooldown_after_parsing=True)
@@ -218,6 +221,9 @@ class Ranking(commands.Cog):
 
         winnerupdate = round(elo(ranking[f'{user1.id}']['elo'], winnerexpected, 1)) #1 is a win, 0 is a loss. 0.5 would be a draw but there are no draws here
         loserupdate = round(elo(ranking[f'{user2.id}']['elo'], loserexpected, 0))
+
+        winnerdiff = winnerupdate - ranking[f'{user1.id}']['elo']
+        loserdiff = ranking[f'{user2.id}']['elo'] - loserupdate
 
         ranking[f'{user1.id}']['wins'] += 1 #updating their win/lose count
         ranking[f'{user2.id}']['losses'] += 1
@@ -275,7 +281,7 @@ class Ranking(commands.Cog):
             elo = ranking[f'{user2.id}']['elo']
             await updaterankroles(user2) 
 
-        await ctx.send(f"Game successfully reported!\n{user1.mention} won!\nUpdated Elo score: {user1.mention} = {winnerupdate} | {user2.mention} = {loserupdate}\nGame was forcefully reported by: {ctx.author.mention}")
+        await ctx.send(f"Game successfully reported!\n{user1.mention} won!\nUpdated Elo score: {user1.mention} = {winnerupdate} (+{winnerdiff}) | {user2.mention} = {loserupdate} (-{loserdiff})\nGame was forcefully reported by: {ctx.author.mention}")
 
 
 
