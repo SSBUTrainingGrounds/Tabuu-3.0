@@ -287,8 +287,10 @@ class Ranking(commands.Cog):
 
     @commands.command(aliases=['rankedstats'])
     async def rankstats(self, ctx, member: discord.Member = None):
+        selfcheck = False
         if member is None:
             member = ctx.author
+            selfcheck = True
         
         with open(r'/root/tabuu bot/json/ranking.json', 'r') as f:
             ranking = json.load(f)
@@ -305,8 +307,47 @@ class Ranking(commands.Cog):
         embed.add_field(name="Wins", value=wins, inline=True)
         embed.add_field(name="Losses", value=losses, inline=True)
         embed.add_field(name="Last Matches", value=gamelist, inline=True)
+        embed.set_footer(text="React within 120s to turn ranked notifications on or off until the next match" if selfcheck is True else "")
 
-        await ctx.send(embed=embed)
+        embed_message = await ctx.send(embed=embed)
+
+        if selfcheck is True: #if you invoked your command yourself, this here executes, with the choice of removing or adding your ranked role
+            await embed_message.add_reaction("🔔")
+            await embed_message.add_reaction("🔕")
+
+            def reaction_check(reaction, member):
+                return member.id == ctx.author.id and reaction.message.id == embed_message.id and str(reaction.emoji) in ["🔔", "🔕"]
+            
+            try:
+                reaction, member = await self.bot.wait_for("reaction_add", timeout=120.0, check=reaction_check)
+            except asyncio.TimeoutError:
+                return
+            else:
+                if str(reaction.emoji) == "🔔":
+                    elo = ranking[f'{ctx.author.id}']['elo'] #gets your elo score and the according value
+                    if elo < 800:
+                        pingrole = discord.utils.get(ctx.guild.roles, id=835559992965988373)
+                    if elo < 950 and elo > 799:
+                        pingrole = discord.utils.get(ctx.guild.roles, id=835559996221554728)
+                    if elo < 1050 and elo > 949:
+                        pingrole = discord.utils.get(ctx.guild.roles, id=835560000658341888)
+                    if elo < 1200 and elo > 1049:
+                        pingrole = discord.utils.get(ctx.guild.roles, id=835560003556999199)
+                    if elo < 1300 and elo > 1199:
+                        pingrole = discord.utils.get(ctx.guild.roles, id=835560006907985930)
+                    if elo > 1299:
+                        pingrole = discord.utils.get(ctx.guild.roles, id=835560009810444328)
+                    await ctx.author.add_roles(pingrole)
+                elif str(reaction.emoji) == "🔕":
+                    elo800role = discord.utils.get(ctx.guild.roles, id=835559992965988373)
+                    elo950role = discord.utils.get(ctx.guild.roles, id=835559996221554728)
+                    elo1050role = discord.utils.get(ctx.guild.roles, id=835560000658341888)
+                    elo1200role = discord.utils.get(ctx.guild.roles, id=835560003556999199)
+                    elo1300role = discord.utils.get(ctx.guild.roles, id=835560006907985930)
+                    elomaxrole = discord.utils.get(ctx.guild.roles, id=835560009810444328)
+                    await ctx.author.remove_roles(elo800role, elo950role, elo1050role, elo1200role, elo1300role, elomaxrole)
+                else:
+                    pass
 
 
 
