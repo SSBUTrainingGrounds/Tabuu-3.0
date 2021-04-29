@@ -424,7 +424,7 @@ class Ranking(commands.Cog):
     @rankedmm.error
     async def rankedmm_error(self, ctx, error):
         if isinstance(error, commands.CommandOnCooldown):
-            allowed_channels = (835279491521708042, 835279531136253973)
+            allowed_channels = (835582101926969344, 835582155446681620, 836018137119850557, 836018172238495744, 836018255113748510)
             if ctx.channel.id not in allowed_channels:
                 await ctx.send("Please only use this command in the ranked matchmaking arenas.")
                 return
