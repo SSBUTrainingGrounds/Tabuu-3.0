@@ -414,14 +414,39 @@ class Matchmaking(commands.Cog):
             embed = discord.Embed(title="Funnies pings in the last 30 Minutes:", description=searches, colour=discord.Colour.green())
             await ctx.send(embed=embed)
             return
+        elif mm_type.lower() == "ranked":
+            with open(r'/root/tabuu bot/json/rankedpings.json', 'r') as f:
+                rankedusers = json.load(f)
+            
+            list_of_searches = [] #list for later
+
+            for ranked_mm in rankedusers: #gets every active mm request
+                rankrole = rankedusers[f'{ranked_mm}']['rank']
+                channel_mm = rankedusers[f'{ranked_mm}']['channel']
+                timecode = rankedusers[f'{ranked_mm}']['time']
+                old_ping = datetime.strptime(timecode, "%H:%M") #this block gets the time difference in minutes
+                new_ping = datetime.strptime(timestamp, "%H:%M")
+                timedelta = new_ping - old_ping
+                seconds = timedelta.total_seconds()
+                minutes = round(seconds/60)
+                if minutes < -1000: #band aid fix, im only storing the hours/minutes so if a ping from before midnight gets called after, the negative of that number appears
+                    minutes = minutes + 1440 #we can fix that by just adding a whole day which is 1440 mins
+                list_of_searches.append(f"<@&{rankrole}> | <@!{ranked_mm}>, in <#{channel_mm}>, {minutes} minutes ago\n")
+            list_of_searches.reverse()
+            searches = ''.join(list_of_searches) #stores the requests in a string, not a list
+            if len(searches) == 0:
+                searches = "Looks like no one has pinged recently :("
+            embed = discord.Embed(title="Ranked pings in the last 30 Minutes:", description=searches, colour=discord.Colour.blue())
+            await ctx.send(embed=embed)
+            return
         else:
-            await ctx.send("Invalid input! Please choose either singles, doubles or funnies.")
+            await ctx.send("Invalid input! Please choose either singles, doubles, funnies or ranked.")
             pass
 
     @recentpings.error
     async def recentpings_error(self, ctx, error):
         if isinstance(error, commands.MissingRequiredArgument):
-            await ctx.send("Invalid input! Please choose either singles, doubles or funnies.")
+            await ctx.send("Invalid input! Please choose either singles, doubles, funnies or ranked.")
         raise error
 
 
@@ -483,6 +508,24 @@ class Matchmaking(commands.Cog):
             json.dump(funnies, f, indent=4)
 
         print("funnies file cleared!")
+
+        #deleting ranked file
+
+        with open(r'/root/tabuu bot/json/rankedpings.json', 'r') as f:
+            ranked = json.load(f)
+        
+        ranked_requests = []
+        
+        for user in ranked:
+            ranked_requests.append(user)
+        
+        for user in ranked_requests:
+            del ranked[user]
+        
+        with open(r'/root/tabuu bot/json/rankedpings.json', 'w') as f:
+            json.dump(ranked, f, indent=4)
+
+        print("ranked file cleared!")
 
 
 def setup(bot):

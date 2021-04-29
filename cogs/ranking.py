@@ -2,6 +2,8 @@ import discord
 from discord.ext import commands, tasks
 import json
 import asyncio
+import time
+from datetime import datetime, timedelta
 
 #
 #this file will contain our ranking system
@@ -22,6 +24,8 @@ class Ranking(commands.Cog):
             await ctx.send("Please only use this command in the ranked matchmaking arenas.")
             ctx.command.reset_cooldown(ctx)
             return
+
+        timestamp = time.strftime("%H:%M") #timestamp for storing, simplified to only hours/mins
         
         with open(r'/root/tabuu bot/json/ranking.json', 'r') as f:
             ranking = json.load(f)
@@ -43,7 +47,41 @@ class Ranking(commands.Cog):
         except:
             pingrole = discord.utils.get(ctx.guild.roles, id=835560000658341888) #default elo role, in case someone isnt in the database
         
-        await ctx.send(f"{ctx.author.mention} is looking for ranked matchmaking games! {pingrole.mention}")
+        with open(r'/root/tabuu bot/json/rankedpings.json', 'r') as fp:
+            rankedusers = json.load(fp)
+        
+            ranked_mm = ctx.message.author
+            channel = ctx.message.channel.id
+            rankedusers[f'{ranked_mm.id}'] = {}
+            rankedusers[f'{ranked_mm.id}'] = {"rank": pingrole.id, "channel": channel, "time": timestamp} #storing the mm request
+            list_of_searches = [] #list for later
+
+            for ranked_mm in rankedusers: #gets every active mm request
+                rankrole = rankedusers[f'{ranked_mm}']['rank']
+                channel_mm = rankedusers[f'{ranked_mm}']['channel']
+                timecode = rankedusers[f'{ranked_mm}']['time']
+                old_ping = datetime.strptime(timecode, "%H:%M") #this block gets the time difference in minutes
+                new_ping = datetime.strptime(timestamp, "%H:%M")
+                timedelta = new_ping - old_ping
+                seconds = timedelta.total_seconds()
+                minutes = round(seconds/60)
+                if minutes < -1000: #band aid fix, im only storing the hours/minutes so if a ping from before midnight gets called after, the negative of that number appears
+                    minutes = minutes + 1440 #we can fix that by just adding a whole day which is 1440 mins
+                list_of_searches.append(f"<@&{rankrole}> | <@!{ranked_mm}>, in <#{channel_mm}>, {minutes} minutes ago\n")
+            list_of_searches.reverse()
+            searches = ''.join(list_of_searches) #stores the requests in a string, not a list
+            embed = discord.Embed(title="Ranked pings in the last 30 Minutes:", description=searches, colour=discord.Colour.blue())
+            await ctx.send(f"{ctx.author.mention} is looking for ranked matchmaking games! {pingrole.mention}", embed=embed)
+
+            with open(r'/root/tabuu bot/json/rankedpings.json', 'w') as fp:
+                json.dump(rankedusers, fp, indent=4) #writes it to the file
+
+            await asyncio.sleep(1800) #waits 30 mins, then deletes the request. if there are 2 requests the first one will get overwritten and on the second delete we will get a keyerror, which isnt a problem
+            with open(r'/root/tabuu bot/json/rankedpings.json', 'r') as fp:
+                rankedusers = json.load(fp)
+            del rankedusers[f'{ctx.message.author.id}']
+            with open(r'/root/tabuu bot/json/rankedpings.json', 'w') as fp:
+                json.dump(rankedusers, fp, indent=4)
 
 
     @commands.command(aliases=['reportgame'], cooldown_after_parsing=True)
