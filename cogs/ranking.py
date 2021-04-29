@@ -449,6 +449,8 @@ class Ranking(commands.Cog):
                 list_of_searches.append(f"<@&{rankrole}> | <@!{ranked_mm}>, in <#{channel_mm}>, {minutes} minutes ago\n")
             list_of_searches.reverse()
             searches = ''.join(list_of_searches) #stores the requests in a string, not a list
+            if len(searches) == 0:
+                searches = "Looks like no one has pinged recently :("
             embed = discord.Embed(title="Ranked pings in the last 30 Minutes:", description=searches, colour=discord.Colour.blue())
             await ctx.send(f"{ctx.author.mention}, you are on cooldown for another {round((error.retry_after)/60)} minutes to use this command. \nIn the meantime, here are the most recent ranked pings:", embed=embed)
         raise error
