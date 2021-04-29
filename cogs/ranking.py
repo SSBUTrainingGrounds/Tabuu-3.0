@@ -424,7 +424,33 @@ class Ranking(commands.Cog):
     @rankedmm.error
     async def rankedmm_error(self, ctx, error):
         if isinstance(error, commands.CommandOnCooldown):
-            await ctx.send(f"You are on cooldown! Try again in {round(error.retry_after)} seconds.")
+            allowed_channels = (835279491521708042, 835279531136253973)
+            if ctx.channel.id not in allowed_channels:
+                await ctx.send("Please only use this command in the ranked matchmaking arenas.")
+                return
+            
+            with open(r'/root/tabuu bot/json/rankedpings.json', 'r') as f:
+                rankedusers = json.load(f)
+
+            timestamp = time.strftime("%H:%M") #timestamp for storing, simplified to only hours/mins
+            list_of_searches = [] #list for later
+
+            for ranked_mm in rankedusers: #gets every active mm request
+                rankrole = rankedusers[f'{ranked_mm}']['rank']
+                channel_mm = rankedusers[f'{ranked_mm}']['channel']
+                timecode = rankedusers[f'{ranked_mm}']['time']
+                old_ping = datetime.strptime(timecode, "%H:%M") #this block gets the time difference in minutes
+                new_ping = datetime.strptime(timestamp, "%H:%M")
+                timedelta = new_ping - old_ping
+                seconds = timedelta.total_seconds()
+                minutes = round(seconds/60)
+                if minutes < -1000: #band aid fix, im only storing the hours/minutes so if a ping from before midnight gets called after, the negative of that number appears
+                    minutes = minutes + 1440 #we can fix that by just adding a whole day which is 1440 mins
+                list_of_searches.append(f"<@&{rankrole}> | <@!{ranked_mm}>, in <#{channel_mm}>, {minutes} minutes ago\n")
+            list_of_searches.reverse()
+            searches = ''.join(list_of_searches) #stores the requests in a string, not a list
+            embed = discord.Embed(title="Ranked pings in the last 30 Minutes:", description=searches, colour=discord.Colour.blue())
+            await ctx.send(f"{ctx.author.mention}, you are on cooldown for another {round((error.retry_after)/60)} minutes to use this command. \nIn the meantime, here are the most recent ranked pings:", embed=embed)
         raise error
 
 
