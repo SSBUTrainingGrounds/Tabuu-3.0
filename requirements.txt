@@ -1,4 +1,5 @@
-discord.py
-fuzzywuzzy
-mee6-py-api
-psutil
+psutil==5.8.0
+fuzzywuzzy==0.18.0
+mee6_py_api==0.0.1
+discord.py==1.7.0
+discord==1.0.1
