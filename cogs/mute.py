@@ -29,7 +29,7 @@ class Mute(commands.Cog):
         await self.add_mute(muted_users, member) #adds the mute to muted.json
         await ctx.send(f"{member.mention} was muted!")
         try:
-            await member.send(f"You have been muted in the SSBU Training Grounds Server for the following reason: \n```{reason}```\nIf you would like to discuss your punishment, please contact Tabuu#0720, Karma!#6636 or Maddy#1833")
+            await member.send(f"You have been muted in the SSBU Training Grounds Server for the following reason: \n```{reason}```\nIf you would like to discuss your punishment, please contact Tabuu#0720 or Maddy#1833")
         except:
             print("user has blocked me :(")
         
@@ -102,7 +102,7 @@ class Mute(commands.Cog):
 
         await ctx.send(f"{member.mention} has been muted for {time_muted}!") #now we need to change that back just for the message
         try:
-            await member.send(f"You have been muted in the SSBU Training Grounds Server for ***{time_muted}*** for the following reason: \n```{reason}``` \nIf you would like to discuss your punishment, please contact Tabuu#0720, Karma!#6636 or Maddy#1833")
+            await member.send(f"You have been muted in the SSBU Training Grounds Server for ***{time_muted}*** for the following reason: \n```{reason}``` \nIf you would like to discuss your punishment, please contact Tabuu#0720 or Maddy#1833")
         except:
             print("user has blocked me :(")
 
