@@ -388,6 +388,48 @@ class Ranking(commands.Cog):
                     pass
 
 
+    #leaderboards are admin only because we dont want people to obsess over rankings, these will stay hidden
+    @commands.command()
+    @commands.has_permissions(administrator=True)
+    @commands.guild_only()
+    async def leaderboard(self, ctx):
+        with open(r'/root/tabuu bot/json/ranking.json', 'r') as f:
+            ranking = json.load(f)
+
+        all_userinfo = []
+                
+        for user in ranking:
+            eloscore = ranking[f'{user}']['elo']
+            wins = ranking[f'{user}']['wins']
+            lose = ranking[f'{user}']['losses']
+            userinfo = (user, eloscore, wins, lose)
+            all_userinfo.append(userinfo)
+
+        all_userinfo.sort(key=lambda x:x[1]) #sorts them by their elo score
+        all_userinfo.reverse() #reverses that list, top to bottom
+        all_userinfo = all_userinfo[:10] #only gets top 10 entries
+
+        rawstats = []
+
+        rank = 1
+
+        for i in all_userinfo:
+            user = i[0]
+            elo = i[1]
+            wins = i[2]
+            lose = i[3]
+            rawstats.append(f"{rank} | <@!{user}> | {elo} | {wins}/{lose}\n")
+            rank += 1
+
+        embedstats = ''.join(rawstats) #needed for a neat embed
+
+        embed = discord.Embed(title="Top 10 Players of SSBU TG Ranked Matchmaking", description=f"**Rank | Username | Elo score | W/L**\n{embedstats}", colour=discord.Colour.blue())
+        embed.set_thumbnail(url=ctx.guild.icon_url)
+        embed.timestamp = datetime.utcnow()
+        await ctx.send(embed=embed)
+
+
+
 
     #some basic error handling
     @reportmatch.error
@@ -453,6 +495,12 @@ class Ranking(commands.Cog):
                 searches = "Looks like no one has pinged recently :("
             embed = discord.Embed(title="Ranked pings in the last 30 Minutes:", description=searches, colour=discord.Colour.blue())
             await ctx.send(f"{ctx.author.mention}, you are on cooldown for another {round((error.retry_after)/60)} minutes to use this command. \nIn the meantime, here are the most recent ranked pings:", embed=embed)
+        raise error
+
+    @leaderboard.error
+    async def leaderboard_error(self, ctx, error):
+        if isinstance(error, commands.MissingPermissions):
+            await ctx.send("Nice try, but you don't have the permissions to do that!")
         raise error
 
 
