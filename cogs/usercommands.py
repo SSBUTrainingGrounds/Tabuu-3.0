@@ -313,6 +313,19 @@ class Usercommands(commands.Cog):
         await ctx.send(embed=embed)
 
 
+    @commands.command()
+    async def spotify(self, ctx, member:discord.Member = None):
+        if member is None:
+            member = ctx.author
+
+        listeningstatus = next((activity for activity in member.activities if isinstance(activity, discord.Spotify)), None)
+
+        if listeningstatus is None:
+            await ctx.send("This user is not listening to Spotify right now or their account is not connected.")
+        else:
+            await ctx.send(f"https://open.spotify.com/track/{listeningstatus.track_id}")
+
+
 
     #our streamers use these shortcuts to promote their streams
     @commands.command()
