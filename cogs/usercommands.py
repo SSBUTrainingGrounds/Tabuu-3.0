@@ -440,6 +440,11 @@ class Usercommands(commands.Cog):
             await ctx.send("I couldn't find information on this emoji!")
         raise error
 
+    @spotify.error
+    async def spotify_error(self, ctx, error):
+        if isinstance(error, commands.MemberNotFound):
+            await ctx.send("You need to mention a member, or just leave it blank.")
+        raise error
 
 
 
