@@ -11,6 +11,7 @@ Features include:
 - Custom warning and muting system
 - Badword and invite link filtering
 - Basic modmail system
+- Reaction-based role menus
 - Logging system
 - Autorole with membership screening and on joining VC
 - Bypasses the need for Mee6 Premium, assigns Roles based on Level
