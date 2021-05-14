@@ -3,7 +3,7 @@ from discord.ext import commands, tasks
 import json
 
 #
-#this file here will maybe contain the role menus
+#this file here contains the role menus and the listeners to add the roles
 #
 
 class Rolemenu(commands.Cog):
@@ -135,7 +135,7 @@ class Rolemenu(commands.Cog):
         raise error
     
     @geteveryrolemenu.error
-    async def geteeveryrolemenu_error(self, ctx, error):
+    async def geteveryrolemenu_error(self, ctx, error):
         if isinstance(error, commands.MissingPermissions):
             await ctx.send("Nice try, but you don't have the permissions to do that!")
         raise error
