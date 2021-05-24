@@ -109,31 +109,35 @@ class Mee6api(commands.Cog):
                 if int(user["id"]) in [guildMember.id for guildMember in guild.members]: #checks if the user is still in the guild
         
                     if user["level"] > 9 and user["level"] < 25:
-                        if level10 not in [roleId for roleId in [guildMember.roles for guildMember in guild.members if guildMember.id == int(user["id"])]]:
-                            member = [guildMember for guildMember in guild.members if guildMember.id == int(user["id"])]
-                            await member[0].add_roles(level10)
-                            await member[0].remove_roles(defaultrole)
+                        user1 = await self.bot.fetch_user(user['id']) #no idea why i have to fetch the user first and then get the member second but it won't work otherwise
+                        user2 = guild.get_member(user1.id) #also this step could take some time depending on the size of the guild
+                        if level10 not in user2.roles:
+                            await user2.add_roles(level10)
+                            await user2.remove_roles(defaultrole)
                     
                     elif user["level"] > 24 and user["level"] < 50:
-                        if level25 not in [roleId for roleId in [guildMember.roles for guildMember in guild.members if guildMember.id == int(user["id"])]]:
-                            member = [guildMember for guildMember in guild.members if guildMember.id == int(user["id"])]
-                            await member[0].add_roles(level25)
-                            await member[0].remove_roles(defaultrole)
-                            await member[0].remove_roles(level10)
+                        user1 = await self.bot.fetch_user(user['id']) #same here, i put this in the user level checks so it doesnt fetch everyone
+                        user2 = guild.get_member(user1.id)
+                        if level25 not in user2.roles:
+                            await user2.add_roles(level25)
+                            await user2.remove_roles(defaultrole)
+                            await user2.remove_roles(level10)
                         
                     elif user["level"] > 49 and user["level"] < 75:
-                        if level50 not in [roleId for roleId in [guildMember.roles for guildMember in guild.members if guildMember.id == int(user["id"])]]:
-                            member = [guildMember for guildMember in guild.members if guildMember.id == int(user["id"])]
-                            await member[0].add_roles(level50)
-                            await member[0].remove_roles(defaultrole)
-                            await member[0].remove_roles(level25)
+                        user1 = await self.bot.fetch_user(user['id'])
+                        user2 = guild.get_member(user1.id)
+                        if level50 not in user2.roles:
+                            await user2.add_roles(level50)
+                            await user2.remove_roles(defaultrole)
+                            await user2.remove_roles(level25)
                     
                     elif user["level"] > 74:
-                        if level75 not in [roleId for roleId in [guildMember.roles for guildMember in guild.members if guildMember.id == int(user["id"])]]:
-                            member = [guildMember for guildMember in guild.members if guildMember.id == int(user["id"])]
-                            await member[0].add_roles(level75)
-                            await member[0].remove_roles(defaultrole)
-                            await member[0].remove_roles(level50)
+                        user1 = await self.bot.fetch_user(user['id'])
+                        user2 = guild.get_member(user1.id)
+                        if level75 not in user2.roles:
+                            await user2.add_roles(level75)
+                            await user2.remove_roles(defaultrole)
+                            await user2.remove_roles(level50)
         
         print("level roles updated!")
 
