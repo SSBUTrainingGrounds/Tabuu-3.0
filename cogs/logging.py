@@ -107,6 +107,11 @@ class Logging(commands.Cog):
 
         if before.content == after.content:
             return
+
+        if len(after.content[2000:]) > 0: #discord released an update where they allow nitro users to send messages with up to 4000 chars in them, but an embed can only have 6000 chars in them
+            after.content = "Content is too large to fit in a single embed."
+        if len(before.content[2000:]) > 0: #so we need to add in a check to not get dumb errors. 2000 chars is still the limit for non-nitro users so it should be fine.
+            before.content = "Content is too large to fit in a single embed."
         
         embed = discord.Embed(title=f"**✍️ Edited Message in {after.channel.name}! ✍️**", description=f"**New Content:**\n{after.content}", colour=discord.Colour.orange())
         embed.set_author(name=f"{str(after.author)} ({after.author.id})", icon_url=after.author.avatar_url)
@@ -126,6 +131,9 @@ class Logging(commands.Cog):
         
         if message.author.bot:
             return
+
+        if len(message.content[2000:]) > 0: #same as above with the message length
+            message.content = "Content is too large to fit in a single embed."
         
         embed = discord.Embed(title=f"**❌ Deleted Message in {message.channel.name}! ❌**", description=f"**Content:**\n{message.content}", colour=discord.Colour.dark_red())
         embed.set_author(name=f"{str(message.author)} ({message.author.id})", icon_url=message.author.avatar_url)
@@ -138,6 +146,15 @@ class Logging(commands.Cog):
                     embed.add_field(name=f"Attachment ({i}/{len(message.attachments)})", value=x.url, inline=False)
                     i += 1
         embed.add_field(name="Message ID:", value=message.id)
+        embed.timestamp = datetime.datetime.utcnow()
+        logs = self.bot.get_channel(logchannel)
+        await logs.send(embed=embed)
+
+    #someone deletes a lot of messages
+    @commands.Cog.listener()
+    async def on_bulk_message_delete(self, messages):
+        embed = discord.Embed(title=f"**❌ Bulk message deletion in {messages[0].channel.name}! ❌**", description=f"{len(messages)} messages were deleted!", colour=discord.Colour.dark_red())
+        embed.set_author(name=f"{str(self.bot.user)} ({self.bot.user.id})", icon_url=self.bot.user.avatar_url)
         embed.timestamp = datetime.datetime.utcnow()
         logs = self.bot.get_channel(logchannel)
         await logs.send(embed=embed)
