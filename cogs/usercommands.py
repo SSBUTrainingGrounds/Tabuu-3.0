@@ -105,7 +105,7 @@ class Usercommands(commands.Cog):
         embed.add_field(name="Created on:", value=server.created_at.strftime("%A, %B %d %Y @ %H:%M:%S %p CET"), inline=True) #same as above
         embed.add_field(name="Owner:", value=server.owner.mention, inline=True)
         embed.add_field(name="Channels:", value=len(server.channels), inline=True)
-        embed.add_field(name="Members:", value=f"{sum(not member.bot for member in server.members)} (Bots: {sum(member.bot for member in server.members)})")
+        embed.add_field(name="Members:", value=f"{len(server.members)} (Bots: {sum(member.bot for member in server.members)})")
         embed.add_field(name="Emojis:", value=len(server.emojis))
         embed.add_field(name="Roles:", value=len(server.roles))
         embed.set_thumbnail(url=server.icon_url)
@@ -126,7 +126,7 @@ class Usercommands(commands.Cog):
         embed = discord.Embed(title=f"Userinfo of {member.name}#{member.discriminator}", color=member.top_role.color)
         embed.add_field(name="Name:", value=member.mention, inline=True)
         embed.add_field(name="ID:", value=member.id, inline=True)
-        embed.add_field(name="Number of Roles:", value=len(member.roles), inline=True) #gives the number of roles to prevent listing like 35 roles
+        embed.add_field(name="Number of Roles:", value=f"{(len(member.roles)-1)}", inline=True) #gives the number of roles to prevent listing like 35 roles, -1 for the @everyone role
         embed.add_field(name="Top Role:", value=member.top_role.mention, inline=True) #instead only gives out the important role
         embed.add_field(name="Joined Server on:", value=member.joined_at.strftime("%A, %B %d %Y @ %H:%M:%S %p CET"), inline=True) #the strftime and so on are for nice formatting
         embed.add_field(name="Joined Discord on:", value=member.created_at.strftime("%A, %B %d %Y @ %H:%M:%S %p CET"), inline=True) #would look ugly otherwise

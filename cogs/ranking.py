@@ -79,7 +79,10 @@ class Ranking(commands.Cog):
             await asyncio.sleep(1800) #waits 30 mins, then deletes the request. if there are 2 requests the first one will get overwritten and on the second delete we will get a keyerror, which isnt a problem
             with open(r'/root/tabuu bot/json/rankedpings.json', 'r') as fp:
                 rankedusers = json.load(fp)
-            del rankedusers[f'{ctx.message.author.id}']
+            try:
+                del rankedusers[f'{ctx.message.author.id}']
+            except:
+                print("tried to delete a ranked request but the deletion failed")
             with open(r'/root/tabuu bot/json/rankedpings.json', 'w') as fp:
                 json.dump(rankedusers, fp, indent=4)
 

@@ -58,7 +58,10 @@ class Matchmaking(commands.Cog):
             await asyncio.sleep(1800) #waits 30 mins, then deletes the request. if there are 2 requests the first one will get overwritten and on the second delete we will get a keyerror, which isnt a problem
             with open(r'/root/tabuu bot/json/singles.json', 'r') as f:
                 singles = json.load(f)
-            del singles[f'{ctx.message.author.id}']
+            try:
+                del singles[f'{ctx.message.author.id}']
+            except:
+                print("tried to delete a singles request but the deletion failed")
             with open(r'/root/tabuu bot/json/singles.json', 'w') as f:
                 json.dump(singles, f, indent=4)
             
@@ -164,7 +167,10 @@ class Matchmaking(commands.Cog):
             await asyncio.sleep(1800) #30 mins
             with open(r'/root/tabuu bot/json/doubles.json', 'r') as f:
                 doubles = json.load(f)
-            del doubles[f'{ctx.message.author.id}']
+            try:
+                del doubles[f'{ctx.message.author.id}']
+            except:
+                print("tried to delete a doubles request but the deletion failed")
             with open(r'/root/tabuu bot/json/doubles.json', 'w') as f:
                 json.dump(doubles, f, indent=4)
 
@@ -268,7 +274,10 @@ class Matchmaking(commands.Cog):
             await asyncio.sleep(1800) #30 mins
             with open(r'/root/tabuu bot/json/funnies.json', 'r') as f:
                 funnies = json.load(f)
-            del funnies[f'{ctx.message.author.id}']
+            try:
+                del funnies[f'{ctx.message.author.id}']
+            except:
+                print("tried to delete a funnies request but the deletion failed")
             with open(r'/root/tabuu bot/json/funnies.json', 'w') as f:
                 json.dump(funnies, f, indent=4)
 
