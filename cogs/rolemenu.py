@@ -87,6 +87,9 @@ class Rolemenu(commands.Cog):
     async def on_raw_reaction_add(self, payload):
         with open(r'/root/tabuu bot/json/reactrole.json', 'r') as f:
             data = json.load(f)
+
+        if not payload.guild_id: #reactions outside of the server would throw an error otherwise
+            return
         
         if payload.member.bot:
             return
