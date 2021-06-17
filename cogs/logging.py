@@ -140,7 +140,8 @@ class Logging(commands.Cog):
         if message.attachments: #if a message has an attachment with it, it also gets logged. i dont really care for that on the on message edit though
             if len(message.attachments) == 1: #for one attachment, this is enough
                 if message.attachments[0].url.endswith(('.jpg', '.png', '.jpeg', '.gif')): #if its an image it will be the embed image
-                    embed.set_image(url=message.attachments[0].url)
+                    new_url = message.attachments[0].url.replace('cdn.discordapp.com', 'media.discordapp.net') #trying this out to log images more consistently
+                    embed.set_image(url=new_url)
                 else: #else it will just log the url
                     embed.add_field(name="Attachment", value=message.attachments[0].url)
             else: #for multiple, putting it all into one embed value might result in too many characters, so this is needed. only mobile users can send multiple attachments anyway right now
