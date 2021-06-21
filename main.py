@@ -149,7 +149,7 @@ async def fun(ctx):
 ```%boo``` - Looking for a scare, huh?\n\
 ```%uwu``` - For the silly people.\n\
 ```%tabuwu``` - For the dumb people.\n\
-```%john``` - If you need a john\n\
+```%john``` - If you need a john.\n\
         ')
     await ctx.author.send(embed=embed)
     await ctx.message.add_reaction('👍')
