@@ -131,7 +131,7 @@ class Usercommands(commands.Cog):
         embed.add_field(name="Joined Server on:", value=member.joined_at.strftime("%A, %B %d %Y @ %H:%M:%S %p CET"), inline=True) #the strftime and so on are for nice formatting
         embed.add_field(name="Joined Discord on:", value=member.created_at.strftime("%A, %B %d %Y @ %H:%M:%S %p CET"), inline=True) #would look ugly otherwise
         embed.add_field(name="Online Status:", value=member.status, inline=True)
-        embed.add_field(name="Activity Status", value=activity, inline=True)
+        embed.add_field(name="Activity Status:", value=activity, inline=True)
         embed.set_thumbnail(url=member.avatar_url)
         await ctx.send(embed=embed)
 
@@ -176,7 +176,10 @@ class Usercommands(commands.Cog):
         if len(options) > 10:
             await ctx.send("You can only have 10 options at most!") #reaction emoji limit
             return
-        await ctx.message.delete()
+        try:
+            await ctx.message.delete()
+        except:
+            pass
 
         reactions = ['1️⃣','2️⃣','3️⃣','4️⃣','5️⃣','6️⃣','7️⃣','8️⃣','9️⃣','0️⃣'] #in order
         description = []
@@ -318,6 +321,10 @@ class Usercommands(commands.Cog):
         if member is None:
             member = ctx.author
 
+        if not ctx.guild:
+            await ctx.send("This command does not work in my DM channel.")
+            return
+
         listeningstatus = next((activity for activity in member.activities if isinstance(activity, discord.Spotify)), None)
 
         if listeningstatus is None:
@@ -433,7 +440,7 @@ class Usercommands(commands.Cog):
         raise error
 
     @emote.error
-    async def emote_errpr(self, ctx, error):
+    async def emote_error(self, ctx, error):
         if isinstance(error, commands.MissingRequiredArgument):
             await ctx.send("You need to specify an emoji!")
         if isinstance(error, commands.EmojiNotFound):

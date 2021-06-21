@@ -16,7 +16,6 @@ class Ranking(commands.Cog):
 
     @commands.command(aliases=['ranked', 'rankedmatchmaking', 'rankedsingles'])
     @commands.cooldown(1, 120, commands.BucketType.user)
-    @commands.guild_only()
     async def rankedmm(self, ctx):
         #this is a basic mm command, just pings the role and checks the channel. also has a cooldown
         allowed_channels = (835582101926969344, 835582155446681620, 836018137119850557, 836018172238495744, 836018255113748510)
