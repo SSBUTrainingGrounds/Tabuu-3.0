@@ -34,6 +34,9 @@ class On_message(commands.Cog):
         if message.author == self.bot.user: #dont want any recursive stuff to happen, so any messages from tabuu 3.0 wont get checked, just in case
             return
 
+        if not message.guild: #wont check dm's
+            return
+
         separators = ()#string.digits+string.whitespace+string.punctuation , add all these for very strict ruling, might end up with false positives
         excluded = string.ascii_letters+string.digits #add/remove these depending on strictness, do +'/'+'-' and so on for urls in the future maybe
 
@@ -69,7 +72,10 @@ class On_message(commands.Cog):
                 embed.add_field(name="ID", value=warn_id, inline=True)
                 embed.set_footer(text=f"{warndate} CET") 
                 await channel.send(embed=embed) #logs the message to the channel
-                await message.delete() #deletes the message, below is the warn command
+                try:
+                    await message.delete() #deletes the message, below is the warn command
+                except: #if another bot is also scanning for blacklisted words, it might delete the message first which would throw an error
+                    pass
                 with open(r'/root/tabuu bot/json/warns.json', 'r') as f: #path where my .json file is stored, r is for read
                     users = json.load(f) #loads .json file into memory
 
