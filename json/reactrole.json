@@ -1,5 +1,9 @@
 {
     "100000000000000000": [
+        {
+            "exclusive": true,
+            "rolereq": 100000000000000000
+        },
         [
             {
                 "emoji": "some emoji",
