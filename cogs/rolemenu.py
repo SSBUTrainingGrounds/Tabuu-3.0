@@ -104,8 +104,8 @@ class Rolemenu(commands.Cog):
             message.append(f"**{x}:**\nExclusive: {exclusive} | Role required: {rolereq}\n{sent_list}\n\n") #then combines the entry for every message
         all_messages = ''.join(message) #to put it in the embed in a nice format
 
-        if len(sent_list) == 0:
-            sent_list = "No entry found."
+        if len(all_messages) == 0:
+            all_messages = "No entry found."
 
         try:
             embed = discord.Embed(title="Every role menu saved", description=all_messages, colour=discord.Color.dark_blue())
