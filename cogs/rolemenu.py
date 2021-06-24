@@ -154,7 +154,7 @@ class Rolemenu(commands.Cog):
 
         if f'{payload.message_id}' in data.keys():
             entrys = data[f'{payload.message_id}']
-            for x in entrys:
+            for x in entrys[1:]:
                 if str(payload.emoji)[-20:] == x[0]['emoji'][-20:]: #the last 20 digits are the emoji ID, if it is custom. I have to do this because of animated emojis
                     role = discord.utils.get(self.bot.get_guild(payload.guild_id).roles, id=x[0]['role']) #and this event here doesnt recognise them properly. discord is stupid basically
                     await self.bot.get_guild(payload.guild_id).get_member(payload.user_id).remove_roles(role) #also i have to get the member like this because this event listener is bs
