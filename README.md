@@ -13,7 +13,7 @@ Features include:
 - Basic modmail system
 - Reaction-based role menus
 - Logging system
-- Autorole with membership screening and on joining VC
+- Autorole system
 - Bypasses the need for Mee6 Premium, assigns Roles based on Level
 - Lots of useful general user commands
 - Lots of not so useful general user commands
