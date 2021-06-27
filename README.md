@@ -18,4 +18,4 @@ Features include:
 - Lots of useful general user commands
 - Lots of not so useful general user commands
 
-The full list of commands with an explanation on how to use them can be found within the CommandList.md file.
+The full list of commands with an explanation on how to use them can be found within the [CommandList.md](https://github.com/sonnenbankpimp/Tabuu-3.0-Bot/blob/main/CommandList.md) file.
