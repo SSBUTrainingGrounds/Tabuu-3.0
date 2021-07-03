@@ -63,7 +63,7 @@ I will try to keep this up-to-date, no promises.
     Aliases: emoji  
     
 **%forcereportmatch** `<@winner> <@loser>`  
-    Info: Admin only. If a user abandons their ranked match an admin will use this to report the match anyways. Mention the users or use User IDs.  
+    Info: Admin only. If a user abandons their ranked match an admin will use this to report the match anyways. Mention the users or use User IDs. Has a 41 second cooldown.
     Example: `%forcereportmatch @Tabuu 3.0 @Phxenix`  
     Aliases: forcereportgame  
     
@@ -163,7 +163,7 @@ I will try to keep this up-to-date, no promises.
     Example: `%removerole @Phxenix first class`  
   
 **%reportmatch** `<@user>`  
-    Info: The winner uses this command after a ranked match to report the result of the match, @user being the person who lost the ranked match. Mention the User or use User ID.
+    Info: The winner uses this command after a ranked match to report the result of the match, @user being the person who lost the ranked match. Mention the User or use User ID. Has a 41 second cooldown.
     Example: `%reportmatch @Phxenix`  
     Aliases: reportgame  
   
@@ -215,7 +215,7 @@ I will try to keep this up-to-date, no promises.
     Example: `%unmute @Phxenix`  
   
 **%updatelevel**  
-    Info: Updates your level role according to your MEE6 level manually. Note that this gets done anyways every 23 hours for everyone in the server.  
+    Info: Updates your level role according to your MEE6 level manually. Has a 10 minute cooldown. Note that this gets done anyways every 23 hours for everyone in the server.  
   
 **%userinfo** `<@user: Optional>`  
     Info: Gets you various information about a user. If you haven't specified a user, this will get your own info. Mention the User or use User ID.  
