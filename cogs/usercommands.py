@@ -361,7 +361,7 @@ class Usercommands(commands.Cog):
 
     @commands.command()
     async def xylenes(self, ctx):
-        await ctx.send("https://www.twitch.tv/metaxylenes")
+        await ctx.send("https://www.twitch.tv/FamilyC0mputer")
 
     @commands.command()
     async def tgstream(self, ctx):
