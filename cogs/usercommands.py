@@ -337,11 +337,7 @@ class Usercommands(commands.Cog):
     #our streamers use these shortcuts to promote their streams
     @commands.command()
     async def streamer(self, ctx):
-        await ctx.send("Streamer commands: \n%pandemic, %neon, %scrooge, %ravioli, %tabuu, %xylenes, %tgstream") #needs updating every once in a while
-
-    @commands.command()
-    async def pandemic(self, ctx):
-        await ctx.send("https://www.twitch.tv/thepandem1c")
+        await ctx.send("Streamer commands: \n%neon, %scrooge, %tabuu, %xylenes, %tgstream") #needs updating every once in a while
 
     @commands.command()
     async def neon(self, ctx):
@@ -350,10 +346,6 @@ class Usercommands(commands.Cog):
     @commands.command()
     async def scrooge(self, ctx):
         await ctx.send("https://www.twitch.tv/scroogemcduk")
-
-    @commands.command()
-    async def ravioli(self, ctx):
-        await ctx.send("https://www.twitch.tv/raviolistream")
     
     @commands.command()
     async def tabuu(self, ctx):

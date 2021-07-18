@@ -95,7 +95,7 @@ class On_message(commands.Cog):
 
                 await message.channel.send(f"{message.author.mention} has been automatically warned for using a blacklisted word!")
                 try:
-                    await message.author.send(f"You have been automatically warned in the SSBU Training Grounds Server for sending a message containing a blacklisted word.\nIf you would like to discuss your punishment, please contact Tabuu#0720, Phxenix#1104 or Maddy#1833")
+                    await message.author.send(f"You have been automatically warned in the SSBU Training Grounds Server for sending a message containing a blacklisted word.\nIf you would like to discuss your punishment, please contact Tabuu#0720, Phxenix#1104 or Parz#5811")
                 except:
                     print("user has blocked me :(")
                 if warns > 6: #auto ban for more than 7 warns
@@ -107,7 +107,7 @@ class On_message(commands.Cog):
                     await message.channel.send(f"{message.author.mention} has reached warning #{warns}. They have been automatically banned.")
                 if warns > 4 and warns < 7: #auto kick for more than 5 warns, stops at 7 so you dont get dumb errors
                     try:
-                        await message.author.send(f"You have been automatically kicked from the SSBU Training Grounds Server for reaching warning #***{warns}***. \nIf you would like to discuss your punishment, please contact Tabuu#0720, Phxenix#1104 or Maddy#1833")
+                        await message.author.send(f"You have been automatically kicked from the SSBU Training Grounds Server for reaching warning #***{warns}***. \nIf you would like to discuss your punishment, please contact Tabuu#0720, Phxenix#1104 or Parz#5811")
                     except:
                         print("user has blocked me :(")
                     await message.author.kick(reason=f"Automatic kick for reaching {warns} warnings")
@@ -120,7 +120,7 @@ class On_message(commands.Cog):
                     await self.add_mute(muted_users, message.author)
                     await message.channel.send(f"{message.author.mention} has reached warning #{warns}. They have been automatically muted.")
                     try:
-                        await message.author.send(f"You have been automatically muted in the SSBU Training Grounds Server for reaching warning #***{warns}***. \nIf you would like to discuss your punishment, please contact Tabuu#0720, Phxenix#1104 or Maddy#1833")
+                        await message.author.send(f"You have been automatically muted in the SSBU Training Grounds Server for reaching warning #***{warns}***. \nIf you would like to discuss your punishment, please contact Tabuu#0720, Phxenix#1104 or Parz#5811")
                     except:
                         print("user has blocked me :(")
                     with open(r'/root/tabuu bot/json/muted.json', 'w') as fp: #writes it to the file

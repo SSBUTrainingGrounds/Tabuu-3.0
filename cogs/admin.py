@@ -75,7 +75,7 @@ class Admin(commands.Cog):
     async def kick(self, ctx, member:discord.Member, *, args):
         reason = ''.join(args)
         try:
-            await member.send(f"You have been kicked from the SSBU Training Grounds Server for the following reason: \n```{reason}```\nIf you would like to discuss your punishment, please contact Tabuu#0720, Phxenix#1104 or Maddy#1833")
+            await member.send(f"You have been kicked from the SSBU Training Grounds Server for the following reason: \n```{reason}```\nIf you would like to discuss your punishment, please contact Tabuu#0720, Phxenix#1104 or Parz#5811")
         except:
             print("user has blocked me :(")
         await member.kick(reason=reason)
