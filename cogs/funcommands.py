@@ -86,7 +86,47 @@ class Funcommands(commands.Cog):
         'I only lost because someone pinged %singles in our arena midmatch']
         await ctx.send(random.choice(messages))
 
+    @commands.command(name='8ball')
+    async def _8ball(self, ctx, *, question = None):
+        if question is None:
+            await ctx.send("Please input a question for the magic 8-ball.")
+            return
+        messages = ["It is certain.",
+            "It is decidedly so.",
+            "Without a doubt.",
+            "Yes - definitely.",
+            "You may rely on it.",
+            "As I see it, yes.",
+            "Most likely.",
+            "Outlook good.",
+            "Yes.",
+            "Signs point to yes.",
+            "Reply hazy, try again.",
+            "Ask again later.",
+            "Better not tell you now.",
+            "Cannot predict now.",
+            "Concentrate and ask again.",
+            "Don't count on it.",
+            "My reply is no.",
+            "My sources say no.",
+            "Outlook not so good.",
+            "Very doubtful."]
+        try:
+            await ctx.send(f"{ctx.author.mention} asked: `{question}`:\n{random.choice(messages)}")
+        except: #this is in the case if a user inputs a question with more than 2000 chars in length, the bot cant respond with the question.
+            await ctx.send(random.choice(messages))
 
+    @commands.command()
+    async def who(self, ctx, *, question = None):
+        if question is None:
+            await ctx.send("Please input a question so I can look for the right user.")
+            return
+        online_members = [member for member in ctx.guild.members if member.status != discord.Status.offline] #only gets online members
+        user = random.choice(online_members)
+        try:
+            await ctx.send(f"{ctx.author.mention} asked: `Who {question}`:\n{str(user)}")
+        except: #same as above
+            await ctx.send(str(user))
 
 
 def setup(bot):
