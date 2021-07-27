@@ -1,8 +1,12 @@
 # Full list of commands:
 
 This here contains every command with a detailed explanation on how to use them. They are ordered alphabetically, search them with Ctrl+F.  
-Last updated: 27 June 2021  
+Last updated: 27 July 2021  
 I will try to keep this up-to-date, no promises.  
+
+**%8ball** `<question>`  
+    Info: Ask a question and you get a random response from the magic 8-ball.  
+    Example: `%8ball Is Tabuu 3.0 the best bot out there?`  
 
 **%addrole** `<@user> <role>`  
     Info: Admin only. Adds a Role to a User. Mention the User or use User ID, for the Role the bot just takes the closest match.  
@@ -237,6 +241,10 @@ I will try to keep this up-to-date, no promises.
     Info: This will return the number of active warnings a user has. If you haven't specified a User, this will get your own warning count. Mention the User or use User ID.  
     Example: `%warns @Phxenix`  
     Aliases: warnings, infractions  
+    
+**%who** `<question>`  
+    Info: Ask a question and you get a random user that is currently online as a response.  
+    Example: `%who is the most beautiful user?`  
   
 **%wisdom**  
     Info: Gets you a random piece of wisdom.  
