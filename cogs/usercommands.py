@@ -305,12 +305,12 @@ class Usercommands(commands.Cog):
 
 
     @commands.command(aliases=['emoji'])
-    async def emote(self, ctx, emoji:discord.Emoji):
+    async def emote(self, ctx, emoji:discord.PartialEmoji):
         embed = discord.Embed(title="Emoji Info", colour=discord.Colour.orange(), description=f"\
-**Server:** {emoji.guild} ({emoji.guild.id})\n\
 **Url:** {emoji.url}\n\
 **Name:** {emoji.name}\n\
 **ID:** {emoji.id}\n\
+**Created at:** {str(emoji.created_at).split('.')[0]} CET\n\
             ")
         embed.set_image(url=emoji.url)
         await ctx.send(embed=embed)
@@ -435,8 +435,8 @@ class Usercommands(commands.Cog):
     async def emote_error(self, ctx, error):
         if isinstance(error, commands.MissingRequiredArgument):
             await ctx.send("You need to specify an emoji!")
-        if isinstance(error, commands.EmojiNotFound):
-            await ctx.send("I couldn't find information on this emoji!")
+        if isinstance(error, commands.PartialEmojiConversionFailure):
+            await ctx.send("I couldn't find information on this emoji! Make sure this is not a default emoji.")
         raise error
 
     @spotify.error
