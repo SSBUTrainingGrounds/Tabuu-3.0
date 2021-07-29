@@ -297,11 +297,11 @@ class Usercommands(commands.Cog):
             await ctx.send("Duration is too long! Maximum duration is 30 days.")
             return
 
-        await ctx.send(f"{ctx.author.mention}, I will remind you about {remind_message} in {reminder_time}!")
+        await ctx.send(f"{ctx.author.mention}, I will remind you about `{remind_message}` in {reminder_time}!")
 
         await asyncio.sleep(seconds) #bit flawed, if i restart the bot obviously the reminders get deleted, would work better if i would store them in a json file but oh well
 
-        await ctx.send(f"{ctx.author.mention}, you wanted me to remind you of {remind_message}, {reminder_time} ago.")
+        await ctx.send(f"{ctx.author.mention}, you wanted me to remind you of `{remind_message}`, {reminder_time} ago.")
 
 
     @commands.command(aliases=['emoji'])
