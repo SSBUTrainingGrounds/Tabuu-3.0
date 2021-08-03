@@ -1,7 +1,7 @@
 #Tabuu 3.0
 #by Phxenix for SSBU Training Grounds
-#Version: 3.10.4
-#Last Changes: 27 July 2021
+#Version: 4.0.0
+#Last Changes: 3 August 2021
 #Report any bugs to: Phxenix#1104
 #
 #To do list:
@@ -24,7 +24,7 @@ bot = Bot(command_prefix='%', intents=intents) # prefix for commands, we picked 
 client = discord.Client(intents=intents) 
 bot.remove_command('help') #for a custom help command
 
-bot.version_number = "3.10.4" #the "version", maintain every now and then
+bot.version_number = "4.0.0" #the "version", maintain every now and then
 
 
 #bot startup, and some event triggers without commands
