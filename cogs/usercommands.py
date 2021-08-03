@@ -122,12 +122,20 @@ class Usercommands(commands.Cog):
         except:
             activity = "None"
 
-        embed = discord.Embed(title=f"Userinfo of {member.name}#{member.discriminator}", color=member.top_role.color)
+        if not ctx.guild:
+            await ctx.send("This command can only be used in the SSBU TG Discord Server.")
+            return
+
+        sorted_members = sorted(ctx.guild.members, key=lambda x:x.joined_at)
+        index = sorted_members.index(member)
+
+
+        embed = discord.Embed(title=f"Userinfo of {member.name}#{member.discriminator} ({member.id})", color=member.top_role.color)
         embed.add_field(name="Name:", value=member.mention, inline=True)
-        embed.add_field(name="ID:", value=member.id, inline=True)
+        embed.add_field(name="Top Role:", value=member.top_role.mention, inline=True)
         embed.add_field(name="Number of Roles:", value=f"{(len(member.roles)-1)}", inline=True) #gives the number of roles to prevent listing like 35 roles, -1 for the @everyone role
-        embed.add_field(name="Top Role:", value=member.top_role.mention, inline=True) #instead only gives out the important role
         embed.add_field(name="Joined Server on:", value=discord.utils.format_dt(member.joined_at, style='F'), inline=True) #timezone aware datetime object, F is long formatting
+        embed.add_field(name="Join Rank:", value=f"{(index+1)}/{len(ctx.guild.members)}", inline=True)
         embed.add_field(name="Joined Discord on:",  value=discord.utils.format_dt(member.created_at, style='F'), inline=True)
         embed.add_field(name="Online Status:", value=member.status, inline=True)
         embed.add_field(name="Activity Status:", value=activity, inline=True)
