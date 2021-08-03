@@ -342,7 +342,7 @@ class Ranking(commands.Cog):
         gamelist = (''.join(last5games[::-1])) #reverses that list, makes it more intuitive to read
 
         embed = discord.Embed(title=f"Ranked stats of {str(member)}", colour=member.colour)
-        embed.set_thumbnail(url=member.avatar_url)
+        embed.set_thumbnail(url=member.avatar.url)
         embed.add_field(name="Elo score", value=eloscore, inline=True)
         embed.add_field(name="Wins", value=wins, inline=True)
         embed.add_field(name="Losses", value=losses, inline=True)
@@ -426,7 +426,7 @@ class Ranking(commands.Cog):
         embedstats = ''.join(rawstats) #needed for a neat embed
 
         embed = discord.Embed(title="Top 10 Players of SSBU TG Ranked Matchmaking", description=f"**Rank | Username | Elo score | W/L**\n{embedstats}", colour=discord.Colour.blue())
-        embed.set_thumbnail(url=ctx.guild.icon_url)
+        embed.set_thumbnail(url=ctx.guild.icon.url)
         embed.timestamp = datetime.utcnow()
         await ctx.send(embed=embed)
 

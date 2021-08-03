@@ -108,7 +108,7 @@ class Usercommands(commands.Cog):
         embed.add_field(name="Members:", value=f"{len(server.members)} (Bots: {sum(member.bot for member in server.members)})")
         embed.add_field(name="Emojis:", value=len(server.emojis))
         embed.add_field(name="Roles:", value=len(server.roles))
-        embed.set_thumbnail(url=server.icon_url)
+        embed.set_thumbnail(url=server.icon.url)
         await ctx.send(embed=embed)
 
     #userinfo
@@ -132,7 +132,7 @@ class Usercommands(commands.Cog):
         embed.add_field(name="Joined Discord on:", value=member.created_at.strftime("%A, %B %d %Y @ %H:%M:%S %p CET"), inline=True) #would look ugly otherwise
         embed.add_field(name="Online Status:", value=member.status, inline=True)
         embed.add_field(name="Activity Status:", value=activity, inline=True)
-        embed.set_thumbnail(url=member.avatar_url)
+        embed.set_thumbnail(url=member.avatar.url)
         await ctx.send(embed=embed)
 
     #some bot stats
@@ -157,7 +157,7 @@ class Usercommands(commands.Cog):
         embed.add_field(name="RAM Usage:", value=f"{psutil.virtual_memory()[2]}%", inline=True) #only gets the % value, thats what the [2] is for
         embed.add_field(name="Uptime:", value=str(delta).split(".")[0], inline=True) #the split thing is to get rid of the microseconds, who cares about uptime in microseconds
         embed.set_footer(text="Creator: Phxenix#1104, hosted on: Raspberry Pi 3B+")
-        embed.set_thumbnail(url=tabuu3.avatar_url)
+        embed.set_thumbnail(url=tabuu3.avatar.url)
         await ctx.send(embed=embed)
 
 
@@ -165,7 +165,7 @@ class Usercommands(commands.Cog):
     async def avatar(self, ctx, member:discord.Member = None):
         if member is None:
             member = ctx.author
-        await ctx.send(member.avatar_url)
+        await ctx.send(member.avatar.url)
 
 
     @commands.command()
