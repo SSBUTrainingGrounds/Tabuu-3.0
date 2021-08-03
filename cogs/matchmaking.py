@@ -17,6 +17,13 @@ class Matchmaking(commands.Cog):
     async def on_ready(self):
         await self.clear_mmrequests() #clears the mm files on bot startup, otherwise pings would get stuck in there forever when i shut the bot down
 
+    #if a matchmaking thread gets inactive, it gets deleted right away to clear space
+    @commands.Cog.listener()
+    async def on_thread_update(self, before, after):
+        if before.archived is False and after.archived is True:
+            if after.parent_id in (739299508403437626, 739299508403437627, 739299508403437628, 739299508688519198, 739299508688519200, 742190378051960932, 749016706529361920, 814726078010228737):
+                await after.delete()
+
 
     @commands.command(aliases=['matchmaking', 'matchmakingsingles', 'mmsingles', 'Singles'])
     @commands.cooldown(1, 600, commands.BucketType.user) #1 use, 10m cooldown, per user
@@ -50,7 +57,10 @@ class Matchmaking(commands.Cog):
             list_of_searches.reverse()
             searches = ''.join(list_of_searches) #stores the requests in a string, not a list
             embed = discord.Embed(title="Singles pings in the last 30 Minutes:", description=searches, colour=discord.Colour.dark_red())
-            await ctx.send(f"{ctx.author.mention} is looking for {singles_role.mention} games!", embed=embed)
+            mm_message = await ctx.send(f"{ctx.author.mention} is looking for {singles_role.mention} games!", embed=embed)
+            mm_thread = await mm_message.start_thread(name=f"Singles Arena of {ctx.author.name}", auto_archive_duration=60) #starts up the thread
+            await mm_thread.add_user(ctx.author)
+            await mm_thread.send(f"Hi there, {ctx.author.mention}! Please use this thread for communicating with your opponent.")
 
             with open(r'/root/tabuu bot/json/singles.json', 'w') as f:
                 json.dump(singles, f, indent=4) #writes it to the file
@@ -159,7 +169,10 @@ class Matchmaking(commands.Cog):
             list_of_searches.reverse()
             searches = ''.join(list_of_searches)
             embed = discord.Embed(title="Doubles pings in the last 30 Minutes:", description=searches, colour=discord.Colour.dark_blue())
-            await ctx.send(f"{ctx.author.mention} is looking for {doubles_role.mention} games!", embed=embed)
+            mm_message  = await ctx.send(f"{ctx.author.mention} is looking for {doubles_role.mention} games!", embed=embed)
+            mm_thread = await mm_message.start_thread(name=f"Doubles Arena of {ctx.author.name}", auto_archive_duration=60)
+            await mm_thread.add_user(ctx.author)
+            await mm_thread.send(f"Hi there, {ctx.author.mention}! Please use this thread for communicating with your opponents.")
 
             with open(r'/root/tabuu bot/json/doubles.json', 'w') as f:
                 json.dump(doubles, f, indent=4)
@@ -266,7 +279,10 @@ class Matchmaking(commands.Cog):
             list_of_searches.reverse()
             searches = ''.join(list_of_searches)
             embed = discord.Embed(title="Funnies pings in the last 30 Minutes:", description=searches, colour=discord.Colour.green())
-            await ctx.send(f"{ctx.author.mention} is looking for {funnies_role.mention} games!", embed=embed)
+            mm_message = await ctx.send(f"{ctx.author.mention} is looking for {funnies_role.mention} games!", embed=embed)
+            mm_thread = await mm_message.start_thread(name=f"Funnies Arena of {ctx.author.name}", auto_archive_duration=60)
+            await mm_thread.add_user(ctx.author)
+            await mm_thread.send(f"Hi there, {ctx.author.mention}! Please use this thread for communicating with your opponent.")
 
             with open(r'/root/tabuu bot/json/funnies.json', 'w') as f:
                 json.dump(funnies, f, indent=4)
