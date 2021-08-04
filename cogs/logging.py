@@ -76,7 +76,7 @@ class Logging(commands.Cog):
     #someone joins the server
     @commands.Cog.listener()
     async def on_member_join(self, member):
-        embed = discord.Embed(title="**🎆 New member joined 🎆**", description=f"{member.mention} has joined the server!", colour=discord.Colour.green())
+        embed = discord.Embed(title="**🎆 New member joined 🎆**", description=f"{member.mention} has joined the server!\n\n**Account created:**\n{discord.utils.format_dt(member.created_at, style='R')}", colour=discord.Colour.green())
         embed.set_author(name=f"{str(member)} ({member.id})", icon_url=member.avatar.url)
         embed.timestamp = datetime.datetime.utcnow()
         logs = self.bot.get_channel(logchannel)
@@ -89,7 +89,7 @@ class Logging(commands.Cog):
         roles = [role.mention for role in member.roles if role is not everyonerole] #we dont want the everyone role to be included there
         if len(roles) == 0: #if the user has no roles, it wont go empty
             roles = "No roles"
-        embed = discord.Embed(title=f"** 🚶 Member left the server 🚶**", description=f"{member.mention} has left the server. \nLost roles: \n{''.join(roles)}", colour=discord.Colour.dark_red())
+        embed = discord.Embed(title=f"** 🚶 Member left the server 🚶**", description=f"{member.mention} has left the server. \nLost roles: \n{' '.join(roles)}", colour=discord.Colour.dark_red())
         embed.set_author(name=f"{str(member)} ({member.id})", icon_url=member.avatar.url)
         embed.timestamp = datetime.datetime.utcnow()
         logs = self.bot.get_channel(logchannel)
