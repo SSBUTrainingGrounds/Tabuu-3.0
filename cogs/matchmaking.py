@@ -131,7 +131,8 @@ class Matchmaking(commands.Cog):
                 await ctx.send(f"{ctx.author.mention}, you are on cooldown for another {round((error.retry_after)/60)} minutes to use this command. \nIn the meantime, here are the most recent Singles pings in our open arenas:", embed=embed)
             else:
                 await ctx.send("Please only use this command in our arena channels!")
-        raise error
+        else:
+            raise error
 
 
     #for the doubles/funnies commands, pretty much everything is the same, just slightly altered the names
@@ -242,7 +243,8 @@ class Matchmaking(commands.Cog):
                 await ctx.send(f"{ctx.author.mention}, you are on cooldown for another {round((error.retry_after)/60)} minutes to use this command. \nIn the meantime, here are the most recent Doubles pings in our open arenas:", embed=embed)
             else:
                 await ctx.send("Please only use this command in our arena channels!")
-        raise error
+        else:
+            raise error
 
 
 
@@ -352,7 +354,8 @@ class Matchmaking(commands.Cog):
                 await ctx.send(f"{ctx.author.mention}, you are on cooldown for another {round((error.retry_after)/60)} minutes to use this command. \nIn the meantime, here are the most recent Funnies pings in our open arenas:", embed=embed)
             else:
                 await ctx.send("Please only use this command in our arena channels!")
-        raise error
+        else:
+            raise error
 
 
 
@@ -367,7 +370,8 @@ class Matchmaking(commands.Cog):
     async def clearmmpings_error(self, ctx, error):
         if isinstance(error, commands.MissingPermissions):
             await ctx.send("Nice try, but you don't have the permissions to do that!")
-        raise error
+        else:
+            raise error
 
 
     @commands.command()
@@ -465,14 +469,15 @@ class Matchmaking(commands.Cog):
             await ctx.send(embed=embed)
             return
         else:
-            await ctx.send("Invalid input! Please choose either singles, doubles, funnies or ranked.")
+            await ctx.send("Invalid input! Please choose either singles, doubles, funnies or ranked.\nExample: `%recentpings doubles`")
             pass
 
     @recentpings.error
     async def recentpings_error(self, ctx, error):
         if isinstance(error, commands.MissingRequiredArgument):
-            await ctx.send("Invalid input! Please choose either singles, doubles, funnies or ranked.")
-        raise error
+            await ctx.send("Invalid input! Please choose either singles, doubles, funnies or ranked.\nExample: `%recentpings doubles`")
+        else:
+            raise error
 
 
 

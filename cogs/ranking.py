@@ -438,34 +438,37 @@ class Ranking(commands.Cog):
     async def reportmatch_error(self, ctx, error):
         if isinstance(error, commands.CommandOnCooldown):
             await ctx.send(f"You are on cooldown! Try again in {round(error.retry_after)} seconds.")
-        if isinstance(error, commands.NoPrivateMessage):
+        elif isinstance(error, commands.NoPrivateMessage):
             await ctx.send("Please only use this command in the SSBU TG Discord Server.")
-        if isinstance(error, commands.MissingRequiredArgument):
+        elif isinstance(error, commands.MissingRequiredArgument):
             await ctx.send("Please mention the member that you beat in the match.")
-        if isinstance(error, commands.MemberNotFound):
+        elif isinstance(error, commands.MemberNotFound):
             await ctx.send("Please mention the member that you beat in the match.")
-        raise error
+        else:
+            raise error
 
 
     @forcereportmatch.error
     async def forcereportmatch_error(self, ctx, error):
         if isinstance(error, commands.MissingPermissions):
             await ctx.send("Nice try, but you don't have the permissions to do that!")
-        if isinstance(error, commands.MissingRequiredArgument):
+        elif isinstance(error, commands.MissingRequiredArgument):
             await ctx.send("Please mention the 2 members that have played in this match. First mention the winner, second mention the loser.")
-        if isinstance(error, commands.MemberNotFound):
+        elif isinstance(error, commands.MemberNotFound):
             await ctx.send("Please mention the 2 members that have played in this match. First mention the winner, second mention the loser.")
-        if isinstance(error, commands.CommandOnCooldown):
+        elif isinstance(error, commands.CommandOnCooldown):
             await ctx.send(f"You are on cooldown! Try again in {round(error.retry_after)} seconds.")
-        raise error
+        else:
+            raise error
 
     @rankstats.error
     async def rankstats_error(self, ctx, error):
         if isinstance(error, commands.CommandInvokeError):
             await ctx.send("This user hasn't played a ranked match yet.")
-        if isinstance(error, commands.MemberNotFound):
+        elif isinstance(error, commands.MemberNotFound):
             await ctx.send("I couldn't find this member, make sure you have the right one or just leave it blank.")
-        raise error
+        else:
+            raise error
 
     @rankedmm.error
     async def rankedmm_error(self, ctx, error):
@@ -499,13 +502,15 @@ class Ranking(commands.Cog):
                 searches = "Looks like no one has pinged recently :("
             embed = discord.Embed(title="Ranked pings in the last 30 Minutes:", description=searches, colour=discord.Colour.blue())
             await ctx.send(f"{ctx.author.mention}, you are on cooldown for another {round((error.retry_after)/60)} minutes to use this command. \nIn the meantime, here are the most recent ranked pings:", embed=embed)
-        raise error
+        else:
+            raise error
 
     @leaderboard.error
     async def leaderboard_error(self, ctx, error):
         if isinstance(error, commands.MissingPermissions):
             await ctx.send("Nice try, but you don't have the permissions to do that!")
-        raise error
+        else:
+            raise error
 
 
 

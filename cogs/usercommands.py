@@ -374,83 +374,94 @@ class Usercommands(commands.Cog):
     async def listrole_error(self, ctx, error):
         if isinstance(error, commands.RoleNotFound):
             await ctx.send("You need to name a valid role!")
-        if isinstance(error, commands.MissingPermissions):
+        elif isinstance(error, commands.MissingPermissions):
             await ctx.send("Nice try, but you don't have the permissions to do that!")
-        if isinstance(error, commands.CommandInvokeError):
+        elif isinstance(error, commands.CommandInvokeError):
             await ctx.send("I didn't find a good match for the role you provided. Please be more specific, or mention the role, or use the Role ID.")
-        raise error
+        else:
+            raise error
 
     @roleinfo.error
     async def roleinfo_error(self, ctx, error):
         if isinstance(error, commands.RoleNotFound):
             await ctx.send("You need to name a valid role!")
-        if isinstance(error, commands.MissingPermissions):
+        elif isinstance(error, commands.MissingPermissions):
             await ctx.send("Nice try, but you don't have the permissions to do that!")
-        if isinstance(error, commands.CommandInvokeError):
+        elif isinstance(error, commands.CommandInvokeError):
             await ctx.send("I didn't find a good match for the role you provided. Please be more specific, or mention the role, or use the Role ID.")
-        raise error
+        else:
+            raise error
         
 
     @userinfo.error
     async def userinfo_error(self, ctx, error):
         if isinstance(error, commands.MemberNotFound):
             await ctx.send("You need to mention a member, or just leave it blank.")
-        raise error
+        else:
+            raise error
 
     @avatar.error
     async def avatar_error(self, ctx, error):
         if isinstance(error, commands.MemberNotFound):
             await ctx.send("You need to mention a member, or just leave it blank.")
-        raise error
+        else:
+            raise error
 
     @poll.error
     async def poll_error(self, ctx, error):
         if isinstance(error, commands.MissingRequiredArgument):
             await ctx.send("You need to specify a question, and then at least 2 options!")
-        raise error
+        else:
+            raise error
 
 
     @modmail.error
     async def modmail_error(self, ctx, error):
         if isinstance(error, commands.MissingRequiredArgument):
             await ctx.send("Please provide a message to the moderators. It should look something like:\n```%modmail (your message here)```")
-        raise error
+        else:
+            raise error
 
     @roll.error
     async def roll_error(self, ctx, error):
         if isinstance(error, commands.MissingRequiredArgument):
             await ctx.send("Wrong format!\nTry something like: %roll 1d100")
-        raise error
+        else:
+            raise error
 
     @countdown.error
     async def countdown_error(self, ctx, error):
         if isinstance(error, commands.MissingRequiredArgument):
             await ctx.send("You need to input a number!")
-        if isinstance(error, commands.BadArgument):
+        elif isinstance(error, commands.BadArgument):
             await ctx.send("Invalid number!")
-        raise error
+        else:
+            raise error
 
     @reminder.error
     async def reminder_error(self, ctx, error):
         if isinstance(error, commands.MissingRequiredArgument):
             await ctx.send("You need to specify an amount of time and the reminder message!")
-        if isinstance(error, commands.CommandInvokeError):
+        elif isinstance(error, commands.CommandInvokeError):
             await ctx.send("Invalid time format! Please use a number followed by d/h/m/s for days/hours/minutes/seconds.")
-        raise error
+        else:
+            raise error
 
     @emote.error
     async def emote_error(self, ctx, error):
         if isinstance(error, commands.MissingRequiredArgument):
             await ctx.send("You need to specify an emoji!")
-        if isinstance(error, commands.PartialEmojiConversionFailure):
+        elif isinstance(error, commands.PartialEmojiConversionFailure):
             await ctx.send("I couldn't find information on this emoji! Make sure this is not a default emoji.")
-        raise error
+        else:
+            raise error
 
     @spotify.error
     async def spotify_error(self, ctx, error):
         if isinstance(error, commands.MemberNotFound):
             await ctx.send("You need to mention a member, or just leave it blank.")
-        raise error
+        else:
+            raise error
 
 
 

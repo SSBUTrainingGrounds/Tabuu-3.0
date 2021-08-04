@@ -166,21 +166,23 @@ class Rolemenu(commands.Cog):
     async def newrolemenu_error(self, ctx, error):
         if isinstance(error, commands.MissingPermissions):
             await ctx.send("Nice try, but you don't have the permissions to do that!")
-        if isinstance(error, commands.BadArgument):
+        elif isinstance(error, commands.BadArgument):
             await ctx.send("Something was not recognized properly. The syntax for this command is: \n`%newrolemenu <message_id> <emoji> <role>`")
-        if isinstance(error, commands.MissingRequiredArgument):
+        elif isinstance(error, commands.MissingRequiredArgument):
             await ctx.send("Something was not recognized properly. The syntax for this command is: \n`%newrolemenu <message_id> <emoji> <role>`")
-        raise error
+        else:
+            raise error
 
     @deleterolemenu.error
     async def deleterolemenu_error(self, ctx, error):
         if isinstance(error, commands.MissingPermissions):
             await ctx.send("Nice try, but you don't have the permissions to do that!")
-        if isinstance(error, commands.MissingRequiredArgument):
+        elif isinstance(error, commands.MissingRequiredArgument):
             await ctx.send("You need to input a message ID.")
-        if isinstance(error, commands.BadArgument):
+        elif isinstance(error, commands.BadArgument):
             await ctx.send("You need to input a message ID.")
-        raise error
+        else:
+            raise error
 
     @modifyrolemenu.error
     async def modifyrolemenu_error(self, ctx, error):
@@ -194,13 +196,15 @@ class Rolemenu(commands.Cog):
             await ctx.send("You need to input a valid message ID.")
         elif isinstance(error, commands.BadArgument):
             await ctx.send("You need to input a valid message ID.")
-        raise error
+        else:
+            raise error
     
     @geteveryrolemenu.error
     async def geteveryrolemenu_error(self, ctx, error):
         if isinstance(error, commands.MissingPermissions):
             await ctx.send("Nice try, but you don't have the permissions to do that!")
-        raise error
+        else:
+            raise error
 
 
 def setup(bot):

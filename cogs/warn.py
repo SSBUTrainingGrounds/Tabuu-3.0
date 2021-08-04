@@ -184,11 +184,12 @@ class Warn(commands.Cog):
     async def warn_error(self, ctx, error):
         if isinstance(error, commands.MissingRequiredArgument):
             await ctx.send("You need to specify a member and a reason!")
-        if isinstance(error, commands.MemberNotFound):
+        elif isinstance(error, commands.MemberNotFound):
             await ctx.send("You need to mention a member!")
-        if isinstance(error, commands.MissingPermissions):
+        elif isinstance(error, commands.MissingPermissions):
             await ctx.send("Nice try, but you don't have the permissions to do that!")
-        raise error
+        else:
+            raise error
 
     @warns.error
     async def warns_error(self, ctx, error):
@@ -203,37 +204,41 @@ class Warn(commands.Cog):
                 await ctx.send(f'{user.mention} has {len(user_data)} warning(s).')
             except:
                 await ctx.send(f"{user.mention} doesn't have any warnings (yet).")
-        if isinstance(error, commands.MemberNotFound):
+        elif isinstance(error, commands.MemberNotFound):
             await ctx.send("You need to mention a member, or just leave it blank.")
-        raise error
+        else:
+            raise error
 
     @clearwarns.error
     async def clearwarns_error(self, ctx, error):
         if isinstance(error, commands.MissingRequiredArgument):
             await ctx.send("You need to mention a member!")
-        if isinstance(error, commands.MissingPermissions):
+        elif isinstance(error, commands.MissingPermissions):
             await ctx.send("Nice try, but you don't have the permissions to do that!")
-        raise error
+        else:
+            raise error
 
     @deletewarn.error
     async def deletewarn_error(self, ctx, error):
         if isinstance(error, commands.MissingRequiredArgument):
             await ctx.send("You need to mention a member and specify a warn_id.")
-        if isinstance(error, commands.MemberNotFound):
+        elif isinstance(error, commands.MemberNotFound):
             await ctx.send("You need to mention a valid member.")
-        if isinstance(error, commands.MissingPermissions):
+        elif isinstance(error, commands.MissingPermissions):
             await ctx.send("Nice try, but you don't have the permissions to do that!")
-        raise error
+        else:
+            raise error
 
     @warndetails.error
     async def warndetails_error(self, ctx, error):
         if isinstance(error, commands.MissingRequiredArgument):
             await ctx.send("You need to mention a valid member.")
-        if isinstance(error, commands.MemberNotFound):
+        elif isinstance(error, commands.MemberNotFound):
             await ctx.send("You need to mention a valid member.")
-        if isinstance(error, commands.MissingPermissions):
+        elif isinstance(error, commands.MissingPermissions):
             await ctx.send("Nice try, but you don't have the permissions to do that!")
-        raise error
+        else:
+            raise error
 
 
 

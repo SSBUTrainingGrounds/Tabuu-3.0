@@ -80,9 +80,10 @@ class Mee6api(commands.Cog):
     async def updatelevel_error(self, ctx, error):
         if isinstance(error, commands.CommandOnCooldown):
             await ctx.send(f"{ctx.author.mention}, you are on cooldown for another {round((error.retry_after)/60)} minutes to use this command.")
-        if isinstance(error, commands.NoPrivateMessage):
+        elif isinstance(error, commands.NoPrivateMessage):
             await ctx.send("This command can only be used in the SSBU TG Discord Server.")
-        raise error
+        else:
+            raise error
 
 
 

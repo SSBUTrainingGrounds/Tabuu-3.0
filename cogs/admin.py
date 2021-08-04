@@ -137,83 +137,91 @@ class Admin(commands.Cog):
     async def kick_error(self, ctx, error):
         if isinstance(error, commands.MissingRequiredArgument): #if the user fails to write a reason, also used as a failsafe
             await ctx.send("You need to specify a reason for the kick!")
-        if isinstance(error, commands.MemberNotFound): #if there is no valid user
+        elif isinstance(error, commands.MemberNotFound): #if there is no valid user
             await ctx.send("You need to mention a member!")
-        if isinstance(error, commands.MissingPermissions): #if a non-admin uses this command
+        elif isinstance(error, commands.MissingPermissions): #if a non-admin uses this command
             await ctx.send("Nice try, but you don't have the permissions to do that!")
-        raise error #always raise the error at the end for the console
+        else:
+            raise error
 
     @ban.error
     async def ban_error(self, ctx, error):
         if isinstance(error, commands.MissingRequiredArgument):
             await ctx.send("You need to specify a member and a reason for the ban!")
-        if isinstance(error, commands.MemberNotFound):
+        elif isinstance(error, commands.MemberNotFound):
             await ctx.send("You need to mention a member!")
-        if isinstance(error, commands.MissingPermissions):
+        elif isinstance(error, commands.MissingPermissions):
             await ctx.send("Nice try, but you don't have the permissions to do that!")
-        if isinstance(error, commands.CommandInvokeError):
+        elif isinstance(error, commands.CommandInvokeError):
             await ctx.send("Invalid ID, please make sure you got the right one, or just mention a member.")
-        raise error
+        else:
+            raise error
 
     @unban.error
     async def unban_error(self, ctx, error):
         if isinstance(error, commands.MissingRequiredArgument):
             await ctx.send("You need to specify a member to unban.")
-        if isinstance(error, commands.MissingPermissions):
+        elif isinstance(error, commands.MissingPermissions):
             await ctx.send("Nice try, but you don't have the permissions to do that!")
-        if isinstance(error, commands.CommandInvokeError):
+        elif isinstance(error, commands.CommandInvokeError):
             await ctx.send("I couldn't find a ban for this ID, make sure you have the right one.")
-        raise error
+        else:
+            raise error
 
     @addrole.error
     async def addrole_error(self, ctx, error):
         if isinstance(error, commands.MissingRequiredArgument):
             await ctx.send("You need to specify a member and a role!")
-        if isinstance(error, commands.MemberNotFound):
+        elif isinstance(error, commands.MemberNotFound):
             await ctx.send("You need to mention a member!")
-        if isinstance(error, commands.RoleNotFound):
+        elif isinstance(error, commands.RoleNotFound):
             await ctx.send("You need to name a valid role!")
-        if isinstance(error, commands.MissingPermissions):
+        elif isinstance(error, commands.MissingPermissions):
             await ctx.send("Nice try, but you don't have the permissions to do that!")
-        if isinstance(error, commands.CommandInvokeError):
+        elif isinstance(error, commands.CommandInvokeError):
             await ctx.send("I didn't find a good match for the role you provided. Please be more specific, or mention the role, or use the Role ID.")
-        raise error
+        else:
+            raise error
 
     @removerole.error
     async def removerole_error(self, ctx, error):
         if isinstance(error, commands.MissingRequiredArgument):
             await ctx.send("You need to specify a member and a role!")
-        if isinstance(error, commands.MemberNotFound):
+        elif isinstance(error, commands.MemberNotFound):
             await ctx.send("You need to mention a member!")
-        if isinstance(error, commands.RoleNotFound):
+        elif isinstance(error, commands.RoleNotFound):
             await ctx.send("You need to name a valid role!")
-        if isinstance(error, commands.MissingPermissions):
+        elif isinstance(error, commands.MissingPermissions):
             await ctx.send("Nice try, but you don't have the permissions to do that!")
-        if isinstance(error, commands.CommandInvokeError):
+        elif isinstance(error, commands.CommandInvokeError):
             await ctx.send("I didn't find a good match for the role you provided. Please be more specific, or mention the role, or use the Role ID.")
-        raise error
+        else:
+            raise error
 
     @clear.error
     async def clear_error(self, ctx, error):
         if isinstance(error, commands.MissingPermissions):
             await ctx.send("Nice try, but you don't have the permissions to do that!")
-        raise error
+        else:
+            raise error
 
     @delete.error
     async def delete_error(self, ctx, error):
         if isinstance(error, commands.MissingPermissions):
             await ctx.send("Nice try, but you don't have the permissions to do that!")
-        if isinstance(error, commands.MessageNotFound):
+        elif isinstance(error, commands.MessageNotFound):
             await ctx.send("Could not find a message with that ID! Make sure you are in the same channel as the message(s) you want to delete.")
-        if isinstance(error, commands.MissingRequiredArgument):
+        elif isinstance(error, commands.MissingRequiredArgument):
             await ctx.send("Please supply one or more valid message IDs")
-        raise error
+        else:
+            raise error
 
     @records.error
     async def records_error(self, ctx, error):
         if isinstance(error, commands.MissingPermissions):
             await ctx.send("Nice try, but you don't have the permissions to do that!")
-        raise error
+        else:
+            raise error
 
 
 def setup(bot):

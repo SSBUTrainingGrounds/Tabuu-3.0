@@ -133,33 +133,36 @@ class Mute(commands.Cog):
     async def mute_error(self, ctx, error):
         if isinstance(error, commands.MissingRequiredArgument):
             await ctx.send("You need to specify a reason for the mute!")
-        if isinstance(error, commands.MemberNotFound):
+        elif isinstance(error, commands.MemberNotFound):
             await ctx.send("You need to mention a member!")
-        if isinstance(error, commands.MissingPermissions):
+        elif isinstance(error, commands.MissingPermissions):
             await ctx.send("Nice try, but you don't have the permissions to do that!")
-        raise error
+        else:
+            raise error
 
     @unmute.error
     async def unmute_error(self, ctx, error):
         if isinstance(error, commands.MissingRequiredArgument): #bit different than the rest cause you dont need a reason for unmute
             await ctx.send("You need to mention a member!")
-        if isinstance(error, commands.MemberNotFound):
+        elif isinstance(error, commands.MemberNotFound):
             await ctx.send("You need to mention a member!")
-        if isinstance(error, commands.MissingPermissions):
+        elif isinstance(error, commands.MissingPermissions):
             await ctx.send("Nice try, but you don't have the permissions to do that!")
-        raise error
+        else:
+            raise error
 
     @tempmute.error
     async def tempmute_error(self, ctx,error):
         if isinstance(error, commands.MissingRequiredArgument):
             await ctx.send("You need to mention a member, an amount of time, and a reason!")
-        if isinstance(error, commands.MemberNotFound):
+        elif isinstance(error, commands.MemberNotFound):
             await ctx.send("You need to mention a member!")
-        if isinstance(error, commands.MissingPermissions):
+        elif isinstance(error, commands.MissingPermissions):
             await ctx.send("Nice try, but you don't have the permissions to do that!")
-        if isinstance(error, commands.CommandInvokeError):
+        elif isinstance(error, commands.CommandInvokeError):
             await ctx.send("Invalid time format! Please use a number followed by d/h/m/s for days/hours/minutes/seconds.")
-        raise error
+        else:
+            raise error
 
 def setup(bot):
     bot.add_cog(Mute(bot))
