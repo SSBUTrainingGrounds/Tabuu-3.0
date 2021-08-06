@@ -9,6 +9,12 @@ import asyncio
 #this file here contains our matchmaking system
 #
 
+
+#first we define the allowed channels here for the whole matchmaking system
+arena_channels = (739299508403437626, 739299508403437627, 742190378051960932, 749016706529361920, 814726078010228737)
+special_arenas = (801176498274172950, 764882596118790155, 739299509670248503, 831673163812569108)
+
+
 class Matchmaking(commands.Cog):
     def __init__(self, bot):
         self.bot = bot
@@ -21,15 +27,13 @@ class Matchmaking(commands.Cog):
     @commands.Cog.listener()
     async def on_thread_update(self, before, after):
         if before.archived is False and after.archived is True:
-            if after.parent_id in (739299508403437626, 739299508403437627, 739299508403437628, 739299508688519198, 739299508688519200, 742190378051960932, 749016706529361920, 814726078010228737):
+            if after.parent_id in arena_channels:
                 await after.delete()
 
 
     @commands.command(aliases=['matchmaking', 'matchmakingsingles', 'mmsingles', 'Singles'])
     @commands.cooldown(1, 600, commands.BucketType.user) #1 use, 10m cooldown, per user
     async def singles(self, ctx):
-        arena_channels = (739299508403437626, 739299508403437627, 739299508403437628, 739299508688519198, 739299508688519200, 742190378051960932, 749016706529361920, 814726078010228737)
-        special_arenas = (801176498274172950, 764882596118790155, 739299509670248503, 831673163812569108) #above are public arenas, these are private arenas
         guild = self.bot.get_guild(739299507795132486) #ssbutg server
         timestamp = time.strftime("%H:%M") #timestamp for storing, simplified to only hours/mins
 
@@ -105,8 +109,6 @@ class Matchmaking(commands.Cog):
     @singles.error #on cooldown error, just pulls up the same list with a cooldown message
     async def singles_error(self, ctx, error):
         if isinstance(error, commands.CommandOnCooldown):
-            arena_channels = (739299508403437626, 739299508403437627, 739299508403437628, 739299508688519198, 739299508688519200, 742190378051960932, 749016706529361920, 814726078010228737)
-            special_arenas = (801176498274172950, 764882596118790155, 739299509670248503, 831673163812569108) #above are public arenas, these are private arenas
             timestamp = time.strftime("%H:%M") #timestamp for storing, simplified to only hours/mins
             if ctx.message.channel.id in arena_channels or ctx.message.channel.id in special_arenas:
                 with open(r'/root/tabuu bot/json/singles.json', 'r') as f:
@@ -140,8 +142,6 @@ class Matchmaking(commands.Cog):
     @commands.command(aliases=['matchmakingdoubles', 'mmdoubles', 'Doubles'])
     @commands.cooldown(1, 600, commands.BucketType.user) #1 use, 10m cooldown, per user
     async def doubles(self, ctx):
-        arena_channels = (739299508403437626, 739299508403437627, 739299508403437628, 739299508688519198, 739299508688519200, 742190378051960932, 749016706529361920, 814726078010228737)
-        special_arenas = (801176498274172950, 764882596118790155, 739299509670248503, 831673163812569108)
         guild = self.bot.get_guild(739299507795132486)
         timestamp = time.strftime("%H:%M")
 
@@ -217,8 +217,6 @@ class Matchmaking(commands.Cog):
     @doubles.error
     async def doubles_error(self, ctx, error):
         if isinstance(error, commands.CommandOnCooldown):
-            arena_channels = (739299508403437626, 739299508403437627, 739299508403437628, 739299508688519198, 739299508688519200, 742190378051960932, 749016706529361920, 814726078010228737)
-            special_arenas = (801176498274172950, 764882596118790155, 739299509670248503, 831673163812569108)
             timestamp = time.strftime("%H:%M")
             if ctx.message.channel.id in arena_channels or ctx.message.channel.id in special_arenas:
                 with open(r'/root/tabuu bot/json/doubles.json', 'r') as f:
@@ -251,8 +249,6 @@ class Matchmaking(commands.Cog):
     @commands.command(aliases=['matchmakingfunnies', 'mmfunnies', 'Funnies'])
     @commands.cooldown(1, 600, commands.BucketType.user) #1 use, 10m cooldown, per user
     async def funnies(self, ctx):
-        arena_channels = (739299508403437626, 739299508403437627, 739299508403437628, 739299508688519198, 739299508688519200, 742190378051960932, 749016706529361920, 814726078010228737)
-        special_arenas = (801176498274172950, 764882596118790155, 739299509670248503, 831673163812569108)
         guild = self.bot.get_guild(739299507795132486)
         timestamp = time.strftime("%H:%M")
 
@@ -328,8 +324,6 @@ class Matchmaking(commands.Cog):
     @funnies.error
     async def funnies_error(self, ctx, error):
         if isinstance(error, commands.CommandOnCooldown):
-            arena_channels = (739299508403437626, 739299508403437627, 739299508403437628, 739299508688519198, 739299508688519200, 742190378051960932, 749016706529361920, 814726078010228737)
-            special_arenas = (801176498274172950, 764882596118790155, 739299509670248503, 831673163812569108)
             timestamp = time.strftime("%H:%M")
             if ctx.message.channel.id in arena_channels or ctx.message.channel.id in special_arenas:
                 with open(r'/root/tabuu bot/json/funnies.json', 'r') as f:
