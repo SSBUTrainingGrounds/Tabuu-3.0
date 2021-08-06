@@ -87,9 +87,8 @@ class Logging(commands.Cog):
     async def on_member_remove(self, member):
         everyonerole = discord.utils.get(member.guild.roles, name="@everyone")
         roles = [role.mention for role in member.roles if role is not everyonerole] #we dont want the everyone role to be included there
-        if len(roles) == 0: #if the user has no roles, it wont go empty
-            roles = "No roles"
-        embed = discord.Embed(title=f"** 🚶 Member left the server 🚶**", description=f"{member.mention} has left the server. \nLost roles: \n{' '.join(roles)}", colour=discord.Colour.dark_red())
+        role_description = f"{' '.join(roles)}" if len(roles) != 0 else "No roles" #if the member has no roles, we dont want the field to be empty
+        embed = discord.Embed(title=f"** 🚶 Member left the server 🚶**", description=f"{member.mention} has left the server. \n**Lost roles:** \n{role_description}", colour=discord.Colour.dark_red())
         embed.set_author(name=f"{str(member)} ({member.id})", icon_url=member.avatar.url)
         embed.timestamp = datetime.datetime.utcnow()
         logs = self.bot.get_channel(logchannel)
