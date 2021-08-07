@@ -107,7 +107,10 @@ class Warn(commands.Cog):
 
 
     @commands.command(aliases=['warnings', 'infractions'])
-    async def warns(self, ctx, user:discord.Member): #doesnt need an admin check imo
+    async def warns(self, ctx, user:discord.Member = None): #doesnt need an admin check imo
+        if user is None:
+            user = ctx.author
+
         try:
             with open(r'/root/tabuu bot/json/warns.json', 'r') as f:
                 users = json.load(f) #loads .json file into memory
@@ -149,11 +152,12 @@ class Warn(commands.Cog):
                 mod = users[f'{user.id}'][warn_id]['mod']
                 reason = users[f'{user.id}'][warn_id]['reason']
                 timestamp = users[f'{user.id}'][warn_id]['timestamp']
+                new_timestamp = datetime.strptime(timestamp, "%A, %B %d %Y @ %H:%M:%S %p")
                 embed = discord.Embed(title=f"Warning #{i}", colour=discord.Colour.red())
                 embed.add_field(name="Moderator: ", value=f"<@{mod}>")
                 embed.add_field(name="Reason: ", value=f"{reason}")
                 embed.add_field(name="ID:", value=f"{warn_id}")
-                embed.set_footer(text=f"Warning given out {timestamp} CET")
+                embed.add_field(name="Warning given out at:", value=discord.utils.format_dt(new_timestamp, style='F'))
                 await ctx.send(embed=embed)
                 i+=1
         except: #if not, generic error message
@@ -193,18 +197,7 @@ class Warn(commands.Cog):
 
     @warns.error
     async def warns_error(self, ctx, error):
-        if isinstance(error, commands.MissingRequiredArgument):
-            user = ctx.author #if there isn't any member mentioned, it will return their warning count
-            try:
-                with open(r'/root/tabuu bot/json/warns.json', 'r') as f:
-                    users = json.load(f) #loads .json file into memory
-
-                user_data = users[str(user.id)]
-
-                await ctx.send(f'{user.mention} has {len(user_data)} warning(s).')
-            except:
-                await ctx.send(f"{user.mention} doesn't have any warnings (yet).")
-        elif isinstance(error, commands.MemberNotFound):
+        if isinstance(error, commands.MemberNotFound):
             await ctx.send("You need to mention a member, or just leave it blank.")
         else:
             raise error
