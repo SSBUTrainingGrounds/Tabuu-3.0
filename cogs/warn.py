@@ -59,7 +59,7 @@ class Warn(commands.Cog):
         embed.add_field(name="Moderator", value=author.mention, inline=True)
         embed.add_field(name="Reason", value=reason, inline=True)
         embed.add_field(name="ID", value=warn_id, inline=True)
-        embed.set_footer(text=f"{warndate} CET")
+        embed.timestamp = discord.utils.utcnow()
 
 
         await channel.send(embed=embed) #logs the warns in a nice format to the #infraction-logs channel

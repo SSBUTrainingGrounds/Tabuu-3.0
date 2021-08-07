@@ -36,15 +36,13 @@ class Usercommands(commands.Cog):
 
         #the above block searches all roles for the closest match, as seen in the admin cog
 
-        creationdate = role.created_at.strftime("%A, %B %d %Y @ %H:%M:%S %p")
-        embed = discord.Embed(color = role.colour)
+        embed = discord.Embed(title=f"Roleinfo of {role.name} ({role.id})", color = role.colour)
         embed.add_field(name="Role Name:", value=role.mention, inline=True)
-        embed.add_field(name="Role ID:", value=role.id, inline=True)
         embed.add_field(name="Users with role:", value=len(role.members), inline=True)
+        embed.add_field(name="Created at:", value=discord.utils.format_dt(role.created_at, style='F'))
         embed.add_field(name="Mentionable:", value=role.mentionable, inline=True)
         embed.add_field(name="Displayed Seperately:", value=role.hoist, inline=True)
         embed.add_field(name="Color:", value=role.color, inline=True)
-        embed.set_footer(text=f"Role created on: {creationdate} CET")
         await ctx.send(embed=embed)
 
     @commands.command(aliases=['listroles']) #lists every member in the role if there arent more than 60 members, to prevent spam

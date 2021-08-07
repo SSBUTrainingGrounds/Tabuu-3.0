@@ -1,6 +1,5 @@
 import discord
 from discord.ext import commands, tasks
-import datetime
 
 #
 #this file here contains the logs, it logs every little user/message update into our logs channel
@@ -19,7 +18,7 @@ class Logging(commands.Cog):
         if before.name != after.name:
             embed = discord.Embed(title="**✏️ Username changed ✏️**", description=f"Before: {before.name}\nAfter: {after.name}", colour=discord.Colour.orange())
             embed.set_author(name=f"{str(after)} ({after.id})", icon_url=after.avatar.url)
-            embed.timestamp = datetime.datetime.utcnow()
+            embed.timestamp = discord.utils.utcnow()
             logs = self.bot.get_channel(logchannel)
             await logs.send(embed=embed)
         
@@ -27,7 +26,7 @@ class Logging(commands.Cog):
         if before.discriminator != after.discriminator:
             embed = discord.Embed(title="**✏️ Discriminator changed ✏️**", description=f"Before: {before.discriminator}\nAfter: {after.discriminator}", colour=discord.Colour.orange())
             embed.set_author(name=f"{str(after)} ({after.id})", icon_url=after.avatar.url)
-            embed.timestamp = datetime.datetime.utcnow()
+            embed.timestamp = discord.utils.utcnow()
             logs = self.bot.get_channel(logchannel)
             await logs.send(embed=embed)
 
@@ -37,7 +36,7 @@ class Logging(commands.Cog):
             embed.set_thumbnail(url=before.avatar.url)
             embed.set_image(url=after.avatar.url)
             embed.set_author(name=f"{str(after)} ({after.id})", icon_url=after.avatar.url)
-            embed.timestamp = datetime.datetime.utcnow()
+            embed.timestamp = discord.utils.utcnow()
             logs = self.bot.get_channel(logchannel)
             await logs.send(embed=embed)
 
@@ -48,7 +47,7 @@ class Logging(commands.Cog):
         if before.display_name != after.display_name:
             embed = discord.Embed(title="**✏️ Nickname changed ✏️**", description=f"Before: {before.display_name}\nAfter: {after.display_name}", colour=discord.Colour.orange())
             embed.set_author(name=f"{str(after)} ({after.id})", icon_url=after.avatar.url)
-            embed.timestamp = datetime.datetime.utcnow()
+            embed.timestamp = discord.utils.utcnow()
             logs = self.bot.get_channel(logchannel)
             await logs.send(embed=embed)
         
@@ -59,7 +58,7 @@ class Logging(commands.Cog):
                 newRole = next(role for role in after.roles if role not in before.roles) #gets the new role
                 embed = discord.Embed(title="**📈 User gained role 📈**", description=f"Role gained: {newRole.mention}", colour=discord.Colour.green())
                 embed.set_author(name=f"{str(after)} ({after.id})", icon_url=after.avatar.url)
-                embed.timestamp = datetime.datetime.utcnow()
+                embed.timestamp = discord.utils.utcnow()
                 logs = self.bot.get_channel(logchannel)
                 await logs.send(embed=embed)
 
@@ -68,7 +67,7 @@ class Logging(commands.Cog):
                 oldRole = next(role for role in before.roles if role not in after.roles) #gets the old role
                 embed = discord.Embed(title="**📉 User lost role 📉**", description=f"Role lost: {oldRole.mention}", colour=discord.Colour.dark_red())
                 embed.set_author(name=f"{str(after)} ({after.id})", icon_url=after.avatar.url)
-                embed.timestamp = datetime.datetime.utcnow()
+                embed.timestamp = discord.utils.utcnow()
                 logs = self.bot.get_channel(logchannel)
                 await logs.send(embed=embed)
 
@@ -78,7 +77,7 @@ class Logging(commands.Cog):
     async def on_member_join(self, member):
         embed = discord.Embed(title="**🎆 New member joined 🎆**", description=f"{member.mention} has joined the server!\n\n**Account created:**\n{discord.utils.format_dt(member.created_at, style='R')}", colour=discord.Colour.green())
         embed.set_author(name=f"{str(member)} ({member.id})", icon_url=member.avatar.url)
-        embed.timestamp = datetime.datetime.utcnow()
+        embed.timestamp = discord.utils.utcnow()
         logs = self.bot.get_channel(logchannel)
         await logs.send(embed=embed)
 
@@ -90,7 +89,7 @@ class Logging(commands.Cog):
         role_description = f"{' '.join(roles)}" if len(roles) != 0 else "No roles" #if the member has no roles, we dont want the field to be empty
         embed = discord.Embed(title=f"** 🚶 Member left the server 🚶**", description=f"{member.mention} has left the server. \n**Lost roles:** \n{role_description}", colour=discord.Colour.dark_red())
         embed.set_author(name=f"{str(member)} ({member.id})", icon_url=member.avatar.url)
-        embed.timestamp = datetime.datetime.utcnow()
+        embed.timestamp = discord.utils.utcnow()
         logs = self.bot.get_channel(logchannel)
         await logs.send(embed=embed)
 
@@ -118,7 +117,7 @@ class Logging(commands.Cog):
         if len(before.content[1000:]) > 0: #if a message is too long, it gets split into two embed fields, 1000 chars is the limit for embed values, 2000 is the max discord message.
             embed.add_field(name="(Continued from above)", value=before.content[1000:], inline=False) #descriptions can be 2048 chars long, so it just fits barely there
         embed.add_field(name="Message ID:", value=f"{after.id}\n{after.jump_url}")
-        embed.timestamp = datetime.datetime.utcnow()
+        embed.timestamp = discord.utils.utcnow()
         logs = self.bot.get_channel(logchannel)
         await logs.send(embed=embed)
 
@@ -149,7 +148,7 @@ class Logging(commands.Cog):
                     embed.add_field(name=f"Attachment ({i}/{len(message.attachments)})", value=x.url, inline=False)
                     i += 1
         embed.add_field(name="Message ID:", value=message.id)
-        embed.timestamp = datetime.datetime.utcnow()
+        embed.timestamp = discord.utils.utcnow()
         logs = self.bot.get_channel(logchannel)
         await logs.send(embed=embed)
 
@@ -158,7 +157,7 @@ class Logging(commands.Cog):
     async def on_bulk_message_delete(self, messages):
         embed = discord.Embed(title=f"**❌ Bulk message deletion in {messages[0].channel.name}! ❌**", description=f"{len(messages)} messages were deleted!", colour=discord.Colour.dark_red())
         embed.set_author(name=f"{str(self.bot.user)} ({self.bot.user.id})", icon_url=self.bot.user.avatar.url)
-        embed.timestamp = datetime.datetime.utcnow()
+        embed.timestamp = discord.utils.utcnow()
         logs = self.bot.get_channel(logchannel)
         await logs.send(embed=embed)
         
@@ -168,7 +167,7 @@ class Logging(commands.Cog):
     async def on_member_ban(self, guild, user):
         embed = discord.Embed(title="**🚫 New ban! 🚫**", description=f"{user.mention} has been banned from this server!", colour=discord.Colour.dark_red())
         embed.set_author(name=f"{str(user)} ({user.id})", icon_url=user.avatar.url)
-        embed.timestamp = datetime.datetime.utcnow()
+        embed.timestamp = discord.utils.utcnow()
         logs = self.bot.get_channel(logchannel)
         await logs.send(embed=embed)
 
@@ -177,7 +176,7 @@ class Logging(commands.Cog):
     async def on_member_unban(self, guild, user):
         embed = discord.Embed(title="**🔓 New unban! 🔓**", description=f"{user.mention} has been unbanned from this server!", colour=discord.Colour.green())
         embed.set_author(name=f"{str(user)} ({user.id})", icon_url=user.avatar.url)
-        embed.timestamp = datetime.datetime.utcnow()
+        embed.timestamp = discord.utils.utcnow()
         logs = self.bot.get_channel(logchannel)
         await logs.send(embed=embed)
 

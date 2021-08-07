@@ -427,7 +427,7 @@ class Ranking(commands.Cog):
 
         embed = discord.Embed(title="Top 10 Players of SSBU TG Ranked Matchmaking", description=f"**Rank | Username | Elo score | W/L**\n{embedstats}", colour=discord.Colour.blue())
         embed.set_thumbnail(url=ctx.guild.icon.url)
-        embed.timestamp = datetime.utcnow()
+        embed.timestamp = discord.utils.utcnow()
         await ctx.send(embed=embed)
 
 

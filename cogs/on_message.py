@@ -70,7 +70,7 @@ class On_message(commands.Cog):
                 embed.add_field(name="Moderator", value=tabuu3.mention, inline=True)
                 embed.add_field(name="Reason", value=f"Automatic warning for using a blacklisted word", inline=True)
                 embed.add_field(name="ID", value=warn_id, inline=True)
-                embed.set_footer(text=f"{warndate} CET") 
+                embed.timestamp = discord.utils.utcnow() 
                 await channel.send(embed=embed) #logs the message to the channel
                 try:
                     await message.delete() #deletes the message, below is the warn command
