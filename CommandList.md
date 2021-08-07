@@ -58,7 +58,7 @@ I will try to keep this up-to-date, no promises.
     Example: `%deletewarn @Phxenix 123456`  
     
 **%doubles**  
-    Info: Pings the doubles role and stores your ping for 30 Minutes. Has a 10 minute cooldown and can only be used in our arena channels.  
+    Info: Pings the doubles role and stores your ping for 30 Minutes. Also creates a thread and invites the user to it. Has a 10 minute cooldown and can only be used in our arena channels.  
     Aliases: matchmakingdoubles, mmdoubles, Doubles  
     
 **%emote** `<emoji>`  
@@ -72,7 +72,7 @@ I will try to keep this up-to-date, no promises.
     Aliases: forcereportgame  
     
 **%funnies**  
-    Info: Pings the funnies role and stores your ping for 30 Minutes. Has a 10 minute cooldown and can only be used in our arena channels.  
+    Info: Pings the funnies role and stores your ping for 30 Minutes. Also creates a thread and invites the user to it. Has a 10 minute cooldown and can only be used in our arena channels.  
     Aliases: matchmakingfunnies, mmfunnies, Funnies  
     
 **%geteveryrolemenu**  
@@ -185,7 +185,7 @@ I will try to keep this up-to-date, no promises.
     Aliases: serverinfo  
   
 **%singles**  
-    Info: Pings the singles role and stores your ping for 30 Minutes. Has a 10 minute cooldown and can only be used in our arena channels.  
+    Info: Pings the singles role and stores your ping for 30 Minutes. Also creates a thread and invites the user to it. Has a 10 minute cooldown and can only be used in our arena channels.  
     Aliases: matchmaking, matchmakingsingles, mmsingles, Singles  
   
 **%spotify** `<@user: Optional>`  
