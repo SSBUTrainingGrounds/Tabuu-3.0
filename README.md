@@ -3,7 +3,7 @@ A discord bot specifically made for the SSBU Training Grounds discord server. Ma
 
 Lots of hardcoded values and no setup command because this bot is only intended to run on the SSBUTG server. If you want to run it on your server you want to change these manually.
 
-Join us at discord.gg/ssbutg
+Join us at [discord.gg/ssbutg](https://discord.gg/ssbutg)
 
 Features include:
 - Custom matchmaking system for Smash Ultimate, ranked and unranked
