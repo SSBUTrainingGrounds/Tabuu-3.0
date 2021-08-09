@@ -1,17 +1,13 @@
 #Tabuu 3.0
 #by Phxenix for SSBU Training Grounds
-#Version: 4.2.1
+#Version: 4.2.2
 #Last Changes: 9 August 2021
 #Report any bugs to: Phxenix#1104
 #
-#To do list:
-#- ask for command ideas & new statuses
 
 
 import discord
 from discord.ext import commands, tasks
-from discord.ext.commands import Bot
-import asyncio
 import os
 
 
@@ -20,11 +16,10 @@ import os
 #
 
 intents=intents=discord.Intents.all() #intents so the bot can track its users
-bot = Bot(command_prefix='%', intents=intents) # prefix for commands, we picked %, intents same as above
-client = discord.Client(intents=intents) 
+bot = commands.Bot(command_prefix='%', intents=intents) # prefix for commands, we picked %, intents same as above
 bot.remove_command('help') #for a custom help command
 
-bot.version_number = "4.2.1" #the "version", maintain every now and then
+bot.version_number = "4.2.2" #the "version", maintain every now and then
 
 
 #bot startup, and some event triggers without commands
@@ -129,6 +124,8 @@ async def misc(ctx):
 ```%stagelist``` - Our Stagelist for Crew Battles.\n\
 ```%coaching``` - Coaching requirements.\n\
 ```%calendar``` - Calendar with our schedule.\n\
+```%pr``` - Links to the PR of our tourneys.\n\
+```%resources``` - Our resource document for new players.\n\
 ```%invite``` - For those looking for an invite.\n\
 ```%icon <@user>``` - Gets you the avatar of a user.\n\
 ```%spotify <@user>``` - Posts the song the user is currently streaming.\n\
