@@ -1,7 +1,7 @@
 # Full list of commands:
 
 This here contains every command with a detailed explanation on how to use them. They are ordered alphabetically, search them with Ctrl+F.  
-Last updated: 27 July 2021  
+Last updated: 9 August 2021  
 I will try to keep this up-to-date, no promises.  
 
 **%8ball** `<question>`  
@@ -137,6 +137,9 @@ I will try to keep this up-to-date, no promises.
 **%poll** `<"question"> <"option 1"> <"option 2">`  
     Info: Creates a poll for users to vote on with reactions. Takes 2-10 Options. If the question or the options have more than 1 word in them, make sure to surround them with quotes.  
     Example: `%poll "What is your favourite Ice cream?" Chocolate Strawberry "None of the above"`  
+    
+**%pr**  
+    Info: Links to the PR page for our Tournaments.  
   
 **%randomquote**  
     Info: Gets you a random quote from someone.  
@@ -156,6 +159,9 @@ I will try to keep this up-to-date, no promises.
   
 **%records**  
     Info: Admin only. Gets you our ban records.  
+
+**%resources**  
+    Info: Links to our Smash Ultimate resources document intended for beginners.  
   
 **%reminder** `<time> <message>`  
     Info: Reminds you about something. Please keep in mind that this command is fairly simple and thus if the bot gets restarted your reminder will get lost. Time is in a shortened format with any number and d/h/m/s. Minimum duration is 30 seconds, maximum is 30 days.  
