@@ -25,6 +25,16 @@ class Macros(commands.Cog):
     async def calendar(self, ctx): #the basic schedule for our server
         await ctx.send("https://calendar.google.com/calendar/embed?src=ssbu.traininggrounds%40gmail.com&ctz=America%2FNew_York")
 
+    #links to the power ranking, keep updated every now and then
+    @commands.command()
+    async def pr(self, ctx):
+        await ctx.send("https://braacket.com/league/SSBU_TG5")
+
+    #links to our resource document
+    @commands.command()
+    async def resources(self, ctx):
+        await ctx.send("https://docs.google.com/document/d/1JfxnXHLe0-rW-Z6sEjLQzB1puDsVP0UtOvaXz_EEXqE")
+
     #pic with our stagelist on it, change file when it changes
     @commands.command()
     async def stagelist(self, ctx):
