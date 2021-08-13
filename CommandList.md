@@ -12,9 +12,17 @@ I will try to keep this up-to-date, no promises.
     Info: Admin only. Adds a Role to a User. Mention the User or use User ID, for the Role the bot just takes the closest match.  
     Example: `%addrole @Phxenix first class` 
     
+**%avatar** `<@user: Optional>`  
+    Info: Gets you the avatar of a User. User argument is optional, if there is none, this gets your own avatar. Otherwise mention the User or use User ID.  
+    Example: `%avatar @Phxenix` 
+    
 **%ban** `<@user> <reason>`  
     Info: Admin only. Bans a User. Mention the User or use User ID. The reason will get logged in Audit logs and also DM'd to the user.  
     Example: `%ban @Phxenix what an idiot`  
+    
+**%banner** `<@user: Optional>`  
+    Info: Gets you the banner of a User. User argument is optional, if there is none, this gets your own avatar. Otherwise mention the User or use User ID.  
+    Example: `%banner @Phxenix`
     
 **%boo**    
     Info: Comes up with some scary stuff.  
@@ -80,11 +88,7 @@ I will try to keep this up-to-date, no promises.
     
 **%help** `<subcommand>`  
     Info: The help command is broken into subcommands cause there were too many commands to list. Available subcommands are: admin, info, mm, util, misc, fun. The admin help command is admin only.  
-    Example: `%help info`  
-    
-**%icon** `<@user: Optional>`  
-    Info: Gets you the avatar of a User. User argument is optional, if there is none, this gets your own avatar. Otherwise mention the User or use User ID.  
-    Example: `%icon @Phxenix`  
+    Example: `%help info`   
     
 **%invite**  
     Info: Gets you our vanity URL invite link.  
