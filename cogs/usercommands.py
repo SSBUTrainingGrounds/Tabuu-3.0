@@ -39,6 +39,17 @@ class Usercommands(commands.Cog):
             member = ctx.author
         await ctx.send(member.avatar.url)
 
+    #returns their banner
+    @commands.command()
+    async def banner(self, ctx, member:discord.Member = None):
+        if member is None:
+            member = ctx.author
+        user = await self.bot.fetch_user(member.id) #we have to fetch the user first for whatever reason
+        try:
+            await ctx.send(user.banner.url) #if the user does not have a banner, we get an error referencing it
+        except:
+            await ctx.send("This user does not have a banner.")
+
     #makes a basic poll
     @commands.command()
     async def poll(self, ctx, question, *options: str):
@@ -190,6 +201,13 @@ class Usercommands(commands.Cog):
     #error handling for the above
     @avatar.error
     async def avatar_error(self, ctx, error):
+        if isinstance(error, commands.MemberNotFound):
+            await ctx.send("You need to mention a member, or just leave it blank.")
+        else:
+            raise error
+
+    @banner.error
+    async def banner_error(self, ctx, error):
         if isinstance(error, commands.MemberNotFound):
             await ctx.send("You need to mention a member, or just leave it blank.")
         else:
