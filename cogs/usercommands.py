@@ -178,6 +178,20 @@ class Usercommands(commands.Cog):
         embed.set_image(url=emoji.url)
         await ctx.send(embed=embed)
 
+    #same but for stickers
+    @commands.command()
+    async def sticker(self, ctx):
+        sticker = await ctx.message.stickers[0].fetch()
+        embed = discord.Embed(title="Sticker Info", colour=discord.Colour.orange(), description=f"\
+**Url:** {sticker.url}\n\
+**Name:** {sticker.name}\n\
+**ID:** {sticker.id}\n\
+**Created at:** {discord.utils.format_dt(sticker.created_at, style='F')}\n\
+            ")
+        embed.set_image(url=sticker.url)
+        await ctx.send(embed=embed)
+
+
     #returns the spotify status
     @commands.command()
     async def spotify(self, ctx, member:discord.Member = None):
@@ -259,6 +273,13 @@ class Usercommands(commands.Cog):
             await ctx.send("You need to specify an emoji!")
         elif isinstance(error, commands.PartialEmojiConversionFailure):
             await ctx.send("I couldn't find information on this emoji! Make sure this is not a default emoji.")
+        else:
+            raise error
+
+    @sticker.error
+    async def sticker_error(self, ctx, error):
+        if isinstance(error, commands.CommandInvokeError):
+            await ctx.send("I could not find any information on this sticker!")
         else:
             raise error
 
