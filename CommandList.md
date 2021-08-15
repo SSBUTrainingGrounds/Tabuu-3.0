@@ -208,6 +208,9 @@ I will try to keep this up-to-date, no promises.
 **%stats**  
     Info: Gets you various stats about this bot.  
     Aliases: botstats  
+    
+**%sticker <sticker>**  
+    Info: Gets you basic information about a sticker. Note that stickers do not work like emojis but rather like images, so this command gets you the info of the first sticker you attach to your message. Thus no example how to use below.  
   
 **%`<streamer>`**  
     Info: This will link the streamers Twitch Stream. %streamer will get you the list of our available streamer commands.  
