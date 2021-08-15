@@ -173,7 +173,7 @@ class Usercommands(commands.Cog):
 **Url:** {emoji.url}\n\
 **Name:** {emoji.name}\n\
 **ID:** {emoji.id}\n\
-**Created at:** {str(emoji.created_at).split('.')[0]} CET\n\
+**Created at:** {discord.utils.format_dt(emoji.created_at, style='F')}\n\
             ")
         embed.set_image(url=emoji.url)
         await ctx.send(embed=embed)
