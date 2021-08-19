@@ -3,6 +3,7 @@ from discord.ext import commands, tasks
 import json
 from itertools import cycle
 from discord.utils import get
+from fuzzywuzzy import process, fuzz
 
 #
 #this file here contains our event listeners, the welcome/booster messages, autorole and status updates
@@ -115,11 +116,16 @@ class Events(commands.Cog):
             pass
 
 
-    #general error if the bot didnt find the command specified
+    #general error if the bot didnt find the command specified, searches for the closest match
     @commands.Cog.listener()
     async def on_command_error(self, ctx, error):
         if isinstance(error, commands.CommandNotFound):
-            await ctx.send("I did not find this command. Type %help for all available commands.")
+            command_list = [command.name for command in self.bot.commands] #every command registered. note that this will not include aliases
+            try:
+                match = process.extractOne(ctx.invoked_with, command_list, score_cutoff=30, scorer=fuzz.token_set_ratio)[0]
+                await ctx.send(f"I could not find this command. Did you mean `%{match}`?\nType `%help` for all available commands.")
+            except TypeError:
+                await ctx.send(f"I could not find this command.\nType `%help` for all available commands.")
         else:
             if ctx.command.has_error_handler() is False:
                 raise error
