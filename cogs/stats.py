@@ -84,15 +84,26 @@ class Stats(commands.Cog):
             await ctx.send("This command is only available on servers.")
             return
 
-        server = ctx.guild
-        embed = discord.Embed(title=f"{server.name}({server.id})", color=discord.Color.green())
-        embed.add_field(name="Created on:", value=discord.utils.format_dt(server.created_at, style='F'), inline=True) #timezone aware datetime object, F is long formatting
-        embed.add_field(name="Owner:", value=server.owner.mention, inline=True)
-        embed.add_field(name="Channels:", value=len(server.channels), inline=True)
-        embed.add_field(name="Members:", value=f"{len(server.members)} (Bots: {sum(member.bot for member in server.members)})")
-        embed.add_field(name="Emojis:", value=len(server.emojis))
-        embed.add_field(name="Roles:", value=len(server.roles))
-        embed.set_thumbnail(url=server.icon.url)
+        invites = await ctx.guild.invites()
+
+        embed = discord.Embed(title=f"{ctx.guild.name} ({ctx.guild.id})", color=discord.Color.green())
+        embed.add_field(name="Created on:", value=discord.utils.format_dt(ctx.guild.created_at, style='F'), inline=True)
+        embed.add_field(name="Owner:", value=ctx.guild.owner.mention, inline=True)
+        embed.add_field(name="Active Invites:", value=len(invites), inline=True)
+
+        embed.add_field(name="Members:", value=f"{len(ctx.guild.members)} (Bots: {sum(member.bot for member in ctx.guild.members)})", inline=True)
+        embed.add_field(name="Boosts:", value=f"{ctx.guild.premium_subscription_count} (Boosters: {len(ctx.guild.premium_subscribers)})", inline=True)
+        embed.add_field(name="Server Level:", value=f"{ctx.guild.premium_tier}", inline=True)
+
+        embed.add_field(name="Roles:", value=len(ctx.guild.roles), inline=True)
+        embed.add_field(name="Emojis:", value=f"{len(ctx.guild.emojis)}", inline=True)
+        embed.add_field(name="Stickers:", value=f"{len(ctx.guild.stickers)}", inline=True)
+
+        embed.add_field(name="Text Channels:", value=len(ctx.guild.text_channels), inline=True)
+        embed.add_field(name="Voice Channels:", value=len(ctx.guild.voice_channels), inline=True)
+        embed.add_field(name="Active Threads:", value=len(ctx.guild.threads), inline=True)
+
+        embed.set_thumbnail(url=ctx.guild.icon.url)
         await ctx.send(embed=embed)
 
 
