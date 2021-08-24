@@ -89,11 +89,11 @@ class Stats(commands.Cog):
         embed = discord.Embed(title=f"{ctx.guild.name} ({ctx.guild.id})", color=discord.Color.green())
         embed.add_field(name="Created on:", value=discord.utils.format_dt(ctx.guild.created_at, style='F'), inline=True)
         embed.add_field(name="Owner:", value=ctx.guild.owner.mention, inline=True)
-        embed.add_field(name="Active Invites:", value=len(invites), inline=True)
+        embed.add_field(name="Server Region:", value=ctx.guild.region, inline=True)
 
         embed.add_field(name="Members:", value=f"{len(ctx.guild.members)} (Bots: {sum(member.bot for member in ctx.guild.members)})", inline=True)
         embed.add_field(name="Boosts:", value=f"{ctx.guild.premium_subscription_count} (Boosters: {len(ctx.guild.premium_subscribers)})", inline=True)
-        embed.add_field(name="Server Level:", value=f"{ctx.guild.premium_tier}", inline=True)
+        embed.add_field(name="Active Invites:", value=len(invites), inline=True)
 
         embed.add_field(name="Roles:", value=len(ctx.guild.roles), inline=True)
         embed.add_field(name="Emojis:", value=f"{len(ctx.guild.emojis)}", inline=True)
