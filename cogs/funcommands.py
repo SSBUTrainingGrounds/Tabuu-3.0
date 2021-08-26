@@ -25,13 +25,12 @@ class Funcommands(commands.Cog):
         "Why do you exist?"]
         await ctx.send(random.choice(messages))
 
-    @commands.command(aliases=['joke'])
-    async def tabuujoke(self, ctx):
+    @commands.command(aliases=['tabuujoke'])
+    async def joke(self, ctx):
         messages = ["I invented a new word! Plagiarism!",
         "What's the best thing about Switzerland? I don't know, but the flag is a big plus.",
         "It takes guts to be an organ donor.",
         "What do you call a band of Tabuus? The Blue Man Group! I'm sorry.",
-        "the_ultimate_bruh#0182",
         "What do you call a belt made of watches? A waist of time",
         "Did you hear about the new high-tech broom? It's sweeping the nation!"]
         await ctx.send(random.choice(messages))
