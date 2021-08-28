@@ -28,6 +28,7 @@ class Funcommands(commands.Cog):
     @commands.command(aliases=['tabuujoke'])
     async def joke(self, ctx):
         messages = ["I invented a new word! Plagiarism!",
+        "?v cloud bair",
         "What's the best thing about Switzerland? I don't know, but the flag is a big plus.",
         "It takes guts to be an organ donor.",
         "What do you call a band of Tabuus? The Blue Man Group! I'm sorry.",
