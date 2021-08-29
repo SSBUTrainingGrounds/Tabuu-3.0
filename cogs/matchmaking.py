@@ -11,7 +11,7 @@ import asyncio
 
 
 #first we define the allowed channels here for the whole matchmaking system
-arena_channels = (739299508403437626, 739299508403437627, 742190378051960932, 749016706529361920, 814726078010228737)
+arena_channels = (739299508403437626, 739299508403437627, 742190378051960932)
 special_arenas = (801176498274172950, 764882596118790155, 739299509670248503, 831673163812569108)
 
 
@@ -26,8 +26,9 @@ class Matchmaking(commands.Cog):
     #if a matchmaking thread gets inactive, it gets deleted right away to clear space
     @commands.Cog.listener()
     async def on_thread_update(self, before, after):
+        ranked_arenas = (835582101926969344, 835582155446681620, 836018137119850557)
         if before.archived is False and after.archived is True:
-            if after.parent_id in arena_channels:
+            if after.parent_id in arena_channels or after.parent_id in ranked_arenas:
                 await after.delete()
 
 
