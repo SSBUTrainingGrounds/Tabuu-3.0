@@ -1,5 +1,5 @@
 psutil==5.8.0
 fuzzywuzzy==0.18.0
 mee6_py_api==0.0.1
-discord.py==2.0.0a
+discord.py==2.0.0a3575+g45d498c1
 discord==1.0.1
