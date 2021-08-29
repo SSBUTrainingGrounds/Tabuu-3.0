@@ -70,7 +70,11 @@ class Ranking(commands.Cog):
             list_of_searches.reverse()
             searches = ''.join(list_of_searches) #stores the requests in a string, not a list
             embed = discord.Embed(title="Ranked pings in the last 30 Minutes:", description=searches, colour=discord.Colour.blue())
-            await ctx.send(f"{ctx.author.mention} is looking for ranked matchmaking games! {pingrole.mention}", embed=embed)
+            mm_message = await ctx.send(f"{ctx.author.mention} is looking for ranked matchmaking games! {pingrole.mention}", embed=embed)
+            mm_thread = await mm_message.create_thread(name=f"Ranked Arena of {ctx.author.name}", auto_archive_duration=60) #starts up the thread
+            await mm_thread.add_user(ctx.author)
+            await mm_thread.send(f"Hi there, {ctx.author.mention}! Please use this thread for communicating with your opponent and for reporting matches.")
+
 
             with open(r'/root/tabuu bot/json/rankedpings.json', 'w') as fp:
                 json.dump(rankedusers, fp, indent=4) #writes it to the file
@@ -92,11 +96,19 @@ class Ranking(commands.Cog):
     async def reportmatch(self, ctx, user: discord.Member):
         #the winning person should use this command to report a match
 
-        allowed_channels = (835582101926969344, 835582155446681620, 836018137119850557, 836018172238495744, 836018255113748510)
-        if ctx.channel.id not in allowed_channels:
-            await ctx.send("Please only use this command in the ranked matchmaking arenas.")
-            ctx.command.reset_cooldown(ctx)
-            return
+        allowed_channels = (835582101926969344, 835582155446681620, 836018137119850557)
+        
+        #since only threads have a parent_id, we need a special case for these to not throw any errors.
+        if str(ctx.channel.type) == "public_thread":
+            if ctx.channel.parent_id not in allowed_channels:
+                await ctx.send("Please only use this command in the ranked matchmaking arenas or the threads within.")
+                ctx.command.reset_cooldown(ctx)
+                return
+        else:
+            if ctx.channel.id not in allowed_channels:
+                await ctx.send("Please only use this command in the ranked matchmaking arenas or the threads within.")
+                ctx.command.reset_cooldown(ctx)
+                return
 
         if user is ctx.author: #to prevent any kind of abuse
             await ctx.send("Don't report matches with yourself please.")
