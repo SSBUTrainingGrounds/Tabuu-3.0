@@ -135,7 +135,7 @@ class Stats(commands.Cog):
         embed.add_field(name="Joined Discord on:",  value=discord.utils.format_dt(member.created_at, style='F'), inline=True)
         embed.add_field(name="Online Status:", value=member.status, inline=True)
         embed.add_field(name="Activity Status:", value=activity, inline=True)
-        embed.set_thumbnail(url=member.avatar.url)
+        embed.set_thumbnail(url=member.display_avatar.url)
         await ctx.send(embed=embed)
 
 
@@ -161,7 +161,7 @@ class Stats(commands.Cog):
         embed.add_field(name="RAM Usage:", value=f"{psutil.virtual_memory()[2]}%", inline=True) #only gets the % value, thats what the [2] is for
         embed.add_field(name="Uptime:", value=str(delta).split(".")[0], inline=True) #the split thing is to get rid of the microseconds, who cares about uptime in microseconds
         embed.set_footer(text="Creator: Phxenix#1104, hosted on: Raspberry Pi 3B+")
-        embed.set_thumbnail(url=tabuu3.avatar.url)
+        embed.set_thumbnail(url=tabuu3.display_avatar.url)
         await ctx.send(embed=embed)
 
 

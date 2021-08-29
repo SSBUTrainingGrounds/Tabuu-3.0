@@ -62,7 +62,7 @@ class Matchmaking(commands.Cog):
             searches = ''.join(list_of_searches) #stores the requests in a string, not a list
             embed = discord.Embed(title="Singles pings in the last 30 Minutes:", description=searches, colour=discord.Colour.dark_red())
             mm_message = await ctx.send(f"{ctx.author.mention} is looking for {singles_role.mention} games!", embed=embed)
-            mm_thread = await mm_message.start_thread(name=f"Singles Arena of {ctx.author.name}", auto_archive_duration=60) #starts up the thread
+            mm_thread = await mm_message.create_thread(name=f"Singles Arena of {ctx.author.name}", auto_archive_duration=60) #starts up the thread
             await mm_thread.add_user(ctx.author)
             await mm_thread.send(f"Hi there, {ctx.author.mention}! Please use this thread for communicating with your opponent.")
 
@@ -171,7 +171,7 @@ class Matchmaking(commands.Cog):
             searches = ''.join(list_of_searches)
             embed = discord.Embed(title="Doubles pings in the last 30 Minutes:", description=searches, colour=discord.Colour.dark_blue())
             mm_message  = await ctx.send(f"{ctx.author.mention} is looking for {doubles_role.mention} games!", embed=embed)
-            mm_thread = await mm_message.start_thread(name=f"Doubles Arena of {ctx.author.name}", auto_archive_duration=60)
+            mm_thread = await mm_message.create_thread(name=f"Doubles Arena of {ctx.author.name}", auto_archive_duration=60)
             await mm_thread.add_user(ctx.author)
             await mm_thread.send(f"Hi there, {ctx.author.mention}! Please use this thread for communicating with your opponents.")
 
@@ -278,7 +278,7 @@ class Matchmaking(commands.Cog):
             searches = ''.join(list_of_searches)
             embed = discord.Embed(title="Funnies pings in the last 30 Minutes:", description=searches, colour=discord.Colour.green())
             mm_message = await ctx.send(f"{ctx.author.mention} is looking for {funnies_role.mention} games!", embed=embed)
-            mm_thread = await mm_message.start_thread(name=f"Funnies Arena of {ctx.author.name}", auto_archive_duration=60)
+            mm_thread = await mm_message.create_thread(name=f"Funnies Arena of {ctx.author.name}", auto_archive_duration=60)
             await mm_thread.add_user(ctx.author)
             await mm_thread.send(f"Hi there, {ctx.author.mention}! Please use this thread for communicating with your opponent.")
 

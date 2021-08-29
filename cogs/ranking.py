@@ -342,7 +342,7 @@ class Ranking(commands.Cog):
         gamelist = (''.join(last5games[::-1])) #reverses that list, makes it more intuitive to read
 
         embed = discord.Embed(title=f"Ranked stats of {str(member)}", colour=member.colour)
-        embed.set_thumbnail(url=member.avatar.url)
+        embed.set_thumbnail(url=member.display_avatar.url)
         embed.add_field(name="Elo score", value=eloscore, inline=True)
         embed.add_field(name="Wins", value=wins, inline=True)
         embed.add_field(name="Losses", value=losses, inline=True)

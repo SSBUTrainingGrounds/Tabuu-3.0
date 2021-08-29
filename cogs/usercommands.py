@@ -37,7 +37,7 @@ class Usercommands(commands.Cog):
     async def avatar(self, ctx, member:discord.Member = None):
         if member is None:
             member = ctx.author
-        await ctx.send(member.avatar.url)
+        await ctx.send(member.display_avatar.url)
 
     #returns their banner
     @commands.command()
