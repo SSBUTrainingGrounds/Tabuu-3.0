@@ -86,9 +86,8 @@ I will try to keep this up-to-date, no promises.
 **%geteveryrolemenu**  
     Info: Admin only. Gets you every role menu entry currently saved.  
     
-**%help** `<subcommand>`  
-    Info: The help command is broken into subcommands cause there were too many commands to list. Available subcommands are: admin, info, mm, util, misc, fun. The admin help command is admin only.  
-    Example: `%help info`   
+**%help**  
+    Info: The help command is broken into a dropdown cause there were too many commands to list. Available dropdowns are: admin, info, mm, util, misc, fun. The admin help command is admin only.  
     
 **%invite**  
     Info: Gets you our vanity URL invite link.  
@@ -157,9 +156,8 @@ I will try to keep this up-to-date, no promises.
     Example: `%rankedstats @Phxenix`  
     Aliases: rankstats  
   
-**%recentpings** `<type>`  
-    Info: Gets you all pings in the last 30 Minutes of any matchmaking type without pinging the role yourself. These are: singles, doubles, funnies, ranked.
-    Example: `%recentpings ranked`  
+**%recentpings**
+    Info: Gets you all pings in the last 30 Minutes of any matchmaking type without pinging the role yourself. Dropdowns are: singles, doubles, funnies, ranked.  
   
 **%records**  
     Info: Admin only. Gets you our ban records.  
