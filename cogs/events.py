@@ -12,7 +12,9 @@ from fuzzywuzzy import process, fuzz
 #status cycles through these, update these once in a while to keep it fresh
 status = cycle(["type %help",
 "Always watching 👀",
-"Use the %modmail command in my DM's to privately contact the moderator team"])
+"Use the %modmail command in my DM's to privately contact the moderator team",
+"What is love?",
+"Harder, better, faster, stronger"])
 
 
 class Events(commands.Cog):
