@@ -1,7 +1,7 @@
 # Full list of commands:
 
 This here contains every command with a detailed explanation on how to use them. They are ordered alphabetically, search them with Ctrl+F.  
-Last updated: 30 August 2021  
+Last updated: 31 August 2021  
 I will try to keep this up-to-date, no promises.  
 
 **%8ball** `<question>`  
