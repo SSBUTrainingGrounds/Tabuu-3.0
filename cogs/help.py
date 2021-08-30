@@ -46,7 +46,7 @@ class Responses(discord.ui.Select):
 ```%deleterolemenu <message ID>``` - Deletes every entry for a Message with a role menu.\n\
 ```%modifyrolemenu <message ID> <exclusive> <Optional Role>``` - Sets special permissions for a Role menu.\n\
 ```%geteveryrolemenu``` - Gets you every role menu entry currently active.\n\
-```%reloadcogs``` - Owner only, reloads all of the modules of this bot\n\
+```%reloadcogs``` - Owner only, reloads all of the modules of this bot.\n\
         ')
                 await interaction.response.send_message(embed=admin_embed, ephemeral=True)
             else:
@@ -70,7 +70,7 @@ class Responses(discord.ui.Select):
 ```%singles``` - Used for 1v1 matchmaking in our arena channels.\n\
 ```%doubles``` - Used for 2v2 matchmaking in our arena channels.\n\
 ```%funnies``` - Used for non-competitive matchmaking in our arena channels.\n\
-```%recentpings <type>``` - Gets you the recent pings of any matchmaking type.\n\
+```%recentpings``` - Gets you the recent pings of any matchmaking type.\n\
 ```%rankedmm``` - Used for 1v1 ranked matchmaking in our ranked channels.\n\
 ```%reportmatch <@user>``` - Winner of the set reports the result, <@user> being the person you won against.\n\
 ```%rankedstats``` - Your ranked stats.\n\
@@ -138,7 +138,7 @@ class Help(commands.Cog):
         self.bot = bot
 
     @commands.command()
-    async def fancyhelp(self, ctx):
+    async def help(self, ctx):
         await ctx.send("Here are the available subcommands:", view=DropdownHelp())
 
 
