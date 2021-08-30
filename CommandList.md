@@ -1,7 +1,7 @@
 # Full list of commands:
 
 This here contains every command with a detailed explanation on how to use them. They are ordered alphabetically, search them with Ctrl+F.  
-Last updated: 16 August 2021  
+Last updated: 30 August 2021  
 I will try to keep this up-to-date, no promises.  
 
 **%8ball** `<question>`  
@@ -163,10 +163,10 @@ I will try to keep this up-to-date, no promises.
   
 **%records**  
     Info: Admin only. Gets you our ban records.  
-
-**%resources**  
-    Info: Links to our Smash Ultimate resources document intended for beginners.  
-  
+    
+**%reloadcogs**  
+    Info: Owner only. Reloads all of the cogs of this bot, so you don't have to restart it for every little change.  
+    
 **%reminder** `<time> <message>`  
     Info: Reminds you about something. Please keep in mind that this command is fairly simple and thus if the bot gets restarted your reminder will get lost. Time is in a shortened format with any number and d/h/m/s. Minimum duration is 30 seconds, maximum is 30 days.  
     Example: `%reminder 10h get that thing done you wanted to get done`  
@@ -180,6 +180,9 @@ I will try to keep this up-to-date, no promises.
     Info: The winner uses this command after a ranked match to report the result of the match, @user being the person who lost the ranked match. Mention the User or use User ID. Has a 41 second cooldown.
     Example: `%reportmatch @Phxenix`  
     Aliases: reportgame  
+    
+**%resources**  
+    Info: Links to our Smash Ultimate resources document intended for beginners.  
   
 **%roleinfo** `<role>`  
     Info: Gets you information about a role. The bot searches for the closest match for the role name.  
