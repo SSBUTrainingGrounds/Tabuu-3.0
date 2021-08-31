@@ -1,7 +1,7 @@
 #Tabuu 3.0
 #by Phxenix for SSBU Training Grounds
-#Version: 4.4.0
-#Last Changes: 30 August 2021
+#Version: 4.4.1
+#Last Changes: 31 August 2021
 #Report any bugs to: Phxenix#1104
 #
 
@@ -19,7 +19,7 @@ intents=intents=discord.Intents.all() #intents so the bot can track its users
 bot = commands.Bot(command_prefix='%', intents=intents) # prefix for commands, we picked %, intents same as above
 bot.remove_command('help') #for a custom help command
 
-bot.version_number = "4.4.0" #the "version", maintain every now and then
+bot.version_number = "4.4.1" #the "version", maintain every now and then
 
 
 #bot startup, and some event triggers without commands
@@ -38,7 +38,7 @@ for filename in os.listdir(r'/root/tabuu bot/cogs'):
 
 
 #command for manually reloading all cogs, so i dont have to restart the bot for every change. can only be used by me
-#embeds can have up to 25 fields, we are at 15 cogs currently. need a different solution when we go over that
+#embeds can have up to 25 fields, we are at 17 cogs currently. need a different solution when we go over that
 @bot.command()
 @commands.is_owner()
 async def reloadcogs(ctx):
