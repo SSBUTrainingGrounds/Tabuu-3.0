@@ -6,7 +6,7 @@ from datetime import datetime, timedelta
 import asyncio
 
 #
-#this file here contains our matchmaking system
+#this file here contains the basic unranked matchmaking system
 #
 
 
@@ -18,18 +18,6 @@ special_arenas = (801176498274172950, 764882596118790155, 739299509670248503, 83
 class Matchmaking(commands.Cog):
     def __init__(self, bot):
         self.bot = bot
-
-    @commands.Cog.listener()
-    async def on_ready(self):
-        await self.clear_mmrequests() #clears the mm files on bot startup, otherwise pings would get stuck in there forever when i shut the bot down
-
-    #if a matchmaking thread gets inactive, it gets deleted right away to clear space
-    @commands.Cog.listener()
-    async def on_thread_update(self, before, after):
-        ranked_arenas = (835582101926969344, 835582155446681620, 836018137119850557)
-        if before.archived is False and after.archived is True:
-            if after.parent_id in arena_channels or after.parent_id in ranked_arenas:
-                await after.delete()
 
 
     @commands.command(aliases=['matchmaking', 'matchmakingsingles', 'mmsingles', 'Singles'])
@@ -353,97 +341,6 @@ class Matchmaking(commands.Cog):
             raise error
 
 
-
-    #added this command so that if a ping gets stuck in the files i dont have to restart the bot
-    @commands.command(aliases=['clearmmrequests', 'clearmm', 'clearmatchmaking'])
-    @commands.has_permissions(administrator=True)
-    async def clearmmpings(self, ctx):
-        await self.clear_mmrequests() #just calls the function below
-        await ctx.send("Cleared the matchmaking pings!")
-
-    @clearmmpings.error
-    async def clearmmpings_error(self, ctx, error):
-        if isinstance(error, commands.MissingPermissions):
-            await ctx.send("Nice try, but you don't have the permissions to do that!")
-        else:
-            raise error
-
-
-
-    #this clears the mm files so that no ping gets stuck if i restart the bot
-    async def clear_mmrequests(self):
-
-        #deleting singles file
-
-        with open(r'/root/tabuu bot/json/singles.json', 'r') as f:
-            singles = json.load(f)
-        
-        singles_requests = []
-
-        for user in singles:
-            singles_requests.append(user)
-
-        for user in singles_requests:
-            del singles[user]
-        
-        with open(r'/root/tabuu bot/json/singles.json', 'w') as f:
-            json.dump(singles, f, indent=4)
-
-        print("singles file cleared!")
-
-        #deleting doubles file
-
-        with open(r'/root/tabuu bot/json/doubles.json', 'r') as f:
-            doubles = json.load(f)
-        
-        doubles_requests = []
-
-        for user in doubles:
-            doubles_requests.append(user)
-
-        for user in doubles_requests:
-            del doubles[user]
-        
-        with open(r'/root/tabuu bot/json/doubles.json', 'w') as f:
-            json.dump(doubles, f, indent=4)
-
-        print("doubles file cleared!")
-
-        #deleting funnies file
-
-        with open(r'/root/tabuu bot/json/funnies.json', 'r') as f:
-            funnies = json.load(f)
-        
-        funnies_requests = []
-
-        for user in funnies:
-            funnies_requests.append(user)
-
-        for user in funnies_requests:
-            del funnies[user]
-        
-        with open(r'/root/tabuu bot/json/funnies.json', 'w') as f:
-            json.dump(funnies, f, indent=4)
-
-        print("funnies file cleared!")
-
-        #deleting ranked file
-
-        with open(r'/root/tabuu bot/json/rankedpings.json', 'r') as f:
-            ranked = json.load(f)
-        
-        ranked_requests = []
-        
-        for user in ranked:
-            ranked_requests.append(user)
-        
-        for user in ranked_requests:
-            del ranked[user]
-        
-        with open(r'/root/tabuu bot/json/rankedpings.json', 'w') as f:
-            json.dump(ranked, f, indent=4)
-
-        print("ranked file cleared!")
 
 
 def setup(bot):
