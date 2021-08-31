@@ -130,6 +130,13 @@ class Admin(commands.Cog):
         await ctx.send("https://docs.google.com/spreadsheets/d/1EZhyKa69LWerQl0KxeVJZuLFFjBIywMRTNOPUUKyVCc/") #google doc link to spreadsheet
 
 
+    #renames the bot. thanks tabuu
+    @commands.command()
+    @commands.has_permissions(administrator=True)
+    async def rename(self, ctx, *, name):
+        await ctx.guild.me.edit(nick=name)
+        await ctx.send(f"Changed my display name to `{name}`.")
+
 
 
     #error handling for the commands above, they all work in very similar ways
@@ -220,6 +227,17 @@ class Admin(commands.Cog):
     async def records_error(self, ctx, error):
         if isinstance(error, commands.MissingPermissions):
             await ctx.send("Nice try, but you don't have the permissions to do that!")
+        else:
+            raise error
+
+    @rename.error
+    async def rename_error(self, ctx, error):
+        if isinstance(error, commands.MissingPermissions):
+            await ctx.send("Nice try, but you don't have the permissions to do that!")
+        elif isinstance(error, commands.MissingRequiredArgument):
+            await ctx.send("Please enter a nickname.")
+        elif isinstance(error, commands.CommandInvokeError):
+            await ctx.send("Something went wrong! Please try again.")
         else:
             raise error
 
