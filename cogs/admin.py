@@ -237,7 +237,7 @@ class Admin(commands.Cog):
         elif isinstance(error, commands.MemberNotFound):
             await ctx.send("Please enter a valid member and then a new nickname for them.")
         elif isinstance(error, commands.MissingRequiredArgument):
-            await ctx.send("Please enter a nickname.")
+            await ctx.send("Please enter a member and a new nickname.")
         elif isinstance(error, commands.CommandInvokeError):
             await ctx.send("Something went wrong! Please try again.")
         else:
