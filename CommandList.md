@@ -1,7 +1,7 @@
 # Full list of commands:
 
 This here contains every command with a detailed explanation on how to use them. They are ordered alphabetically, search them with Ctrl+F.  
-Last updated: 31 August 2021  
+Last updated: 6 September 2021  
 I will try to keep this up-to-date, no promises.  
 
 **%8ball** `<question>`  
@@ -175,7 +175,7 @@ I will try to keep this up-to-date, no promises.
     Example: `%removerole @Phxenix first class`  
     
 **%rename** `<@user> <name>`  
-    Info: Admin only. Renames the given member to the given nickname.  
+    Info: Admin only. Renames the given member to the given nickname. Removes the nickname if you do not pass in a new one.  
     Example: `%rename @Phxenix Example Name`  
   
 **%reportmatch** `<@user>`  
