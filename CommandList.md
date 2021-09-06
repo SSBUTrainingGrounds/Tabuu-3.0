@@ -174,9 +174,9 @@ I will try to keep this up-to-date, no promises.
     Info: Admin only. Removes a role from a User. Mention the User or use User ID, for the Role the bot just takes the closest match.  
     Example: `%removerole @Phxenix first class`  
     
-**%rename** `<name>`  
-    Info: Admin only. Renames the bot to the given nickname.  
-    Example: `%rename Tabuu 3.0`  
+**%rename** `<@user> <name>`  
+    Info: Admin only. Renames the given member to the given nickname.  
+    Example: `%rename @Phxenix Example Name`  
   
 **%reportmatch** `<@user>`  
     Info: The winner uses this command after a ranked match to report the result of the match, @user being the person who lost the ranked match. Mention the User or use User ID. Has a 41 second cooldown.
