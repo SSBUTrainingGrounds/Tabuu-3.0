@@ -133,9 +133,9 @@ class Admin(commands.Cog):
     #renames the bot. thanks tabuu
     @commands.command()
     @commands.has_permissions(administrator=True)
-    async def rename(self, ctx, *, name):
-        await ctx.guild.me.edit(nick=name)
-        await ctx.send(f"Changed my display name to `{name}`.")
+    async def rename(self, ctx, member: discord.Member, *, name):
+        await member.edit(nick=name)
+        await ctx.send(f"Changed the display name of `{str(member)}` to `{name}`.")
 
 
 
@@ -234,6 +234,8 @@ class Admin(commands.Cog):
     async def rename_error(self, ctx, error):
         if isinstance(error, commands.MissingPermissions):
             await ctx.send("Nice try, but you don't have the permissions to do that!")
+        elif isinstance(error, commands.MemberNotFound):
+            await ctx.send("Please enter a valid member and then a new nickname for them.")
         elif isinstance(error, commands.MissingRequiredArgument):
             await ctx.send("Please enter a nickname.")
         elif isinstance(error, commands.CommandInvokeError):
