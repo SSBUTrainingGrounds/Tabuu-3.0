@@ -47,7 +47,7 @@ class Responses(discord.ui.Select):
 ```%modifyrolemenu <message ID> <exclusive> <Optional Role>``` - Sets special permissions for a Role menu.\n\
 ```%geteveryrolemenu``` - Gets you every role menu entry currently active.\n\
 ```%reloadcogs``` - Owner only, reloads all of the modules of this bot.\n\
-```%rename <@user> <name>``` - Sets a new nickname for a user.\n\
+```%rename <@user> <name>``` - Sets a new nickname for a user or removes it.\n\
         ')
                 await interaction.response.send_message(embed=admin_embed, ephemeral=True)
             else:
