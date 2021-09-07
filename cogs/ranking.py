@@ -187,30 +187,45 @@ class Ranking(commands.Cog):
             elo1300role = discord.utils.get(ctx.guild.roles, id=835560006907985930)
             elomaxrole = discord.utils.get(ctx.guild.roles, id=835560009810444328)
 
+            elo_roles = [elo800role, elo950role, elo1050role, elo1200role, elo1300role, elomaxrole]
+
+            #the role change only triggers if the user does not have their current elo role, so its fine to remove ALL others first and then give the new one out
             if elo < 800:
                 if elo800role not in user.roles:
+                    for role in elo_roles:
+                        if role in user.roles:
+                            await user.remove_roles(role)
                     await user.add_roles(elo800role)
-                    await user.remove_roles(elo950role, elo1050role, elo1200role, elo1300role, elomaxrole)
             if elo < 950 and elo > 799:
                 if elo950role not in user.roles:
+                    for role in elo_roles:
+                        if role in user.roles:
+                            await user.remove_roles(role)
                     await user.add_roles(elo950role)
-                    await user.remove_roles(elo800role, elo1050role, elo1200role, elo1300role, elomaxrole)
             if elo < 1050 and elo > 949:
                 if elo1050role not in user.roles:
+                    for role in elo_roles:
+                        if role in user.roles:
+                            await user.remove_roles(role)
                     await user.add_roles(elo1050role)
-                    await user.remove_roles(elo800role, elo950role, elo1200role, elo1300role, elomaxrole)
             if elo < 1200 and elo > 1049:
                 if elo1200role not in user.roles:
+                    for role in elo_roles:
+                        if role in user.roles:
+                            await user.remove_roles(role)
                     await user.add_roles(elo1200role)
-                    await user.remove_roles(elo800role, elo950role, elo1050role, elo1300role, elomaxrole)
             if elo < 1300 and elo > 1199:
                 if elo1300role not in user.roles:
+                    for role in elo_roles:
+                        if role in user.roles:
+                            await user.remove_roles(role)
                     await user.add_roles(elo1300role)
-                    await user.remove_roles(elo800role, elo950role, elo1050role, elo1200role, elomaxrole)
             if elo > 1299:
                 if elomaxrole not in user.roles:
+                    for role in elo_roles:
+                        if role in user.roles:
+                            await user.remove_roles(role)
                     await user.add_roles(elomaxrole)
-                    await user.remove_roles(elo800role, elo950role, elo1050role, elo1200role, elo1300role)
 
 
         if ranking[f'{ctx.author.id}']['wins'] + ranking[f'{ctx.author.id}']['losses'] > 4: #only assigns these roles after 5 games
@@ -299,30 +314,44 @@ class Ranking(commands.Cog):
             elo1300role = discord.utils.get(ctx.guild.roles, id=835560006907985930)
             elomaxrole = discord.utils.get(ctx.guild.roles, id=835560009810444328)
 
+            elo_roles = [elo800role, elo950role, elo1050role, elo1200role, elo1300role, elomaxrole]
+
             if elo < 800:
                 if elo800role not in user.roles:
+                    for role in elo_roles:
+                        if role in user.roles:
+                            await user.remove_roles(role)
                     await user.add_roles(elo800role)
-                    await user.remove_roles(elo950role, elo1050role, elo1200role, elo1300role, elomaxrole)
             if elo < 950 and elo > 799:
                 if elo950role not in user.roles:
+                    for role in elo_roles:
+                        if role in user.roles:
+                            await user.remove_roles(role)
                     await user.add_roles(elo950role)
-                    await user.remove_roles(elo800role, elo1050role, elo1200role, elo1300role, elomaxrole)
             if elo < 1050 and elo > 949:
                 if elo1050role not in user.roles:
+                    for role in elo_roles:
+                        if role in user.roles:
+                            await user.remove_roles(role)
                     await user.add_roles(elo1050role)
-                    await user.remove_roles(elo800role, elo950role, elo1200role, elo1300role, elomaxrole)
             if elo < 1200 and elo > 1049:
                 if elo1200role not in user.roles:
+                    for role in elo_roles:
+                        if role in user.roles:
+                            await user.remove_roles(role)
                     await user.add_roles(elo1200role)
-                    await user.remove_roles(elo800role, elo950role, elo1050role, elo1300role, elomaxrole)
             if elo < 1300 and elo > 1199:
                 if elo1300role not in user.roles:
+                    for role in elo_roles:
+                        if role in user.roles:
+                            await user.remove_roles(role)
                     await user.add_roles(elo1300role)
-                    await user.remove_roles(elo800role, elo950role, elo1050role, elo1200role, elomaxrole)
             if elo > 1299:
                 if elomaxrole not in user.roles:
+                    for role in elo_roles:
+                        if role in user.roles:
+                            await user.remove_roles(role)
                     await user.add_roles(elomaxrole)
-                    await user.remove_roles(elo800role, elo950role, elo1050role, elo1200role, elo1300role)
 
 
         if ranking[f'{user1.id}']['wins'] + ranking[f'{user1.id}']['losses'] > 4:
