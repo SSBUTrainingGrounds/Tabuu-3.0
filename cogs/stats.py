@@ -150,7 +150,7 @@ class Stats(commands.Cog):
         uptimeSeconds = time.time() - proc.create_time() #gets uptime in seconds
         delta = datetime.timedelta(seconds=uptimeSeconds) #converts that to a timedelta object
         tabuu3 = self.bot.get_user(785303736582012969) #the bot
-        embed = discord.Embed(title="Tabuu 3.0 Stats", color=0x007377, url="https://github.com/sonnenbankpimp/Tabuu-3.0-Bot") #link to the github, its still private but maybe not in the future, who knows
+        embed = discord.Embed(title="Tabuu 3.0 Stats", color=0x007377, url="https://github.com/phxenix-w/Tabuu-3.0-Bot") #link to the github, its still private but maybe not in the future, who knows
         embed.add_field(name="Name:", value=f"{tabuu3.mention}", inline=True)
         embed.add_field(name="Servers:", value=servercount, inline=True)
         embed.add_field(name="Total Users:", value=membercount, inline=True)
