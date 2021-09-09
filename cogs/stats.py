@@ -64,7 +64,7 @@ class Stats(commands.Cog):
         memberlist = []
 
         if len(members) > 60:
-            await ctx.send(f"Users with the {role} role ({len(role.members)}):\nToo many users to list!")
+            await ctx.send(f"Users with the {role} role ({len(role.members)}):\n`Too many users to list!`")
             return
         if len(members) == 0:
             await ctx.send(f"No user currently has the {role} role!")
@@ -73,7 +73,7 @@ class Stats(commands.Cog):
             for member in members:
                 memberlist.append(f"{member.name}#{member.discriminator}")
             all_members = ', '.join(memberlist)
-            await ctx.send(f"Users with the {role} role ({len(role.members)}):\n{all_members}")
+            await ctx.send(f"Users with the {role} role ({len(role.members)}):\n`{all_members}`")
 
 
 
