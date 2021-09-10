@@ -31,7 +31,7 @@ async def on_ready():
 
     
 #loads all of our cogs
-for filename in os.listdir(r'/root/tabuu bot/cogs'):
+for filename in os.listdir(r'./cogs'):
     if filename.endswith('.py'):
         bot.load_extension(f'cogs.{filename[:-3]}')
 
@@ -43,7 +43,7 @@ for filename in os.listdir(r'/root/tabuu bot/cogs'):
 @commands.is_owner()
 async def reloadcogs(ctx):
     embed = discord.Embed(title="Reloading cogs...", colour=discord.Colour.blue())
-    for filename in os.listdir(r'/root/tabuu bot/cogs'):
+    for filename in os.listdir(r'./cogs'):
         if filename.endswith('.py'):
             try:
                 bot.unload_extension(f'cogs.{filename[:-3]}')
@@ -65,7 +65,7 @@ async def reloadcogs_error(ctx, error):
 
 
 #run token, in different file because of security
-with open(r'/root/tabuu bot/files/token.txt') as f:
+with open(r'./files/token.txt') as f:
     TOKEN = f.readline()
 
 bot.run(TOKEN)
