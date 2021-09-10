@@ -26,7 +26,7 @@ class Ranking(commands.Cog):
 
         timestamp = time.strftime("%H:%M") #timestamp for storing, simplified to only hours/mins
         
-        with open(r'/root/tabuu bot/json/ranking.json', 'r') as f:
+        with open(r'./json/ranking.json', 'r') as f:
             ranking = json.load(f)
 
         try:
@@ -46,7 +46,7 @@ class Ranking(commands.Cog):
         except:
             pingrole = discord.utils.get(ctx.guild.roles, id=835560000658341888) #default elo role, in case someone isnt in the database
         
-        with open(r'/root/tabuu bot/json/rankedpings.json', 'r') as fp:
+        with open(r'./json/rankedpings.json', 'r') as fp:
             rankedusers = json.load(fp)
         
             ranked_mm = ctx.message.author
@@ -76,17 +76,17 @@ class Ranking(commands.Cog):
             await mm_thread.send(f"Hi there, {ctx.author.mention}! Please use this thread for communicating with your opponent and for reporting matches.")
 
 
-            with open(r'/root/tabuu bot/json/rankedpings.json', 'w') as fp:
+            with open(r'./json/rankedpings.json', 'w') as fp:
                 json.dump(rankedusers, fp, indent=4) #writes it to the file
 
             await asyncio.sleep(1800) #waits 30 mins, then deletes the request. if there are 2 requests the first one will get overwritten and on the second delete we will get a keyerror, which isnt a problem
-            with open(r'/root/tabuu bot/json/rankedpings.json', 'r') as fp:
+            with open(r'./json/rankedpings.json', 'r') as fp:
                 rankedusers = json.load(fp)
             try:
                 del rankedusers[f'{ctx.message.author.id}']
             except:
                 print("tried to delete a ranked request but the deletion failed")
-            with open(r'/root/tabuu bot/json/rankedpings.json', 'w') as fp:
+            with open(r'./json/rankedpings.json', 'w') as fp:
                 json.dump(rankedusers, fp, indent=4)
 
 
@@ -132,7 +132,7 @@ class Ranking(commands.Cog):
             return
         
 
-        with open(r'/root/tabuu bot/json/ranking.json', 'r+') as f: #r+ is read & write
+        with open(r'./json/ranking.json', 'r+') as f: #r+ is read & write
             ranking = json.load(f)
 
         if not f'{ctx.author.id}' in ranking: #if someone does not exist in the file, it'll create a "profile"
@@ -175,7 +175,7 @@ class Ranking(commands.Cog):
         ranking[f'{ctx.author.id}']['elo'] = winnerupdate #writing the new elo to the file
         ranking[f'{user.id}']['elo'] = loserupdate
 
-        with open(r'/root/tabuu bot/json/ranking.json', 'w') as f:
+        with open(r'./json/ranking.json', 'w') as f:
             json.dump(ranking, f, indent=4)
 
         async def updaterankroles(user): #checks the elo of the user, and assigns the elo role based on that
@@ -258,7 +258,7 @@ class Ranking(commands.Cog):
             await ctx.send("You took too long to respond! Please try reporting the match again.")
             return
 
-        with open(r'/root/tabuu bot/json/ranking.json', 'r+') as f: #r+ is read & write
+        with open(r'./json/ranking.json', 'r+') as f: #r+ is read & write
             ranking = json.load(f)
 
         if not f'{user1.id}' in ranking: #if someone does not exist in the file, it'll create a "profile"
@@ -301,7 +301,7 @@ class Ranking(commands.Cog):
         ranking[f'{user1.id}']['elo'] = winnerupdate #writing the new elo to the file
         ranking[f'{user2.id}']['elo'] = loserupdate
 
-        with open(r'/root/tabuu bot/json/ranking.json', 'w') as f:
+        with open(r'./json/ranking.json', 'w') as f:
             json.dump(ranking, f, indent=4)
 
 
@@ -373,7 +373,7 @@ class Ranking(commands.Cog):
             member = ctx.author
             selfcheck = True
         
-        with open(r'/root/tabuu bot/json/ranking.json', 'r') as f:
+        with open(r'./json/ranking.json', 'r') as f:
             ranking = json.load(f)
 
         eloscore = ranking[f'{member.id}']['elo']
@@ -436,7 +436,7 @@ class Ranking(commands.Cog):
     @commands.has_permissions(administrator=True)
     @commands.guild_only()
     async def leaderboard(self, ctx):
-        with open(r'/root/tabuu bot/json/ranking.json', 'r') as f:
+        with open(r'./json/ranking.json', 'r') as f:
             ranking = json.load(f)
 
         all_userinfo = []
@@ -519,7 +519,7 @@ class Ranking(commands.Cog):
                 await ctx.send("Please only use this command in the ranked matchmaking arenas.")
                 return
             
-            with open(r'/root/tabuu bot/json/rankedpings.json', 'r') as f:
+            with open(r'./json/rankedpings.json', 'r') as f:
                 rankedusers = json.load(f)
 
             timestamp = time.strftime("%H:%M") #timestamp for storing, simplified to only hours/mins

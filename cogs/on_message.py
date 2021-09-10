@@ -11,7 +11,7 @@ from discord.utils import get
 #this file here contains our message filters, both the link filter and the bad word filter
 #
 
-with open(r'/root/tabuu bot/files/badwords.txt') as file:
+with open(r'./files/badwords.txt') as file:
     file = file.read().split()
 
 
@@ -76,7 +76,7 @@ class On_message(commands.Cog):
                     await message.delete() #deletes the message, below is the warn command
                 except: #if another bot is also scanning for blacklisted words, it might delete the message first which would throw an error
                     pass
-                with open(r'/root/tabuu bot/json/warns.json', 'r') as f: #path where my .json file is stored, r is for read
+                with open(r'./json/warns.json', 'r') as f: #path where my .json file is stored, r is for read
                     users = json.load(f) #loads .json file into memory
 
 
@@ -115,7 +115,7 @@ class On_message(commands.Cog):
                 if warns > 2 and warns < 5: #auto mute if a user reaches 3 warns, stops at 5 so you dont get dumb errors
                     role = discord.utils.get(server.roles, id=739391329779581008) #muted role
                     await message.author.add_roles(role)
-                    with open (r'/root/tabuu bot/json/muted.json', 'r') as fp:
+                    with open (r'./json/muted.json', 'r') as fp:
                         muted_users = json.load(fp)
                     await self.add_mute(muted_users, message.author)
                     await message.channel.send(f"{message.author.mention} has reached warning #{warns}. They have been automatically muted.")
@@ -123,10 +123,10 @@ class On_message(commands.Cog):
                         await message.author.send(f"You have been automatically muted in the SSBU Training Grounds Server for reaching warning #***{warns}***. \nIf you would like to discuss your punishment, please contact Tabuu#0720, Phxenix#1104 or Parz#5811")
                     except:
                         print("user has blocked me :(")
-                    with open(r'/root/tabuu bot/json/muted.json', 'w') as fp: #writes it to the file
+                    with open(r'./json/muted.json', 'w') as fp: #writes it to the file
                         json.dump(muted_users, fp, sort_keys=True, ensure_ascii=False, indent=4) #dont need the sort_keys and ensure_ascii, works without
 
-                with open(r'/root/tabuu bot/json/warns.json', 'w') as f: #w is for write
+                with open(r'./json/warns.json', 'w') as f: #w is for write
                     json.dump(users, f, indent=4) #writes data to .json file
 
                 #profane = True

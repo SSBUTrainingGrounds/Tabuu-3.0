@@ -23,7 +23,7 @@ class Mute(commands.Cog):
     async def mute(self, ctx, member:discord.Member, *, args):
         role = discord.utils.get(ctx.guild.roles, id=739391329779581008) #muted role
         reason = ''.join(args)
-        with open (r'/root/tabuu bot/json/muted.json', 'r') as f:
+        with open (r'./json/muted.json', 'r') as f:
             muted_users = json.load(f)
         await member.add_roles(role)
         await self.add_mute(muted_users, member) #adds the mute to muted.json
@@ -33,7 +33,7 @@ class Mute(commands.Cog):
         except:
             print("user has blocked me :(")
         
-        with open(r'/root/tabuu bot/json/muted.json', 'w') as f: #writes it to the file
+        with open(r'./json/muted.json', 'w') as f: #writes it to the file
             json.dump(muted_users, f, sort_keys=True, ensure_ascii=False, indent=4) #dont really need either, but sort_keys is for sorting the users by id, and ensure_ascii is kinda useless here, because there are no non-ascii chars passed here anyways
 
 
@@ -41,7 +41,7 @@ class Mute(commands.Cog):
     @commands.has_permissions(administrator=True) #checking permissions
     async def unmute(self, ctx, member:discord.Member): #just the reverse mute command
         role = discord.utils.get(ctx.guild.roles, id=739391329779581008) #muted role
-        with open(r'/root/tabuu bot/json/muted.json', 'r') as f:
+        with open(r'./json/muted.json', 'r') as f:
             muted_users = json.load(f)
 
         if f'{member.id}' in muted_users: #have to check if the user is muted in the json file, otherwise the delete function would corrupt the file
@@ -58,7 +58,7 @@ class Mute(commands.Cog):
                 print("user has blocked me :(")
         else:
             await ctx.send(f"{member.mention} was not muted.")
-        with open(r'/root/tabuu bot/json/muted.json', 'w') as f:
+        with open(r'./json/muted.json', 'w') as f:
             json.dump(muted_users, f, indent=4)
 
         
@@ -93,11 +93,11 @@ class Mute(commands.Cog):
             return
   
         role = discord.utils.get(ctx.guild.roles, id=739391329779581008)
-        with open (r'/root/tabuu bot/json/muted.json', 'r') as f:
+        with open (r'./json/muted.json', 'r') as f:
             muted_users = json.load(f)
         await self.add_mute(muted_users, member)
         await member.add_roles(role)
-        with open(r'/root/tabuu bot/json/muted.json', 'w') as f:
+        with open(r'./json/muted.json', 'w') as f:
             json.dump(muted_users, f, sort_keys=True, ensure_ascii=False, indent=4) #dont need the sort_keys and ensure_ascii, works without
 
         await ctx.send(f"{member.mention} has been muted for {time_muted}!") #now we need to change that back just for the message
@@ -107,7 +107,7 @@ class Mute(commands.Cog):
             print("user has blocked me :(")
 
         await asyncio.sleep(seconds) #waits the specified amount of time
-        with open(r'/root/tabuu bot/json/muted.json', 'r') as f:
+        with open(r'./json/muted.json', 'r') as f:
             muted_users = json.load(f)
         if f'{member.id}' in muted_users: #checks if they already have been unmuted, so the muted file doesnt break
             del muted_users[f'{member.id}']['muted']
@@ -123,7 +123,7 @@ class Mute(commands.Cog):
                 print("user has blocked me :(")
         else:
             await ctx.send(f"I tried to unmute {member.mention}, but they were already unmuted.")
-        with open(r'/root/tabuu bot/json/muted.json', 'w') as f:
+        with open(r'./json/muted.json', 'w') as f:
             json.dump(muted_users, f, indent=4)
 
 

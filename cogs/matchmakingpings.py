@@ -26,7 +26,7 @@ class Pings(discord.ui.Select):
         if self.values[0] == 'Singles':
             timestamp = time.strftime("%H:%M")
 
-            with open(r'/root/tabuu bot/json/singles.json', 'r') as f:
+            with open(r'./json/singles.json', 'r') as f:
                 singles = json.load(f)
 
             list_of_searches = []
@@ -52,7 +52,7 @@ class Pings(discord.ui.Select):
         elif self.values[0] == 'Doubles':
             timestamp = time.strftime("%H:%M")
             
-            with open(r'/root/tabuu bot/json/doubles.json', 'r') as f:
+            with open(r'./json/doubles.json', 'r') as f:
                 doubles = json.load(f)
 
             list_of_searches = []
@@ -78,7 +78,7 @@ class Pings(discord.ui.Select):
         elif self.values[0] == 'Funnies':
             timestamp = time.strftime("%H:%M")
 
-            with open(r'/root/tabuu bot/json/funnies.json', 'r') as f:
+            with open(r'./json/funnies.json', 'r') as f:
                 funnies = json.load(f)
 
             list_of_searches = []
@@ -104,7 +104,7 @@ class Pings(discord.ui.Select):
         elif self.values[0] == 'Ranked':
             timestamp = time.strftime("%H:%M")
 
-            with open(r'/root/tabuu bot/json/rankedpings.json', 'r') as f:
+            with open(r'./json/rankedpings.json', 'r') as f:
                 rankedusers = json.load(f)
 
             list_of_searches = [] #list for later
@@ -185,7 +185,7 @@ class Matchmakingpings(commands.Cog):
 
         #deleting singles file
 
-        with open(r'/root/tabuu bot/json/singles.json', 'r') as f:
+        with open(r'./json/singles.json', 'r') as f:
             singles = json.load(f)
         
         singles_requests = []
@@ -196,14 +196,14 @@ class Matchmakingpings(commands.Cog):
         for user in singles_requests:
             del singles[user]
         
-        with open(r'/root/tabuu bot/json/singles.json', 'w') as f:
+        with open(r'./json/singles.json', 'w') as f:
             json.dump(singles, f, indent=4)
 
         print("singles file cleared!")
 
         #deleting doubles file
 
-        with open(r'/root/tabuu bot/json/doubles.json', 'r') as f:
+        with open(r'./json/doubles.json', 'r') as f:
             doubles = json.load(f)
         
         doubles_requests = []
@@ -214,14 +214,14 @@ class Matchmakingpings(commands.Cog):
         for user in doubles_requests:
             del doubles[user]
         
-        with open(r'/root/tabuu bot/json/doubles.json', 'w') as f:
+        with open(r'./json/doubles.json', 'w') as f:
             json.dump(doubles, f, indent=4)
 
         print("doubles file cleared!")
 
         #deleting funnies file
 
-        with open(r'/root/tabuu bot/json/funnies.json', 'r') as f:
+        with open(r'./json/funnies.json', 'r') as f:
             funnies = json.load(f)
         
         funnies_requests = []
@@ -232,14 +232,14 @@ class Matchmakingpings(commands.Cog):
         for user in funnies_requests:
             del funnies[user]
         
-        with open(r'/root/tabuu bot/json/funnies.json', 'w') as f:
+        with open(r'./json/funnies.json', 'w') as f:
             json.dump(funnies, f, indent=4)
 
         print("funnies file cleared!")
 
         #deleting ranked file
 
-        with open(r'/root/tabuu bot/json/rankedpings.json', 'r') as f:
+        with open(r'./json/rankedpings.json', 'r') as f:
             ranked = json.load(f)
         
         ranked_requests = []
@@ -250,7 +250,7 @@ class Matchmakingpings(commands.Cog):
         for user in ranked_requests:
             del ranked[user]
         
-        with open(r'/root/tabuu bot/json/rankedpings.json', 'w') as f:
+        with open(r'./json/rankedpings.json', 'w') as f:
             json.dump(ranked, f, indent=4)
 
         print("ranked file cleared!")

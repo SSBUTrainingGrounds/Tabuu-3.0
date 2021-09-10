@@ -15,7 +15,7 @@ class Rolemenu(commands.Cog):
     @commands.command()
     @commands.has_permissions(administrator=True)
     async def newrolemenu(self, ctx, message:int, emoji, role:discord.Role):
-        with open(r'/root/tabuu bot/json/reactrole.json', 'r') as f:
+        with open(r'./json/reactrole.json', 'r') as f:
             data = json.load(f)
 
         try: #makes sure the message and emoji are valid
@@ -34,7 +34,7 @@ class Rolemenu(commands.Cog):
             data[f'{message}'] = [{"exclusive":False, "rolereq":None}] #default values for the special properties, only once per message
             data[f'{message}'] += ([[{"emoji":emoji, "role": role.id}]])
 
-        with open(r'/root/tabuu bot/json/reactrole.json', 'w') as f: #writes it to the file
+        with open(r'./json/reactrole.json', 'w') as f: #writes it to the file
             json.dump(data, f, indent=4)
 
         await ctx.send(f"Added an entry for Message ID #{message}, Emoji {emoji}, and Role {role.name}")
@@ -43,7 +43,7 @@ class Rolemenu(commands.Cog):
     @commands.command()
     @commands.has_permissions(administrator=True)
     async def modifyrolemenu(self, ctx, message:int, exclusive:bool = False, rolereq:discord.Role = None):
-        with open(r'/root/tabuu bot/json/reactrole.json', 'r') as f:
+        with open(r'./json/reactrole.json', 'r') as f:
             data = json.load(f)
 
         if not f'{message}' in data.keys(): #quick check if the message is in there
@@ -54,7 +54,7 @@ class Rolemenu(commands.Cog):
         data[f'{message}'][0]['exclusive'] = exclusive                                      #rolereq will not have an attribute id, and thus we need to set it to just rolereq
 
 
-        with open(r'/root/tabuu bot/json/reactrole.json', 'w') as f: #writes it to the file
+        with open(r'./json/reactrole.json', 'w') as f: #writes it to the file
             json.dump(data, f, indent=4)
         try:
             await ctx.send(f"I have set the Role requirement to {rolereq.name} and the Exclusive requirement to {exclusive} for the Role menu message ID {message}.")
@@ -66,7 +66,7 @@ class Rolemenu(commands.Cog):
     @commands.command()
     @commands.has_permissions(administrator=True)
     async def deleterolemenu(self, ctx, message:int):
-        with open(r'/root/tabuu bot/json/reactrole.json', 'r') as f:
+        with open(r'./json/reactrole.json', 'r') as f:
             data = json.load(f)
         
         if f'{message}' in data.keys():
@@ -75,7 +75,7 @@ class Rolemenu(commands.Cog):
         else:
             await ctx.send("This message was not used for role menus.")
         
-        with open(r'/root/tabuu bot/json/reactrole.json', 'w') as f: #writes it to the file
+        with open(r'./json/reactrole.json', 'w') as f: #writes it to the file
             json.dump(data, f, indent=4)
 
 
@@ -84,7 +84,7 @@ class Rolemenu(commands.Cog):
     @commands.command()
     @commands.has_permissions(administrator=True)
     async def geteveryrolemenu(self, ctx):
-        with open(r'/root/tabuu bot/json/reactrole.json', 'r') as f:
+        with open(r'./json/reactrole.json', 'r') as f:
             data = json.load(f)
 
         message = []
@@ -120,7 +120,7 @@ class Rolemenu(commands.Cog):
     #listeners to actually add/remove the roles
     @commands.Cog.listener()
     async def on_raw_reaction_add(self, payload):
-        with open(r'/root/tabuu bot/json/reactrole.json', 'r') as f:
+        with open(r'./json/reactrole.json', 'r') as f:
             data = json.load(f)
 
         if not payload.guild_id: #reactions outside of the server would throw an error otherwise
@@ -149,7 +149,7 @@ class Rolemenu(commands.Cog):
     #pretty much the same as above, only to remove the role again, no need for any checks though
     @commands.Cog.listener()
     async def on_raw_reaction_remove(self, payload):
-        with open(r'/root/tabuu bot/json/reactrole.json', 'r') as f:
+        with open(r'./json/reactrole.json', 'r') as f:
             data = json.load(f)
 
         if f'{payload.message_id}' in data.keys():

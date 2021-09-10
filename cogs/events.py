@@ -41,7 +41,7 @@ class Events(commands.Cog):
         cadet = discord.utils.get(guild.roles, id=739299507799326843) #cadet role
 
         try: #basically if the user id is in the muted.json this executes
-            with open(r'/root/tabuu bot/json/muted.json', 'r') as f:
+            with open(r'./json/muted.json', 'r') as f:
                 muted_users = json.load(f)
 
             muted = muted_users[f'{member.id}']['muted'] #if a user is not muted, this here throws a keyerror, and then the except code kicks in

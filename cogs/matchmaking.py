@@ -28,7 +28,7 @@ class Matchmaking(commands.Cog):
 
         singles_role = discord.utils.get(guild.roles, id=739299507799326842)
         if ctx.message.channel.id in arena_channels: #code for the public arenas
-            with open(r'/root/tabuu bot/json/singles.json', 'r') as f:
+            with open(r'./json/singles.json', 'r') as f:
                 singles = json.load(f)
             singles_mm = ctx.message.author
             channel = ctx.message.channel.id
@@ -55,21 +55,21 @@ class Matchmaking(commands.Cog):
             await mm_thread.add_user(ctx.author)
             await mm_thread.send(f"Hi there, {ctx.author.mention}! Please use this thread for communicating with your opponent.")
 
-            with open(r'/root/tabuu bot/json/singles.json', 'w') as f:
+            with open(r'./json/singles.json', 'w') as f:
                 json.dump(singles, f, indent=4) #writes it to the file
 
             await asyncio.sleep(1800) #waits 30 mins, then deletes the request. if there are 2 requests the first one will get overwritten and on the second delete we will get a keyerror, which isnt a problem
-            with open(r'/root/tabuu bot/json/singles.json', 'r') as f:
+            with open(r'./json/singles.json', 'r') as f:
                 singles = json.load(f)
             try:
                 del singles[f'{ctx.message.author.id}']
             except:
                 print("tried to delete a singles request but the deletion failed")
-            with open(r'/root/tabuu bot/json/singles.json', 'w') as f:
+            with open(r'./json/singles.json', 'w') as f:
                 json.dump(singles, f, indent=4)
             
         elif ctx.message.channel.id in special_arenas: #code for private arenas, same thing but doesnt add your ping to the list
-            with open(r'/root/tabuu bot/json/singles.json', 'r') as f:
+            with open(r'./json/singles.json', 'r') as f:
                 singles = json.load(f)
             list_of_searches = []
             for singles_mm in singles:
@@ -100,7 +100,7 @@ class Matchmaking(commands.Cog):
         if isinstance(error, commands.CommandOnCooldown):
             timestamp = time.strftime("%H:%M") #timestamp for storing, simplified to only hours/mins
             if ctx.message.channel.id in arena_channels or ctx.message.channel.id in special_arenas:
-                with open(r'/root/tabuu bot/json/singles.json', 'r') as f:
+                with open(r'./json/singles.json', 'r') as f:
                     singles = json.load(f)
                 list_of_searches = []
                 for singles_mm in singles:
@@ -136,7 +136,7 @@ class Matchmaking(commands.Cog):
 
         doubles_role = discord.utils.get(guild.roles, id=739299507799326841)
         if ctx.message.channel.id in arena_channels:
-            with open(r'/root/tabuu bot/json/doubles.json', 'r') as f:
+            with open(r'./json/doubles.json', 'r') as f:
                 doubles = json.load(f)
 
             doubles_mm = ctx.message.author
@@ -164,21 +164,21 @@ class Matchmaking(commands.Cog):
             await mm_thread.add_user(ctx.author)
             await mm_thread.send(f"Hi there, {ctx.author.mention}! Please use this thread for communicating with your opponents.")
 
-            with open(r'/root/tabuu bot/json/doubles.json', 'w') as f:
+            with open(r'./json/doubles.json', 'w') as f:
                 json.dump(doubles, f, indent=4)
 
             await asyncio.sleep(1800) #30 mins
-            with open(r'/root/tabuu bot/json/doubles.json', 'r') as f:
+            with open(r'./json/doubles.json', 'r') as f:
                 doubles = json.load(f)
             try:
                 del doubles[f'{ctx.message.author.id}']
             except:
                 print("tried to delete a doubles request but the deletion failed")
-            with open(r'/root/tabuu bot/json/doubles.json', 'w') as f:
+            with open(r'./json/doubles.json', 'w') as f:
                 json.dump(doubles, f, indent=4)
 
         elif ctx.message.channel.id in special_arenas:
-            with open(r'/root/tabuu bot/json/doubles.json', 'r') as f:
+            with open(r'./json/doubles.json', 'r') as f:
                 doubles = json.load(f)
             list_of_searches = []
             for doubles_mm in doubles:
@@ -208,7 +208,7 @@ class Matchmaking(commands.Cog):
         if isinstance(error, commands.CommandOnCooldown):
             timestamp = time.strftime("%H:%M")
             if ctx.message.channel.id in arena_channels or ctx.message.channel.id in special_arenas:
-                with open(r'/root/tabuu bot/json/doubles.json', 'r') as f:
+                with open(r'./json/doubles.json', 'r') as f:
                     doubles = json.load(f)
                 list_of_searches = []
                 for doubles_mm in doubles:
@@ -243,7 +243,7 @@ class Matchmaking(commands.Cog):
 
         funnies_role = discord.utils.get(guild.roles, id=739299507795132495)
         if ctx.message.channel.id in arena_channels:
-            with open(r'/root/tabuu bot/json/funnies.json', 'r') as f:
+            with open(r'./json/funnies.json', 'r') as f:
                 funnies = json.load(f)
 
             funnies_mm = ctx.message.author
@@ -271,21 +271,21 @@ class Matchmaking(commands.Cog):
             await mm_thread.add_user(ctx.author)
             await mm_thread.send(f"Hi there, {ctx.author.mention}! Please use this thread for communicating with your opponent.")
 
-            with open(r'/root/tabuu bot/json/funnies.json', 'w') as f:
+            with open(r'./json/funnies.json', 'w') as f:
                 json.dump(funnies, f, indent=4)
 
             await asyncio.sleep(1800) #30 mins
-            with open(r'/root/tabuu bot/json/funnies.json', 'r') as f:
+            with open(r'./json/funnies.json', 'r') as f:
                 funnies = json.load(f)
             try:
                 del funnies[f'{ctx.message.author.id}']
             except:
                 print("tried to delete a funnies request but the deletion failed")
-            with open(r'/root/tabuu bot/json/funnies.json', 'w') as f:
+            with open(r'./json/funnies.json', 'w') as f:
                 json.dump(funnies, f, indent=4)
 
         elif ctx.message.channel.id in special_arenas:
-            with open(r'/root/tabuu bot/json/funnies.json', 'r') as f:
+            with open(r'./json/funnies.json', 'r') as f:
                 funnies = json.load(f)
             list_of_searches = []
             for funnies_mm in funnies:
@@ -315,7 +315,7 @@ class Matchmaking(commands.Cog):
         if isinstance(error, commands.CommandOnCooldown):
             timestamp = time.strftime("%H:%M")
             if ctx.message.channel.id in arena_channels or ctx.message.channel.id in special_arenas:
-                with open(r'/root/tabuu bot/json/funnies.json', 'r') as f:
+                with open(r'./json/funnies.json', 'r') as f:
                     funnies = json.load(f)
                 list_of_searches = []
                 for funnies_mm in funnies:

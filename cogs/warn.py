@@ -36,7 +36,7 @@ class Warn(commands.Cog):
             return
 
         reason = ''.join(args) #to get the full reason
-        with open(r'/root/tabuu bot/json/warns.json', 'r') as f: #path where my .json file is stored, r is for read
+        with open(r'./json/warns.json', 'r') as f: #path where my .json file is stored, r is for read
             users = json.load(f) #loads .json file into memory
 
         warn_id = random.randint(100000, 999999) #warn id, so we can identify each warn, 6 digits is hopefully enough to avoid duplicates
@@ -85,11 +85,11 @@ class Warn(commands.Cog):
             await user.kick(reason=f"Automatic kick for reaching {warns} warnings")
         if warns > 2 and warns < 5: #auto mute if a user reaches 3 warns, stops at 5 so you dont get dumb errors
             role = discord.utils.get(ctx.guild.roles, id=739391329779581008) #muted role
-            with open (r'/root/tabuu bot/json/muted.json', 'r') as fp: #the fp muted is for the mute database
+            with open (r'./json/muted.json', 'r') as fp: #the fp muted is for the mute database
                 muted_users = json.load(fp)
             await user.add_roles(role)
             await self.add_mute(muted_users, user)
-            with open(r'/root/tabuu bot/json/muted.json', 'w') as fp: #writes it to the file
+            with open(r'./json/muted.json', 'w') as fp: #writes it to the file
                 json.dump(muted_users, fp, sort_keys=True, ensure_ascii=False, indent=4) #dont need the sort_keys and ensure_ascii, works without
             await ctx.send(f"{user.mention} has reached warning #{warns}. They have been automatically muted.")
             try:
@@ -97,7 +97,7 @@ class Warn(commands.Cog):
             except:
                 print("user has blocked me :(")
 
-        with open(r'/root/tabuu bot/json/warns.json', 'w') as f: #w is for write
+        with open(r'./json/warns.json', 'w') as f: #w is for write
             json.dump(users, f, indent=4) #writes data to .json file
         
 
@@ -112,7 +112,7 @@ class Warn(commands.Cog):
             user = ctx.author
 
         try:
-            with open(r'/root/tabuu bot/json/warns.json', 'r') as f:
+            with open(r'./json/warns.json', 'r') as f:
                 users = json.load(f) #loads .json file into memory
 
             user_data = users[str(user.id)]
@@ -124,7 +124,7 @@ class Warn(commands.Cog):
     @commands.command()
     @commands.has_permissions(administrator=True)
     async def clearwarns(self, ctx, user:discord.Member):
-        with open(r'/root/tabuu bot/json/warns.json', 'r') as f: #loads file as before
+        with open(r'./json/warns.json', 'r') as f: #loads file as before
             users = json.load(f)
 
         if f'{user.id}' in users: #have to use this if else statement so the file doesnt get corrupted
@@ -133,14 +133,14 @@ class Warn(commands.Cog):
         else:
             await ctx.send(f"No warnings found for {user.mention}")
 
-        with open(r'/root/tabuu bot/json/warns.json', 'w') as f:
+        with open(r'./json/warns.json', 'w') as f:
             json.dump(users, f, indent=4)
 
     @commands.command()
     @commands.has_permissions(administrator=True)
     async def warndetails(self, ctx, user:discord.Member):
         try: #if the bot finds matching user in database
-            with open(r'/root/tabuu bot/json/warns.json', 'r') as f:
+            with open(r'./json/warns.json', 'r') as f:
                 users = json.load(f) #loads .json file into memory
 
 
@@ -167,7 +167,7 @@ class Warn(commands.Cog):
     @commands.has_permissions(administrator=True)
     async def deletewarn(self, ctx, user:discord.Member, warn_id):
         
-        with open(r'/root/tabuu bot/json/warns.json', 'r') as f:
+        with open(r'./json/warns.json', 'r') as f:
             users = json.load(f)
 
         user_data = users[str(user.id)]
@@ -178,7 +178,7 @@ class Warn(commands.Cog):
         else:
             await ctx.send(f"I couldnt find a warning with the ID {warn_id} for {user.mention}.")
 
-        with open(r'/root/tabuu bot/json/warns.json', 'w') as f:
+        with open(r'./json/warns.json', 'w') as f:
             json.dump(users, f, indent=4)
 
 
@@ -241,7 +241,7 @@ class Warn(commands.Cog):
     #gets called once on bot startup and then every 24 hours
     @tasks.loop(hours=24)
     async def warnloop(self):
-        with open(r'/root/tabuu bot/json/warns.json', 'r') as f:
+        with open(r'./json/warns.json', 'r') as f:
             users = json.load(f)
 
         tbd_users = []
@@ -273,7 +273,7 @@ class Warn(commands.Cog):
             print(f"deleted warn#{warn_id}!")
             i += 1
         
-        with open(r'/root/tabuu bot/json/warns.json', 'w') as f:
+        with open(r'./json/warns.json', 'w') as f:
             json.dump(users, f, indent=4)
 
 

@@ -38,7 +38,7 @@ class Macros(commands.Cog):
     #pic with our stagelist on it, change file when it changes
     @commands.command()
     async def stagelist(self, ctx):
-        await ctx.send(file=discord.File(r"/root/tabuu bot/files/stagelist.png")) 
+        await ctx.send(file=discord.File(r"./files/stagelist.png")) 
 
 
 
