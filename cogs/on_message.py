@@ -29,28 +29,27 @@ class On_message(commands.Cog):
 
     @commands.Cog.listener()
     async def on_message(self, message):
-
-
         if message.author == self.bot.user: #dont want any recursive stuff to happen, so any messages from tabuu 3.0 wont get checked, just in case
             return
 
         if not message.guild: #wont check dm's
             return
 
+
+        #searches for invite links and deletes them
+        if "discord.gg" in message.content or "discordapp.com/invite" in message.content:
+            guild = self.bot.get_guild(739299507795132486)
+            mod_role = discord.utils.get(guild.roles, id=739299507816366106)
+            promoter_role = discord.utils.get(guild.roles, id=739299507799326847)
+            allowed_channels = (739299509670248502, 739299508902559811, 739299508403437623, 739299508197917060, 739299509670248505)
+            if mod_role not in message.author.roles and promoter_role not in message.author.roles and message.channel.id not in allowed_channels:
+                await message.delete()
+                await message.channel.send(f"Please don't send invite links here {message.author.mention}")
+
+
+        #searches for bad words, deletes them and warns the user automatically
         separators = ()#string.digits+string.whitespace+string.punctuation , add all these for very strict ruling, might end up with false positives
         excluded = string.ascii_letters+string.digits #add/remove these depending on strictness, do +'/'+'-' and so on for urls in the future maybe
-
-        guild = self.bot.get_guild(739299507795132486) #our guild
-        mod_role = discord.utils.get(guild.roles, id=739299507816366106) #mod role, and promoter role
-        promoter_role = discord.utils.get(guild.roles, id=739299507799326847)
-        allowed_channels = (739299509670248502, 739299508902559811, 739299508403437623, 739299508197917060, 739299509670248505) #excepted channels
-        if "discord.gg" in message.content or "discordapp.com/invite" in message.content: #ugly 4-nested if statements, havent found a more elegant way
-            if mod_role not in message.author.roles: #also the above are the 2-most common invite links and are only used for invites, shouldnt get any false positives
-                if promoter_role not in message.author.roles:
-                    if message.channel.id not in allowed_channels:
-                        await message.delete()
-                        await message.channel.send(f"Please don't send invite links here {message.author.mention}")
-
 
         for word in file: #checks if a message contains one of the words in the badwords.txt file
             formatted_word = f"[{separators}]*".join(list(word))
