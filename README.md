@@ -14,6 +14,7 @@ Features include:
 - Reaction-based role menus
 - Logging system
 - Autorole system
+- Custom macro commands
 - Bypasses the need for Mee6 Premium, assigns Roles based on Level
 - Lots of useful general user commands
 - Lots of not so useful general user commands
