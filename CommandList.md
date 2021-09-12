@@ -1,7 +1,7 @@
 # Full list of commands:
 
 This here contains every command with a detailed explanation on how to use them. They are ordered alphabetically, search them with Ctrl+F.  
-Last updated: 6 September 2021  
+Last updated: 12 September 2021  
 I will try to keep this up-to-date, no promises.  
 
 **%8ball** `<question>`  
@@ -53,9 +53,17 @@ I will try to keep this up-to-date, no promises.
     Info: Counts down from the specified number between 2 and 50.  
     Example: `%countdown 5`  
     
+**%createmacro** `<name> <payload>`  
+    Info: Admin only, creates a new macro with your desired payload.  
+    Example: `%createmacro test hello this is a test`  
+    
 **%delete** `<message IDs>`  
     Info: Admin only. Deletes Messages by their IDs. The messages need to be in the same channel of the command. Takes as many messages as you like.  
     Example: `%delete 858117781375418389 858117780859256882`  
+    
+**%deletemacro** `<name>`  
+    Info: Admin only. Deletes the specified macro command.  
+    Example: `%deletemacro test`  
     
 **%deleterolemenu** `<message ID>`  
     Info: Admin only. Deletes a Role menu completely.  
@@ -106,10 +114,18 @@ I will try to keep this up-to-date, no promises.
 **%leaderboard**  
     Info: Admin only. Gets you the Top 10 rated players of our ranked matchmaking system.  
     
+**%listmacros**  
+    Info: Lists out all registered macro commands.  
+    Aliases: listmacro, macros, macro  
+    
 **%listrole** `<role>`  
     Info: Lists out every User with a certain role. The bot searches for the closest match for the role name.  
     Example: `%listrole first class`  
     Aliases: listroles  
+    
+**%`<macro>`**  
+    Info: Invokes the macro command, list them all with either %macro or %listmacros  
+    Example: %test  
     
 **%modifyrolemenu** `<message ID> <exclusive: Optional> <Role: Optional>`  
     Info: Admin only. Modifies a role menu with special properties. Exclusive is a boolean(True/False) value which specifies if a User is able to get 1 role (True) or all roles (False) from this role menu. The role sets a requirement if a User needs this role to get any role of this role menu. Mention the role or use role ID. Both arguments are optional, if left out both default to False/None.  
