@@ -48,6 +48,8 @@ class Responses(discord.ui.Select):
 ```%geteveryrolemenu``` - Gets you every role menu entry currently active.\n\
 ```%reloadcogs``` - Owner only, reloads all of the modules of this bot.\n\
 ```%rename <@user> <name>``` - Sets a new nickname for a user or removes it.\n\
+```%createmacro <name> <output>``` - Creates a new macro.\n\
+```%deletemacro <name>``` - Deletes a macro.\n\
         ')
                 await interaction.response.send_message(embed=admin_embed, ephemeral=True)
             else:
@@ -55,6 +57,7 @@ class Responses(discord.ui.Select):
 
         elif self.values[0] == 'Info':
             info_embed = discord.Embed(title="❓Info Commands❓", color=0x06515f, description='\n\
+```%listmacros``` - Lists every macro command registered.\n\
 ```%roleinfo <role>``` - Displays Role info.\n\
 ```%listrole <role>``` - Displays all the members with a certain Role.\n\
 ```%userinfo <member>``` - Shows user info of a mentioned member.\n\

@@ -123,6 +123,16 @@ class Events(commands.Cog):
     async def on_command_error(self, ctx, error):
         if isinstance(error, commands.CommandNotFound):
             command_list = [command.name for command in self.bot.commands] #every command registered. note that this will not include aliases
+
+            #makes sure the macros are in that list as well
+            with open(r'./json/macros.json', 'r') as f:
+                macros = json.load(f)
+            for name in macros:
+                command_list.append(name)
+            
+            if ctx.invoked_with in command_list:
+                return
+
             try:
                 match = process.extractOne(ctx.invoked_with, command_list, score_cutoff=30, scorer=fuzz.token_set_ratio)[0]
                 await ctx.send(f"I could not find this command. Did you mean `%{match}`?\nType `%help` for all available commands.")
