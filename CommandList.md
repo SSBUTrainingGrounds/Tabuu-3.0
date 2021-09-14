@@ -1,7 +1,7 @@
 # Full list of commands:
 
 This here contains every command with a detailed explanation on how to use them. They are ordered alphabetically, search them with Ctrl+F.  
-Last updated: 12 September 2021  
+Last updated: 14 September 2021  
 I will try to keep this up-to-date, no promises.  
 
 **%8ball** `<question>`  
@@ -210,6 +210,11 @@ I will try to keep this up-to-date, no promises.
     Info: Rolls a dice. N are two numbers, first the number of dice then the amount of sides for the dice.  
     Example: `%roll 2d6`  
     Aliases: r  
+    
+**%rps** `<@user>`
+    Info: Plays a game of Rock, Paper, Scissors with the mentioned user.  
+    Example: `%rps @Phxenix`  
+    Aliases: rockpaperscissors, rochambeau, roshambo  
   
 **%server**  
     Info: Gets you information about our server.  
