@@ -1,11 +1,13 @@
-# Tabuu-3.0-Bot
-A discord bot specifically made for the SSBU Training Grounds discord server. Made by Phxenix#1104
+# Tabuu-3.0-Bot  
+[<img alt="Discord" src="https://img.shields.io/discord/739299507795132486?color=%235865F2&label=discord&logo=discord&logoColor=white">](https://discord.gg/ssbutg)  
+A discord bot specifically made for the SSBU Training Grounds discord server. Made by Phxenix#1104  
+##  
 
 Lots of hardcoded values and no setup command because this bot is only intended to run on the SSBUTG server. If you want to run it on your server you want to change these manually.
 
-Join us at [discord.gg/ssbutg](https://discord.gg/ssbutg)
+Join us at: [discord.gg/ssbutg](https://discord.gg/ssbutg)  
 
-Features include:
+## Features include:
 - Custom matchmaking system for Smash Ultimate, ranked and unranked
 - General purpose moderation commands
 - Custom warning and muting system
