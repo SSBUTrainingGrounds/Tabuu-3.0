@@ -2,7 +2,6 @@ import discord
 from discord.ext import commands, tasks
 import json
 from itertools import cycle
-from discord.utils import get
 from fuzzywuzzy import process, fuzz
 
 #
@@ -36,14 +35,16 @@ class Events(commands.Cog):
     async def on_member_join(self, member):
         channel = self.bot.get_channel(739299507937738849) #ssbutg general: 739299507937738849
         rules = self.bot.get_channel(739299507937738843) #rules-and-info channel on ssbutg
-        muted_role = discord.utils.get(member.guild.roles, id=739391329779581008) #muted role
-        cadet = discord.utils.get(member.guild.roles, id=739299507799326843) #cadet role
 
         with open(r'./json/muted.json', 'r') as f:
             muted_users = json.load(f)  
 
         #checking if the user is muted when he joins
         if f'{member.id}' in muted_users:
+            #getting both the cadet role too since you dont really have to accept the rules if you come back muted
+            muted_role = discord.utils.get(member.guild.roles, id=739391329779581008)
+            cadet = discord.utils.get(member.guild.roles, id=739299507799326843)
+
             await member.add_roles(muted_role)
             await member.add_roles(cadet)
             await channel.send(f"Welcome back, {member.mention}! You are still muted, so maybe check back later.")
@@ -95,7 +96,7 @@ class Events(commands.Cog):
             if oldRole.id == 739344833738571868: #if its the booster role, all of the above color roles will get removed
                 for role in color_roles:
                     try:
-                        removerole = get(after.guild.roles, id=role)
+                        removerole = discord.utils.get(after.guild.roles, id=role)
                         if removerole in after.roles:
                             await after.remove_roles(removerole)
                     except:
