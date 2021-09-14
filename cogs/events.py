@@ -24,7 +24,7 @@ class Events(commands.Cog):
     async def on_ready(self): #the pylint below is required, so that we dont get a false error
         self.change_status.start() #pylint: disable=no-member
         
-    @tasks.loop(seconds=120) #the status loop, every 120 secs, could maybe increase it further
+    @tasks.loop(seconds=300) #the status loop, every 5 mins, could maybe increase it further
     async def change_status(self):
         await self.bot.change_presence(activity=discord.Game(next(status)))
 
