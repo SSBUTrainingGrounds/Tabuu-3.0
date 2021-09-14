@@ -1,5 +1,6 @@
 import discord
 from discord.ext import commands, tasks
+import random
 
 
 #
@@ -64,19 +65,26 @@ class Rpsgame(commands.Cog):
 
     #never heard of those alternate names but wikipedia says they exist so might as well add them
     @commands.command(aliases=["rockpaperscissors", "rochambeau", "roshambo"])
-    async def rps(self, ctx, member:discord.Member):
+    async def rps(self, ctx, member:discord.Member = None):
+        if member is None:
+            member = self.bot.user
+
         #basic checks for users
         if member == ctx.author:
             await ctx.send("Please don't play matches with yourself.")
             return
         
-        if member.bot:
-            await ctx.send("Please do not play with other bots, they're too predictable.")
-            return
 
+        if member.bot and member.id != self.bot.user.id:
+            await ctx.send("Please do not play with other bots, they are too predictable.")
+            return
 
         view = RpsButtons(ctx, member)
         init_message = await ctx.send(f"Rock, Paper, Scissors: \n{ctx.author.name} vs {member.name}\nChoose wisely:", view=view)
+
+        #if the bot plays it just chooses randomly
+        if member.id == self.bot.user.id:
+            view.memberchoice = random.choice(["Rock", "Paper", "Scissors"])
 
         #waits for the button to stop or timeout
         await view.wait()
