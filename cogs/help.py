@@ -84,6 +84,7 @@ class Responses(discord.ui.Select):
         elif self.values[0] == 'Utility':
             utility_embed = discord.Embed(title="🔧Utility Commands🔧", color=0x424242, description='\n\
 ```%coin``` - Throws a coin\n\
+```%rps <@user>``` - Plays a match of Rock, Paper, Scissors with the mentioned user.\n\
 ```%roll <NdN>``` - Rolling dice, format %roll 1d100.\n\
 ```%countdown <number>``` - Counts down from number.\n\
 ```%poll <"question"> <"option 1"> <"option 2">``` - Starts a poll with a maximum of 10 choices.\n\
