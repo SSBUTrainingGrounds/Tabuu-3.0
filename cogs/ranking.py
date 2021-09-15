@@ -426,7 +426,9 @@ class Ranking(commands.Cog):
                     elo1200role = discord.utils.get(ctx.guild.roles, id=835560003556999199)
                     elo1300role = discord.utils.get(ctx.guild.roles, id=835560006907985930)
                     elomaxrole = discord.utils.get(ctx.guild.roles, id=835560009810444328)
-                    await ctx.author.remove_roles(elo800role, elo950role, elo1050role, elo1200role, elo1300role, elomaxrole)
+                    roles = [elo800role, elo950role, elo1050role, elo1200role, elo1300role, elomaxrole]
+                    for role in roles:
+                        await ctx.author.remove_roles(role)
                 else:
                     pass
 
