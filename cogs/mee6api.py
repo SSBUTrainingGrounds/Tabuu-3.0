@@ -21,14 +21,21 @@ class Mee6api(commands.Cog):
 
 
     #command if someone wants to do it manually
-    @commands.command()
+    @commands.command(aliases=["updatelvl"], cooldown_after_parsing=True)
     @commands.guild_only() #cant be used in dms
-    @commands.cooldown(1, 600, commands.BucketType.user) #1 use, 10m cooldown, per user. since the response time of the api isnt too great, i wanted to limit these requests
-    async def updatelevel(self, ctx):
+    @commands.cooldown(1, 300, commands.BucketType.user) #1 use, 5m cooldown, per user. since the response time of the api isnt too great, i wanted to limit these requests
+    async def updatelevel(self, ctx, member: discord.Member = None):
+        if member is None:
+            member = ctx.author
+
+        if member.bot:
+            await ctx.send("Please do not use this command on bots.")
+            ctx.command.reset_cooldown(ctx)
+            return
 
         botmessage = await ctx.send("Please wait a few seconds...") #again, api is sometimes very slow so we send this message out first
 
-        userlevel = await mee6API.levels.get_user_level(ctx.author.id) #gets the level
+        userlevel = await mee6API.levels.get_user_level(member.id) #gets the level
 
         defaultrole = get(ctx.guild.roles, id=739299507799326843)
         level10 = get(ctx.guild.roles, id=827473860936990730)
@@ -36,44 +43,48 @@ class Mee6api(commands.Cog):
         level50 = get(ctx.guild.roles, id=827473874413289484)
         level75 = get(ctx.guild.roles, id=827583894776840212)
 
+        levelroles = [defaultrole, level10, level25, level50, level75]
+
+        rolegiven = None
         
         if userlevel > 9 and userlevel < 25:
-            if level10 not in ctx.author.roles:
-                await ctx.author.add_roles(level10)
-                await ctx.author.remove_roles(defaultrole)
+            if level10 not in member.roles:
+                for role in levelroles:
+                    if role in member.roles:
+                        await member.remove_roles(role)
+                await member.add_roles(level10)
                 rolegiven = level10
         
         elif userlevel > 24 and userlevel < 50:
-            if level25 not in ctx.author.roles:
-                await ctx.author.add_roles(level25)
-                await ctx.author.remove_roles(defaultrole)
+            if level25 not in member.roles:
+                for role in levelroles:
+                    if role in member.roles:
+                        await member.remove_roles(role)
+                await member.add_roles(level25)
                 rolegiven = level25
-            if level10 in ctx.author.roles:
-                await ctx.author.remove_roles(level10)
             
         elif userlevel > 49 and userlevel < 75:
-            if level50 not in ctx.author.roles:
-                await ctx.author.add_roles(level50)
-                await ctx.author.remove_roles(defaultrole)
+            if level50 not in member.roles:
+                for role in levelroles:
+                    if role in member.roles:
+                        await member.remove_roles(role)
+                await member.add_roles(level50)
                 rolegiven = level50
-            if level25 in ctx.author.roles:
-                await ctx.author.remove_roles(level25)
 
         elif userlevel > 74:
-            if level75 not in ctx.author.roles:
-                await ctx.author.add_roles(level75)
-                await ctx.author.remove_roles(defaultrole)
+            if level75 not in member.roles:
+                for role in levelroles:
+                    if role in member.roles:
+                        await member.remove_roles(role)
+                await member.add_roles(level75)
                 rolegiven = level75
-            if level50 in ctx.author.roles:
-                await ctx.author.remove_roles(level50)
-
-        
 
 
-        try: #if rolegiven isnt referenced, it will throw an error and the below message appears
-            await botmessage.edit(content=f"{ctx.author.mention}, you are Level {userlevel}, and thus I have given you the {rolegiven} role.")
-        except:
-            await botmessage.edit(content=f"{ctx.author.mention}, you are Level {userlevel}, so no new role for you.")
+        if rolegiven is None:
+            await botmessage.edit(content=f"{member.mention}, you are Level {userlevel}, so no new role for you.")
+        else:
+            await botmessage.edit(content=f"{member.mention}, you are Level {userlevel}, and thus I have given you the {rolegiven} role.")
+
 
     #generic error message
     @updatelevel.error
@@ -82,6 +93,8 @@ class Mee6api(commands.Cog):
             await ctx.send(f"{ctx.author.mention}, you are on cooldown for another {round((error.retry_after)/60)} minutes to use this command.")
         elif isinstance(error, commands.NoPrivateMessage):
             await ctx.send("This command can only be used in the SSBU TG Discord Server.")
+        elif isinstance(error, commands.MemberNotFound):
+            await ctx.send("Please mention a valid member, or leave it blank.")
         else:
             raise error
 
@@ -102,6 +115,7 @@ class Mee6api(commands.Cog):
         level50 = get(guild.roles, id=827473874413289484)
         level75 = get(guild.roles, id=827583894776840212)
 
+        levelroles = [defaultrole, level10, level25, level50, level75]
 
         pageNumber = ceil(len(guild.members)/100) #gets the correct amount of pages
         for i in range(pageNumber):
@@ -109,39 +123,43 @@ class Mee6api(commands.Cog):
             for user in leaderboard_page["players"]:
                 if int(user["id"]) in [guildMember.id for guildMember in guild.members]: #checks if the user is still in the guild
         
+                    #need to fetch the member, since get_member is unreliable.
+                    #even with member intents it kind of fails sometimes since not all members are cached
+                    #this fetching step can take some time depending on guild size
+                    #we also just can remove all level roles since this code only triggers if you rank up. after that add the new role
                     if user["level"] > 9 and user["level"] < 25:
-                        user1 = await self.bot.fetch_user(user['id']) #no idea why i have to fetch the user first and then get the member second but it won't work otherwise
-                        user2 = guild.get_member(user1.id) #also this step could take some time depending on the size of the guild
-                        if level10 not in user2.roles:
-                            await user2.add_roles(level10)
-                            await user2.remove_roles(defaultrole)
+                        member = await guild.fetch_member(user["id"])
+                        if level10 not in member.roles:
+                            for role in levelroles:
+                                if role in member.roles:
+                                    await member.remove_roles(role)
+                            await member.add_roles(level10)
                     
                     elif user["level"] > 24 and user["level"] < 50:
-                        user1 = await self.bot.fetch_user(user['id']) #same here, i put this in the user level checks so it doesnt fetch everyone
-                        user2 = guild.get_member(user1.id)
-                        if level25 not in user2.roles:
-                            await user2.add_roles(level25)
-                            await user2.remove_roles(defaultrole)
-                            await user2.remove_roles(level10)
+                        member = await guild.fetch_member(user["id"])
+                        if level25 not in member.roles:
+                            for role in levelroles:
+                                if role in member.roles:
+                                    await member.remove_roles(role)
+                            await member.add_roles(level25)
                         
                     elif user["level"] > 49 and user["level"] < 75:
-                        user1 = await self.bot.fetch_user(user['id'])
-                        user2 = guild.get_member(user1.id)
-                        if level50 not in user2.roles:
-                            await user2.add_roles(level50)
-                            await user2.remove_roles(defaultrole)
-                            await user2.remove_roles(level25)
+                        member = await guild.fetch_member(user["id"])
+                        if level50 not in member.roles:
+                            for role in levelroles:
+                                if role in member.roles:
+                                    await member.remove_roles(role)
+                            await member.add_roles(level50)
                     
                     elif user["level"] > 74:
-                        user1 = await self.bot.fetch_user(user['id'])
-                        user2 = guild.get_member(user1.id)
-                        if level75 not in user2.roles:
-                            await user2.add_roles(level75)
-                            await user2.remove_roles(defaultrole)
-                            await user2.remove_roles(level50)
+                        member = await guild.fetch_member(user["id"])
+                        if level75 not in member.roles:
+                            for role in levelroles:
+                                if role in member.roles:
+                                    await member.remove_roles(role)
+                            await member.add_roles(level75)
         
         print("level roles updated!")
-
 
 
 

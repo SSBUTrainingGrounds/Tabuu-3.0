@@ -95,7 +95,7 @@ class Responses(discord.ui.Select):
         elif self.values[0] == 'Miscellaneous':
             miscellaneous_embed = discord.Embed(title="📋Miscellaneous Commands📋", color=0x155a00, description='\n\
 ```%modmail <your message>``` - A private way to communicate with the moderator team. Only works in my DM channel.\n\
-```%updatelevel``` - Updates your level role manually.\n\
+```%updatelevel <@user>``` - Updates the level role manually.\n\
 ```%stagelist``` - Our Stagelist for Crew Battles.\n\
 ```%coaching``` - Coaching requirements.\n\
 ```%calendar``` - Calendar with our schedule.\n\
