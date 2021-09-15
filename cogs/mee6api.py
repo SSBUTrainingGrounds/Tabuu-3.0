@@ -95,6 +95,8 @@ class Mee6api(commands.Cog):
             await ctx.send("This command can only be used in the SSBU TG Discord Server.")
         elif isinstance(error, commands.MemberNotFound):
             await ctx.send("Please mention a valid member, or leave it blank.")
+        elif isinstance(error, commands.CommandInvokeError):
+            await ctx.send("Something went wrong! Either the API is down or the user was not in the leaderboard yet. Please try again later.")
         else:
             raise error
 
