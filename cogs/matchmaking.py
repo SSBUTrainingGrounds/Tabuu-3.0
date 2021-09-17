@@ -152,7 +152,7 @@ class Matchmaking(commands.Cog):
             mm_thread = await mm_message.create_thread(name=f"Doubles Arena of {ctx.author.name}", auto_archive_duration=60)
 
             await mm_thread.add_user(ctx.author)
-            await mm_thread.send(f"Hi there, {ctx.author.mention}! Please use this thread for communicating with your opponent.")
+            await mm_thread.send(f"Hi there, {ctx.author.mention}! Please use this thread for communicating with your opponents.")
 
             await asyncio.sleep(1800)
 
