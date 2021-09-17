@@ -1,8 +1,6 @@
 import discord
 from discord.ext import commands, tasks
 import json
-import time
-from datetime import datetime, timedelta
 import asyncio
 
 #
@@ -20,105 +18,112 @@ class Matchmaking(commands.Cog):
         self.bot = bot
 
 
+    #storing the matchmaking ping in the file
+    async def store_ping(self, ctx, mm_type: str, timestamp: float):
+        with open(r'./json/{filename}.json'.format(filename=mm_type), 'r') as f:
+            user_pings = json.load(f)
+
+        user_pings[f'{ctx.author.id}'] = {}
+        user_pings[f'{ctx.author.id}'] = {"channel": ctx.channel.id, "time": timestamp}
+
+        with open(r'./json/{filename}.json'.format(filename=mm_type), 'w') as f:
+            json.dump(user_pings, f, indent=4)
+
+    #deleting it again
+    async def delete_ping(self, ctx, mm_type: str):
+        with open(r'./json/{filename}.json'.format(filename=mm_type), 'r') as f:
+            user_pings = json.load(f)
+
+        try:
+            del user_pings[f'{ctx.message.author.id}']
+        except KeyError:
+            print(f"tried to delete a {mm_type} ping but the deletion failed")
+
+        with open(r'./json/{filename}.json'.format(filename=mm_type), 'w') as f:
+            json.dump(user_pings, f, indent=4)
+
+
+    #getting a list with all the recent pings
+    async def get_recent_pings(self, mm_type: str, timestamp: float):
+        with open(r'./json/{filename}.json'.format(filename=mm_type), 'r') as f:
+            user_pings = json.load(f)
+
+        list_of_searches = []
+
+        for ping in user_pings:
+            ping_channel = user_pings[f'{ping}']['channel']
+            ping_timestamp = user_pings[f'{ping}']['time']
+
+            difference = timestamp - ping_timestamp
+
+            minutes = round(difference / 60)
+
+            if minutes < 31:
+                list_of_searches.append(f"<@!{ping}>, in <#{ping_channel}>, {minutes} minutes ago\n")
+
+        list_of_searches.reverse()
+        searches = ''.join(list_of_searches)
+
+        if len(searches) == 0:
+            searches = "Looks like no one has pinged recently :("
+
+        return searches
+
+
+
     @commands.command(aliases=['matchmaking', 'matchmakingsingles', 'mmsingles', 'Singles'])
     @commands.cooldown(1, 600, commands.BucketType.user) #1 use, 10m cooldown, per user
     async def singles(self, ctx):
-        guild = self.bot.get_guild(739299507795132486) #ssbutg server
-        timestamp = time.strftime("%H:%M") #timestamp for storing, simplified to only hours/mins
+        timestamp = discord.utils.utcnow().timestamp()
+        singles_role = discord.utils.get(ctx.guild.roles, id=739299507799326842)
+        
+        if ctx.message.channel.id in arena_channels:
+            await self.store_ping(ctx, "singles", timestamp)
+            
+            searches = await self.get_recent_pings("singles", timestamp)
 
-        singles_role = discord.utils.get(guild.roles, id=739299507799326842)
-        if ctx.message.channel.id in arena_channels: #code for the public arenas
-            with open(r'./json/singles.json', 'r') as f:
-                singles = json.load(f)
-            singles_mm = ctx.message.author
-            channel = ctx.message.channel.id
-            singles[f'{singles_mm.id}'] = {}
-            singles[f'{singles_mm.id}'] = {"channel": channel, "time": timestamp} #storing the mm request
-            list_of_searches = [] #list for later
+            embed = discord.Embed(
+                title="Singles pings in the last 30 Minutes:", 
+                description=searches, 
+                colour=discord.Colour.dark_red())
 
-            for singles_mm in singles: #gets every active mm request
-                channel_mm = singles[f'{singles_mm}']['channel']
-                timecode = singles[f'{singles_mm}']['time']
-                old_ping = datetime.strptime(timecode, "%H:%M") #this block gets the time difference in minutes
-                new_ping = datetime.strptime(timestamp, "%H:%M")
-                timedelta = new_ping - old_ping
-                seconds = timedelta.total_seconds()
-                minutes = round(seconds/60)
-                if minutes < -1000: #band aid fix, im only storing the hours/minutes so if a ping from before midnight gets called after, the negative of that number appears
-                    minutes = minutes + 1440 #we can fix that by just adding a whole day which is 1440 mins
-                list_of_searches.append(f"<@!{singles_mm}>, in <#{channel_mm}>, {minutes} minutes ago\n")
-            list_of_searches.reverse()
-            searches = ''.join(list_of_searches) #stores the requests in a string, not a list
-            embed = discord.Embed(title="Singles pings in the last 30 Minutes:", description=searches, colour=discord.Colour.dark_red())
             mm_message = await ctx.send(f"{ctx.author.mention} is looking for {singles_role.mention} games!", embed=embed)
-            mm_thread = await mm_message.create_thread(name=f"Singles Arena of {ctx.author.name}", auto_archive_duration=60) #starts up the thread
+            mm_thread = await mm_message.create_thread(name=f"Singles Arena of {ctx.author.name}", auto_archive_duration=60)
+
             await mm_thread.add_user(ctx.author)
             await mm_thread.send(f"Hi there, {ctx.author.mention}! Please use this thread for communicating with your opponent.")
 
-            with open(r'./json/singles.json', 'w') as f:
-                json.dump(singles, f, indent=4) #writes it to the file
+            await asyncio.sleep(1800)
 
-            await asyncio.sleep(1800) #waits 30 mins, then deletes the request. if there are 2 requests the first one will get overwritten and on the second delete we will get a keyerror, which isnt a problem
-            with open(r'./json/singles.json', 'r') as f:
-                singles = json.load(f)
-            try:
-                del singles[f'{ctx.message.author.id}']
-            except:
-                print("tried to delete a singles request but the deletion failed")
-            with open(r'./json/singles.json', 'w') as f:
-                json.dump(singles, f, indent=4)
+            await self.delete_ping(ctx, "singles")
+
             
-        elif ctx.message.channel.id in special_arenas: #code for private arenas, same thing but doesnt add your ping to the list
-            with open(r'./json/singles.json', 'r') as f:
-                singles = json.load(f)
-            list_of_searches = []
-            for singles_mm in singles:
-                channel_mm = singles[f'{singles_mm}']['channel']
-                timecode = singles[f'{singles_mm}']['time']
-                old_ping = datetime.strptime(timecode, "%H:%M")
-                new_ping = datetime.strptime(timestamp, "%H:%M")
-                timedelta = new_ping - old_ping
-                seconds = timedelta.total_seconds()
-                minutes = round(seconds/60)
-                if minutes < -1000:
-                    minutes = minutes + 1440
-                list_of_searches.append(f"<@!{singles_mm}>, in <#{channel_mm}>, {minutes} minutes ago\n")
-            list_of_searches.reverse()
-            searches = ''.join(list_of_searches)
-            if len(searches) == 0:
-                searches = "Looks like no one has pinged recently :("
-            embed = discord.Embed(title="Singles pings in the last 30 Minutes:", description=searches, colour=discord.Colour.dark_red())
+        elif ctx.message.channel.id in special_arenas:
+            searches = await self.get_recent_pings("singles", timestamp)
+
+            embed = discord.Embed(
+                title="Singles pings in the last 30 Minutes:", 
+                description=searches, 
+                colour=discord.Colour.dark_red())
+
             await ctx.send(f"{ctx.author.mention} is looking for {singles_role.mention} games!\nHere are the most recent Singles pings in our open arenas:", embed=embed)
 
-        else: #code for every other channel
+        else:
             await ctx.send("Please only use this command in our arena channels!")
             ctx.command.reset_cooldown(ctx)
 
-
-    @singles.error #on cooldown error, just pulls up the same list with a cooldown message
+    @singles.error
     async def singles_error(self, ctx, error):
         if isinstance(error, commands.CommandOnCooldown):
-            timestamp = time.strftime("%H:%M") #timestamp for storing, simplified to only hours/mins
+            timestamp = discord.utils.utcnow().timestamp()
             if ctx.message.channel.id in arena_channels or ctx.message.channel.id in special_arenas:
-                with open(r'./json/singles.json', 'r') as f:
-                    singles = json.load(f)
-                list_of_searches = []
-                for singles_mm in singles:
-                    channel_mm = singles[f'{singles_mm}']['channel']
-                    timecode = singles[f'{singles_mm}']['time']
-                    old_ping = datetime.strptime(timecode, "%H:%M")
-                    new_ping = datetime.strptime(timestamp, "%H:%M")
-                    timedelta = new_ping - old_ping
-                    seconds = timedelta.total_seconds()
-                    minutes = round(seconds/60)
-                    if minutes < -1000:
-                        minutes = minutes + 1440
-                    list_of_searches.append(f"<@!{singles_mm}>, in <#{channel_mm}>, {minutes} minutes ago\n")
-                list_of_searches.reverse()
-                searches = ''.join(list_of_searches)
-                if len(searches) == 0:
-                    searches = "Looks like no one has pinged recently :("
-                embed = discord.Embed(title="Singles pings in the last 30 Minutes:", description=searches, colour=discord.Colour.dark_red())
+                searches = await self.get_recent_pings("singles", timestamp)
+
+                embed = discord.Embed(
+                    title="Singles pings in the last 30 Minutes:", 
+                    description=searches, 
+                    colour=discord.Colour.dark_red())
+
                 await ctx.send(f"{ctx.author.mention}, you are on cooldown for another {round((error.retry_after)/60)} minutes to use this command. \nIn the meantime, here are the most recent Singles pings in our open arenas:", embed=embed)
             else:
                 await ctx.send("Please only use this command in our arena channels!")
@@ -126,77 +131,42 @@ class Matchmaking(commands.Cog):
             raise error
 
 
-    #for the doubles/funnies commands, pretty much everything is the same, just slightly altered the names
 
     @commands.command(aliases=['matchmakingdoubles', 'mmdoubles', 'Doubles'])
     @commands.cooldown(1, 600, commands.BucketType.user) #1 use, 10m cooldown, per user
     async def doubles(self, ctx):
-        guild = self.bot.get_guild(739299507795132486)
-        timestamp = time.strftime("%H:%M")
+        timestamp = discord.utils.utcnow().timestamp()
+        doubles_role = discord.utils.get(ctx.guild.roles, id=739299507799326841)
 
-        doubles_role = discord.utils.get(guild.roles, id=739299507799326841)
         if ctx.message.channel.id in arena_channels:
-            with open(r'./json/doubles.json', 'r') as f:
-                doubles = json.load(f)
+            await self.store_ping(ctx, "doubles", timestamp)
+            
+            searches = await self.get_recent_pings("doubles", timestamp)
 
-            doubles_mm = ctx.message.author
-            channel = ctx.message.channel.id
-            doubles[f'{doubles_mm.id}'] = {}
-            doubles[f'{doubles_mm.id}'] = {"channel": channel, "time": timestamp}
-            list_of_searches = []
+            embed = discord.Embed(
+                title="Doubles pings in the last 30 Minutes:", 
+                description=searches, 
+                colour=discord.Colour.dark_blue())
 
-            for doubles_mm in doubles:
-                channel_mm = doubles[f'{doubles_mm}']['channel']
-                timecode = doubles[f'{doubles_mm}']['time']
-                old_ping = datetime.strptime(timecode, "%H:%M")
-                new_ping = datetime.strptime(timestamp, "%H:%M")
-                timedelta = new_ping - old_ping
-                seconds = timedelta.total_seconds()
-                minutes = round(seconds/60)
-                if minutes < -1000:
-                    minutes = minutes + 1440
-                list_of_searches.append(f"<@!{doubles_mm}>, in <#{channel_mm}>, {minutes} minutes ago\n")
-            list_of_searches.reverse()
-            searches = ''.join(list_of_searches)
-            embed = discord.Embed(title="Doubles pings in the last 30 Minutes:", description=searches, colour=discord.Colour.dark_blue())
-            mm_message  = await ctx.send(f"{ctx.author.mention} is looking for {doubles_role.mention} games!", embed=embed)
+            mm_message = await ctx.send(f"{ctx.author.mention} is looking for {doubles_role.mention} games!", embed=embed)
             mm_thread = await mm_message.create_thread(name=f"Doubles Arena of {ctx.author.name}", auto_archive_duration=60)
+
             await mm_thread.add_user(ctx.author)
-            await mm_thread.send(f"Hi there, {ctx.author.mention}! Please use this thread for communicating with your opponents.")
+            await mm_thread.send(f"Hi there, {ctx.author.mention}! Please use this thread for communicating with your opponent.")
 
-            with open(r'./json/doubles.json', 'w') as f:
-                json.dump(doubles, f, indent=4)
+            await asyncio.sleep(1800)
 
-            await asyncio.sleep(1800) #30 mins
-            with open(r'./json/doubles.json', 'r') as f:
-                doubles = json.load(f)
-            try:
-                del doubles[f'{ctx.message.author.id}']
-            except:
-                print("tried to delete a doubles request but the deletion failed")
-            with open(r'./json/doubles.json', 'w') as f:
-                json.dump(doubles, f, indent=4)
+            await self.delete_ping(ctx, "doubles")
 
+            
         elif ctx.message.channel.id in special_arenas:
-            with open(r'./json/doubles.json', 'r') as f:
-                doubles = json.load(f)
-            list_of_searches = []
-            for doubles_mm in doubles:
-                channel_mm = doubles[f'{doubles_mm}']['channel']
-                timecode = doubles[f'{doubles_mm}']['time']
-                old_ping = datetime.strptime(timecode, "%H:%M")
-                new_ping = datetime.strptime(timestamp, "%H:%M")
-                timedelta = new_ping - old_ping
-                seconds = timedelta.total_seconds()
-                minutes = round(seconds/60)
-                if minutes < -1000:
-                    minutes = minutes + 1440
-                list_of_searches.append(f"<@!{doubles_mm}>, in <#{channel_mm}>, {minutes} minutes ago\n")
-            list_of_searches.reverse()
-            searches = ''.join(list_of_searches)
-            if len(searches) == 0:
-                searches = "Looks like no one has pinged recently :("
-            embed = discord.Embed(title="Doubles pings in the last 30 Minutes:", description=searches, colour=discord.Colour.dark_blue())
+            searches = await self.get_recent_pings("doubles", timestamp)
+
+            embed = discord.Embed(
+                title="Doubles pings in the last 30 Minutes:", 
+                description=searches, 
+                colour=discord.Colour.dark_blue())
+
             await ctx.send(f"{ctx.author.mention} is looking for {doubles_role.mention} games!\nHere are the most recent Doubles pings in our open arenas:", embed=embed)
 
         else:
@@ -206,27 +176,15 @@ class Matchmaking(commands.Cog):
     @doubles.error
     async def doubles_error(self, ctx, error):
         if isinstance(error, commands.CommandOnCooldown):
-            timestamp = time.strftime("%H:%M")
+            timestamp = discord.utils.utcnow().timestamp()
             if ctx.message.channel.id in arena_channels or ctx.message.channel.id in special_arenas:
-                with open(r'./json/doubles.json', 'r') as f:
-                    doubles = json.load(f)
-                list_of_searches = []
-                for doubles_mm in doubles:
-                    channel_mm = doubles[f'{doubles_mm}']['channel']
-                    timecode = doubles[f'{doubles_mm}']['time']
-                    old_ping = datetime.strptime(timecode, "%H:%M")
-                    new_ping = datetime.strptime(timestamp, "%H:%M")
-                    timedelta = new_ping - old_ping
-                    seconds = timedelta.total_seconds()
-                    minutes = round(seconds/60)
-                    if minutes < -1000:
-                        minutes = minutes + 1440
-                    list_of_searches.append(f"<@!{doubles_mm}>, in <#{channel_mm}>, {minutes} minutes ago\n")
-                list_of_searches.reverse()
-                searches = ''.join(list_of_searches)
-                if len(searches) == 0:
-                    searches = "Looks like no one has pinged recently :("
-                embed = discord.Embed(title="Doubles pings in the last 30 Minutes:", description=searches, colour=discord.Colour.dark_blue())
+                searches = await self.get_recent_pings("doubles", timestamp)
+
+                embed = discord.Embed(
+                    title="Doubles pings in the last 30 Minutes:", 
+                    description=searches, 
+                    colour=discord.Colour.dark_blue())
+
                 await ctx.send(f"{ctx.author.mention}, you are on cooldown for another {round((error.retry_after)/60)} minutes to use this command. \nIn the meantime, here are the most recent Doubles pings in our open arenas:", embed=embed)
             else:
                 await ctx.send("Please only use this command in our arena channels!")
@@ -234,76 +192,41 @@ class Matchmaking(commands.Cog):
             raise error
 
 
-
     @commands.command(aliases=['matchmakingfunnies', 'mmfunnies', 'Funnies'])
     @commands.cooldown(1, 600, commands.BucketType.user) #1 use, 10m cooldown, per user
     async def funnies(self, ctx):
-        guild = self.bot.get_guild(739299507795132486)
-        timestamp = time.strftime("%H:%M")
+        timestamp = discord.utils.utcnow().timestamp()
+        funnies_role = discord.utils.get(ctx.guild.roles, id=739299507795132495)
 
-        funnies_role = discord.utils.get(guild.roles, id=739299507795132495)
         if ctx.message.channel.id in arena_channels:
-            with open(r'./json/funnies.json', 'r') as f:
-                funnies = json.load(f)
+            await self.store_ping(ctx, "funnies", timestamp)
+            
+            searches = await self.get_recent_pings("funnies", timestamp)
 
-            funnies_mm = ctx.message.author
-            channel = ctx.message.channel.id
-            funnies[f'{funnies_mm.id}'] = {}
-            funnies[f'{funnies_mm.id}'] = {"channel": channel, "time": timestamp}
-            list_of_searches = []
+            embed = discord.Embed(
+                title="Funnies pings in the last 30 Minutes:", 
+                description=searches, 
+                colour=discord.Colour.green())
 
-            for funnies_mm in funnies:
-                channel_mm = funnies[f'{funnies_mm}']['channel']
-                timecode = funnies[f'{funnies_mm}']['time']
-                old_ping = datetime.strptime(timecode, "%H:%M")
-                new_ping = datetime.strptime(timestamp, "%H:%M")
-                timedelta = new_ping - old_ping
-                seconds = timedelta.total_seconds()
-                minutes = round(seconds/60)
-                if minutes < -1000:
-                    minutes = minutes + 1440
-                list_of_searches.append(f"<@!{funnies_mm}>, in <#{channel_mm}>, {minutes} minutes ago\n")
-            list_of_searches.reverse()
-            searches = ''.join(list_of_searches)
-            embed = discord.Embed(title="Funnies pings in the last 30 Minutes:", description=searches, colour=discord.Colour.green())
             mm_message = await ctx.send(f"{ctx.author.mention} is looking for {funnies_role.mention} games!", embed=embed)
             mm_thread = await mm_message.create_thread(name=f"Funnies Arena of {ctx.author.name}", auto_archive_duration=60)
+
             await mm_thread.add_user(ctx.author)
             await mm_thread.send(f"Hi there, {ctx.author.mention}! Please use this thread for communicating with your opponent.")
 
-            with open(r'./json/funnies.json', 'w') as f:
-                json.dump(funnies, f, indent=4)
+            await asyncio.sleep(1800)
 
-            await asyncio.sleep(1800) #30 mins
-            with open(r'./json/funnies.json', 'r') as f:
-                funnies = json.load(f)
-            try:
-                del funnies[f'{ctx.message.author.id}']
-            except:
-                print("tried to delete a funnies request but the deletion failed")
-            with open(r'./json/funnies.json', 'w') as f:
-                json.dump(funnies, f, indent=4)
+            await self.delete_ping(ctx, "funnies")
 
+            
         elif ctx.message.channel.id in special_arenas:
-            with open(r'./json/funnies.json', 'r') as f:
-                funnies = json.load(f)
-            list_of_searches = []
-            for funnies_mm in funnies:
-                channel_mm = funnies[f'{funnies_mm}']['channel']
-                timecode = funnies[f'{funnies_mm}']['time']
-                old_ping = datetime.strptime(timecode, "%H:%M")
-                new_ping = datetime.strptime(timestamp, "%H:%M")
-                timedelta = new_ping - old_ping
-                seconds = timedelta.total_seconds()
-                minutes = round(seconds/60)
-                if minutes < -1000:
-                    minutes = minutes + 1440
-                list_of_searches.append(f"<@!{funnies_mm}>, in <#{channel_mm}>, {minutes} minutes ago\n")
-            list_of_searches.reverse()
-            searches = ''.join(list_of_searches)
-            if len(searches) == 0:
-                searches = "Looks like no one has pinged recently :("
-            embed = discord.Embed(title="Funnies pings in the last 30 Minutes:", description=searches, colour=discord.Colour.green())
+            searches = await self.get_recent_pings("funnies", timestamp)
+
+            embed = discord.Embed(
+                title="Funnies pings in the last 30 Minutes:", 
+                description=searches, 
+                colour=discord.Colour.dark_red())
+
             await ctx.send(f"{ctx.author.mention} is looking for {funnies_role.mention} games!\nHere are the most recent Funnies pings in our open arenas:", embed=embed)
 
         else:
@@ -313,32 +236,21 @@ class Matchmaking(commands.Cog):
     @funnies.error
     async def funnies_error(self, ctx, error):
         if isinstance(error, commands.CommandOnCooldown):
-            timestamp = time.strftime("%H:%M")
+            timestamp = discord.utils.utcnow().timestamp()
             if ctx.message.channel.id in arena_channels or ctx.message.channel.id in special_arenas:
-                with open(r'./json/funnies.json', 'r') as f:
-                    funnies = json.load(f)
-                list_of_searches = []
-                for funnies_mm in funnies:
-                    channel_mm = funnies[f'{funnies_mm}']['channel']
-                    timecode = funnies[f'{funnies_mm}']['time']
-                    old_ping = datetime.strptime(timecode, "%H:%M")
-                    new_ping = datetime.strptime(timestamp, "%H:%M")
-                    timedelta = new_ping - old_ping
-                    seconds = timedelta.total_seconds()
-                    minutes = round(seconds/60)
-                    if minutes < -1000:
-                        minutes = minutes + 1440
-                    list_of_searches.append(f"<@!{funnies_mm}>, in <#{channel_mm}>, {minutes} minutes ago\n")
-                list_of_searches.reverse()
-                searches = ''.join(list_of_searches)
-                if len(searches) == 0:
-                    searches = "Looks like no one has pinged recently :("
-                embed = discord.Embed(title="Funnies pings in the last 30 Minutes:", description=searches, colour=discord.Colour.green())
+                searches = await self.get_recent_pings("funnies", timestamp)
+
+                embed = discord.Embed(
+                    title="Funnies pings in the last 30 Minutes:", 
+                    description=searches, 
+                    colour=discord.Colour.green())
+
                 await ctx.send(f"{ctx.author.mention}, you are on cooldown for another {round((error.retry_after)/60)} minutes to use this command. \nIn the meantime, here are the most recent Funnies pings in our open arenas:", embed=embed)
             else:
                 await ctx.send("Please only use this command in our arena channels!")
         else:
             raise error
+
 
 
 

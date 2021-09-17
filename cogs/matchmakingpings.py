@@ -1,8 +1,8 @@
 import discord
 from discord.ext import commands, tasks
 import json
-from datetime import datetime, timedelta
-import time
+from .matchmaking import Matchmaking
+from .ranking import Ranking
 
 
 #
@@ -24,107 +24,50 @@ class Pings(discord.ui.Select):
 
     async def callback(self, interaction: discord.Interaction):
         if self.values[0] == 'Singles':
-            timestamp = time.strftime("%H:%M")
+            timestamp = discord.utils.utcnow().timestamp()
 
-            with open(r'./json/singles.json', 'r') as f:
-                singles = json.load(f)
+            searches = await Matchmaking.get_recent_pings(self, "singles", timestamp)
 
-            list_of_searches = []
-            for singles_mm in singles:
-                channel_mm = singles[f'{singles_mm}']['channel']
-                timecode = singles[f'{singles_mm}']['time']
-                old_ping = datetime.strptime(timecode, "%H:%M")
-                new_ping = datetime.strptime(timestamp, "%H:%M")
-                timedelta = new_ping - old_ping
-                seconds = timedelta.total_seconds()
-                minutes = round(seconds/60)
-                if minutes < -1000:
-                    minutes = minutes + 1440
-                list_of_searches.append(f"<@!{singles_mm}>, in <#{channel_mm}>, {minutes} minutes ago\n")
-            list_of_searches.reverse()
-            searches = ''.join(list_of_searches)
-            if len(searches) == 0:
-                searches = "Looks like no one has pinged recently :("
-            singles_embed = discord.Embed(title="Singles pings in the last 30 Minutes:", description=searches, colour=discord.Colour.dark_red())
+            singles_embed = discord.Embed(
+                title="Singles pings in the last 30 Minutes:", 
+                description=searches, 
+                colour=discord.Colour.dark_red())
 
             await interaction.response.send_message(embed=singles_embed, ephemeral=True)
 
         elif self.values[0] == 'Doubles':
-            timestamp = time.strftime("%H:%M")
+            timestamp = discord.utils.utcnow().timestamp()
             
-            with open(r'./json/doubles.json', 'r') as f:
-                doubles = json.load(f)
-
-            list_of_searches = []
-            for doubles_mm in doubles:
-                channel_mm = doubles[f'{doubles_mm}']['channel']
-                timecode = doubles[f'{doubles_mm}']['time']
-                old_ping = datetime.strptime(timecode, "%H:%M")
-                new_ping = datetime.strptime(timestamp, "%H:%M")
-                timedelta = new_ping - old_ping
-                seconds = timedelta.total_seconds()
-                minutes = round(seconds/60)
-                if minutes < -1000:
-                    minutes = minutes + 1440
-                list_of_searches.append(f"<@!{doubles_mm}>, in <#{channel_mm}>, {minutes} minutes ago\n")
-            list_of_searches.reverse()
-            searches = ''.join(list_of_searches)
-            if len(searches) == 0:
-                searches = "Looks like no one has pinged recently :("
-            doubles_embed = discord.Embed(title="Doubles pings in the last 30 Minutes:", description=searches, colour=discord.Colour.dark_blue())
+            searches = await Matchmaking.get_recent_pings(self, "doubles", timestamp)
+            
+            doubles_embed = discord.Embed(
+                title="Doubles pings in the last 30 Minutes:", 
+                description=searches, 
+                colour=discord.Colour.dark_blue())
 
             await interaction.response.send_message(embed=doubles_embed, ephemeral=True)
 
         elif self.values[0] == 'Funnies':
-            timestamp = time.strftime("%H:%M")
+            timestamp = discord.utils.utcnow().timestamp()
 
-            with open(r'./json/funnies.json', 'r') as f:
-                funnies = json.load(f)
-
-            list_of_searches = []
-            for funnies_mm in funnies:
-                channel_mm = funnies[f'{funnies_mm}']['channel']
-                timecode = funnies[f'{funnies_mm}']['time']
-                old_ping = datetime.strptime(timecode, "%H:%M")
-                new_ping = datetime.strptime(timestamp, "%H:%M")
-                timedelta = new_ping - old_ping
-                seconds = timedelta.total_seconds()
-                minutes = round(seconds/60)
-                if minutes < -1000:
-                    minutes = minutes + 1440
-                list_of_searches.append(f"<@!{funnies_mm}>, in <#{channel_mm}>, {minutes} minutes ago\n")
-            list_of_searches.reverse()
-            searches = ''.join(list_of_searches)
-            if len(searches) == 0:
-                searches = "Looks like no one has pinged recently :("
-            funnies_embed = discord.Embed(title="Funnies pings in the last 30 Minutes:", description=searches, colour=discord.Colour.green())
+            searches = await Matchmaking.get_recent_pings(self, "funnies", timestamp)
+            
+            funnies_embed = discord.Embed(
+                title="Funnies pings in the last 30 Minutes:", 
+                description=searches, 
+                colour=discord.Colour.green())
 
             await interaction.response.send_message(embed=funnies_embed, ephemeral=True)
 
         elif self.values[0] == 'Ranked':
-            timestamp = time.strftime("%H:%M")
+            timestamp = discord.utils.utcnow().timestamp()
 
-            with open(r'./json/rankedpings.json', 'r') as f:
-                rankedusers = json.load(f)
+            searches = await Ranking.get_recent_ranked_pings(self, timestamp)
 
-            list_of_searches = [] #list for later
-            for ranked_mm in rankedusers: #gets every active mm request
-                rankrole = rankedusers[f'{ranked_mm}']['rank']
-                channel_mm = rankedusers[f'{ranked_mm}']['channel']
-                timecode = rankedusers[f'{ranked_mm}']['time']
-                old_ping = datetime.strptime(timecode, "%H:%M") #this block gets the time difference in minutes
-                new_ping = datetime.strptime(timestamp, "%H:%M")
-                timedelta = new_ping - old_ping
-                seconds = timedelta.total_seconds()
-                minutes = round(seconds/60)
-                if minutes < -1000: #band aid fix, im only storing the hours/minutes so if a ping from before midnight gets called after, the negative of that number appears
-                    minutes = minutes + 1440 #we can fix that by just adding a whole day which is 1440 mins
-                list_of_searches.append(f"<@&{rankrole}> | <@!{ranked_mm}>, in <#{channel_mm}>, {minutes} minutes ago\n")
-            list_of_searches.reverse()
-            searches = ''.join(list_of_searches) #stores the requests in a string, not a list
-            if len(searches) == 0:
-                searches = "Looks like no one has pinged recently :("
-            ranked_embed = discord.Embed(title="Ranked pings in the last 30 Minutes:", description=searches, colour=discord.Colour.blue())
+            ranked_embed = discord.Embed(
+                title="Ranked pings in the last 30 Minutes:", 
+                description=searches, 
+                colour=discord.Colour.blue())
 
             await interaction.response.send_message(embed=ranked_embed, ephemeral=True)
             

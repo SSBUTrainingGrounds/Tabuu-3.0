@@ -13,6 +13,35 @@ class Ranking(commands.Cog):
     def __init__(self, bot):
         self.bot = bot
 
+    #getting a list with all the recent pings
+    #we need a different approach than normal here because the rank also gets saved in a ranked ping
+    #also this is its own function because we need to export it to matchmakingpings
+    async def get_recent_ranked_pings(self, timestamp: float):
+        with open(r'./json/rankedpings.json', 'r') as f:
+            user_pings = json.load(f)
+
+        list_of_searches = []
+
+        for ping in user_pings:
+            ping_rank = user_pings[f'{ping}']['rank']
+            ping_channel = user_pings[f'{ping}']['channel']
+            ping_timestamp = user_pings[f'{ping}']['time']
+
+            difference = timestamp - ping_timestamp
+
+            minutes = round(difference / 60)
+
+            if minutes < 31:
+                list_of_searches.append(f"<@&{ping_rank}> | <@!{ping}>, in <#{ping_channel}>, {minutes} minutes ago\n")
+
+        list_of_searches.reverse()
+        searches = ''.join(list_of_searches)
+
+        if len(searches) == 0:
+            searches = "Looks like no one has pinged recently :("
+
+        return searches
+
 
     @commands.command(aliases=['ranked', 'rankedmatchmaking', 'rankedsingles'])
     @commands.cooldown(1, 120, commands.BucketType.user)
@@ -49,45 +78,39 @@ class Ranking(commands.Cog):
         with open(r'./json/rankedpings.json', 'r') as fp:
             rankedusers = json.load(fp)
         
-            ranked_mm = ctx.message.author
-            channel = ctx.message.channel.id
-            rankedusers[f'{ranked_mm.id}'] = {}
-            rankedusers[f'{ranked_mm.id}'] = {"rank": pingrole.id, "channel": channel, "time": timestamp} #storing the mm request
-            list_of_searches = [] #list for later
+        #stores your ping
+        rankedusers[f'{ctx.author.id}'] = {}
+        rankedusers[f'{ctx.author.id}'] = {"rank": pingrole.id, "channel": ctx.channel.id, "time": timestamp}
+        
+        with open(r'./json/rankedpings.json', 'w') as fp:
+            json.dump(rankedusers, fp, indent=4)
 
-            for ranked_mm in rankedusers: #gets every active mm request
-                rankrole = rankedusers[f'{ranked_mm}']['rank']
-                channel_mm = rankedusers[f'{ranked_mm}']['channel']
-                timecode = rankedusers[f'{ranked_mm}']['time']
-                old_ping = datetime.strptime(timecode, "%H:%M") #this block gets the time difference in minutes
-                new_ping = datetime.strptime(timestamp, "%H:%M")
-                timedelta = new_ping - old_ping
-                seconds = timedelta.total_seconds()
-                minutes = round(seconds/60)
-                if minutes < -1000: #band aid fix, im only storing the hours/minutes so if a ping from before midnight gets called after, the negative of that number appears
-                    minutes = minutes + 1440 #we can fix that by just adding a whole day which is 1440 mins
-                list_of_searches.append(f"<@&{rankrole}> | <@!{ranked_mm}>, in <#{channel_mm}>, {minutes} minutes ago\n")
-            list_of_searches.reverse()
-            searches = ''.join(list_of_searches) #stores the requests in a string, not a list
-            embed = discord.Embed(title="Ranked pings in the last 30 Minutes:", description=searches, colour=discord.Colour.blue())
-            mm_message = await ctx.send(f"{ctx.author.mention} is looking for ranked matchmaking games! {pingrole.mention}", embed=embed)
-            mm_thread = await mm_message.create_thread(name=f"Ranked Arena of {ctx.author.name}", auto_archive_duration=60) #starts up the thread
-            await mm_thread.add_user(ctx.author)
-            await mm_thread.send(f"Hi there, {ctx.author.mention}! Please use this thread for communicating with your opponent and for reporting matches.")
+        #gets all of the other active pings
+        searches = await self.get_recent_ranked_pings(timestamp)
 
+        embed = discord.Embed(
+            title="Ranked pings in the last 30 Minutes:", 
+            description=searches, 
+            colour=discord.Colour.blue())
 
-            with open(r'./json/rankedpings.json', 'w') as fp:
-                json.dump(rankedusers, fp, indent=4) #writes it to the file
+        mm_message = await ctx.send(f"{ctx.author.mention} is looking for ranked matchmaking games! {pingrole.mention}", embed=embed)
+        mm_thread = await mm_message.create_thread(name=f"Ranked Arena of {ctx.author.name}", auto_archive_duration=60)
+        await mm_thread.add_user(ctx.author)
+        await mm_thread.send(f"Hi there, {ctx.author.mention}! Please use this thread for communicating with your opponent and for reporting matches.")
 
-            await asyncio.sleep(1800) #waits 30 mins, then deletes the request. if there are 2 requests the first one will get overwritten and on the second delete we will get a keyerror, which isnt a problem
-            with open(r'./json/rankedpings.json', 'r') as fp:
-                rankedusers = json.load(fp)
-            try:
-                del rankedusers[f'{ctx.message.author.id}']
-            except:
-                print("tried to delete a ranked request but the deletion failed")
-            with open(r'./json/rankedpings.json', 'w') as fp:
-                json.dump(rankedusers, fp, indent=4)
+        #waits 30 mins and deletes the ping afterwards
+        await asyncio.sleep(1800)
+
+        with open(r'./json/rankedpings.json', 'r') as fp:
+            rankedusers = json.load(fp)
+
+        try:
+            del rankedusers[f'{ctx.message.author.id}']
+        except KeyError:
+            print("tried to delete a ranked ping but the deletion failed")
+
+        with open(r'./json/rankedpings.json', 'w') as fp:
+            json.dump(rankedusers, fp, indent=4)
 
 
     @commands.command(aliases=['reportgame'], cooldown_after_parsing=True)
@@ -516,34 +539,20 @@ class Ranking(commands.Cog):
     @rankedmm.error
     async def rankedmm_error(self, ctx, error):
         if isinstance(error, commands.CommandOnCooldown):
-            allowed_channels = (835582101926969344, 835582155446681620, 836018137119850557, 836018172238495744, 836018255113748510)
+            allowed_channels = (835582101926969344, 835582155446681620, 836018137119850557)
             if ctx.channel.id not in allowed_channels:
                 await ctx.send("Please only use this command in the ranked matchmaking arenas.")
                 return
             
-            with open(r'./json/rankedpings.json', 'r') as f:
-                rankedusers = json.load(f)
+            timestamp = discord.utils.utcnow().timestamp()
 
-            timestamp = time.strftime("%H:%M") #timestamp for storing, simplified to only hours/mins
-            list_of_searches = [] #list for later
+            searches = await self.get_recent_ranked_pings(timestamp)
 
-            for ranked_mm in rankedusers: #gets every active mm request
-                rankrole = rankedusers[f'{ranked_mm}']['rank']
-                channel_mm = rankedusers[f'{ranked_mm}']['channel']
-                timecode = rankedusers[f'{ranked_mm}']['time']
-                old_ping = datetime.strptime(timecode, "%H:%M") #this block gets the time difference in minutes
-                new_ping = datetime.strptime(timestamp, "%H:%M")
-                timedelta = new_ping - old_ping
-                seconds = timedelta.total_seconds()
-                minutes = round(seconds/60)
-                if minutes < -1000: #band aid fix, im only storing the hours/minutes so if a ping from before midnight gets called after, the negative of that number appears
-                    minutes = minutes + 1440 #we can fix that by just adding a whole day which is 1440 mins
-                list_of_searches.append(f"<@&{rankrole}> | <@!{ranked_mm}>, in <#{channel_mm}>, {minutes} minutes ago\n")
-            list_of_searches.reverse()
-            searches = ''.join(list_of_searches) #stores the requests in a string, not a list
-            if len(searches) == 0:
-                searches = "Looks like no one has pinged recently :("
-            embed = discord.Embed(title="Ranked pings in the last 30 Minutes:", description=searches, colour=discord.Colour.blue())
+            embed = discord.Embed(
+                title="Ranked pings in the last 30 Minutes:", 
+                description=searches, 
+                colour=discord.Colour.blue())
+                
             await ctx.send(f"{ctx.author.mention}, you are on cooldown for another {round((error.retry_after)/60)} minutes to use this command. \nIn the meantime, here are the most recent ranked pings:", embed=embed)
         else:
             raise error
