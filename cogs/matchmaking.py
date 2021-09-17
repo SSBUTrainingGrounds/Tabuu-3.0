@@ -225,7 +225,7 @@ class Matchmaking(commands.Cog):
             embed = discord.Embed(
                 title="Funnies pings in the last 30 Minutes:", 
                 description=searches, 
-                colour=discord.Colour.dark_red())
+                colour=discord.Colour.green())
 
             await ctx.send(f"{ctx.author.mention} is looking for {funnies_role.mention} games!\nHere are the most recent Funnies pings in our open arenas:", embed=embed)
 
