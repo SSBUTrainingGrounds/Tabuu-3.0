@@ -2,8 +2,6 @@ import discord
 from discord.ext import commands, tasks
 import json
 import asyncio
-import time
-from datetime import datetime, timedelta
 
 #
 #this file will contain our ranking system
