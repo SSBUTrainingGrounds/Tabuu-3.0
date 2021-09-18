@@ -128,6 +128,8 @@ class On_message(commands.Cog):
                 with open(r'./json/warns.json', 'w') as f: #w is for write
                     json.dump(users, f, indent=4) #writes data to .json file
 
+                break
+
                 #profane = True
 
         #if not profane:
