@@ -53,7 +53,7 @@ class Ranking(commands.Cog):
             ctx.command.reset_cooldown(ctx)
             return
 
-        timestamp = time.strftime("%H:%M") #timestamp for storing, simplified to only hours/mins
+        timestamp = discord.utils.utcnow().timestamp()
         
         with open(r'./json/ranking.json', 'r') as f:
             ranking = json.load(f)
