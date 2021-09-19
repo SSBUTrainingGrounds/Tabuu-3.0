@@ -2,8 +2,6 @@ import discord
 from discord.ext import commands, tasks
 import json
 import asyncio
-import random
-import time
 
 #
 #this file here contains our custom mute system
@@ -13,62 +11,91 @@ class Mute(commands.Cog):
     def __init__(self, bot):
         self.bot = bot
 
-    async def add_mute(self, muted_users, user):
-        if not f'{user.id}' in muted_users:
-            muted_users[f'{user.id}'] = {}
-            muted_users[f'{user.id}']['muted'] = True
-
-    @commands.command()
-    @commands.has_permissions(administrator=True) #checking permissions
-    async def mute(self, ctx, member:discord.Member, *, args):
-        role = discord.utils.get(ctx.guild.roles, id=739391329779581008) #muted role
-        reason = ''.join(args)
+    #adds the mute to the json file and gives out the role
+    async def add_mute(self, ctx, member: discord.Member):
         with open (r'./json/muted.json', 'r') as f:
             muted_users = json.load(f)
-        await member.add_roles(role)
-        await self.add_mute(muted_users, member) #adds the mute to muted.json
-        await ctx.send(f"{member.mention} was muted!")
-        try:
-            await member.send(f"You have been muted in the SSBU Training Grounds Server for the following reason: \n```{reason}```\nIf you would like to discuss your punishment, please contact Tabuu#0720, Phxenix#1104 or Parz#5811")
-        except:
-            print("user has blocked me :(")
         
-        with open(r'./json/muted.json', 'w') as f: #writes it to the file
-            json.dump(muted_users, f, sort_keys=True, ensure_ascii=False, indent=4) #dont really need either, but sort_keys is for sorting the users by id, and ensure_ascii is kinda useless here, because there are no non-ascii chars passed here anyways
+        role = discord.utils.get(ctx.guild.roles, id=739391329779581008)
+        #need to use quite a few of these try/except blocks for adding/removing roles and dm'ing people unfortunately
+        try:
+            await member.add_roles(role)
+        except:
+            print("tried to add muted role to but it failed")
 
+        #checking if the user is already muted.
+        #we dont need that for the mute command but for the automatic mute this is useful as to not write someone 2x into the json file
+        if not f'{member.id}' in muted_users:
+            muted_users[f'{member.id}'] = {}
+            muted_users[f'{member.id}']['muted'] = True
 
-    @commands.command()
-    @commands.has_permissions(administrator=True) #checking permissions
-    async def unmute(self, ctx, member:discord.Member): #just the reverse mute command
-        role = discord.utils.get(ctx.guild.roles, id=739391329779581008) #muted role
+            with open(r'./json/muted.json', 'w') as f:
+                json.dump(muted_users, f, indent=4)
+
+    #basically reverses the action of the function above
+    async def remove_mute(self, ctx, member: discord.Member):
         with open(r'./json/muted.json', 'r') as f:
             muted_users = json.load(f)
 
-        if f'{member.id}' in muted_users: #have to check if the user is muted in the json file, otherwise the delete function would corrupt the file
-            del muted_users[f'{member.id}']['muted']
+        role = discord.utils.get(ctx.guild.roles, id=739391329779581008)
+        try:
+            await member.remove_roles(role)
+        except:
+            print("tried to remove muted role from user but it failed")
+
+        if f'{member.id}' in muted_users:
             del muted_users[f'{member.id}']
+
+            with open(r'./json/muted.json', 'w') as f:
+                json.dump(muted_users, f, indent=4)
+
+
+    @commands.command()
+    @commands.has_permissions(administrator=True)
+    async def mute(self, ctx, member:discord.Member, *, reason):
+        #we check again if the user is muted here because i dont want the user to get dm'd again if he already is muted
+        #didn't wanna put a separate dm function as well because the dm's change depending on what command calls it
+        #thats why we kind of check twice here, the check in the function itself is still needed for automatic mutes
+        with open (r'./json/muted.json', 'r') as f:
+            muted_users = json.load(f)
+        
+        if not f'{member.id}' in muted_users:
+            await self.add_mute(ctx, member)
+            await ctx.send(f"{member.mention} was muted!")
             try:
-                await member.remove_roles(role)
+                await member.send(f"You have been muted in the SSBU Training Grounds Server for the following reason: \n```{reason}```\nIf you would like to discuss your punishment, please contact Tabuu#0720, Phxenix#1104 or Parz#5811")
             except:
-                print("user left the server")
+                print("user has blocked me :(")
+
+        else:
+            await ctx.send("This user was already muted!")
+
+
+
+    @commands.command()
+    @commands.has_permissions(administrator=True)
+    async def unmute(self, ctx, member:discord.Member):
+        with open (r'./json/muted.json', 'r') as f:
+            muted_users = json.load(f)
+
+        if f'{member.id}' in muted_users:
+            await self.remove_mute(ctx, member)
             await ctx.send(f"{member.mention} was unmuted!")
             try:
                 await member.send("You have been unmuted in the SSBU Training Grounds Server! Don't break the rules again")
             except:
                 print("user has blocked me :(")
         else:
-            await ctx.send(f"{member.mention} was not muted.")
-        with open(r'./json/muted.json', 'w') as f:
-            json.dump(muted_users, f, indent=4)
+            await ctx.send("This user was not muted!")
+
 
         
         
 
     @commands.command()
-    @commands.has_permissions(administrator=True) #checking permissions
-    async def tempmute(self, ctx, member:discord.Member, mute_time, *, args): #this is pretty much just the mute command, then a x min waiting period and then the unmute command
-        reason = ''.join(args)
-        #this block here gets the time
+    @commands.has_permissions(administrator=True)
+    async def tempmute(self, ctx, member:discord.Member, mute_time, *, reason):
+        #this block gets the time from a human readable input, so that the user does not have to convert hours to minutes or whatever
         if mute_time.lower().endswith("d"):
             seconds = int(mute_time[:-1]) * 60 * 60 * 24
             time_muted = f"{seconds // 60 // 60 // 24} day(s)"
@@ -85,46 +112,49 @@ class Mute(commands.Cog):
             await ctx.send("Invalid time format! Please use a number followed by d/h/m/s for days/hours/minutes/seconds.")
             return
 
-        if seconds < 30: #makes sure there are no negative values
+        if seconds < 30:
             await ctx.send("Invalid time format! Minimum value is 30 seconds.")
             return
-        if seconds > 86401: #1 day + 1 sec
+        if seconds > 86401:
             await ctx.send("Invalid time format! Maximum value is 1 day.")
             return
-  
-        role = discord.utils.get(ctx.guild.roles, id=739391329779581008)
+
+
+        #now this is basically just "%mute, wait specified time, %unmute" but automated into one command
         with open (r'./json/muted.json', 'r') as f:
             muted_users = json.load(f)
-        await self.add_mute(muted_users, member)
-        await member.add_roles(role)
-        with open(r'./json/muted.json', 'w') as f:
-            json.dump(muted_users, f, sort_keys=True, ensure_ascii=False, indent=4) #dont need the sort_keys and ensure_ascii, works without
-
-        await ctx.send(f"{member.mention} has been muted for {time_muted}!") #now we need to change that back just for the message
-        try:
-            await member.send(f"You have been muted in the SSBU Training Grounds Server for ***{time_muted}*** for the following reason: \n```{reason}``` \nIf you would like to discuss your punishment, please contact Tabuu#0720, Phxenix#1104 or Parz#5811")
-        except:
-            print("user has blocked me :(")
-
-        await asyncio.sleep(seconds) #waits the specified amount of time
-        with open(r'./json/muted.json', 'r') as f:
-            muted_users = json.load(f)
-        if f'{member.id}' in muted_users: #checks if they already have been unmuted, so the muted file doesnt break
-            del muted_users[f'{member.id}']['muted']
-            del muted_users[f'{member.id}']
+        
+        #the mute block from %mute, with the inclusion of time_muted
+        if not f'{member.id}' in muted_users:
+            await self.add_mute(ctx, member)
+            await ctx.send(f"{member.mention} was muted!")
             try:
-                await member.remove_roles(role)
-            except:
-                print("user left the server")
-            await ctx.send(f"{member.mention} has been automatically unmuted!")
-            try:
-                await member.send(f"You have been unmuted in the SSBU Training Grounds Server! Don't break the rules again")
+                await member.send(f"You have been muted in the SSBU Training Grounds Server for ***{time_muted}*** for the following reason: \n```{reason}``` \nIf you would like to discuss your punishment, please contact Tabuu#0720, Phxenix#1104 or Parz#5811")
             except:
                 print("user has blocked me :(")
+
         else:
-            await ctx.send(f"I tried to unmute {member.mention}, but they were already unmuted.")
-        with open(r'./json/muted.json', 'w') as f:
-            json.dump(muted_users, f, indent=4)
+            await ctx.send("This user is already muted!")
+            return
+
+        #waits the specified time
+        await asyncio.sleep(seconds)
+
+        #need to refresh the json file
+        with open (r'./json/muted.json', 'r') as f:
+            muted_users = json.load(f)
+
+        #the unmute block from %unmute, without the else statement, no need for another unmute confirmation if the user was unmuted before manually
+        if f'{member.id}' in muted_users:
+            await self.remove_mute(ctx, member)
+            await ctx.send(f"{member.mention} was unmuted!")
+            try:
+                await member.send("You have been automatically unmuted in the SSBU Training Grounds Server! Don't break the rules again")
+            except:
+                print("user has blocked me :(")
+
+        
+        
 
 
 
@@ -142,7 +172,7 @@ class Mute(commands.Cog):
 
     @unmute.error
     async def unmute_error(self, ctx, error):
-        if isinstance(error, commands.MissingRequiredArgument): #bit different than the rest cause you dont need a reason for unmute
+        if isinstance(error, commands.MissingRequiredArgument):
             await ctx.send("You need to mention a member!")
         elif isinstance(error, commands.MemberNotFound):
             await ctx.send("You need to mention a member!")
@@ -163,6 +193,8 @@ class Mute(commands.Cog):
             await ctx.send("Invalid time format! Please use a number followed by d/h/m/s for days/hours/minutes/seconds.")
         else:
             raise error
+
+
 
 def setup(bot):
     bot.add_cog(Mute(bot))
