@@ -1,8 +1,6 @@
 import discord
 from discord.ext import commands, tasks
-import json
 from fuzzywuzzy import process
-import asyncio
 from discord.utils import get
 
 #
@@ -31,39 +29,22 @@ class Admin(commands.Cog):
 
     #ban command
     @commands.command()
-    @commands.has_permissions(administrator=True) #checking permissions
-    async def ban(self, ctx, id, *, args): #id is for the user ID, args for the ban reason
-        unwanted = ['<','@','!','>'] #if someone does not use user ID,
-        for i in unwanted: #it removes the junk from the mention and converts it into the raw ID string
-            id = id.replace(i,'')
-        
-        guild = self.bot.get_guild(739299507795132486) #ID of SSBUTG discord server
-        member = guild.get_member(int(id)) #int(id) to convert the id
+    @commands.has_permissions(administrator=True)
+    async def ban(self, ctx, user: discord.User, *, reason):
+        #tries to dm them first, need a try/except block cause you can ban ppl not on your server, or ppl can block your bot
+        try:
+            await user.send(f"You have been banned from the SSBU Training Grounds Server for the following reason: \n```{reason}```\nPlease contact Tabuu#0720 for an appeal.\nhttps://docs.google.com/spreadsheets/d/1EZhyKa69LWerQl0KxeVJZuLFFjBIywMRTNOPUUKyVCc/")
+        except:
+            print("user has blocked me :(")
 
-        if member is None: #new ban command if the user isn't on the server
-            user = await self.bot.fetch_user(int(id)) #have to use fetch if the user isn't on the server
-            reason = ''.join(args)
-            await ctx.guild.ban(user, reason=reason) #can't write users a dm, so skipped that step
-            await ctx.send(f"{user.mention} has been banned!") #slightly different message gets sent, so i can know what command executed
-
-        else: #just the regular ban command from before
-            reason = ''.join(args)
-            try:
-                await member.send(f"You have been banned from the SSBU Training Grounds Server for the following reason: \n```{reason}```\nPlease contact Tabuu#0720 for an appeal.\nhttps://docs.google.com/spreadsheets/d/1EZhyKa69LWerQl0KxeVJZuLFFjBIywMRTNOPUUKyVCc/")
-            except:
-                print("user has blocked me :(")
-            await member.ban(reason=reason) #logs the ban reason to the discord server
-            await ctx.send(f"Banned {member.mention}!")
+        await ctx.guild.ban(user, reason=reason)
+        await ctx.send(f"{user.mention} has been banned!")
         
 
     #unban
     @commands.command()
     @commands.has_permissions(administrator=True)
-    async def unban(self, ctx, id):
-        unwanted = ['<','@','!','>'] #if someone does not use user ID,
-        for i in unwanted: #it removes the junk from the mention and converts it into the raw ID string
-            id = id.replace(i,'')
-        user = await self.bot.fetch_user(int(id))
+    async def unban(self, ctx, user: discord.User):
         await ctx.guild.unban(user)
         await ctx.send(f"{user.mention} has been unbanned!")
 
@@ -72,8 +53,7 @@ class Admin(commands.Cog):
     #kick command
     @commands.command()
     @commands.has_permissions(administrator=True) #checking permissions
-    async def kick(self, ctx, member:discord.Member, *, args):
-        reason = ''.join(args)
+    async def kick(self, ctx, member:discord.Member, *, reason):
         try:
             await member.send(f"You have been kicked from the SSBU Training Grounds Server for the following reason: \n```{reason}```\nIf you would like to discuss your punishment, please contact Tabuu#0720, Phxenix#1104 or Parz#5811")
         except:
@@ -105,6 +85,7 @@ class Admin(commands.Cog):
         await member.add_roles(role)
         await ctx.send(f"{member.mention} was given the {role} role")
 
+
     @commands.command()
     @commands.has_permissions(administrator=True) #checking permissions
     async def removerole(self, ctx, member:discord.Member, *,input_role):
@@ -124,6 +105,7 @@ class Admin(commands.Cog):
         await member.remove_roles(role) #same as above here
         await ctx.send(f"{member.mention} no longer has the {role} role")
 
+
     @commands.command()
     @commands.has_permissions(administrator=True)
     async def records(self, ctx):
@@ -136,6 +118,7 @@ class Admin(commands.Cog):
     async def rename(self, ctx, member: discord.Member, *, name = None):
         await member.edit(nick=name)
         await ctx.send(f"Changed the display name of `{str(member)}` to `{name}`.")
+
 
 
 
@@ -155,7 +138,7 @@ class Admin(commands.Cog):
     async def ban_error(self, ctx, error):
         if isinstance(error, commands.MissingRequiredArgument):
             await ctx.send("You need to specify a member and a reason for the ban!")
-        elif isinstance(error, commands.MemberNotFound):
+        elif isinstance(error, commands.UserNotFound):
             await ctx.send("You need to mention a member!")
         elif isinstance(error, commands.MissingPermissions):
             await ctx.send("Nice try, but you don't have the permissions to do that!")
@@ -170,6 +153,8 @@ class Admin(commands.Cog):
             await ctx.send("You need to specify a member to unban.")
         elif isinstance(error, commands.MissingPermissions):
             await ctx.send("Nice try, but you don't have the permissions to do that!")
+        elif isinstance(error, commands.UserNotFound):
+            await ctx.send("I could not find this user!")
         elif isinstance(error, commands.CommandInvokeError):
             await ctx.send("I couldn't find a ban for this ID, make sure you have the right one.")
         else:
