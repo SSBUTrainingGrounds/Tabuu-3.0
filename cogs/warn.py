@@ -20,7 +20,7 @@ class Warn(commands.Cog):
         self.warnloop.start() #pylint: disable=no-member
 
 
-    async def add_warn(self, ctx, member: discord.Member, reason):
+    async def add_warn(self, author: discord.Member, member: discord.Member, reason):
         #this first part here logs the warning into the json file
         with open(r'./json/warns.json', 'r') as f:
             users = json.load(f)
@@ -31,11 +31,11 @@ class Warn(commands.Cog):
 
         try:
             user_data = users[str(member.id)]
-            user_data[warn_id] = {"mod": ctx.author.id, "reason": reason, "timestamp": warndate}
+            user_data[warn_id] = {"mod": author.id, "reason": reason, "timestamp": warndate}
         except:
             users[f'{member.id}'] = {}
             user_data = users[str(member.id)]
-            user_data[warn_id] = {"mod": ctx.author.id, "reason": reason, "timestamp": warndate}
+            user_data[warn_id] = {"mod": author.id, "reason": reason, "timestamp": warndate}
 
         with open(r'./json/warns.json', 'w') as f:
             json.dump(users, f, indent=4)
@@ -45,7 +45,7 @@ class Warn(commands.Cog):
         channel = self.bot.get_channel(785970832572678194)
         embed = discord.Embed(title="⚠️New Warning⚠️", color = discord.Color.dark_red())
         embed.add_field(name="Warned User", value=member.mention, inline=True)
-        embed.add_field(name="Moderator", value=ctx.author.mention, inline=True)
+        embed.add_field(name="Moderator", value=author.mention, inline=True)
         embed.add_field(name="Reason", value=reason, inline=True)
         embed.add_field(name="ID", value=warn_id, inline=True)
         embed.timestamp = discord.utils.utcnow()
@@ -54,7 +54,7 @@ class Warn(commands.Cog):
 
 
     #this function here checks the warn count on each user and if it reaches a threshold it will mute/kick/ban the user
-    async def check_warn_count(self, ctx, member: discord.Member):
+    async def check_warn_count(self, guild: discord.Guild, channel: discord.TextChannel, member: discord.Member):
         with open(r'./json/warns.json', 'r') as f:
             users = json.load(f)
 
@@ -67,7 +67,7 @@ class Warn(commands.Cog):
             except:
                 print("user has blocked me :(")
 
-            await ctx.send(f"{member.mention} has reached warning #{warns}. They have been automatically banned.")
+            await channel.send(f"{member.mention} has reached warning #{warns}. They have been automatically banned.")
             await member.ban(reason=f"Automatic ban for reaching {warns} warnings")
         elif warns > 4:
             try:
@@ -75,11 +75,11 @@ class Warn(commands.Cog):
             except:
                 print("user has blocked me :(")
 
-            await ctx.send(f"{member.mention} has reached warning #{warns}. They have been automatically kicked.")        
+            await channel.send(f"{member.mention} has reached warning #{warns}. They have been automatically kicked.")        
             await member.kick(reason=f"Automatic kick for reaching {warns} warnings")
         elif warns > 2:
-            await Mute.add_mute(self, ctx, member)
-            await ctx.send(f"{member.mention} has reached warning #{warns}. They have been automatically muted.")
+            await Mute.add_mute(self, guild, member)
+            await channel.send(f"{member.mention} has reached warning #{warns}. They have been automatically muted.")
 
             try:
                 await member.send(f"You have been automatically muted in the SSBU Training Grounds Server for reaching warning #***{warns}***. \nIf you would like to discuss your punishment, please contact Tabuu#0720, Phxenix#1104 or Parz#5811")
@@ -97,7 +97,7 @@ class Warn(commands.Cog):
             return
 
         #adds the warning
-        await self.add_warn(ctx, member, reason)
+        await self.add_warn(ctx.author, member, reason)
 
         #tries to dm user
         try:
@@ -107,7 +107,7 @@ class Warn(commands.Cog):
         await ctx.send(f"{member.mention} has been warned!")
 
         #checks warn count for further actions
-        await self.check_warn_count(ctx, member)
+        await self.check_warn_count(ctx.guild, ctx.channel, member)
 
 
     #checking how many warnings a user has, no need for permissions

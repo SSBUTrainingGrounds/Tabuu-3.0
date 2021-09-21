@@ -12,11 +12,11 @@ class Mute(commands.Cog):
         self.bot = bot
 
     #adds the mute to the json file and gives out the role
-    async def add_mute(self, ctx, member: discord.Member):
+    async def add_mute(self, guild: discord.Guild, member: discord.Member):
         with open (r'./json/muted.json', 'r') as f:
             muted_users = json.load(f)
         
-        role = discord.utils.get(ctx.guild.roles, id=739391329779581008)
+        role = discord.utils.get(guild.roles, id=739391329779581008)
         #need to use quite a few of these try/except blocks for adding/removing roles and dm'ing people unfortunately
         try:
             await member.add_roles(role)
@@ -33,11 +33,11 @@ class Mute(commands.Cog):
                 json.dump(muted_users, f, indent=4)
 
     #basically reverses the action of the function above
-    async def remove_mute(self, ctx, member: discord.Member):
+    async def remove_mute(self, guild: discord.Guild, member: discord.Member):
         with open(r'./json/muted.json', 'r') as f:
             muted_users = json.load(f)
 
-        role = discord.utils.get(ctx.guild.roles, id=739391329779581008)
+        role = discord.utils.get(guild.roles, id=739391329779581008)
         try:
             await member.remove_roles(role)
         except:
@@ -60,7 +60,7 @@ class Mute(commands.Cog):
             muted_users = json.load(f)
         
         if not f'{member.id}' in muted_users:
-            await self.add_mute(ctx, member)
+            await self.add_mute(ctx.guild, member)
             await ctx.send(f"{member.mention} was muted!")
             try:
                 await member.send(f"You have been muted in the SSBU Training Grounds Server for the following reason: \n```{reason}```\nIf you would like to discuss your punishment, please contact Tabuu#0720, Phxenix#1104 or Parz#5811")
@@ -79,7 +79,7 @@ class Mute(commands.Cog):
             muted_users = json.load(f)
 
         if f'{member.id}' in muted_users:
-            await self.remove_mute(ctx, member)
+            await self.remove_mute(ctx.guild, member)
             await ctx.send(f"{member.mention} was unmuted!")
             try:
                 await member.send("You have been unmuted in the SSBU Training Grounds Server! Don't break the rules again")
@@ -126,8 +126,8 @@ class Mute(commands.Cog):
         
         #the mute block from %mute, with the inclusion of time_muted
         if not f'{member.id}' in muted_users:
-            await self.add_mute(ctx, member)
-            await ctx.send(f"{member.mention} was muted!")
+            await self.add_mute(ctx.guild, member)
+            await ctx.send(f"{member.mention} was muted for *{time_muted}*!")
             try:
                 await member.send(f"You have been muted in the SSBU Training Grounds Server for ***{time_muted}*** for the following reason: \n```{reason}``` \nIf you would like to discuss your punishment, please contact Tabuu#0720, Phxenix#1104 or Parz#5811")
             except:
@@ -146,8 +146,8 @@ class Mute(commands.Cog):
 
         #the unmute block from %unmute, without the else statement, no need for another unmute confirmation if the user was unmuted before manually
         if f'{member.id}' in muted_users:
-            await self.remove_mute(ctx, member)
-            await ctx.send(f"{member.mention} was unmuted!")
+            await self.remove_mute(ctx.guild, member)
+            await ctx.send(f"{member.mention} was automatically unmuted!")
             try:
                 await member.send("You have been automatically unmuted in the SSBU Training Grounds Server! Don't break the rules again")
             except:
