@@ -57,7 +57,10 @@ class On_message(commands.Cog):
                 await Warn.add_warn(self, message.guild.me, message.author, reason)
                 await message.channel.send(f"{message.author.mention} has been automatically warned for using a blacklisted word!")
 
-                await message.delete()
+                try:
+                    await message.delete()
+                except:
+                    print("tried to delete a message but it failed")
             
                 try:
                     await message.author.send(f"You have been automatically warned in the SSBU Training Grounds Server for sending a message containing a blacklisted word.\nIf you would like to discuss your punishment, please contact Tabuu#0720, Phxenix#1104 or Parz#5811")
