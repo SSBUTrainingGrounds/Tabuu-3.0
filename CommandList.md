@@ -156,9 +156,6 @@ I will try to keep this up-to-date, no promises.
 **%poll** `<"question"> <"option 1"> <"option 2">`  
     Info: Creates a poll for users to vote on with reactions. Takes 2-10 Options. If the question or the options have more than 1 word in them, make sure to surround them with quotes.  
     Example: `%poll "What is your favourite Ice cream?" Chocolate Strawberry "None of the above"`  
-    
-**%pr**  
-    Info: Links to the PR page for our Tournaments.  
   
 **%randomquote**  
     Info: Gets you a random quote from someone.  
