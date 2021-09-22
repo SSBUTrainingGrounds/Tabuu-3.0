@@ -99,7 +99,6 @@ class Responses(discord.ui.Select):
 ```%stagelist``` - Our Stagelist for Crew Battles.\n\
 ```%coaching``` - Coaching requirements.\n\
 ```%calendar``` - Calendar with our schedule.\n\
-```%pr``` - Links to the PR of our tourneys.\n\
 ```%resources``` - Our resource document for new players.\n\
 ```%invite``` - For those looking for an invite.\n\
 ```%avatar <@user>``` - Gets you the avatar of a user.\n\
