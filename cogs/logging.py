@@ -110,6 +110,10 @@ class Logging(commands.Cog):
             after.content = "Content is too large to fit in a single embed."
         if len(before.content[2000:]) > 0: #so we need to add in a check to not get dumb errors. 2000 chars is still the limit for non-nitro users so it should be fine.
             before.content = "Content is too large to fit in a single embed."
+
+        #if you send an empty message and then edit it (like when you upload pics), the before field cannot be empty
+        if len(before.content) == 0:
+            before.content = "\u200b"
         
         embed = discord.Embed(title=f"**✍️ Edited Message in {after.channel.name}! ✍️**", description=f"**New Content:**\n{after.content}", colour=discord.Colour.orange())
         embed.set_author(name=f"{str(after.author)} ({after.author.id})", icon_url=after.author.display_avatar.url)

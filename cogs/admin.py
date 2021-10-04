@@ -194,6 +194,8 @@ class Admin(commands.Cog):
     async def clear_error(self, ctx, error):
         if isinstance(error, commands.MissingPermissions):
             await ctx.send("Nice try, but you don't have the permissions to do that!")
+        elif isinstance(error, commands.CommandInvokeError):
+            await ctx.send("I could not delete one or more of these messages! Make sure they were not send too long ago or try a different amount.")
         else:
             raise error
 
