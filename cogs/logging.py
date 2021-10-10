@@ -1,5 +1,6 @@
 import discord
 from discord.ext import commands, tasks
+from io import StringIO
 
 #
 #this file here contains the logs, it logs every little user/message update into our logs channel
@@ -159,11 +160,25 @@ class Logging(commands.Cog):
     #someone deletes a lot of messages
     @commands.Cog.listener()
     async def on_bulk_message_delete(self, messages):
+        #defines the embed
         embed = discord.Embed(title=f"**❌ Bulk message deletion in {messages[0].channel.name}! ❌**", description=f"{len(messages)} messages were deleted!", colour=discord.Colour.dark_red())
         embed.set_author(name=f"{str(self.bot.user)} ({self.bot.user.id})", icon_url=self.bot.user.display_avatar.url)
         embed.timestamp = discord.utils.utcnow()
+
+        #creates the file with the deleted messages
+        message_list = []
+        for message in messages:
+            message_list.append(f"{str(message.author)} said at {message.created_at.replace(microsecond=0)} UTC: \n{message.content}\n\n")
+        buffer = StringIO(''.join(message_list))
+        f = discord.File(buffer, filename="deleted_messages.txt")
+
         logs = self.bot.get_channel(logchannel)
-        await logs.send(embed=embed)
+
+        #the file could theoratically be too large to send, the limit is 8MB. realistically we will never ever hit this
+        try:
+            await logs.send(embed=embed, file=f)
+        except:
+            await logs.send(embed=embed)
         
 
     #someone gets banned
