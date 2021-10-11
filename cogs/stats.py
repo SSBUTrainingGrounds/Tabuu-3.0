@@ -142,28 +142,22 @@ class Stats(commands.Cog):
     #some bot stats
     @commands.command(aliases=['stats'])
     async def botstats(self, ctx):
-        pyversion = platform.python_version() #python version
-        dpyversion = discord.__version__ #discord.py version
-        servercount = len(self.bot.guilds) #total servers
-        membercount = len(set(self.bot.get_all_members())) #total members
-        proc = psutil.Process(os.getpid()) #gets process id
-        uptimeSeconds = time.time() - proc.create_time() #gets uptime in seconds
-        delta = datetime.timedelta(seconds=uptimeSeconds) #converts that to a timedelta object
-        tabuu3 = self.bot.get_user(785303736582012969) #the bot
-        embed = discord.Embed(title="Tabuu 3.0 Stats", color=0x007377, url="https://github.com/phxenix-w/Tabuu-3.0-Bot") #link to the github, its still private but maybe not in the future, who knows
-        embed.add_field(name="Name:", value=f"{tabuu3.mention}", inline=True)
-        embed.add_field(name="Servers:", value=servercount, inline=True)
-        embed.add_field(name="Total Users:", value=membercount, inline=True)
-        embed.add_field(name="Bot Version:", value=self.bot.version_number, inline=True)
-        embed.add_field(name="Python Version:", value=pyversion, inline=True)
-        embed.add_field(name="discord.py Version:", value=dpyversion, inline=True)
-        embed.add_field(name="CPU Usage:", value=f"{psutil.cpu_percent(interval=1)}%", inline=True) #only gets the % value
-        embed.add_field(name="RAM Usage:", value=f"{psutil.virtual_memory()[2]}%", inline=True) #only gets the % value, thats what the [2] is for
-        embed.add_field(name="Uptime:", value=str(delta).split(".")[0], inline=True) #the split thing is to get rid of the microseconds, who cares about uptime in microseconds
-        embed.set_footer(text="Creator: Phxenix#1104, hosted on: Raspberry Pi 3B+")
-        embed.set_thumbnail(url=tabuu3.display_avatar.url)
-        await ctx.send(embed=embed)
+        proc = psutil.Process(os.getpid())
+        uptimeSeconds = time.time() - proc.create_time()
 
+        embed = discord.Embed(title="Tabuu 3.0 Stats", color=0x007377, url="https://github.com/phxenix-w/Tabuu-3.0-Bot")
+        embed.add_field(name="Name:", value=f"{self.bot.user.mention}", inline=True)
+        embed.add_field(name="Servers:", value=len(self.bot.guilds), inline=True)
+        embed.add_field(name="Total Users:", value=len(set(self.bot.get_all_members())), inline=True)
+        embed.add_field(name="Bot Version:", value=self.bot.version_number, inline=True)
+        embed.add_field(name="Python Version:", value=platform.python_version(), inline=True)
+        embed.add_field(name="discord.py Version:", value=discord.__version__, inline=True)
+        embed.add_field(name="CPU Usage:", value=f"{psutil.cpu_percent(interval=0.2)}%", inline=True)
+        embed.add_field(name="RAM Usage:", value=f"{round(psutil.virtual_memory()[3]/(1024*1024*1024), 2)}GB/{round(psutil.virtual_memory()[0]/(1024*1024*1024), 2)}GB ({psutil.virtual_memory()[2]}%)", inline=True)
+        embed.add_field(name="Uptime:", value=str(datetime.timedelta(seconds=uptimeSeconds)).split(".")[0], inline=True)
+        embed.set_footer(text="Creator: Phxenix#1104, hosted on: Raspberry Pi 3B+")
+        embed.set_thumbnail(url=self.bot.user.display_avatar.url)
+        await ctx.send(embed=embed)
 
 
 
