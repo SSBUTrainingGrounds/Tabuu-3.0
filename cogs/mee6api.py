@@ -35,7 +35,7 @@ class Mee6api(commands.Cog):
 
         botmessage = await ctx.send("Please wait a few seconds...") #again, api is sometimes very slow so we send this message out first
 
-        userlevel = await mee6API.levels.get_user_level(member.id) #gets the level
+        userlevel = await mee6API.levels.get_user_level(member.id, dont_use_cache=True) #gets the level
 
         defaultrole = get(ctx.guild.roles, id=739299507799326843)
         level10 = get(ctx.guild.roles, id=827473860936990730)
