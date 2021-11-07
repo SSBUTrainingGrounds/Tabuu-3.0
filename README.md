@@ -13,6 +13,7 @@ Made by Phxenix#1104. If you have any questions feel free to contact me on Disco
 - Logging system
 - Autorole system
 - Custom macro commands
+- Basic starboard
 - Bypasses the need for Mee6 Premium, assigns Roles based on Level
 - Lots of useful general user commands
 - Lots of not so useful general user commands
