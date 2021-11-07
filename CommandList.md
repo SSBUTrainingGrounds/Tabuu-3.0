@@ -227,6 +227,14 @@ I will try to keep this up-to-date, no promises.
   
 **%stagelist**  
     Info: Posts our version of the legal stages.  
+    
+**%starboardemoji** `<emoji>`  
+    Info: Admin only. Changes the emoji used in our starboard.  
+    Example: %starboardemoji :BowserFail:  
+    
+**%starboardthreshold** `<number>`  
+    Info: Admin only. Changes the threshold for messages to appear on our starboard.  
+    Example: %starboardthreshold 5  
   
 **%stats**  
     Info: Gets you various stats about this bot.  
