@@ -153,7 +153,7 @@ class Stats(commands.Cog):
         embed.add_field(name="Python Version:", value=platform.python_version(), inline=True)
         embed.add_field(name="discord.py Version:", value=discord.__version__, inline=True)
         embed.add_field(name="CPU Usage:", value=f"{psutil.cpu_percent(interval=None)}%", inline=True)
-        embed.add_field(name="RAM Usage:", value=f"{round(psutil.virtual_memory()[3]/(1024*1024*1024), 2)}GB/{round(psutil.virtual_memory()[0]/(1024*1024*1024), 2)}GB ({(round(psutil.virtual_memory()[3]/psutil.virtual_memory()[0], 3) * 100)}%)", inline=True)
+        embed.add_field(name="RAM Usage:", value=f"{round(psutil.virtual_memory()[3]/(1024*1024*1024), 2)}GB/{round(psutil.virtual_memory()[0]/(1024*1024*1024), 2)}GB ({round((psutil.virtual_memory()[3]/psutil.virtual_memory()[0]) * 100, 1)}%)", inline=True)
         embed.add_field(name="Uptime:", value=str(datetime.timedelta(seconds=uptimeSeconds)).split(".")[0], inline=True)
         embed.set_footer(text="Creator: Phxenix#1104, hosted on: Raspberry Pi 3B+")
         embed.set_thumbnail(url=self.bot.user.display_avatar.url)
