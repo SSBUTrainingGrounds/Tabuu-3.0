@@ -50,6 +50,8 @@ class Responses(discord.ui.Select):
 ```%rename <@user> <name>``` - Sets a new nickname for a user or removes it.\n\
 ```%createmacro <name> <output>``` - Creates a new macro.\n\
 ```%deletemacro <name>``` - Deletes a macro.\n\
+```%starboardemoji <emoji>``` - Changes the emoji used for the starboard.\n\
+```%starboardthreshold <number>``` - Changes the threshold used for the starboard.\n\
         ')
                 await interaction.response.send_message(embed=admin_embed, ephemeral=True)
             else:
