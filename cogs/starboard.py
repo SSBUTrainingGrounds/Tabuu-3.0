@@ -90,16 +90,19 @@ class Starboard(commands.Cog):
                             for x in data['messages']:
                                 if x[0] == payload.message_id:
                                     star_channel = await self.bot.fetch_channel(self.starboard_channel)
-                                    #gets the sent starboard message
-                                    edit_message = await star_channel.fetch_message(x[1])
-                                    new_embed = edit_message.embeds[0]
-                                    new_value = f"**{reaction.count} {str(reaction.emoji)}**"
-                                    #updates the embed with the new count, except if the values are the exact same anyways, which can happen
-                                    if new_embed.fields[0].value == new_value:
+                                    #gets the sent starboard message, in a try except block cause it could be deleted already
+                                    try:
+                                        edit_message = await star_channel.fetch_message(x[1])
+                                        new_embed = edit_message.embeds[0]
+                                        new_value = f"**{reaction.count} {str(reaction.emoji)}**"
+                                        #updates the embed with the new count, except if the values are the exact same anyways, which can happen
+                                        if new_embed.fields[0].value == new_value:
+                                            return
+                                        new_embed.set_field_at(0, name="\u200b", value=new_value)
+                                        await edit_message.edit(embed=new_embed)
                                         return
-                                    new_embed.set_field_at(0, name="\u200b", value=new_value)
-                                    await edit_message.edit(embed=new_embed)
-                                    return
+                                    except discord.errors.NotFound:
+                                        return
 
                             #if it doesnt already exist, it creates a new message
                             star_channel = await self.bot.fetch_channel(self.starboard_channel)
@@ -157,15 +160,18 @@ class Starboard(commands.Cog):
                         for x in data['messages']:
                             if x[0] == payload.message_id:
                                 star_channel = await self.bot.fetch_channel(self.starboard_channel)
-                                #gets the sent starboard message
-                                edit_message = await star_channel.fetch_message(x[1])
-                                new_embed = edit_message.embeds[0]
-                                new_value = f"**{reaction.count} {str(reaction.emoji)}**"
-                                #updates the embed with the new count, except if the values are the exact same anyways, which can happen
-                                if new_embed.fields[0].value == new_value:
+                                #gets the sent starboard message, in a try except block cause it could be deleted already
+                                try:
+                                    edit_message = await star_channel.fetch_message(x[1])
+                                    new_embed = edit_message.embeds[0]
+                                    new_value = f"**{reaction.count} {str(reaction.emoji)}**"
+                                    #updates the embed with the new count, except if the values are the exact same anyways, which can happen
+                                    if new_embed.fields[0].value == new_value:
+                                        return
+                                    new_embed.set_field_at(0, name="\u200b", value=new_value)
+                                    await edit_message.edit(embed=new_embed)
+                                except discord.errors.NotFound:
                                     return
-                                new_embed.set_field_at(0, name="\u200b", value=new_value)
-                                await edit_message.edit(embed=new_embed)
             
 
 
