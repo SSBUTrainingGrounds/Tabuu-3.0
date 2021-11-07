@@ -75,6 +75,9 @@ class Starboard(commands.Cog):
             if not 'emoji' in data:
                 data['emoji'] = "placeholder"
 
+            if not 'threshold' in data:
+                data['threshold'] = 100
+
             if str(payload.emoji) == data['emoji']:
                 channel = await self.bot.fetch_channel(payload.channel_id)
                 message = await channel.fetch_message(payload.message_id)
@@ -139,12 +142,15 @@ class Starboard(commands.Cog):
             with open(r'./json/starboard.json', 'r') as f:
                 data = json.load(f)
 
-            #these both prevent error messages in my console if the setup wasnt done yet.
+            #these all prevent error messages in my console if the setup wasnt done yet.
             if not 'messages' in data:
                 data['messages'] = []
 
             if not 'emoji' in data:
                 data['emoji'] = "placeholder"
+
+            if not 'threshold' in data:
+                data['threshold'] = 100
 
             if str(payload.emoji) == data['emoji']:
                 channel = await self.bot.fetch_channel(payload.channel_id)
