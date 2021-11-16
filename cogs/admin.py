@@ -2,9 +2,10 @@ import discord
 from discord.ext import commands, tasks
 from fuzzywuzzy import process
 from discord.utils import get
+import asyncio
 
 #
-#this file here contains most admin commands, they all need the @commands.has_permissions(administrator=True) decorator
+#this file here contains general purpose admin commands, they all need the @commands.has_permissions(administrator=True) decorator
 #
 
 class Admin(commands.Cog):
@@ -31,14 +32,38 @@ class Admin(commands.Cog):
     @commands.command()
     @commands.has_permissions(administrator=True)
     async def ban(self, ctx, user: discord.User, *, reason):
-        #tries to dm them first, need a try/except block cause you can ban ppl not on your server, or ppl can block your bot
-        try:
-            await user.send(f"You have been banned from the SSBU Training Grounds Server for the following reason: \n```{reason}```\nPlease contact Tabuu#0720 for an appeal.\nhttps://docs.google.com/spreadsheets/d/1EZhyKa69LWerQl0KxeVJZuLFFjBIywMRTNOPUUKyVCc/")
-        except:
-            print("user has blocked me :(")
+        #since the mod team cannot stop playing with the ban command for fun, i had to add a check to verify
+        def check(m):
+            return m.content.lower() in ("y", "n") and m.author == ctx.author and m.channel == ctx.channel
 
-        await ctx.guild.ban(user, reason=reason)
-        await ctx.send(f"{user.mention} has been banned!")
+        #if the reason provided is too long for the embed, we'll just cut it off
+        if len(reason[2000:]) > 0:
+            reason = reason[:2000]
+
+        embed = discord.Embed(title=f"{str(user)} ({user.id})", description = f"**Reason:** {reason}", colour=discord.Colour.dark_red())
+        embed.set_thumbnail(url=user.display_avatar.url)
+        embed.timestamp = discord.utils.utcnow()
+
+        await ctx.send(f"{ctx.author.mention}, are you sure you want to ban this user? **Type y to verify** or **Type n to cancel**.", embed=embed)
+        
+        try:
+            msg = await self.bot.wait_for("message", timeout=30.0, check=check)
+        except asyncio.TimeoutError:
+            await ctx.send(f"Ban for {user.mention} timed out, try again.")
+            return
+        else:
+            if msg.content.lower() == "y":
+                #tries to dm them first, need a try/except block cause you can ban ppl not on your server, or ppl can block your bot
+                try:
+                    await user.send(f"You have been banned from the SSBU Training Grounds Server for the following reason: \n```{reason}```\nPlease contact Tabuu#0720 for an appeal.\nhttps://docs.google.com/spreadsheets/d/1EZhyKa69LWerQl0KxeVJZuLFFjBIywMRTNOPUUKyVCc/")
+                except:
+                    print("user has blocked me :(")
+
+                await ctx.guild.ban(user, reason=reason)
+                await ctx.send(f"{user.mention} has been banned!")
+            elif msg.content.lower() == "n":
+                await ctx.send(f"Ban for {user.mention} cancelled.")
+                return
         
 
     #unban
@@ -52,14 +77,37 @@ class Admin(commands.Cog):
 
     #kick command
     @commands.command()
-    @commands.has_permissions(administrator=True) #checking permissions
+    @commands.has_permissions(administrator=True)
     async def kick(self, ctx, member:discord.Member, *, reason):
+        #same as the ban command, there would be an easier fix involving the mod team not to fuck around with that but here we are
+        def check(m):
+            return m.content.lower() in ("y", "n") and m.author == ctx.author and m.channel == ctx.channel
+
+        if len(reason[2000:]) > 0:
+            reason = reason[:2000]
+
+        embed = discord.Embed(title=f"{str(member)} ({member.id})", description = f"**Reason:** {reason}", colour=discord.Colour.dark_orange())
+        embed.set_thumbnail(url=member.display_avatar.url)
+        embed.timestamp = discord.utils.utcnow()
+
+        await ctx.send(f"{ctx.author.mention}, are you sure you want to kick this user? **Type y to verify** or **Type n to cancel**.", embed=embed)
+
         try:
-            await member.send(f"You have been kicked from the SSBU Training Grounds Server for the following reason: \n```{reason}```\nIf you would like to discuss your punishment, please contact Tabuu#0720, Phxenix#1104 or Parz#5811")
-        except:
-            print("user has blocked me :(")
-        await member.kick(reason=reason)
-        await ctx.send(f"Kicked {member}!")
+            msg = await self.bot.wait_for("message", timeout=30.0, check=check)
+        except asyncio.TimeoutError:
+            await ctx.send(f"Kick for {member.mention} timed out, try again.")
+            return
+        else:
+            if msg.content.lower() == "y":
+                try:
+                    await member.send(f"You have been kicked from the SSBU Training Grounds Server for the following reason: \n```{reason}```\nIf you would like to discuss your punishment, please contact Tabuu#0720, Phxenix#1104 or Parz#5811")
+                except:
+                    print("user has blocked me :(")
+                await member.kick(reason=reason)
+                await ctx.send(f"Kicked {member}!")
+            elif msg.content.lower() == "n":
+                await ctx.send(f"Kick for {member.mention} cancelled.")
+                return
 
 
     
