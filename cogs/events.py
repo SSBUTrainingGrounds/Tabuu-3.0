@@ -5,6 +5,7 @@ from itertools import cycle
 from fuzzywuzzy import process, fuzz
 import datetime
 
+
 #
 #this file here contains our event listeners, the welcome/booster messages, autorole and status updates
 #
@@ -24,6 +25,8 @@ class Events(commands.Cog):
     @commands.Cog.listener()
     async def on_ready(self): #the pylint below is required, so that we dont get a false error
         self.change_status.start() #pylint: disable=no-member
+        self.so_ping.start()
+        self.tos_ping.start()
         
     @tasks.loop(seconds=300) #the status loop, every 5 mins, could maybe increase it further
     async def change_status(self):
