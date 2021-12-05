@@ -3,6 +3,7 @@ from discord.ext import commands, tasks
 import json
 from itertools import cycle
 from fuzzywuzzy import process, fuzz
+import datetime
 
 #
 #this file here contains our event listeners, the welcome/booster messages, autorole and status updates
@@ -138,6 +139,39 @@ class Events(commands.Cog):
         else:
             if ctx.command.has_error_handler() is False:
                 raise error
+
+
+    #this here pings the streamers and TOs 1 hour before each weekly tournament, times are in utc
+    so_time = datetime.time(18, 0, 0, 0)
+    tos_time = datetime.time(23, 0, 0, 0)
+
+    @tasks.loop(time=so_time)
+    async def so_ping(self):
+        #runs every day, checks if it is friday in utc
+        if datetime.datetime.utcnow().weekday() == 4:
+            guild = self.bot.get_guild(739299507795132486)
+            streamer_channel = self.bot.get_channel(766721811962396672)
+            streamer_role = discord.utils.get(guild.roles, id=752291084058755192)
+
+            to_channel = self.bot.get_channel(812433498013958205)
+            to_role = discord.utils.get(guild.roles, id=739299507816366104)
+
+            await streamer_channel.send(f"{streamer_role.mention} Reminder that Smash Overseas begins in 1 hour, who is available to stream?")
+            await to_channel.send(f"{to_role.mention} Reminder that Smash Overseas begins in 1 hour, who is available?")
+
+    @tasks.loop(time=tos_time)
+    async def tos_ping(self):
+        #runs every day, checks if it is saturday in utc (might wanna keep watching that event cause timezones could be weird here since its sunday for me)
+        if datetime.datetime.utcnow().weekday() == 5:
+            guild = self.bot.get_guild(739299507795132486)
+            streamer_channel = self.bot.get_channel(766721811962396672)
+            streamer_role = discord.utils.get(guild.roles, id=752291084058755192)
+
+            to_channel = self.bot.get_channel(812433498013958205)
+            to_role = discord.utils.get(guild.roles, id=739299507816366104)
+
+            await streamer_channel.send(f"{streamer_role.mention} Reminder that Trials of Smash begins in 1 hour, who is available to stream?")
+            await to_channel.send(f"{to_role.mention} Reminder that Trials of Smash begins in 1 hour, who is available?")
 
 
 
