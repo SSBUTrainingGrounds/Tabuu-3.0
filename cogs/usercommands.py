@@ -133,38 +133,6 @@ class Usercommands(commands.Cog):
         await asyncio.sleep(2) #sleeps again before sending the final message
         await countdown_message.edit(content=f"Counting down from {initial_count}...\nFinished!")
 
-    #reminder, just waits out the time, no fancy stuff
-    @commands.command(aliases=['remindme'])
-    async def reminder(self, ctx, time, *, remind_message):
-        #this here gets the time
-        if time.lower().endswith("d"):
-            seconds = int(time[:-1]) * 60 * 60 * 24
-            reminder_time = f"{seconds // 60 // 60 // 24} day(s)"
-        elif time.lower().endswith("h"):
-            seconds = int(time[:-1]) * 60 * 60
-            reminder_time = f"{seconds // 60 // 60} hour(s)"
-        elif time.lower().endswith("m"):
-            seconds = int(time[:-1]) * 60
-            reminder_time = f"{seconds // 60} minute(s)"
-        elif time.lower().endswith("s"):
-            seconds = int(time[:-1])
-            reminder_time = f"{seconds} seconds"
-        else:
-            await ctx.send("Invalid time format! Please use a number followed by d/h/m/s for days/hours/minutes/seconds.")
-            return
-        
-        if seconds < 30:
-            await ctx.send("Duration is too short! I'm sure you can remember that yourself.")
-            return
-        if seconds > 2592000: #30 days
-            await ctx.send("Duration is too long! Maximum duration is 30 days.")
-            return
-
-        await ctx.send(f"{ctx.author.mention}, I will remind you about `{remind_message}` in {reminder_time}!")
-
-        await asyncio.sleep(seconds) #bit flawed, if i restart the bot obviously the reminders get deleted, would work better if i would store them in a json file but oh well
-
-        await ctx.send(f"{ctx.author.mention}, you wanted me to remind you of `{remind_message}`, {reminder_time} ago.")
 
     #info about an emoji
     @commands.command(aliases=['emoji'])
@@ -255,15 +223,6 @@ class Usercommands(commands.Cog):
             await ctx.send("You need to input a number!")
         elif isinstance(error, commands.BadArgument):
             await ctx.send("Invalid number!")
-        else:
-            raise error
-
-    @reminder.error
-    async def reminder_error(self, ctx, error):
-        if isinstance(error, commands.MissingRequiredArgument):
-            await ctx.send("You need to specify an amount of time and the reminder message!")
-        elif isinstance(error, commands.CommandInvokeError):
-            await ctx.send("Invalid time format! Please use a number followed by d/h/m/s for days/hours/minutes/seconds.")
         else:
             raise error
 

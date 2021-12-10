@@ -91,6 +91,8 @@ class Responses(discord.ui.Select):
 ```%countdown <number>``` - Counts down from number.\n\
 ```%poll <"question"> <"option 1"> <"option 2">``` - Starts a poll with a maximum of 10 choices.\n\
 ```%reminder <time> <message>``` - Reminds you about something.\n\
+```%viewreminders``` - Lists your active reminders.\n\
+```%deletereminder <ID>```Deletes one of your reminders by its ID.\n\
         ')
             await interaction.response.send_message(embed=utility_embed, ephemeral=True)
 
