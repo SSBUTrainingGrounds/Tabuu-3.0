@@ -1,0 +1,10 @@
+{
+    "100000000000000000": {
+        "1234567": {
+            "channel": 1234567890,
+            "date": 1632123456.123456,
+            "read_time": "29 day(s), 23 hour(s)",
+            "message": "whatever message you want"
+        }
+    }
+}
