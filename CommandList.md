@@ -1,7 +1,7 @@
 # Full list of commands:
 
 This here contains every command with a detailed explanation on how to use them. They are ordered alphabetically, search them with Ctrl+F.  
-Last updated: 14 September 2021  
+Last updated: 10 December 2021  
 I will try to keep this up-to-date, no promises.  
 
 **%8ball** `<question>`  
@@ -64,6 +64,11 @@ I will try to keep this up-to-date, no promises.
 **%deletemacro** `<name>`  
     Info: Admin only. Deletes the specified macro command.  
     Example: `%deletemacro test`  
+    
+**%deletereminder** `<reminder ID>`  
+    Info: Deletes a reminder of yours by the reminder ID. View the reminder IDs with `%viewreminders`.  
+    Example: `%deletereminder 1234567`  
+    Aliases: delreminder, rmreminder, delreminders, deletereminders  
     
 **%deleterolemenu** `<message ID>`  
     Info: Admin only. Deletes a Role menu completely.  
@@ -179,9 +184,9 @@ I will try to keep this up-to-date, no promises.
     Info: Owner only. Reloads all of the cogs of this bot, so you don't have to restart it for every little change.  
     
 **%reminder** `<time> <message>`  
-    Info: Reminds you about something. Please keep in mind that this command is fairly simple and thus if the bot gets restarted your reminder will get lost. Time is in a shortened format with any number and d/h/m/s. Minimum duration is 30 seconds, maximum is 30 days.  
-    Example: `%reminder 10h get that thing done you wanted to get done`  
-    Aliases: remindme  
+    Info: Reminds you about something. Time is in a shortened format with any number and d/h/m/s. Minimum duration is 30 seconds, maximum is 30 days.  
+    Example: `%reminder 10h20m get that thing done you wanted to get done`  
+    Aliases: remindme, newreminder, newremindme  
   
 **%removerole** `<@user> <role>`  
     Info: Admin only. Removes a role from a User. Mention the User or use User ID, for the Role the bot just takes the closest match.  
@@ -272,6 +277,10 @@ I will try to keep this up-to-date, no promises.
   
 **%uwu**  
     Info: For the silly people.  
+    
+**%viewreminders**  
+    Info: Lists out your active reminders. If you have too many it will only display the first 6.  
+    Aliases: reminders, myreminders, viewreminder, listreminders  
   
 **%warn** `<@user> <reason>`  
     Info: Admin only. Use this to warn a user. The reason will get DM'd to the person warned. Mention the User or use User ID. Warning expire after 30 days. If a user reaches 3 warnings within 30 days the user will get muted, 5 within 30 days equal a kick and 7 within 30 days will get the user banned.  
