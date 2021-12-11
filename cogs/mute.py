@@ -2,6 +2,7 @@ import discord
 from discord.ext import commands, tasks
 import json
 import asyncio
+from .reminder import Reminder
 
 #
 #this file here contains our custom mute system
@@ -95,29 +96,8 @@ class Mute(commands.Cog):
     @commands.command()
     @commands.has_permissions(administrator=True)
     async def tempmute(self, ctx, member:discord.Member, mute_time, *, reason):
-        #this block gets the time from a human readable input, so that the user does not have to convert hours to minutes or whatever
-        if mute_time.lower().endswith("d"):
-            seconds = int(mute_time[:-1]) * 60 * 60 * 24
-            time_muted = f"{seconds // 60 // 60 // 24} day(s)"
-        elif mute_time.lower().endswith("h"):
-            seconds = int(mute_time[:-1]) * 60 * 60
-            time_muted = f"{seconds // 60 // 60} hour(s)"
-        elif mute_time.lower().endswith("m"):
-            seconds = int(mute_time[:-1]) * 60
-            time_muted = f"{seconds // 60} minute(s)"
-        elif mute_time.lower().endswith("s"):
-            seconds = int(mute_time[:-1])
-            time_muted = f"{seconds} seconds"
-        else:
-            await ctx.send("Invalid time format! Please use a number followed by d/h/m/s for days/hours/minutes/seconds.")
-            return
-
-        if seconds < 30:
-            await ctx.send("Invalid time format! Minimum value is 30 seconds.")
-            return
-        if seconds > 86401:
-            await ctx.send("Invalid time format! Maximum value is 1 day.")
-            return
+        #this here uses the convert_time function from my reminder to convert the input into the seconds, and also a human-readable-string
+        seconds, time_muted = Reminder.convert_time(self, mute_time)
 
 
         #now this is basically just "%mute, wait specified time, %unmute" but automated into one command
@@ -182,7 +162,7 @@ class Mute(commands.Cog):
             raise error
 
     @tempmute.error
-    async def tempmute_error(self, ctx,error):
+    async def tempmute_error(self, ctx, error):
         if isinstance(error, commands.MissingRequiredArgument):
             await ctx.send("You need to mention a member, an amount of time, and a reason!")
         elif isinstance(error, commands.MemberNotFound):
