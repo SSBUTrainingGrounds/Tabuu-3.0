@@ -9,7 +9,7 @@ I will try to keep this up-to-date, no promises.
     Example: `%8ball Is Tabuu 3.0 the best bot out there?`  
 
 **%addrole** `<@user> <role>`  
-    Info: Admin only. Adds a Role to a User. Mention the User or use User ID, for the Role the bot just takes the closest match.  
+    Info: Admin only. Adds a Role to a User. Mention the User or use User ID, for the Role the bot first tries to use the Role ID or Role mention, after that it searches for the closest match for the role name.  
     Example: `%addrole @Phxenix first class` 
     
 **%avatar** `<@user: Optional>`  
@@ -17,7 +17,7 @@ I will try to keep this up-to-date, no promises.
     Example: `%avatar @Phxenix` 
     
 **%ban** `<@user> <reason>`  
-    Info: Admin only. Bans a User. Mention the User or use User ID. The reason will get logged in Audit logs and also DM'd to the user.  
+    Info: Admin only. Bans a User. Mention the User or use User ID. You will be asked for confirmation before the user gets banned. The reason will get logged in Audit logs and also DM'd to the user.  
     Example: `%ban @Phxenix what an idiot`  
     
 **%banner** `<@user: Optional>`  
@@ -31,8 +31,8 @@ I will try to keep this up-to-date, no promises.
     Info: Gives you the link to our event calendar.  
     Aliases: calender, calandar, caIendar  
     
-**%clear** `<amount>`  
-    Info: Admin only. Deletes the last X messages in the current channel. Defaults to 1.  
+**%clear** `<amount: Optional>`  
+    Info: Admin only. Deletes the last X+1 messages in the current channel. Defaults to 1 if you do not specify an amount.  
     Example: `%clear 10`  
     
 **%clearmmpings**  
@@ -100,7 +100,7 @@ I will try to keep this up-to-date, no promises.
     Info: Admin only. Gets you every role menu entry currently saved.  
     
 **%help**  
-    Info: The help command is broken into a dropdown cause there were too many commands to list. Available dropdowns are: admin, info, mm, util, misc, fun. The admin help command is admin only.  
+    Info: The help command is broken into a dropdown cause there were too many commands to list. Available dropdowns are: admin, info, mm, util, misc, fun. The admin dropdown is admin only.  
     
 **%invite**  
     Info: Gets you our vanity URL invite link.  
@@ -113,7 +113,7 @@ I will try to keep this up-to-date, no promises.
     Aliases: tabuujoke  
     
 **%kick** `<@user> <reason>`  
-    Info: Admin only. Kicks a user from the server. Mention the User or use User ID. The reason will get logged in Audit logs and also DM'd to the user.  
+    Info: Admin only. Kicks a user from the server. Mention the User or use User ID. You will be asked for confirmation before the user gets kicked. The reason will get logged in Audit logs and also DM'd to the user.  
     Example: `%kick @Phxenix what an idiot`  
     
 **%leaderboard**  
@@ -124,7 +124,7 @@ I will try to keep this up-to-date, no promises.
     Aliases: listmacro, macros, macro  
     
 **%listrole** `<role>`  
-    Info: Lists out every User with a certain role. The bot searches for the closest match for the role name.  
+    Info: Lists out every User with a certain role. The bot first tries to use the Role ID or Role mention, after that it searches for the closest match for the role name.  
     Example: `%listrole first class`  
     Aliases: listroles  
     
@@ -166,7 +166,7 @@ I will try to keep this up-to-date, no promises.
     Info: Gets you a random quote from someone.  
   
 **%rankedmm**  
-    Info: Pings your ranked role according to you Elo value and stores your ping for 30 Minutes. Has a 2 minute cooldown and can only be used in our ranked arena channels.
+    Info: Pings your ranked role according to you Elo value and stores your ping for 30 Minutes. Has a 2 minute cooldown and can only be used in our ranked arena channels.  
     Aliases: ranked, rankedmatchmaking, rankedsingles  
   
 **%rankedstats** `<@user: Optional>`  
@@ -189,10 +189,10 @@ I will try to keep this up-to-date, no promises.
     Aliases: remindme, newreminder, newremindme  
   
 **%removerole** `<@user> <role>`  
-    Info: Admin only. Removes a role from a User. Mention the User or use User ID, for the Role the bot just takes the closest match.  
+    Info: Admin only. Removes a role from a User. Mention the User or use User ID, for the Role the bot first tries to use the Role ID or Role mention, after that it searches for the closest match for the role name.  
     Example: `%removerole @Phxenix first class`  
     
-**%rename** `<@user> <name>`  
+**%rename** `<@user> <name: Optional>`  
     Info: Admin only. Renames the given member to the given nickname. Removes the nickname if you do not pass in a new one.  
     Example: `%rename @Phxenix Example Name`  
   
@@ -205,7 +205,7 @@ I will try to keep this up-to-date, no promises.
     Info: Links to our Smash Ultimate resources document intended for beginners.  
   
 **%roleinfo** `<role>`  
-    Info: Gets you information about a role. The bot searches for the closest match for the role name.  
+    Info: Gets you information about a role. The bot first tries to use the Role ID or Role mention, after that it searches for the closest match for the role name.  
     Example: `%roleinfo first class`  
   
 **%roll** `<NdN>`  
@@ -213,8 +213,8 @@ I will try to keep this up-to-date, no promises.
     Example: `%roll 2d6`  
     Aliases: r  
     
-**%rps** `<@user>`
-    Info: Plays a game of Rock, Paper, Scissors with the mentioned user.  
+**%rps** `<@user: Optional>`
+    Info: Plays a game of Rock, Paper, Scissors with the mentioned user. If you don't mention a user, you will play against Tabuu 3.0 himself.  
     Example: `%rps @Phxenix`  
     Aliases: rockpaperscissors, rochambeau, roshambo  
   
@@ -257,7 +257,7 @@ I will try to keep this up-to-date, no promises.
   
 **%tempmute** `<@user> <time> <reason>`  
     Info: Admin only. Mutes a user for the specified time, which is in a shortened format with any number and d/h/m/s. Minimum time is 30 seconds, maximum is 1 day. Mention the user or use User ID. The reason will get DM'd to the muted person.  
-    Example: `%tempmute @Phxenix 12h what an idiot`  
+    Example: `%tempmute @Phxenix 12h30m what an idiot`  
   
 **%unban** `<@user>`  
     Info: Admin only. Unbans a user. Mention the User or use User ID.  
@@ -267,8 +267,9 @@ I will try to keep this up-to-date, no promises.
     Info: Admin only. Unmutes a user. Please use this in all cases to unmute someone. Mention the User or use User ID.  
     Example: `%unmute @Phxenix`  
   
-**%updatelevel**  
-    Info: Updates your level role according to your MEE6 level manually. Has a 10 minute cooldown. Note that this gets done anyways every 23 hours for everyone in the server.  
+**%updatelevel <@user: Optional>**  
+    Info: Updates your level role or the one of the mentioned user according to your MEE6 level manually. Has a 10 minute cooldown. Note that this gets done anyways every 23 hours for everyone in the server.  
+    Example: `%updatelevel @Phxenix`  
   
 **%userinfo** `<@user: Optional>`  
     Info: Gets you various information about a user. If you haven't specified a user, this will get your own info. Mention the User or use User ID.  
