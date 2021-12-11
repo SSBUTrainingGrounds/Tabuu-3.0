@@ -99,6 +99,14 @@ class Mute(commands.Cog):
         #this here uses the convert_time function from my reminder to convert the input into the seconds, and also a human-readable-string
         seconds, time_muted = Reminder.convert_time(self, mute_time)
 
+        #just checking the duration is not at a crazy high/low value
+        if seconds < 30:
+            await ctx.send("Duration is too short! Minimum duration is 30 seconds.")
+            return
+
+        if seconds > 86401:
+            await ctx.send("Duration is too long! Maximum duration is 1 day.")
+            return
 
         #now this is basically just "%mute, wait specified time, %unmute" but automated into one command
         with open (r'./json/muted.json', 'r') as f:
