@@ -6,6 +6,7 @@ import time
 import datetime
 import os
 from fuzzywuzzy import process
+import json
 
 
 #
@@ -86,10 +87,13 @@ class Stats(commands.Cog):
 
         invites = await ctx.guild.invites()
 
+        staff_role = discord.utils.get(ctx.guild.roles, id=739299507816366106)
+        staff_online = [member for member in staff_role.members if member.status != discord.Status.offline]
+
         embed = discord.Embed(title=f"{ctx.guild.name} ({ctx.guild.id})", color=discord.Color.green())
         embed.add_field(name="Created on:", value=discord.utils.format_dt(ctx.guild.created_at, style='F'), inline=True)
         embed.add_field(name="Owner:", value=ctx.guild.owner.mention, inline=True)
-        embed.add_field(name="Server Region:", value=ctx.guild.region, inline=True)
+        embed.add_field(name="Staff Online:", value=len(staff_online), inline=True)
 
         embed.add_field(name="Members:", value=f"{len(ctx.guild.members)} (Bots: {sum(member.bot for member in ctx.guild.members)})", inline=True)
         embed.add_field(name="Boosts:", value=f"{ctx.guild.premium_subscription_count} (Boosters: {len(ctx.guild.premium_subscribers)})", inline=True)
@@ -145,16 +149,22 @@ class Stats(commands.Cog):
         proc = psutil.Process(os.getpid())
         uptimeSeconds = time.time() - proc.create_time()
 
+        with open(r'./json/macros.json', 'r') as f:
+            macros = json.load(f)
+
         embed = discord.Embed(title="Tabuu 3.0 Stats", color=0x007377, url="https://github.com/phxenix-w/Tabuu-3.0-Bot")
-        embed.add_field(name="Name:", value=f"{self.bot.user.mention}", inline=True)
         embed.add_field(name="Servers:", value=len(self.bot.guilds), inline=True)
         embed.add_field(name="Total Users:", value=len(set(self.bot.get_all_members())), inline=True)
+        embed.add_field(name="Number of Commands:", value=len(self.bot.commands) + len(macros))
+
         embed.add_field(name="Bot Version:", value=self.bot.version_number, inline=True)
         embed.add_field(name="Python Version:", value=platform.python_version(), inline=True)
         embed.add_field(name="discord.py Version:", value=discord.__version__, inline=True)
+
         embed.add_field(name="CPU Usage:", value=f"{psutil.cpu_percent(interval=None)}%", inline=True)
         embed.add_field(name="RAM Usage:", value=f"{round(psutil.virtual_memory()[3]/(1024*1024*1024), 2)}GB/{round(psutil.virtual_memory()[0]/(1024*1024*1024), 2)}GB ({round((psutil.virtual_memory()[3]/psutil.virtual_memory()[0]) * 100, 1)}%)", inline=True)
         embed.add_field(name="Uptime:", value=str(datetime.timedelta(seconds=uptimeSeconds)).split(".")[0], inline=True)
+
         embed.set_footer(text="Creator: Phxenix#1104, hosted on: Raspberry Pi 4")
         embed.set_thumbnail(url=self.bot.user.display_avatar.url)
         await ctx.send(embed=embed)
