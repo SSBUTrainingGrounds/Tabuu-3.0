@@ -118,6 +118,10 @@ class Funcommands(commands.Cog):
 
     @commands.command()
     async def who(self, ctx, *, question = None):
+        if ctx.guild is None:
+            await ctx.send("You cannot use this command in my DM channel.")
+            return
+
         if question is None:
             await ctx.send("Please input a question so I can look for the right user.")
             return
