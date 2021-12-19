@@ -154,21 +154,33 @@ class Warn(commands.Cog):
 
 
             user_data = users[str(member.id)]
-            await ctx.send(f"Active warnings for {member.mention}: {len(user_data)}") #just the number
+            embed_list = []
+
             i = 1
             for warn_id in user_data.keys(): #gets all of the data, cycles through each warning
                 mod = users[f'{member.id}'][warn_id]['mod']
                 reason = users[f'{member.id}'][warn_id]['reason']
                 timestamp = users[f'{member.id}'][warn_id]['timestamp']
                 new_timestamp = datetime.strptime(timestamp, "%A, %B %d %Y @ %H:%M:%S %p")
+
                 embed = discord.Embed(title=f"Warning #{i}", colour=discord.Colour.red())
                 embed.add_field(name="Moderator: ", value=f"<@{mod}>")
                 embed.add_field(name="Reason: ", value=f"{reason}")
                 embed.add_field(name="ID:", value=f"{warn_id}")
                 embed.add_field(name="Warning given out at:", value=discord.utils.format_dt(new_timestamp, style='F'))
-                await ctx.send(embed=embed)
+                embed_list.append(embed)
+
                 i+=1
-        except: #if not, generic error message
+
+            #if the user is in the json file but the warnings got deleted, the embeds will be empty, but discord just ignores that so, no big deal
+            #the maximum amount of embeds you can send is 10, we do ban people at 7 warnings but you never know what might happen
+            try:
+                await ctx.send(f"Active warnings for {member.mention}: {len(user_data)}", embeds = embed_list)
+            except:
+                await ctx.send(f"Active warnings for {member.mention}: {len(user_data)}\nCannot list warnings for this user!")
+
+        #if the user isnt found at all in the json file, it gives you this generic error message
+        except:
             await ctx.send(f"{member.mention} doesn't have any active warnings (yet).")
 
 
