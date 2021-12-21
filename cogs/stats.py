@@ -155,7 +155,7 @@ class Stats(commands.Cog):
         embed = discord.Embed(title="Tabuu 3.0 Stats", color=0x007377, url="https://github.com/phxenix-w/Tabuu-3.0-Bot")
         embed.add_field(name="Servers:", value=len(self.bot.guilds), inline=True)
         embed.add_field(name="Total Users:", value=len(set(self.bot.get_all_members())), inline=True)
-        embed.add_field(name="Number of Commands:", value=len(self.bot.commands) + len(macros))
+        embed.add_field(name="Number of Commands:", value=f"{len(self.bot.commands) + len(macros)} (Events: {len(self.bot.extra_events)})")
 
         embed.add_field(name="Bot Version:", value=self.bot.version_number, inline=True)
         embed.add_field(name="Python Version:", value=platform.python_version(), inline=True)
