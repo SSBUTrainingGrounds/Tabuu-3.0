@@ -41,10 +41,17 @@ class Reminder(commands.Cog):
                 #ignores zeroes in the returning string. if you input 0d20h it wont display the days in the string
                 if int(days) > 0:
                     if readable_time == "":
-                        #str(int(days)) looks stupid but it gets rid of leading zeroes. 00001d -> 1d
-                        readable_time = f"{str(int(days))} day(s)"
+                        #checks if its just one or multiple for proper wording
+                        if int(days) == 1:
+                            #str(int(days)) looks stupid but it gets rid of leading zeroes. 00001d -> 1d
+                            readable_time = f"{str(int(days))} day"
+                        else:
+                            readable_time = f"{str(int(days))} days"
                     else:
-                        readable_time = readable_time + f", {str(int(days))} day(s)"
+                        if int(days) == 1:
+                            readable_time = readable_time + f", {str(int(days))} day"
+                        else:
+                            readable_time = readable_time + f", {str(int(days))} days"
                 #resets the counter for the other inputs
                 current_position = 0
 
@@ -56,9 +63,15 @@ class Reminder(commands.Cog):
                     raise commands.CommandInvokeError
                 if int(hours) > 0:
                     if readable_time == "":
-                        readable_time = f"{str(int(hours))} hour(s)"
+                        if int(hours) == 1:
+                            readable_time = f"{str(int(hours))} hour"
+                        else:
+                            readable_time = f"{str(int(hours))} hours"
                     else:
-                        readable_time = readable_time + f", {str(int(hours))} hour(s)"
+                        if int(hours) == 1:
+                            readable_time = readable_time + f", {str(int(hours))} hour"
+                        else:
+                            readable_time = readable_time + f", {str(int(hours))} hours"
                 current_position = 0
 
             elif char == "m":
@@ -68,9 +81,15 @@ class Reminder(commands.Cog):
                     raise commands.CommandInvokeError
                 if int(mins) > 0:
                     if readable_time == "":
-                        readable_time = f"{str(int(mins))} minute(s)"
+                        if int(mins) == 1:
+                            readable_time = f"{str(int(mins))} minute"
+                        else:
+                            readable_time = f"{str(int(mins))} minutes"
                     else:
-                        readable_time = readable_time + f", {str(int(mins))} minute(s)"
+                        if int(mins) == 1:
+                            readable_time = readable_time + f", {str(int(mins))} minute"
+                        else:
+                            readable_time = readable_time + f", {str(int(mins))} minutes"
                 current_position = 0
 
             elif char == "s":
@@ -80,9 +99,15 @@ class Reminder(commands.Cog):
                     raise commands.CommandInvokeError
                 if int(secs) > 0:
                     if readable_time == "":
-                        readable_time = f"{str(int(secs))} second(s)"
+                        if int(secs) == 1:
+                            readable_time = f"{str(int(secs))} second"
+                        else:
+                            readable_time = f"{str(int(secs))} seconds"
                     else:
-                        readable_time = readable_time + f", {str(int(secs))} second(s)"
+                        if int(secs) == 1:
+                            readable_time = readable_time + f", {str(int(secs))} second"
+                        else:
+                            readable_time = readable_time + f", {str(int(secs))} seconds"
                 current_position = 0
             
             else:
@@ -115,7 +140,9 @@ class Reminder(commands.Cog):
 
         #if the duration is fairly short, i wont bother writing it to the file, a sleep statement will do
         if seconds < 299:
-            await ctx.send(f"{ctx.author.mention}, I will remind you about `{reminder_message}` in {reminder_time}!")
+            message_dt = datetime.datetime.fromtimestamp(discord.utils.utcnow().timestamp() + seconds)
+
+            await ctx.send(f"{ctx.author.mention}, I will remind you about `{reminder_message}` in {reminder_time}! ({discord.utils.format_dt(message_dt, style='f')})")
 
             await asyncio.sleep(seconds)
 
@@ -137,7 +164,9 @@ class Reminder(commands.Cog):
             with open(r'./json/reminder.json', 'w') as f:
                 json.dump(reminders, f, indent=4)
 
-            await ctx.send(f"{ctx.author.mention}, I will remind you about `{reminder_message}` in {reminder_time}! \nView all of your active reminders with `%viewreminders`")
+            message_dt = datetime.datetime.fromtimestamp(discord.utils.utcnow().timestamp() + seconds)
+
+            await ctx.send(f"{ctx.author.mention}, I will remind you about `{reminder_message}` in {reminder_time}! ({discord.utils.format_dt(message_dt, style='f')})\nView all of your active reminders with `%viewreminders`")
 
 
 
