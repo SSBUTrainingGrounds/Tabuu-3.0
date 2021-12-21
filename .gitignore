@@ -1,5 +1,2 @@
 __pycache__/
-*.json
-*.txt
-*.png
-*.jpg
+token.txt
