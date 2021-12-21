@@ -24,5 +24,5 @@ The full list of commands with an explanation on how to use them can be found wi
 ##  Running the bot
 Since this bot is only intended to be used on the SSBU Training Grounds Discord Server, this means that you cannot invite the bot to your own server. Plus there are lots of hardcoded values specific to this server found in the code. These include all references to guilds, channels, roles, etc. You get the idea.  
 
-If you decide that for some reason you do want to run the bot yourself you will need to create and host your own Discord Application and modify these values I talked about above manually in the code.  
-In the case that you do want to do this, make sure you have at least Python 3.8 installed and the latest version of the [discord.py](https://github.com/Rapptz/discord.py) alpha.   
+If you decide that for some reason you do want to run the bot yourself you will need to create and host your own Discord Application and modify these values I talked about above manually in the code, as well as create a file named token.txt in the /files/ directory with your discord bot token.  
+Also please make sure you have at least Python 3.8 installed and the latest version of the [discord.py](https://github.com/Rapptz/discord.py) alpha.   
