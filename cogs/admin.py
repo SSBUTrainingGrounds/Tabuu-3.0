@@ -16,8 +16,14 @@ class Admin(commands.Cog):
     #clear
     @commands.command()
     @commands.has_permissions(administrator=True)
-    async def clear(self, ctx, amount=1): #default amount for the clear is 1 message, so any channel doesnt get wiped by accident
-        await ctx.channel.purge(limit=amount+1)
+    async def clear(self, ctx, amount=1): #default amount for the clear is 1 message
+        if amount < 1:
+            await ctx.send("Please input a valid number!")
+            return
+
+        deleted = await ctx.channel.purge(limit=amount+1)
+        await ctx.send(f"Successfully deleted `{len(deleted)}` messages, {ctx.author.mention}")
+
 
     #delete
     @commands.command()
@@ -242,6 +248,8 @@ class Admin(commands.Cog):
     async def clear_error(self, ctx, error):
         if isinstance(error, commands.MissingPermissions):
             await ctx.send("Nice try, but you don't have the permissions to do that!")
+        elif isinstance(error, commands.BadArgument):
+            await ctx.send("Please input a valid number!")
         elif isinstance(error, commands.CommandInvokeError):
             await ctx.send("I could not delete one or more of these messages! Make sure they were not send too long ago or try a different amount.")
         else:
