@@ -1,7 +1,7 @@
 #Tabuu 3.0
 #by Phxenix for SSBU Training Grounds
-#Version: 4.9.0
-#Last Changes: 10 December 2021
+#Version: 4.9.2
+#Last Changes: 22 December 2021
 #Report any bugs to: Phxenix#1104
 #
 
@@ -15,18 +15,18 @@ import os
 #this main file here loads all the cogs and starts the bot obviously, also holds the reloadcogs command
 #
 
-intents=intents=discord.Intents.all() #intents so the bot can track its users
-bot = commands.Bot(command_prefix='%', intents=intents) # prefix for commands, we picked %, intents same as above
+intents = discord.Intents.all() #intents so the bot can track its users
+bot = commands.Bot(command_prefix='%', intents=intents)
 bot.remove_command('help') #for a custom help command
 
-bot.version_number = "4.9.0" #the "version", maintain every now and then
+bot.version_number = "4.9.2" #the "version", maintain every now and then
 
 
-#bot startup, and some event triggers without commands
+#bot startup
 @bot.event
 async def on_ready():
     await bot.change_presence(status=discord.Status.online)
-    print ("Lookin' good, connected as", bot.user) #prints to the console that its ready
+    print("Lookin' good, connected as", bot.user)
 
 
     
@@ -38,7 +38,7 @@ for filename in os.listdir(r'./cogs'):
 
 
 #command for manually reloading all cogs, so i dont have to restart the bot for every change. can only be used by me
-#embeds can have up to 25 fields, we are at 17 cogs currently. need a different solution when we go over that
+#embeds can have up to 25 fields, we are at 20 cogs currently. need a different solution when we go over that
 @bot.command()
 @commands.is_owner()
 async def reloadcogs(ctx):
@@ -53,6 +53,7 @@ async def reloadcogs(ctx):
                 embed.add_field(name=f"❌ FAILED TO RELOAD {filename[:-3]} ❌", value=exc, inline=False)
     await ctx.send(embed=embed)
 
+
 #error handling for the reloadcogs command
 @reloadcogs.error
 async def reloadcogs_error(ctx, error):
@@ -60,7 +61,6 @@ async def reloadcogs_error(ctx, error):
         await ctx.send("You are not the owner of this bot!")
     else:
         raise error
-
 
 
 
