@@ -142,7 +142,7 @@ I will try to keep this up-to-date, no promises.
     
 **%mp4`<move>`**  
     Info: Gives you the mana cost of any of Hero's moves.  
-    `Example: %mp4woosh`  
+    Example: `%mp4woosh`  
   
 **%mute** `<@user> <reason>`  
     Info: Admin only. Mutes a user in the server. The reason will get DM'd to the user.  
