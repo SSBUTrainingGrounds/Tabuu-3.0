@@ -1,8 +1,7 @@
 import discord
 from discord.ext import commands, tasks
-from fuzzywuzzy import process
-from discord.utils import get
 import asyncio
+from .stats import Stats
 
 #
 #this file here contains general purpose admin commands, they all need the @commands.has_permissions(administrator=True) decorator
@@ -120,44 +119,21 @@ class Admin(commands.Cog):
     #role commands
     @commands.command()
     @commands.has_permissions(administrator=True) #checking permissions
-    async def addrole(self, ctx, member:discord.Member, *,input_role):
-        unwanted = ['<','@','>', '&']
-        for i in unwanted:
-            input_role = input_role.replace(i,'')
-        all_roles = []
-
-        for role in ctx.guild.roles:
-            all_roles.append(role.name)
-        try:
-            role = get(ctx.guild.roles, id=int(input_role)) #this executes when you use the id, or mention the role
-        except:
-            match = process.extractOne(input_role, all_roles, score_cutoff=30)[0] #otherwise this executes, getting the closest match
-            role = get(ctx.guild.roles, name=match)
-        
-        #the whole block above is searching for matching roles, its repeated in every role command below, does the same thing everytime
+    async def addrole(self, ctx, member:discord.Member, *, input_role):
+        #searches the closest matching role
+        role = Stats.search_role(self, ctx.guild, input_role)
 
         await member.add_roles(role)
-        await ctx.send(f"{member.mention} was given the {role} role")
+        await ctx.send(f"{member.mention} was given the {role} role.")
 
 
     @commands.command()
     @commands.has_permissions(administrator=True) #checking permissions
     async def removerole(self, ctx, member:discord.Member, *,input_role):
-        unwanted = ['<','@','>', '&']
-        for i in unwanted:
-            input_role = input_role.replace(i,'')
-        all_roles = []
-
-        for role in ctx.guild.roles:
-            all_roles.append(role.name)
-        try:
-            role = get(ctx.guild.roles, id=int(input_role))
-        except:
-            match = process.extractOne(input_role, all_roles, score_cutoff=30)[0]
-            role = get(ctx.guild.roles, name=match)
+        role = Stats.search_role(self, ctx.guild, input_role)
 
         await member.remove_roles(role) #same as above here
-        await ctx.send(f"{member.mention} no longer has the {role} role")
+        await ctx.send(f"{member.mention} no longer has the {role} role.")
 
 
     @commands.command()

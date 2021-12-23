@@ -18,23 +18,33 @@ class Stats(commands.Cog):
     def __init__(self, bot):
         self.bot = bot
 
-    #some basic info about a role
-    @commands.command()
-    async def roleinfo(self, ctx, *,input_role):
+
+    #this here searches a matching role from your input, works with role mention, role ID, or closest name match
+    def search_role(self, guild: discord.Guild, input_role):
+        #we get rid of the junk that comes with mentioning a role
         unwanted = ['<','@','>', '&']
         for i in unwanted:
             input_role = input_role.replace(i,'')
-        all_roles = []
 
-        for role in ctx.guild.roles:
+        all_roles = []
+        for role in guild.roles:
             all_roles.append(role.name)
+
+        #first we try to get the role straight from the ID
         try:
-            role = discord.utils.get(ctx.guild.roles, id=int(input_role))
+            role = discord.utils.get(guild.roles, id=int(input_role))
+        #if that fails, we search for the closest matching name
         except:
             match = process.extractOne(input_role, all_roles, score_cutoff=30)[0]
-            role = discord.utils.get(ctx.guild.roles, name=match)
+            role = discord.utils.get(guild.roles, name=match)
 
-        #the above block searches all roles for the closest match, as seen in the admin cog
+        return role
+
+
+    #some basic info about a role
+    @commands.command() 
+    async def roleinfo(self, ctx, *, input_role):
+        role = self.search_role(ctx.guild, input_role)
 
         embed = discord.Embed(title=f"Roleinfo of {role.name} ({role.id})", color = role.colour)
         embed.add_field(name="Role Name:", value=role.mention, inline=True)
@@ -45,21 +55,11 @@ class Stats(commands.Cog):
         embed.add_field(name="Color:", value=role.color, inline=True)
         await ctx.send(embed=embed)
 
+
     #lists every member in the role if there arent more than 60 members, to prevent spam
     @commands.command(aliases=['listroles']) 
     async def listrole(self, ctx, *,input_role):
-        unwanted = ['<','@','>', '&']
-        for i in unwanted:
-            input_role = input_role.replace(i,'')
-        all_roles = []
-
-        for role in ctx.guild.roles:
-            all_roles.append(role.name)
-        try:
-            role = discord.utils.get(ctx.guild.roles, id=int(input_role))
-        except:
-            match = process.extractOne(input_role, all_roles, score_cutoff=30)[0]
-            role = discord.utils.get(ctx.guild.roles, name=match)
+        role = self.search_role(ctx.guild, input_role)
 
         members = role.members
         memberlist = []
