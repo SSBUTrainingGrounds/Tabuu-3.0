@@ -116,14 +116,15 @@ class Responses(discord.ui.Select):
         
         elif self.values[0] == 'Fun':
             fun_embed = discord.Embed(title="😂Fun Commands😂", color=0x841e8b, description='\n\
-```%joke``` - Jokes\n\
-```%randomquote``` - Quotes\n\
-```%pickmeup``` - Nice words\n\
-```%wisdom``` - It\'s wisdom\n\
+```%joke``` - Jokes.\n\
+```%randomquote``` - Quotes.\n\
+```%pickmeup``` - Nice words.\n\
+```%wisdom``` - It\'s wisdom.\n\
 ```%boo``` - Looking for a scare, huh?\n\
-```%uwu``` - For the silly people\n\
-```%tabuwu``` - For the dumb people\n\
-```%john``` - If you need a john\n\
+```%uwu``` - For the silly people.\n\
+```%tabuwu``` - For the dumb people.\n\
+```%john``` - If you need a john.\n\
+```%hypemeup``` - Hypes you up before that next game of smash.\n\
 ```%8ball <question>``` - Ask the magic 8-ball.\n\
 ```%who <question>``` - Ask a question and get a random user in response.\n\
         ')

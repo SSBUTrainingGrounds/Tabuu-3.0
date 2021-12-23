@@ -101,6 +101,9 @@ I will try to keep this up-to-date, no promises.
     
 **%help**  
     Info: The help command is broken into a dropdown cause there were too many commands to list. Available dropdowns are: admin, info, mm, util, misc, fun. The admin dropdown is admin only.  
+
+**%hypemeup**  
+    Info: Hypes you up with a randomly chosen response before that next game of smash.  
     
 **%invite**  
     Info: Gets you our vanity URL invite link.  

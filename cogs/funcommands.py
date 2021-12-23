@@ -66,24 +66,36 @@ class Funcommands(commands.Cog):
 
     @commands.command()
     async def john(self, ctx):
-        messages = ['I only lost cause my sister got me a god damn fucking McFlurry',
-        'I only lost cause my router called me mean names',
+        messages = ['I only lost cause my router called me mean names',
         'I only lost cause I dont care for this stupid game anymore',
         'There is no johns, I lost fair and square',
         'I only lost cause Tabuu gave me second hand smoke',
         'I only lost cause I put my foot on the desk again and it disconnected my lan',
         'I only lost cause Arto burned down my freaking house mid-set',
-        'I only lost cause sharpen was making too much noise in my basement',
         'I only lost because i got weirdganted',
         'I only lost cause my slime controller got drift',
-        'I only lost cause i was distracted by ewan explaining scottish independence to me',
         'I only lost cause I got muted mid-set',
         'I only lost because I was trying to get pinned in #number-chain',
-        'i only lost cause arto accidentally banned me from this server',
-        'i only lost cause ewans bald head was blinding me',
+        'I only lost cause arto accidentally banned me from this server',
         'I only lost because I didn’t DI away from plats',
         'I only lost cause spoon pinged everyone again',
         'I only lost because someone pinged %singles in our arena midmatch']
+        await ctx.send(random.choice(messages))
+
+    @commands.command()
+    async def hypemeup(self, ctx):
+        messages = ['Whose better than you? \nNobody. That\'s who.',
+        'This is your day to shine!',
+        'Get ready to clip this one!',
+        'Nobody does it like you!',
+        'If you wanna be the best you gotta beat the best!',
+        'If anyone can do it, it\'s you!',
+        'Never back down from a challenge!',
+        'Make this game legendary!',
+        'Go out there and GET. THOSE. CLIPS. 👏',
+        'See you in grand finals!',
+        'Whoa now, leave some stocks for the rest of us!',
+        'They\'re gonna remember this one!']
         await ctx.send(random.choice(messages))
 
     @commands.command(name='8ball')
