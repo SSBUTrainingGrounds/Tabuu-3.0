@@ -123,25 +123,6 @@ class Macros(commands.Cog):
 
     #below here are macros that are hard-coded. they may or may not be replaced by the system above in the future.
     #for now they remain here
-    #invite link
-    @commands.command()
-    async def invite(self, ctx):
-        await ctx.send("Here's the invite link to our server: https://discord.gg/ssbutg") #if this link expires, change it
-
-    #coaching info
-    @commands.command()
-    async def coaching(self, ctx):
-        await ctx.send("It seems like you are looking for coaching: make sure to tell us what exactly you need so we can best assist you!\n\n1. Did you specify which character you need help with?\n2. Are you looking for general advice, character-specific advice, both?\n3. How well do you understand general game mechanics on a scale of 1-5 (1 being complete beginner and 5 being knowledgeable)?\n4. Region?\n5. What times are you available?\n\nPlease keep in mind if you are very new to the game or have a basic understanding, it is recommended to first learn more via resources like Izaw's Art of Smash series (which you can find on YouTube) or other resources we have pinned in <#739299508403437621>.")
-
-    #links to our calendar
-    @commands.command(aliases=['calender', 'calandar', 'caIendar'])
-    async def calendar(self, ctx): #the basic schedule for our server
-        await ctx.send("https://calendar.google.com/calendar/embed?src=ssbu.traininggrounds%40gmail.com&ctz=America%2FNew_York")
-
-    #links to our resource document
-    @commands.command()
-    async def resources(self, ctx):
-        await ctx.send("https://docs.google.com/document/d/1JfxnXHLe0-rW-Z6sEjLQzB1puDsVP0UtOvaXz_EEXqE")
 
     #pic with our stagelist on it, change file when it changes
     @commands.command()

@@ -101,10 +101,6 @@ class Responses(discord.ui.Select):
 ```%modmail <your message>``` - A private way to communicate with the moderator team. Only works in my DM channel.\n\
 ```%updatelevel <@user>``` - Updates the level role manually.\n\
 ```%stagelist``` - Our Stagelist for Crew Battles.\n\
-```%coaching``` - Coaching requirements.\n\
-```%calendar``` - Calendar with our schedule.\n\
-```%resources``` - Our resource document for new players.\n\
-```%invite``` - For those looking for an invite.\n\
 ```%avatar <@user>``` - Gets you the avatar of a user.\n\
 ```%banner <@user>``` - Gets you the banner of a user.\n\
 ```%spotify <@user>``` - Posts the song the user is currently streaming.\n\
