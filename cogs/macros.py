@@ -120,44 +120,6 @@ class Macros(commands.Cog):
 
 
 
-
-    #below here are macros that are hard-coded. they may or may not be replaced by the system above in the future.
-    #for now they remain here
-
-    #pic with our stagelist on it, change file when it changes
-    @commands.command()
-    async def stagelist(self, ctx):
-        await ctx.send(file=discord.File(r"./files/stagelist.png")) 
-
-
-
-    #our streamers use these shortcuts to promote their streams
-    @commands.command()
-    async def streamer(self, ctx):
-        await ctx.send("Streamer commands: \n%neon, %scrooge, %tabuu, %xylenes, %tgstream") #needs updating every once in a while
-
-    @commands.command()
-    async def neon(self, ctx):
-        await ctx.send("https://www.twitch.tv/neonsurvivor")
-
-    @commands.command()
-    async def scrooge(self, ctx):
-        await ctx.send("https://www.twitch.tv/scroogemcduk")
-    
-    @commands.command()
-    async def tabuu(self, ctx):
-        await ctx.send("https://www.twitch.tv/therealtabuu")
-
-    @commands.command()
-    async def xylenes(self, ctx):
-        await ctx.send("https://www.twitch.tv/FamilyC0mputer")
-
-    @commands.command()
-    async def tgstream(self, ctx):
-        await ctx.send("https://www.twitch.tv/ssbutraininggrounds")
-
-
-
 def setup(bot):
     bot.add_cog(Macros(bot))
     print("Macros cog loaded")

@@ -88,6 +88,10 @@ class Usercommands(commands.Cog):
         coin = ['Coin toss: **Heads!**', 'Coin toss: **Tails!**']
         await ctx.send(random.choice(coin))
 
+    @commands.command()
+    async def stagelist(self, ctx):
+        await ctx.send(file=discord.File(r"./files/stagelist.png"))
+
     #neat dice roll
     @commands.command(aliases=['r'])
     async def roll(self, ctx, dice:str):

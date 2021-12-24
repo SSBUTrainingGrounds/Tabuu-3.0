@@ -104,7 +104,6 @@ class Responses(discord.ui.Select):
 ```%avatar <@user>``` - Gets you the avatar of a user.\n\
 ```%banner <@user>``` - Gets you the banner of a user.\n\
 ```%spotify <@user>``` - Posts the song the user is currently streaming.\n\
-```%<streamer>``` - Links to one of our streamers.\n\
 ```%ping``` - Gets the ping of the bot.\n\
 ```%mp4<move>``` - Tells you the Mana Cost of any of Hero\'s moves.\n\
         ')
