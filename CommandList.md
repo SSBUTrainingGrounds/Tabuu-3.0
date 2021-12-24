@@ -27,10 +27,6 @@ I will try to keep this up-to-date, no promises.
 **%boo**    
     Info: Comes up with some scary stuff.  
     
-**%calendar**  
-    Info: Gives you the link to our event calendar.  
-    Aliases: calender, calandar, caIendar  
-    
 **%clear** `<amount: Optional>`  
     Info: Admin only. Deletes the last X+1 messages in the current channel. Defaults to 1 if you do not specify an amount.  
     Example: `%clear 10`  
@@ -42,9 +38,6 @@ I will try to keep this up-to-date, no promises.
 **%clearwarns** `<@user>`  
     Info: Admin only. Clears all warnings of a User. Mention the User or use User ID.  
     Example: `%clearwarns @Phxenix`  
-    
-**%coaching**  
-    Info: Gives you all the Information you need for getting coaching in our server.  
     
 **%coin**  
     Info: Flips a coin and gives you the result. Heads or Tails.  
@@ -104,9 +97,6 @@ I will try to keep this up-to-date, no promises.
 
 **%hypemeup**  
     Info: Hypes you up with a randomly chosen response before that next game of smash.  
-    
-**%invite**  
-    Info: Gets you our vanity URL invite link.  
     
 **%john**  
     Info: Returns a random excuse why you lost that last game of Smash.  
@@ -203,9 +193,6 @@ I will try to keep this up-to-date, no promises.
     Info: The winner uses this command after a ranked match to report the result of the match, @user being the person who lost the ranked match. Mention the User or use User ID. Has a 41 second cooldown.
     Example: `%reportmatch @Phxenix`  
     Aliases: reportgame  
-    
-**%resources**  
-    Info: Links to our Smash Ultimate resources document intended for beginners.  
   
 **%roleinfo** `<role>`  
     Info: Gets you information about a role. The bot first tries to use the Role ID or Role mention, after that it searches for the closest match for the role name.  
