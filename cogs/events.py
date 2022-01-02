@@ -144,7 +144,10 @@ class Events(commands.Cog):
                 raise error
 
 
-    #this here pings the streamers and TOs 1 hour before each weekly tournament, times are in utc
+    #this here pings the streamers and TOs 1 hour before each weekly tournament
+    #when DST is in effect (summer), the values should be: smash overseas: (17, 0, 0, 0) and trials of smash: (22, 0, 0, 0)
+    #without DST in effect (winter), the values should be: smash overseas: (18, 0, 0, 0) and trials of smash: (23, 0, 0, 0)
+    #there seems to be no good way to do this since time objects do not support timezones with DST?
     so_time = datetime.time(18, 0, 0, 0)
     tos_time = datetime.time(23, 0, 0, 0)
 
@@ -152,8 +155,9 @@ class Events(commands.Cog):
     async def so_ping(self):
         #runs every day, checks if it is friday in utc
         if datetime.datetime.utcnow().weekday() == 4:
-            #stops this task from running 5 mins after the desired time. have to do this because otherwise it would run again if i were to restart the bot after 18:00 utc fridays
-            if datetime.datetime.utcnow().hour <= 18 and datetime.datetime.utcnow().minute <= 5:
+            #stops this task from running 1 hour after the desired time. 
+            #have to do this because otherwise it would run again if i were to restart the bot after 19:00 utc fridays
+            if datetime.datetime.utcnow().hour <= 18:
                 guild = self.bot.get_guild(739299507795132486)
                 streamer_channel = self.bot.get_channel(766721811962396672)
                 streamer_role = discord.utils.get(guild.roles, id=752291084058755192)
@@ -168,7 +172,7 @@ class Events(commands.Cog):
     async def tos_ping(self):
         #runs every day, checks if it is saturday in utc (might wanna keep watching that event cause timezones could be weird here since its sunday for me)
         if datetime.datetime.utcnow().weekday() == 5:
-            if datetime.datetime.utcnow().hour <= 23 and datetime.datetime.utcnow().minute <= 5:
+            if datetime.datetime.utcnow().hour <= 23:
                 guild = self.bot.get_guild(739299507795132486)
                 streamer_channel = self.bot.get_channel(766721811962396672)
                 streamer_role = discord.utils.get(guild.roles, id=752291084058755192)
