@@ -6,13 +6,21 @@ from io import StringIO
 #this file here contains the logs, it logs every little user/message update into our logs channel
 #
 
-logchannel = 739299509670248504 #logchannel id
-
 class Logging(commands.Cog):
     def __init__(self, bot):
         self.bot = bot
 
-    #if a user updates their profile
+    tg_logs = 739299509670248504
+    bg_logs = 923018569128763482
+
+    def get_logchannel(self, guild_id: int):
+        if guild_id == 739299507795132486:
+            return self.tg_logs
+        elif guild_id == 915395890775216188:
+            return self.bg_logs
+
+    #if a user updates their profile, since its global, and users dont have an assigned guild we need to send it to each logchannel separately
+    #using try except just in case the bot left one of these servers
     @commands.Cog.listener()
     async def on_user_update(self, before, after):
         #username change
@@ -20,16 +28,34 @@ class Logging(commands.Cog):
             embed = discord.Embed(title="**✏️ Username changed ✏️**", description=f"Before: {before.name}\nAfter: {after.name}", colour=discord.Colour.orange())
             embed.set_author(name=f"{str(after)} ({after.id})", icon_url=after.display_avatar.url)
             embed.timestamp = discord.utils.utcnow()
-            logs = self.bot.get_channel(logchannel)
-            await logs.send(embed=embed)
+            try:
+                tg_logs = self.bot.get_channel(self.tg_logs)
+                await tg_logs.send(embed=embed)
+            except:
+                pass
+
+            try:
+                bg_logs = self.bot.get_channel(self.bg_logs)
+                await bg_logs.send(embed=embed)
+            except:
+                pass
         
         #discriminator change
         if before.discriminator != after.discriminator:
             embed = discord.Embed(title="**✏️ Discriminator changed ✏️**", description=f"Before: {before.discriminator}\nAfter: {after.discriminator}", colour=discord.Colour.orange())
             embed.set_author(name=f"{str(after)} ({after.id})", icon_url=after.display_avatar.url)
             embed.timestamp = discord.utils.utcnow()
-            logs = self.bot.get_channel(logchannel)
-            await logs.send(embed=embed)
+            try:
+                tg_logs = self.bot.get_channel(self.tg_logs)
+                await tg_logs.send(embed=embed)
+            except:
+                pass
+
+            try:
+                bg_logs = self.bot.get_channel(self.bg_logs)
+                await bg_logs.send(embed=embed)
+            except:
+                pass
 
         #avatar change
         if before.display_avatar.url != after.display_avatar.url:
@@ -38,8 +64,17 @@ class Logging(commands.Cog):
             embed.set_image(url=after.display_avatar.url)
             embed.set_author(name=f"{str(after)} ({after.id})", icon_url=after.display_avatar.url)
             embed.timestamp = discord.utils.utcnow()
-            logs = self.bot.get_channel(logchannel)
-            await logs.send(embed=embed)
+            try:
+                tg_logs = self.bot.get_channel(self.tg_logs)
+                await tg_logs.send(embed=embed)
+            except:
+                pass
+
+            try:
+                bg_logs = self.bot.get_channel(self.bg_logs)
+                await bg_logs.send(embed=embed)
+            except:
+                pass
 
     #if a member changes something on the server
     @commands.Cog.listener()
@@ -49,7 +84,7 @@ class Logging(commands.Cog):
             embed = discord.Embed(title="**✏️ Nickname changed ✏️**", description=f"Before: {before.display_name}\nAfter: {after.display_name}", colour=discord.Colour.orange())
             embed.set_author(name=f"{str(after)} ({after.id})", icon_url=after.display_avatar.url)
             embed.timestamp = discord.utils.utcnow()
-            logs = self.bot.get_channel(logchannel)
+            logs = self.bot.get_channel(self.get_logchannel(before.guild.id))
             await logs.send(embed=embed)
         
         #roles change
@@ -60,7 +95,7 @@ class Logging(commands.Cog):
                 embed = discord.Embed(title="**📈 User gained role 📈**", description=f"Role gained: {newRole.mention}", colour=discord.Colour.green())
                 embed.set_author(name=f"{str(after)} ({after.id})", icon_url=after.display_avatar.url)
                 embed.timestamp = discord.utils.utcnow()
-                logs = self.bot.get_channel(logchannel)
+                logs = self.bot.get_channel(self.get_logchannel(before.guild.id))
                 await logs.send(embed=embed)
 
             #user loses a role
@@ -69,7 +104,7 @@ class Logging(commands.Cog):
                 embed = discord.Embed(title="**📉 User lost role 📉**", description=f"Role lost: {oldRole.mention}", colour=discord.Colour.dark_red())
                 embed.set_author(name=f"{str(after)} ({after.id})", icon_url=after.display_avatar.url)
                 embed.timestamp = discord.utils.utcnow()
-                logs = self.bot.get_channel(logchannel)
+                logs = self.bot.get_channel(self.get_logchannel(before.guild.id))
                 await logs.send(embed=embed)
 
     
@@ -79,7 +114,7 @@ class Logging(commands.Cog):
         embed = discord.Embed(title="**🎆 New member joined 🎆**", description=f"{member.mention} has joined the server!\n\n**Account created:**\n{discord.utils.format_dt(member.created_at, style='R')}", colour=discord.Colour.green())
         embed.set_author(name=f"{str(member)} ({member.id})", icon_url=member.display_avatar.url)
         embed.timestamp = discord.utils.utcnow()
-        logs = self.bot.get_channel(logchannel)
+        logs = self.bot.get_channel(self.get_logchannel(member.guild.id))
         await logs.send(embed=embed)
 
     #someone leaves the server
@@ -91,7 +126,7 @@ class Logging(commands.Cog):
         embed = discord.Embed(title=f"** 🚶 Member left the server 🚶**", description=f"{member.mention} has left the server. \n**Lost roles:** \n{role_description}", colour=discord.Colour.dark_red())
         embed.set_author(name=f"{str(member)} ({member.id})", icon_url=member.display_avatar.url)
         embed.timestamp = discord.utils.utcnow()
-        logs = self.bot.get_channel(logchannel)
+        logs = self.bot.get_channel(self.get_logchannel(member.guild.id))
         await logs.send(embed=embed)
 
 
@@ -123,7 +158,7 @@ class Logging(commands.Cog):
             embed.add_field(name="(Continued from above)", value=before.content[1000:], inline=False) #descriptions can be 2048 chars long, so it just fits barely there
         embed.add_field(name="Message ID:", value=f"{after.id}\n{after.jump_url}")
         embed.timestamp = discord.utils.utcnow()
-        logs = self.bot.get_channel(logchannel)
+        logs = self.bot.get_channel(self.get_logchannel(before.guild.id))
         await logs.send(embed=embed)
 
     #someone deletes their message
@@ -154,7 +189,7 @@ class Logging(commands.Cog):
                     i += 1
         embed.add_field(name="Message ID:", value=message.id)
         embed.timestamp = discord.utils.utcnow()
-        logs = self.bot.get_channel(logchannel)
+        logs = self.bot.get_channel(self.get_logchannel(message.guild.id))
         await logs.send(embed=embed)
 
     #someone deletes a lot of messages
@@ -172,7 +207,7 @@ class Logging(commands.Cog):
         buffer = StringIO(''.join(message_list))
         f = discord.File(buffer, filename="deleted_messages.txt")
 
-        logs = self.bot.get_channel(logchannel)
+        logs = self.bot.get_channel(self.get_logchannel(messages[0].guild.id))
 
         #the file could theoratically be too large to send, the limit is 8MB. realistically we will never ever hit this
         try:
@@ -187,7 +222,7 @@ class Logging(commands.Cog):
         embed = discord.Embed(title="**🚫 New ban! 🚫**", description=f"{user.mention} has been banned from this server!", colour=discord.Colour.dark_red())
         embed.set_author(name=f"{str(user)} ({user.id})", icon_url=user.display_avatar.url)
         embed.timestamp = discord.utils.utcnow()
-        logs = self.bot.get_channel(logchannel)
+        logs = self.bot.get_channel(self.get_logchannel(guild.id))
         await logs.send(embed=embed)
 
     #someone gets unbanned
@@ -196,7 +231,7 @@ class Logging(commands.Cog):
         embed = discord.Embed(title="**🔓 New unban! 🔓**", description=f"{user.mention} has been unbanned from this server!", colour=discord.Colour.green())
         embed.set_author(name=f"{str(user)} ({user.id})", icon_url=user.display_avatar.url)
         embed.timestamp = discord.utils.utcnow()
-        logs = self.bot.get_channel(logchannel)
+        logs = self.bot.get_channel(self.get_logchannel(guild.id))
         await logs.send(embed=embed)
 
 

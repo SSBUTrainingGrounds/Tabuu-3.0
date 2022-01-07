@@ -21,10 +21,15 @@ class Mee6api(commands.Cog):
 
 
     #command if someone wants to do it manually
-    @commands.command(aliases=["updatelvl"], cooldown_after_parsing=True)
+    @commands.command(aliases=["updatelvl", "updaterank"], cooldown_after_parsing=True)
     @commands.guild_only() #cant be used in dms
     @commands.cooldown(1, 300, commands.BucketType.user) #1 use, 5m cooldown, per user. since the response time of the api isnt too great, i wanted to limit these requests
     async def updatelevel(self, ctx, member: discord.Member = None):
+        if ctx.guild.id != 739299507795132486:
+            await ctx.send("This command can only be used in the SSBU TG Discord Server.")
+            ctx.command.reset_cooldown(ctx)
+            return
+
         if member is None:
             member = ctx.author
 

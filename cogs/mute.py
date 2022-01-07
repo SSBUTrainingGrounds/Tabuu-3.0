@@ -17,12 +17,23 @@ class Mute(commands.Cog):
         with open (r'./json/muted.json', 'r') as f:
             muted_users = json.load(f)
         
-        role = discord.utils.get(guild.roles, id=739391329779581008)
-        #need to use quite a few of these try/except blocks for adding/removing roles and dm'ing people unfortunately
+        #first we add the mute on the tg server, or try to
         try:
-            await member.add_roles(role)
+            tg_guild = self.bot.get_guild(739299507795132486)
+            tg_role = discord.utils.get(tg_guild.roles, id=739391329779581008)
+            tg_member = tg_guild.get_member(member.id)
+            await tg_member.add_roles(tg_role)
         except:
-            print("tried to add muted role to but it failed")
+            print("tried to add muted role in tg server but it failed")
+
+        #then we add the mute on the bg server, or try to
+        try:
+            bg_guild = self.bot.get_guild(915395890775216188)
+            bg_role = discord.utils.get(bg_guild.roles, id=928985750505140264)
+            bg_member = bg_guild.get_member(member.id)
+            await bg_member.add_roles(bg_role)
+        except:
+            print("tried to muted role in bg server but it failed")
 
         #checking if the user is already muted.
         #we dont need that for the mute command but for the automatic mute this is useful as to not write someone 2x into the json file
@@ -38,11 +49,21 @@ class Mute(commands.Cog):
         with open(r'./json/muted.json', 'r') as f:
             muted_users = json.load(f)
 
-        role = discord.utils.get(guild.roles, id=739391329779581008)
         try:
-            await member.remove_roles(role)
+            tg_guild = self.bot.get_guild(739299507795132486)
+            tg_role = discord.utils.get(tg_guild.roles, id=739391329779581008)
+            tg_member = tg_guild.get_member(member.id)
+            await tg_member.remove_roles(tg_role)
         except:
-            print("tried to remove muted role from user but it failed")
+            print("tried to add muted role in tg server but it failed")
+
+        try:
+            bg_guild = self.bot.get_guild(915395890775216188)
+            bg_role = discord.utils.get(bg_guild.roles, id=928985750505140264)
+            bg_member = bg_guild.get_member(member.id)
+            await bg_member.remove_roles(bg_role)
+        except:
+            print("tried to muted role in bg server but it failed")
 
         if f'{member.id}' in muted_users:
             del muted_users[f'{member.id}']

@@ -60,7 +60,7 @@ class Admin(commands.Cog):
             if msg.content.lower() == "y":
                 #tries to dm them first, need a try/except block cause you can ban ppl not on your server, or ppl can block your bot
                 try:
-                    await user.send(f"You have been banned from the SSBU Training Grounds Server for the following reason: \n```{reason}```\nPlease contact Tabuu#0720 for an appeal.\nhttps://docs.google.com/spreadsheets/d/1EZhyKa69LWerQl0KxeVJZuLFFjBIywMRTNOPUUKyVCc/")
+                    await user.send(f"You have been banned from the {ctx.guild.name} Server for the following reason: \n```{reason}```\nPlease contact Tabuu#0720 for an appeal.\nhttps://docs.google.com/spreadsheets/d/1EZhyKa69LWerQl0KxeVJZuLFFjBIywMRTNOPUUKyVCc/")
                 except:
                     print("user has blocked me :(")
 
@@ -105,7 +105,7 @@ class Admin(commands.Cog):
         else:
             if msg.content.lower() == "y":
                 try:
-                    await member.send(f"You have been kicked from the SSBU Training Grounds Server for the following reason: \n```{reason}```\nIf you would like to discuss your punishment, please contact Tabuu#0720, Phxenix#1104 or Parz#5811")
+                    await member.send(f"You have been kicked from the {ctx.guild.name} Server for the following reason: \n```{reason}```\nIf you would like to discuss your punishment, please contact Tabuu#0720, Phxenix#1104 or Parz#5811")
                 except:
                     print("user has blocked me :(")
                 await member.kick(reason=reason)

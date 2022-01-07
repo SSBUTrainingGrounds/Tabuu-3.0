@@ -87,7 +87,8 @@ class Stats(commands.Cog):
 
         invites = await ctx.guild.invites()
 
-        staff_role = discord.utils.get(ctx.guild.roles, id=739299507816366106)
+        ssbu_guild = self.bot.get_guild(739299507795132486)
+        staff_role = discord.utils.get(ssbu_guild.roles, id=739299507816366106)
         staff_online = [member for member in staff_role.members if member.status != discord.Status.offline]
 
         embed = discord.Embed(title=f"{ctx.guild.name} ({ctx.guild.id})", color=discord.Color.green())

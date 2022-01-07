@@ -37,25 +37,40 @@ class Events(commands.Cog):
     #member join msg
     @commands.Cog.listener()
     async def on_member_join(self, member):
-        channel = self.bot.get_channel(739299507937738849) #ssbutg general: 739299507937738849
-        rules = self.bot.get_channel(739299507937738843) #rules-and-info channel on ssbutg
-
         with open(r'./json/muted.json', 'r') as f:
-            muted_users = json.load(f)  
+            muted_users = json.load(f)
 
-        #checking if the user is muted when he joins
-        if f'{member.id}' in muted_users:
-            #getting both the cadet role too since you dont really have to accept the rules if you come back muted
-            muted_role = discord.utils.get(member.guild.roles, id=739391329779581008)
-            cadet = discord.utils.get(member.guild.roles, id=739299507799326843)
+        if member.guild.id == 739299507795132486: #the ssbutg server
+            channel = self.bot.get_channel(739299507937738849)
+            rules = self.bot.get_channel(739299507937738843) #rules-and-info channel on ssbutg
 
-            await member.add_roles(muted_role)
-            await member.add_roles(cadet)
-            await channel.send(f"Welcome back, {member.mention}! You are still muted, so maybe check back later.")
-            return
+            #checking if the user is muted when he joins
+            if f'{member.id}' in muted_users:
+                #getting both the cadet role too since you dont really have to accept the rules if you come back muted
+                muted_role = discord.utils.get(member.guild.roles, id=739391329779581008)
+                cadet = discord.utils.get(member.guild.roles, id=739299507799326843)
 
-        #if not this is the normal greeting
-        await channel.send(f"{member.mention} has joined the ranks! What's shaking?\nPlease take a look at the {rules.mention} channel for information about server events/functions!")
+                await member.add_roles(muted_role)
+                await member.add_roles(cadet)
+                await channel.send(f"Welcome back, {member.mention}! You are still muted, so maybe check back later.")
+                return
+
+            #if not this is the normal greeting
+            await channel.send(f"{member.mention} has joined the ranks! What's shaking?\nPlease take a look at the {rules.mention} channel for information about server events/functions!")
+
+        elif member.guild.id == 915395890775216188: #the battlegrounds server
+            channel = self.bot.get_channel(915395890775216191)
+            traveller = discord.utils.get(member.guild.roles, id=915403426811244585)
+
+            if f'{member.id}' in muted_users:
+                muted_role = discord.utils.get(member.guild.roles, id=928985750505140264)
+                await member.add_roles(muted_role)
+                await member.add_roles(traveller)
+                await channel.send(f"Welcome, {member.mention}! You are still muted, so maybe check back later.")
+                return
+            
+            await member.add_roles(traveller)
+            await channel.send(f"{member.mention} has entered the battlegrounds. ⚔️")
 
 
     #if you join a voice channel, you get this role here
@@ -113,8 +128,9 @@ class Events(commands.Cog):
             else:
                 if before.pending == True:
                     if after.pending == False:
-                        cadetrole = discord.utils.get(before.guild.roles, id=739299507799326843)
-                        await after.add_roles(cadetrole)
+                        if before.guild.id == 739299507795132486:
+                            cadetrole = discord.utils.get(before.guild.roles, id=739299507799326843)
+                            await after.add_roles(cadetrole)
         except AttributeError:
             pass
 

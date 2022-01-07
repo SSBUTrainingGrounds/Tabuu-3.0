@@ -63,7 +63,7 @@ class Warn(commands.Cog):
 
         if warns > 6:
             try:
-                await member.send(f"You have been automatically banned from the SSBU Training Grounds Server for reaching #***{warns}***.\nPlease contact Tabuu#0720 for an appeal.\nhttps://docs.google.com/spreadsheets/d/1EZhyKa69LWerQl0KxeVJZuLFFjBIywMRTNOPUUKyVCc/")
+                await member.send(f"You have been automatically banned from the {guild.name} Server for reaching #***{warns}***.\nPlease contact Tabuu#0720 for an appeal.\nhttps://docs.google.com/spreadsheets/d/1EZhyKa69LWerQl0KxeVJZuLFFjBIywMRTNOPUUKyVCc/")
             except:
                 print("user has blocked me :(")
 
@@ -71,7 +71,7 @@ class Warn(commands.Cog):
             await member.ban(reason=f"Automatic ban for reaching {warns} warnings")
         elif warns > 4:
             try:
-                await member.send(f"You have been automatically kicked from the SSBU Training Grounds Server for reaching warning #***{warns}***. \nIf you would like to discuss your punishment, please contact Tabuu#0720, Phxenix#1104 or Parz#5811")
+                await member.send(f"You have been automatically kicked from the {guild.name} Server for reaching warning #***{warns}***. \nIf you would like to discuss your punishment, please contact Tabuu#0720, Phxenix#1104 or Parz#5811")
             except:
                 print("user has blocked me :(")
 
