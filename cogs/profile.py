@@ -29,7 +29,7 @@ class Profile(commands.Cog):
             i_char = i_char.lstrip()
 
             for match_char in characters["Characters"]:
-                if i_char == match_char["name"] or i_char in match_char["id"] or i_char in match_char["aliases"]:
+                if i_char == match_char["name"] or i_char == match_char["id"] or i_char in match_char["aliases"]:
                     if match_char["emoji"] not in output_characters:
                         output_characters.append(match_char["emoji"])
 
