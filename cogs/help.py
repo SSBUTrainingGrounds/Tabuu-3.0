@@ -12,6 +12,7 @@ class Responses(discord.ui.Select):
             discord.SelectOption(label='Admin', description='Admin Commands', emoji='💻'),
             discord.SelectOption(label='Info', description='Informational Commands', emoji='❓'),
             discord.SelectOption(label='Matchmaking', description='Matchmaking Commands', emoji='⚔️'),
+            discord.SelectOption(label='Profile', description='Profile Commands', emoji='👥'),
             discord.SelectOption(label='Utility', description='Utility Commands', emoji='🔧'),
             discord.SelectOption(label='Miscellaneous', description='Miscellaneous Commands', emoji='📋'),
             discord.SelectOption(label='Fun', description='Fun Commands', emoji='😂')
@@ -52,6 +53,7 @@ class Responses(discord.ui.Select):
 ```%deletemacro <name>``` - Deletes a macro.\n\
 ```%starboardemoji <emoji>``` - Changes the emoji used for the starboard.\n\
 ```%starboardthreshold <number>``` - Changes the threshold used for the starboard.\n\
+```%forcedeleteprofile <user>``` - Deletes the profile of a user.\n\
         ')
                 await interaction.response.send_message(embed=admin_embed, ephemeral=True)
             else:
@@ -82,6 +84,20 @@ class Responses(discord.ui.Select):
 ```%rankedstats``` - Your ranked stats.\n\
         ')
             await interaction.response.send_message(embed=matchmaking_embed, ephemeral=True)
+
+        elif self.values[0] == 'Profile':
+            profile_embed = discord.Embed(title="👥Profile Commands👥", color=0x7c3ed, description='\n\
+```%profile <user>``` - View a profile of a user.\n\
+```%mains <main1, main2,...>``` - Set your mains, separated by commas.\n\
+```%secondaries <sec1, sec2,...>``` - Set your secondaries, separated by commas.\n\
+```%pockets <pocket1, pocket2,...>``` - Set your pockets, separated by commas.\n\
+```%tag <tag>``` - Set your user tag.\n\
+```%region <region>``` - Set your region (continent).\n\
+```%note <note>``` - Set your note.\n\
+```%colour <hex colour>``` - Set your profile embed colour, use a hex code.\n\
+```%deleteprofile``` - Delete your profile.\n\
+                ')
+            await interaction.response.send_message(embed=profile_embed, ephemeral=True)
 
         elif self.values[0] == 'Utility':
             utility_embed = discord.Embed(title="🔧Utility Commands🔧", color=0x424242, description='\n\

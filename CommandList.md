@@ -1,7 +1,7 @@
 # Full list of commands:
 
 This here contains every command with a detailed explanation on how to use them. They are ordered alphabetically, search them with Ctrl+F.  
-Last updated: 10 December 2021  
+Last updated: 8 January 2022  
 I will try to keep this up-to-date, no promises.  
 
 **%8ball** `<question>`  
@@ -41,6 +41,11 @@ I will try to keep this up-to-date, no promises.
     
 **%coin**  
     Info: Flips a coin and gives you the result. Heads or Tails.  
+
+**%colour** `<hex colour code>`  
+    Info: Sets your colour on your profile embed. You need to use a hex colour code.  
+    Example: `%colour #FFFFFF`  
+    Aliases: color, spcolour, spcolor, setcolour, setcolor  
     
 **%countdown** `<number>`  
     Info: Counts down from the specified number between 2 and 50.  
@@ -57,6 +62,9 @@ I will try to keep this up-to-date, no promises.
 **%deletemacro** `<name>`  
     Info: Admin only. Deletes the specified macro command.  
     Example: `%deletemacro test`  
+
+**%deleteprofile**  
+    Info: Deletes your own profile.  
     
 **%deletereminder** `<reminder ID>`  
     Info: Deletes a reminder of yours by the reminder ID. View the reminder IDs with `%viewreminders`.  
@@ -79,6 +87,10 @@ I will try to keep this up-to-date, no promises.
     Info: Gives you Information about an Emoji. Keep in mind this does not work with default emojis and bots can only access emojis from servers they are in.  
     Example: `%emote :BowserFail:`  
     Aliases: emoji  
+
+**%forcedeleteprofile** `<@user>`  
+    Info: Admin only, deletes the profile of the mentioned user.  
+    Example: `%forcedeleteprofile @Phxenix`  
     
 **%forcereportmatch** `<@winner> <@loser>`  
     Info: Admin only. If a user abandons their ranked match an admin will use this to report the match anyways. Mention the users or use User IDs. Has a 41 second cooldown.
@@ -124,6 +136,11 @@ I will try to keep this up-to-date, no promises.
 **%`<macro>`**  
     Info: Invokes the macro command, list them all with either %macro or %listmacros  
     Example: %test  
+
+**%mains** `<main1, main2,..: Optional>`  
+    Info: Updates your mains listed on your profile. Up to 7 characters, separate them by commas. Accepts names, commonly used nicknames and the Fighter Numbers. Leave the field blank to delete the characters.  
+    Example: `%mains incin, wii fit, 4e, paisy`  
+    Aliases: main, setmain, spmains, profilemains  
     
 **%modifyrolemenu** `<message ID> <exclusive: Optional> <Role: Optional>`  
     Info: Admin only. Modifies a role menu with special properties. Exclusive is a boolean(True/False) value which specifies if a User is able to get 1 role (True) or all roles (False) from this role menu. The role sets a requirement if a User needs this role to get any role of this role menu. Mention the role or use role ID. Both arguments are optional, if left out both default to False/None.  
@@ -144,16 +161,31 @@ I will try to keep this up-to-date, no promises.
 **%newrolemenu** `<message ID> <emoji> <role>`  
     Info: Admin only. Creates a new entry for a role menu. Mention the Role or use Role ID and make sure the Bot has access to this emoji.  
     Example: `%newrolemenu 858117781375418389 🥰 @Server Events`  
+
+**%note** `<note: Optional>`  
+    Info: Sets your note on your profile, up to 150 characters long. Leave it blank to delete the note.  
+    Example: `%note test note`  
+    Aliases: setnote, spnote  
   
 **%pickmeup**  
     Info: Gives you an inspiring quote.  
   
 **%ping**  
     Info: Gets the response time of the Bot, not yourself. Usually around 100-150ms.  
+
+**%pockets** `<pocket1, pocket2,..: Optional>`  
+    Info: Updates your pockets listed on your profile. Up to 10 characters, separate them by commas. Accepts names, commonly used nicknames and the Fighter Numbers. Leave the field blank to delete the characters.  
+    Example: `%pockets incin, wii fit, 4e, paisy`  
+    Aliases: pocket, setpocket, sppockets, profilepockets  
   
 **%poll** `<"question"> <"option 1"> <"option 2">`  
     Info: Creates a poll for users to vote on with reactions. Takes 2-10 Options. If the question or the options have more than 1 word in them, make sure to surround them with quotes.  
     Example: `%poll "What is your favourite Ice cream?" Chocolate Strawberry "None of the above"`  
+    
+**%profile** `<@user: Optional>`  
+    Info: Gets you the profile of the mentioned user, if you dont specify a user, this will get your own.  
+    Example: `%profile @Phxenix`  
+    Aliases: smashprofile, profileinfo, userprofile  
   
 **%randomquote**  
     Info: Gets you a random quote from someone.  
@@ -172,7 +204,12 @@ I will try to keep this up-to-date, no promises.
   
 **%records**  
     Info: Admin only. Gets you our ban records.  
-    
+
+**%region** `<region: Optional>`  
+    Info: Sets your region on your profile. The regions are the 6 commonly used continents, matches some inputs to those. So EU will work, as well as europe. Leave the field blank to delete the region from your profile.  
+    Example: `%region europe`  
+    Aliases: setregion, spregion, country  
+
 **%reloadcogs**  
     Info: Owner only. Reloads all of the cogs of this bot, so you don't have to restart it for every little change.  
     
@@ -207,6 +244,11 @@ I will try to keep this up-to-date, no promises.
     Info: Plays a game of Rock, Paper, Scissors with the mentioned user. If you don't mention a user, you will play against Tabuu 3.0 himself.  
     Example: `%rps @Phxenix`  
     Aliases: rockpaperscissors, rochambeau, roshambo  
+
+**%secondaries** `<secondary1, secondary2,..: Optional>`  
+    Info: Updates your secondaries listed on your profile. Up to 7 characters, separate them by commas. Accepts names, commonly used nicknames and the Fighter Numbers. Leave the field blank to delete the characters.  
+    Example: `%secondaries incin, wii fit, 4e, paisy`  
+    Aliases: secondary, setsecondary, spsecondaries, profilesecondaries  
   
 **%server**  
     Info: Gets you information about our server.  
@@ -240,6 +282,11 @@ I will try to keep this up-to-date, no promises.
   
 **%tabuwu**  
     Info: For the silly people.  
+
+**%tag** `<tag: Optional>`  
+    Info: Updates your tag on your profile, up to 30 characters long. Leave the field blank to reset the tag to your discord username.  
+    Example: `%tag test tag`  
+    Aliases: smashtag, sptag, settag  
   
 **%tempmute** `<@user> <time> <reason>`  
     Info: Admin only. Mutes a user for the specified time, which is in a shortened format with any number and d/h/m/s. Minimum time is 30 seconds, maximum is 1 day. Mention the user or use User ID. The reason will get DM'd to the muted person.  
