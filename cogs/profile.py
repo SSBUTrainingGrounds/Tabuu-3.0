@@ -222,6 +222,12 @@ class Profile(commands.Cog):
         #tried to be as broad as possible here, hope thats enough
         if input.lower() in ("na", "north america", "usa", "us", "canada", "latin america", "america"):
             input = "North America"
+        elif input.lower() in ("east coast", "us east", "east", "midwest", "na east", "canada east"):
+            input = "NA East"
+        elif input.lower() in ("west coast", "us west", "west", "na west", "canada west"):
+            input = "NA West"
+        elif input.lower() in ("mexico", "south", "us south", "na south", "texas", "southern"):
+            input = "NA South"
         elif input.lower() in ("sa", "brazil", "argentina", "south america", "chile", "peru"):
             input = "South America"
         elif input.lower() in ("eu", "europe", "uk", "england", "france", "germany"):
