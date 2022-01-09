@@ -229,7 +229,8 @@
             "emoji": "<:Ganondorf:929069510844121128>",
             "aliases":[
                 "ganon",
-                "dorf"
+                "dorf",
+                "gdorf"
             ]
         },
         {
@@ -237,7 +238,8 @@
             "id": "24",
             "emoji": "<:Mewtwo:929069525981343884>",
             "aliases":[
-                "mew2"
+                "mew2",
+                "m2"
             ]
         },
         {
@@ -273,7 +275,8 @@
                 "game n watch",
                 "mr. game n watch",
                 "mr game n watch",
-                "mrgameandwatch"
+                "mrgameandwatch",
+                "gnw"
             ]
         },
         {
@@ -299,7 +302,8 @@
             "emoji": "<:DarkPit:929069603999580160>",
             "aliases":[
                 "pits",
-                "the pits"
+                "the pits",
+                "pittoo"
             ]
         },
         {
@@ -337,7 +341,7 @@
         },
         {
             "name": "pokémon trainer",
-            "id": ["33", "34" , "35"],
+            "id": "33",
             "emoji": "<:PokemonTrainer:929069790268620851>",
             "aliases":[
                 "pokémon trainer",
@@ -438,7 +442,7 @@
             "id": "46",
             "emoji": "<:MegaMan:929086966178398209>",
             "aliases":[
-
+                "mm"
             ]
         },
         {
@@ -524,7 +528,8 @@
             "id": "55",
             "emoji": "<:PacMan:929086966274875432>",
             "aliases":[
-                "pac"
+                "pac",
+                "pacman"
             ]
         },
         {
@@ -550,7 +555,8 @@
             "aliases":[
                 "bj",
                 "bowser junior",
-                "bowser jr"
+                "bowser jr",
+                "bjr"
             ]
         },
         {
@@ -558,7 +564,9 @@
             "id": "59",
             "emoji": "<:DuckHunt:929086965746389065>",
             "aliases":[
-                "dh"
+                "dh",
+                "dhd",
+                "duck hunt duo"
             ]
         },
         {
@@ -592,7 +600,7 @@
             "id": "62",
             "emoji": "<:Corrin:929086966300016650>",
             "aliases":[
-
+                "corn"
             ]
         },
         {
@@ -750,13 +758,16 @@
         },
         {
             "name": "aegis",
-            "id": ["79", "80"],
+            "id": "79",
             "emoji": "<:Aegis:929086965758976040>",
             "aliases":[
                 "pythra",
                 "aegis",
                 "pyra",
-                "mythra"
+                "mythra",
+                "pyra/mythra",
+                "pyra and mythra",
+                "pyra mythra"
             ]
         },
         {
