@@ -220,7 +220,7 @@ class Profile(commands.Cog):
             input = ""
 
         #tried to be as broad as possible here, hope thats enough
-        if input.lower() in ("na", "north america", "usa", "us", "canada", "latin america", "america"):
+        if input.lower() in ("na", "north america", "usa", "us", "canada", "latin america", "america", "united states"):
             input = "North America"
         elif input.lower() in ("east coast", "us east", "east", "midwest", "na east", "canada east"):
             input = "NA East"
