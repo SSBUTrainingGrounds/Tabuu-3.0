@@ -1,7 +1,7 @@
 # Full list of commands:
 
 This here contains every command with a detailed explanation on how to use them. They are ordered alphabetically, search them with Ctrl+F.  
-Last updated: 8 January 2022  
+Last updated: 10 January 2022  
 I will try to keep this up-to-date, no promises.  
 
 **%8ball** `<question>`  
@@ -279,6 +279,10 @@ I will try to keep this up-to-date, no promises.
     
 **%sticker <sticker>**  
     Info: Gets you basic information about a sticker. Note that stickers do not work like emojis but rather like images, so this command gets you the info of the first sticker you attach to your message. Thus no example how to use below.  
+
+**%syncbanlist**  
+    Info: Admin only, applies the bans from the SSBUTG server to the SSBUBG server. Can only be used in the SSBUBG server.  
+    Aliases: syncbans  
   
 **%tabuwu**  
     Info: For the silly people.  
