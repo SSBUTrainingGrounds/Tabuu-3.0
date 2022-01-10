@@ -79,6 +79,31 @@ class Admin(commands.Cog):
         await ctx.send(f"{user.mention} has been unbanned!")
 
 
+    #automatically bans the users on bg that are on our ban list over at tg
+    @commands.command(aliases=['syncbans'])
+    @commands.has_permissions(administrator=True)
+    async def syncbanlist(self, ctx):
+        if ctx.guild.id != 915395890775216188:
+            await ctx.send("This command is only available on the Battlegrounds server!")
+            return
+
+        tg_guild = self.bot.get_guild(739299507795132486)
+
+        bans = await tg_guild.bans()
+
+        i = 0
+
+        for u in bans:
+            try:
+                await ctx.guild.fetch_ban(u.user)
+            except discord.NotFound:
+                await ctx.guild.ban(u.user, reason="Automatic ban because user was banned on the TG server.")
+                await ctx.send(f"Banned {str(u.user)}!")
+                i += 1
+            
+        await ctx.send(f"Ban list was successfully synced. Banned {i} users.")
+
+
 
     #kick command
     @commands.command()
@@ -187,6 +212,13 @@ class Admin(commands.Cog):
             await ctx.send("I could not find this user!")
         elif isinstance(error, commands.CommandInvokeError):
             await ctx.send("I couldn't find a ban for this ID, make sure you have the right one.")
+        else:
+            raise error
+
+    @syncbanlist.error
+    async def syncbanlist_error(self, ctx, error):
+        if isinstance(error, commands.MissingPermissions):
+            await ctx.send("Nice try, but you don't have the permissions to do that!")
         else:
             raise error
 

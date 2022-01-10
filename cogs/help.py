@@ -54,6 +54,7 @@ class Responses(discord.ui.Select):
 ```%starboardemoji <emoji>``` - Changes the emoji used for the starboard.\n\
 ```%starboardthreshold <number>``` - Changes the threshold used for the starboard.\n\
 ```%forcedeleteprofile <user>``` - Deletes the profile of a user.\n\
+```%syncbanlist``` - Syncs the ban list from TG to BG.\n\
         ')
                 await interaction.response.send_message(embed=admin_embed, ephemeral=True)
             else:
