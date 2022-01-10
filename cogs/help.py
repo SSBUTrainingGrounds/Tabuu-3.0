@@ -2,29 +2,30 @@ import discord
 from discord.ext import commands, tasks
 
 #
-#this file here contains the dropdown menu for our help command, to be renamed for use
+#this file here contains the dropdown menu for our help command, every command is explained in here
 #
 
 
 class Responses(discord.ui.Select):
     def __init__(self):
         options = [
-            discord.SelectOption(label='Admin', description='Admin Commands', emoji='💻'),
-            discord.SelectOption(label='Info', description='Informational Commands', emoji='❓'),
-            discord.SelectOption(label='Matchmaking', description='Matchmaking Commands', emoji='⚔️'),
-            discord.SelectOption(label='Profile', description='Profile Commands', emoji='👥'),
-            discord.SelectOption(label='Utility', description='Utility Commands', emoji='🔧'),
-            discord.SelectOption(label='Miscellaneous', description='Miscellaneous Commands', emoji='📋'),
-            discord.SelectOption(label='Fun', description='Fun Commands', emoji='😂')
+            discord.SelectOption(label='Moderation Commands', description='Admin only, no fun allowed.', emoji='🕵️'),
+            discord.SelectOption(label='Admin Utility Commands', description='Admin only commands for server setup and more.', emoji='🧰'),
+            discord.SelectOption(label='Info Commands', description='What do you want to look up?', emoji='❓'),
+            discord.SelectOption(label='Matchmaking Commands', description='Looking for matches?', emoji='⚔️'),
+            discord.SelectOption(label='Profile Commands', description='How to set up your smash profile.', emoji='👥'),
+            discord.SelectOption(label='Utility Commands', description='At your service.', emoji='🔧'),
+            discord.SelectOption(label='Miscellaneous Commands', description='Everything that did not fit into the other categories.', emoji='📋'),
+            discord.SelectOption(label='Fun Commands', description='Note: Fun not guaranteed.', emoji='😂')
         ]
 
         super().__init__(placeholder='What do you need help with?', min_values=1, max_values=1, options=options)
 
 
     async def callback(self, interaction: discord.Interaction):
-        if self.values[0] == 'Admin':
+        if self.values[0] == 'Moderation Commands':
             if interaction.permissions.administrator is True:
-                admin_embed = discord.Embed(title = "💻Admin Commands💻", color=0xff0000, description='\n\
+                mod_embed = discord.Embed(title = "🕵️Moderation Commands🕵️", color=0xff0000, description='\n\
 ```%ban <@user> <reason>``` - Bans a member from the server.\n\
 ```%unban <@user>``` - Revokes a ban from the server.\n\
 ```%kick <@user> <reason>``` - Kicks a user from the server.\n\
@@ -39,6 +40,15 @@ class Responses(discord.ui.Select):
 ```%warndetails <@user>``` - Shows detailed warnings of a user. \n\
 ```%deletewarn <@user> <warn_id>``` - Deletes a specific warning.\n\
 ```%clearwarns <@user>``` - Clears all the warnings of a user.\n\
+        ')
+                await interaction.response.send_message(embed=mod_embed, ephemeral=True)
+            else:
+                await interaction.response.send_message("Sorry, you are not an administrator on this server!", ephemeral=True)
+
+        elif self.values[0] == "Admin Utility Commands":
+            if interaction.permissions.administrator is True:
+                admin_util_embed = discord.Embed(title="🧰Admin Utility Commands🧰", colour=0x540707, description='\n\
+```%reloadcogs``` - Owner only, reloads all of the modules of this bot.\n\
 ```%clearmmpings``` - Clears all matchmaking pings.\n\
 ```%records``` - Shows ban records.\n\
 ```%forcereportmatch <@winner> <@loser>``` - If someone abandons a ranked match.\n\
@@ -47,7 +57,6 @@ class Responses(discord.ui.Select):
 ```%deleterolemenu <message ID>``` - Deletes every entry for a Message with a role menu.\n\
 ```%modifyrolemenu <message ID> <exclusive> <Optional Role>``` - Sets special permissions for a Role menu.\n\
 ```%geteveryrolemenu``` - Gets you every role menu entry currently active.\n\
-```%reloadcogs``` - Owner only, reloads all of the modules of this bot.\n\
 ```%rename <@user> <name>``` - Sets a new nickname for a user or removes it.\n\
 ```%createmacro <name> <output>``` - Creates a new macro.\n\
 ```%deletemacro <name>``` - Deletes a macro.\n\
@@ -56,11 +65,13 @@ class Responses(discord.ui.Select):
 ```%forcedeleteprofile <user>``` - Deletes the profile of a user.\n\
 ```%syncbanlist``` - Syncs the ban list from TG to BG.\n\
         ')
-                await interaction.response.send_message(embed=admin_embed, ephemeral=True)
+
+                await interaction.response.send_message(embed=admin_util_embed, ephemeral=True)
             else:
                 await interaction.response.send_message("Sorry, you are not an administrator on this server!", ephemeral=True)
+            
 
-        elif self.values[0] == 'Info':
+        elif self.values[0] == 'Info Commands':
             info_embed = discord.Embed(title="❓Info Commands❓", color=0x06515f, description='\n\
 ```%listmacros``` - Lists every macro command registered.\n\
 ```%roleinfo <role>``` - Displays Role info.\n\
@@ -74,19 +85,19 @@ class Responses(discord.ui.Select):
         ')
             await interaction.response.send_message(embed=info_embed, ephemeral=True)
 
-        elif self.values[0] == 'Matchmaking':
+        elif self.values[0] == 'Matchmaking Commands':
             matchmaking_embed = discord.Embed(title="⚔️Matchmaking Commands⚔️", color=0x420202, description='\n\
 ```%singles``` - Used for 1v1 matchmaking in our arena channels.\n\
 ```%doubles``` - Used for 2v2 matchmaking in our arena channels.\n\
 ```%funnies``` - Used for non-competitive matchmaking in our arena channels.\n\
-```%recentpings``` - Gets you the recent pings of any matchmaking type.\n\
+```%recentpings <type>``` - Gets you the recent pings of any matchmaking type.\n\
 ```%rankedmm``` - Used for 1v1 ranked matchmaking in our ranked channels.\n\
 ```%reportmatch <@user>``` - Winner of the set reports the result, <@user> being the person you won against.\n\
 ```%rankedstats``` - Your ranked stats.\n\
         ')
             await interaction.response.send_message(embed=matchmaking_embed, ephemeral=True)
 
-        elif self.values[0] == 'Profile':
+        elif self.values[0] == 'Profile Commands':
             profile_embed = discord.Embed(title="👥Profile Commands👥", color=0x7c3ed, description='\n\
 ```%profile <user>``` - View a profile of a user.\n\
 ```%mains <main1, main2,...>``` - Set your mains, separated by commas.\n\
@@ -100,7 +111,7 @@ class Responses(discord.ui.Select):
                 ')
             await interaction.response.send_message(embed=profile_embed, ephemeral=True)
 
-        elif self.values[0] == 'Utility':
+        elif self.values[0] == 'Utility Commands':
             utility_embed = discord.Embed(title="🔧Utility Commands🔧", color=0x424242, description='\n\
 ```%coin``` - Throws a coin\n\
 ```%rps <@user>``` - Plays a match of Rock, Paper, Scissors with the mentioned user.\n\
@@ -113,7 +124,7 @@ class Responses(discord.ui.Select):
         ')
             await interaction.response.send_message(embed=utility_embed, ephemeral=True)
 
-        elif self.values[0] == 'Miscellaneous':
+        elif self.values[0] == 'Miscellaneous Commands':
             miscellaneous_embed = discord.Embed(title="📋Miscellaneous Commands📋", color=0x155a00, description='\n\
 ```%modmail <your message>``` - A private way to communicate with the moderator team. Only works in my DM channel.\n\
 ```%updatelevel <@user>``` - Updates the level role manually.\n\
@@ -126,7 +137,7 @@ class Responses(discord.ui.Select):
         ')
             await interaction.response.send_message(embed=miscellaneous_embed, ephemeral=True)
         
-        elif self.values[0] == 'Fun':
+        elif self.values[0] == 'Fun Commands':
             fun_embed = discord.Embed(title="😂Fun Commands😂", color=0x841e8b, description='\n\
 ```%joke``` - Jokes.\n\
 ```%randomquote``` - Quotes.\n\
