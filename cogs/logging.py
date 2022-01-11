@@ -169,9 +169,6 @@ class Logging(commands.Cog):
         
         if message.author.bot:
             return
-
-        if len(message.content[2000:]) > 0: #same as above with the message length
-            message.content = "Content is too large to fit in a single embed."
         
         embed = discord.Embed(title=f"**❌ Deleted Message in {message.channel.name}! ❌**", description=f"**Content:**\n{message.content}", colour=discord.Colour.dark_red())
         embed.set_author(name=f"{str(message.author)} ({message.author.id})", icon_url=message.author.display_avatar.url)

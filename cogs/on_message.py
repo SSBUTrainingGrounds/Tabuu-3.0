@@ -54,7 +54,11 @@ class On_message(commands.Cog):
             if regex_true.search(message.content) is not None and regex_false.search(message.content) is None:
 
                 #adds the warning
-                reason = "Automatic warning for using a blacklisted word"
+                reason = "Automatic warning for using a blacklisted word:\n" + message.content
+
+                if len(reason[1000:]) > 0:
+                    reason = reason[:997] + "..."
+
                 await Warn.add_warn(self, message.guild.me, message.author, reason)
                 await message.channel.send(f"{message.author.mention} has been automatically warned for using a blacklisted word!")
 
@@ -64,7 +68,7 @@ class On_message(commands.Cog):
                     print("tried to delete a message but it failed")
             
                 try:
-                    await message.author.send(f"You have been automatically warned in the SSBU Training Grounds Server for sending a message containing a blacklisted word.\nIf you would like to discuss your punishment, please contact Tabuu#0720, Phxenix#1104 or Parz#5811")
+                    await message.author.send(f"You have been automatically warned in the {message.guild.name} Server for sending a message containing a blacklisted word.\nIf you would like to discuss your punishment, please contact Tabuu#0720, Phxenix#1104 or Parz#5811")
                 except:
                     print("user has blocked me :(")
 

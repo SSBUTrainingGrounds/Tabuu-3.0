@@ -85,7 +85,7 @@ class Mute(commands.Cog):
             await self.add_mute(ctx.guild, member)
             await ctx.send(f"{member.mention} was muted!")
             try:
-                await member.send(f"You have been muted in the SSBU Training Grounds Server for the following reason: \n```{reason}```\nIf you would like to discuss your punishment, please contact Tabuu#0720, Phxenix#1104 or Parz#5811")
+                await member.send(f"You have been muted in the {ctx.guild.name} Server for the following reason: \n```{reason}```\nIf you would like to discuss your punishment, please contact Tabuu#0720, Phxenix#1104 or Parz#5811")
             except:
                 print("user has blocked me :(")
 
@@ -104,7 +104,7 @@ class Mute(commands.Cog):
             await self.remove_mute(ctx.guild, member)
             await ctx.send(f"{member.mention} was unmuted!")
             try:
-                await member.send("You have been unmuted in the SSBU Training Grounds Server! Don't break the rules again")
+                await member.send(f"You have been unmuted in the {ctx.guild.name} Server! Don't break the rules again")
             except:
                 print("user has blocked me :(")
         else:
@@ -138,7 +138,7 @@ class Mute(commands.Cog):
             await self.add_mute(ctx.guild, member)
             await ctx.send(f"{member.mention} was muted for *{time_muted}*!")
             try:
-                await member.send(f"You have been muted in the SSBU Training Grounds Server for ***{time_muted}*** for the following reason: \n```{reason}``` \nIf you would like to discuss your punishment, please contact Tabuu#0720, Phxenix#1104 or Parz#5811")
+                await member.send(f"You have been muted in the {ctx.guild.name} Server for ***{time_muted}*** for the following reason: \n```{reason}``` \nIf you would like to discuss your punishment, please contact Tabuu#0720, Phxenix#1104 or Parz#5811")
             except:
                 print("user has blocked me :(")
 
@@ -158,7 +158,7 @@ class Mute(commands.Cog):
             await self.remove_mute(ctx.guild, member)
             await ctx.send(f"{member.mention} was automatically unmuted!")
             try:
-                await member.send("You have been automatically unmuted in the SSBU Training Grounds Server! Don't break the rules again")
+                await member.send(f"You have been automatically unmuted in the {ctx.guild.name} Server! Don't break the rules again")
             except:
                 print("user has blocked me :(")
 
