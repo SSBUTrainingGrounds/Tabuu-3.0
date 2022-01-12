@@ -91,6 +91,8 @@ class Admin(commands.Cog):
 
         bans = await tg_guild.bans()
 
+        await ctx.send("Syncing ban list... Please wait a few seconds.")
+
         i = 0
 
         for u in bans:
