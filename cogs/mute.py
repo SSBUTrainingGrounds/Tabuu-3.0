@@ -3,6 +3,7 @@ from discord.ext import commands, tasks
 import json
 import asyncio
 from .reminder import Reminder
+from utils.ids import GuildIDs, TGRoleIDs, BGRoleIDs
 
 #
 #this file here contains our custom mute system
@@ -19,8 +20,8 @@ class Mute(commands.Cog):
         
         #first we add the mute on the tg server, or try to
         try:
-            tg_guild = self.bot.get_guild(739299507795132486)
-            tg_role = discord.utils.get(tg_guild.roles, id=739391329779581008)
+            tg_guild = self.bot.get_guild(GuildIDs.TRAINING_GROUNDS)
+            tg_role = discord.utils.get(tg_guild.roles, id=TGRoleIDs.MUTED_ROLE)
             tg_member = tg_guild.get_member(member.id)
             await tg_member.add_roles(tg_role)
         except:
@@ -28,8 +29,8 @@ class Mute(commands.Cog):
 
         #then we add the mute on the bg server, or try to
         try:
-            bg_guild = self.bot.get_guild(915395890775216188)
-            bg_role = discord.utils.get(bg_guild.roles, id=928985750505140264)
+            bg_guild = self.bot.get_guild(GuildIDs.BATTLEGROUNDS)
+            bg_role = discord.utils.get(bg_guild.roles, id=BGRoleIDs.MUTED_ROLE)
             bg_member = bg_guild.get_member(member.id)
             await bg_member.add_roles(bg_role)
         except:
@@ -50,16 +51,16 @@ class Mute(commands.Cog):
             muted_users = json.load(f)
 
         try:
-            tg_guild = self.bot.get_guild(739299507795132486)
-            tg_role = discord.utils.get(tg_guild.roles, id=739391329779581008)
+            tg_guild = self.bot.get_guild(GuildIDs.TRAINING_GROUNDS)
+            tg_role = discord.utils.get(tg_guild.roles, id=TGRoleIDs.MUTED_ROLE)
             tg_member = tg_guild.get_member(member.id)
             await tg_member.remove_roles(tg_role)
         except:
             print("tried to add muted role in tg server but it failed")
 
         try:
-            bg_guild = self.bot.get_guild(915395890775216188)
-            bg_role = discord.utils.get(bg_guild.roles, id=928985750505140264)
+            bg_guild = self.bot.get_guild(GuildIDs.BATTLEGROUNDS)
+            bg_role = discord.utils.get(bg_guild.roles, id=BGRoleIDs.MUTED_ROLE)
             bg_member = bg_guild.get_member(member.id)
             await bg_member.remove_roles(bg_role)
         except:

@@ -3,12 +3,15 @@ from discord.ext import commands, tasks
 from mee6_py_api import API
 from discord.utils import get
 from math import ceil
+from utils.ids import GuildIDs, TGLevelRoleIDs
 
 #
 #this file here gets the mee6 level and assigns the matching role
 #
 
-mee6API = API(739299507795132486) #ssbutg leaderboard
+#this is purposefully not made into GuildIDs.TRAINING_GROUNDS.
+#even in testing i specifically want the TG leaderboard, not the leaderboard of my testing server. change it if you want to.
+mee6API = API(739299507795132486)
 
 class Mee6api(commands.Cog):
     def __init__(self, bot):
@@ -25,7 +28,7 @@ class Mee6api(commands.Cog):
     @commands.guild_only() #cant be used in dms
     @commands.cooldown(1, 300, commands.BucketType.user) #1 use, 5m cooldown, per user. since the response time of the api isnt too great, i wanted to limit these requests
     async def updatelevel(self, ctx, member: discord.Member = None):
-        if ctx.guild.id != 739299507795132486:
+        if ctx.guild.id != GuildIDs.TRAINING_GROUNDS:
             await ctx.send("This command can only be used in the SSBU TG Discord Server.")
             ctx.command.reset_cooldown(ctx)
             return
@@ -42,11 +45,11 @@ class Mee6api(commands.Cog):
 
         userlevel = await mee6API.levels.get_user_level(member.id, dont_use_cache=True) #gets the level
 
-        defaultrole = get(ctx.guild.roles, id=739299507799326843)
-        level10 = get(ctx.guild.roles, id=827473860936990730)
-        level25 = get(ctx.guild.roles, id=827473868766707762)
-        level50 = get(ctx.guild.roles, id=827473874413289484)
-        level75 = get(ctx.guild.roles, id=827583894776840212)
+        defaultrole = get(ctx.guild.roles, id=TGLevelRoleIDs.RECRUIT_ROLE)
+        level10 = get(ctx.guild.roles, id=TGLevelRoleIDs.LEVEL_10_ROLE)
+        level25 = get(ctx.guild.roles, id=TGLevelRoleIDs.LEVEL_25_ROLE)
+        level50 = get(ctx.guild.roles, id=TGLevelRoleIDs.LEVEL_50_ROLE)
+        level75 = get(ctx.guild.roles, id=TGLevelRoleIDs.LEVEL_75_ROLE)
 
         levelroles = [defaultrole, level10, level25, level50, level75]
 
@@ -114,13 +117,13 @@ class Mee6api(commands.Cog):
 
         await self.bot.wait_until_ready() #waits until the bot is connected fully and then starts the task, otherwise not everything is cached properly
 
-        guild = self.bot.get_guild(739299507795132486)
+        guild = self.bot.get_guild(GuildIDs.TRAINING_GROUNDS)
 
-        defaultrole = get(guild.roles, id=739299507799326843)
-        level10 = get(guild.roles, id=827473860936990730)
-        level25 = get(guild.roles, id=827473868766707762)
-        level50 = get(guild.roles, id=827473874413289484)
-        level75 = get(guild.roles, id=827583894776840212)
+        defaultrole = get(guild.roles, id=TGLevelRoleIDs.RECRUIT_ROLE)
+        level10 = get(guild.roles, id=TGLevelRoleIDs.LEVEL_10_ROLE)
+        level25 = get(guild.roles, id=TGLevelRoleIDs.LEVEL_25_ROLE)
+        level50 = get(guild.roles, id=TGLevelRoleIDs.LEVEL_50_ROLE)
+        level75 = get(guild.roles, id=TGLevelRoleIDs.LEVEL_75_ROLE)
 
         levelroles = [defaultrole, level10, level25, level50, level75]
 

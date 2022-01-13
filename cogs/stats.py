@@ -7,6 +7,7 @@ import datetime
 import os
 from fuzzywuzzy import process
 import json
+from utils.ids import GuildIDs, TGRoleIDs
 
 
 #
@@ -87,8 +88,8 @@ class Stats(commands.Cog):
 
         invites = await ctx.guild.invites()
 
-        ssbu_guild = self.bot.get_guild(739299507795132486)
-        staff_role = discord.utils.get(ssbu_guild.roles, id=739299507816366106)
+        ssbu_guild = self.bot.get_guild(GuildIDs.TRAINING_GROUNDS)
+        staff_role = discord.utils.get(ssbu_guild.roles, id=TGRoleIDs.MOD_ROLE)
         staff_online = [member for member in staff_role.members if member.status != discord.Status.offline]
 
         embed = discord.Embed(title=f"{ctx.guild.name} ({ctx.guild.id})", color=discord.Color.green())
