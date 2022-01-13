@@ -5,6 +5,7 @@ import random
 import time
 from datetime import datetime, timedelta
 from .mute import Mute
+from utils.ids import TGChannelIDs
 
 #
 #this file here contains the custom warning system
@@ -42,7 +43,7 @@ class Warn(commands.Cog):
 
 
         #and this second part here logs the warn into the warning log discord channel
-        channel = self.bot.get_channel(785970832572678194)
+        channel = self.bot.get_channel(TGChannelIDs.INFRACTION_LOGS)
         embed = discord.Embed(title="⚠️New Warning⚠️", color = discord.Color.dark_red())
         embed.add_field(name="Warned User", value=member.mention, inline=True)
         embed.add_field(name="Moderator", value=author.mention, inline=True)
@@ -63,7 +64,7 @@ class Warn(commands.Cog):
 
         if warns > 6:
             try:
-                await member.send(f"You have been automatically banned from the {guild.name} Server for reaching #***{warns}***.\nPlease contact Tabuu#0720 for an appeal.\nhttps://docs.google.com/spreadsheets/d/1EZhyKa69LWerQl0KxeVJZuLFFjBIywMRTNOPUUKyVCc/")
+                await member.send(f"You have been automatically banned from the {guild.name} Server for reaching warning #***{warns}***.\nPlease contact Tabuu#0720 for an appeal.\nhttps://docs.google.com/spreadsheets/d/1EZhyKa69LWerQl0KxeVJZuLFFjBIywMRTNOPUUKyVCc/")
             except:
                 print("user has blocked me :(")
 

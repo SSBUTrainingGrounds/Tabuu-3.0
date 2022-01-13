@@ -23,7 +23,9 @@ Made by Phxenix#1104. If you have any questions feel free to contact me on Disco
 The full list of commands with an explanation on how to use them can be found within the [CommandList.md](https://github.com/sonnenbankpimp/Tabuu-3.0-Bot/blob/main/CommandList.md) file.
 
 ##  Running the bot
-Since this bot is only intended to be used on the SSBU Training Grounds Discord Server, this means that you cannot invite the bot to your own server. Plus there are lots of hardcoded values specific to this server found in the code. These include all references to guilds, channels, roles, etc. You get the idea.  
+Since this bot is only intended to be used on the SSBU Training Grounds Discord Server, this means that you cannot just invite the bot to your own server.  
 
-If you decide that for some reason you do want to run the bot yourself you will need to create and host your own Discord Application and modify these values I talked about above manually in the code, as well as create a file named token.txt in the /files/ directory with your discord bot token.  
-Also please make sure you have at least Python 3.8 installed and the latest version of the [discord.py](https://github.com/Rapptz/discord.py) alpha.   
+However, you can clone this repository and run the bot yourself, if you want to.  
+First, you need to install at least Python 3.8 or newer and the latest version of the [discord.py](https://github.com/Rapptz/discord.py) alpha, as well as the other packages listed in the requirements.txt file. Then you need to create and host your own Discord Application.  
+This bot needs a lot of server-specific IDs to function properly, so you need to modify the `/utils/ids.py` file with the unique IDs of your servers/channels/roles (Note: If you want the Mee6 leaderboard of your server instead of the Training Grounds one, you need to change that too, in the `/cogs/mee6api.py` file). You may also want to delete the examples in the files in the `/json/` directory, but that is not required at all.  
+For the last step you need to create a file named `token.txt` in the `/files/` directory and paste your discord bot token into it, and you're done!  

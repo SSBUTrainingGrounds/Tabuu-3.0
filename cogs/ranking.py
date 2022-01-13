@@ -2,6 +2,7 @@ import discord
 from discord.ext import commands, tasks
 import json
 import asyncio
+from utils.ids import TGArenaChannelIDs, TGMatchmakingRoleIDs
 
 #
 #this file will contain our ranking system
@@ -45,34 +46,35 @@ class Ranking(commands.Cog):
     @commands.cooldown(1, 120, commands.BucketType.user)
     async def rankedmm(self, ctx):
         #this is a basic mm command, just pings the role and checks the channel. also has a cooldown
-        allowed_channels = (835582101926969344, 835582155446681620, 836018137119850557, 836018172238495744, 836018255113748510)
-        if ctx.channel.id not in allowed_channels:
+        if ctx.channel.id not in TGArenaChannelIDs.RANKED_ARENAS:
             await ctx.send("Please only use this command in the ranked matchmaking arenas.")
             ctx.command.reset_cooldown(ctx)
             return
-
-        timestamp = discord.utils.utcnow().timestamp()
         
+        timestamp = discord.utils.utcnow().timestamp()
+
         with open(r'./json/ranking.json', 'r') as f:
             ranking = json.load(f)
 
+        #gets your elo score and the according value
         try:
-            elo = ranking[f'{ctx.author.id}']['elo'] #gets your elo score and the according value
+            elo = ranking[f'{ctx.author.id}']['elo']
             if elo < 800:
-                pingrole = discord.utils.get(ctx.guild.roles, id=835559992965988373)
+                pingrole = discord.utils.get(ctx.guild.roles, id=TGMatchmakingRoleIDs.ELO_800_ROLE)
             if elo < 950 and elo > 799:
-                pingrole = discord.utils.get(ctx.guild.roles, id=835559996221554728)
+                pingrole = discord.utils.get(ctx.guild.roles, id=TGMatchmakingRoleIDs.ELO_950_ROLE)
             if elo < 1050 and elo > 949:
-                pingrole = discord.utils.get(ctx.guild.roles, id=835560000658341888)
+                pingrole = discord.utils.get(ctx.guild.roles, id=TGMatchmakingRoleIDs.ELO_1050_ROLE)
             if elo < 1200 and elo > 1049:
-                pingrole = discord.utils.get(ctx.guild.roles, id=835560003556999199)
+                pingrole = discord.utils.get(ctx.guild.roles, id=TGMatchmakingRoleIDs.ELO_1200_ROLE)
             if elo < 1300 and elo > 1199:
-                pingrole = discord.utils.get(ctx.guild.roles, id=835560006907985930)
+                pingrole = discord.utils.get(ctx.guild.roles, id=TGMatchmakingRoleIDs.ELO_1300_ROLE)
             if elo > 1299:
-                pingrole = discord.utils.get(ctx.guild.roles, id=835560009810444328)
+                pingrole = discord.utils.get(ctx.guild.roles, id=TGMatchmakingRoleIDs.ELO_MAX_ROLE)
         except:
-            pingrole = discord.utils.get(ctx.guild.roles, id=835560000658341888) #default elo role, in case someone isnt in the database
-        
+            #default elo role, in case someone isnt in the database
+            pingrole = discord.utils.get(ctx.guild.roles, id=TGMatchmakingRoleIDs.ELO_1050_ROLE)
+
         with open(r'./json/rankedpings.json', 'r') as fp:
             rankedusers = json.load(fp)
         
@@ -117,16 +119,14 @@ class Ranking(commands.Cog):
     async def reportmatch(self, ctx, user: discord.Member):
         #the winning person should use this command to report a match
 
-        allowed_channels = (835582101926969344, 835582155446681620, 836018137119850557)
-        
         #since only threads have a parent_id, we need a special case for these to not throw any errors.
         if str(ctx.channel.type) == "public_thread":
-            if ctx.channel.parent_id not in allowed_channels:
+            if ctx.channel.parent_id not in TGArenaChannelIDs.RANKED_ARENAS:
                 await ctx.send("Please only use this command in the ranked matchmaking arenas or the threads within.")
                 ctx.command.reset_cooldown(ctx)
                 return
         else:
-            if ctx.channel.id not in allowed_channels:
+            if ctx.channel.id not in TGArenaChannelIDs.RANKED_ARENAS:
                 await ctx.send("Please only use this command in the ranked matchmaking arenas or the threads within.")
                 ctx.command.reset_cooldown(ctx)
                 return
@@ -184,14 +184,14 @@ class Ranking(commands.Cog):
         winnerupdate = round(elo(ranking[f'{ctx.author.id}']['elo'], winnerexpected, 1)) #1 is a win, 0 is a loss. 0.5 would be a draw but there are no draws here
         loserupdate = round(elo(ranking[f'{user.id}']['elo'], loserexpected, 0))
 
-        winnerdiff = winnerupdate - ranking[f'{ctx.author.id}']['elo']
-        loserdiff = ranking[f'{user.id}']['elo'] - loserupdate
-
         ranking[f'{ctx.author.id}']['wins'] += 1 #updating their win/lose count
         ranking[f'{user.id}']['losses'] += 1
 
         ranking[f'{ctx.author.id}']['matches'].append('W')
         ranking[f'{user.id}']['matches'].append('L')
+
+        winnerdiff = winnerupdate - ranking[f'{ctx.author.id}']['elo']
+        loserdiff = ranking[f'{user.id}']['elo'] - loserupdate
 
         ranking[f'{ctx.author.id}']['elo'] = winnerupdate #writing the new elo to the file
         ranking[f'{user.id}']['elo'] = loserupdate
@@ -201,12 +201,12 @@ class Ranking(commands.Cog):
 
         async def updaterankroles(user): #checks the elo of the user, and assigns the elo role based on that
             elo = ranking[f'{user.id}']['elo']
-            elo800role = discord.utils.get(ctx.guild.roles, id=835559992965988373)
-            elo950role = discord.utils.get(ctx.guild.roles, id=835559996221554728)
-            elo1050role = discord.utils.get(ctx.guild.roles, id=835560000658341888)
-            elo1200role = discord.utils.get(ctx.guild.roles, id=835560003556999199)
-            elo1300role = discord.utils.get(ctx.guild.roles, id=835560006907985930)
-            elomaxrole = discord.utils.get(ctx.guild.roles, id=835560009810444328)
+            elo800role = discord.utils.get(ctx.guild.roles, id=TGMatchmakingRoleIDs.ELO_800_ROLE)
+            elo950role = discord.utils.get(ctx.guild.roles, id=TGMatchmakingRoleIDs.ELO_950_ROLE)
+            elo1050role = discord.utils.get(ctx.guild.roles, id=TGMatchmakingRoleIDs.ELO_1050_ROLE)
+            elo1200role = discord.utils.get(ctx.guild.roles, id=TGMatchmakingRoleIDs.ELO_1200_ROLE)
+            elo1300role = discord.utils.get(ctx.guild.roles, id=TGMatchmakingRoleIDs.ELO_1300_ROLE)
+            elomaxrole = discord.utils.get(ctx.guild.roles, id=TGMatchmakingRoleIDs.ELO_MAX_ROLE)
 
             elo_roles = [elo800role, elo950role, elo1050role, elo1200role, elo1300role, elomaxrole]
 
@@ -264,7 +264,7 @@ class Ranking(commands.Cog):
 
     @commands.command(aliases=['forcereportgame'], cooldown_after_parsing=True)
     @commands.has_permissions(administrator=True)
-    @commands.cooldown(1, 41, commands.BucketType.user) #1 use, 41s cooldown, per user
+    @commands.cooldown(1, 41, commands.BucketType.user)
     async def forcereportmatch(self, ctx, user1: discord.Member, user2: discord.Member):
         #if someone abandons the game, a mod can step in and report that game for them
         #most of this command is just copied from the one above, with a few tweaks
@@ -328,12 +328,12 @@ class Ranking(commands.Cog):
 
         async def updaterankroles(user):
             elo = ranking[f'{user.id}']['elo']
-            elo800role = discord.utils.get(ctx.guild.roles, id=835559992965988373)
-            elo950role = discord.utils.get(ctx.guild.roles, id=835559996221554728)
-            elo1050role = discord.utils.get(ctx.guild.roles, id=835560000658341888)
-            elo1200role = discord.utils.get(ctx.guild.roles, id=835560003556999199)
-            elo1300role = discord.utils.get(ctx.guild.roles, id=835560006907985930)
-            elomaxrole = discord.utils.get(ctx.guild.roles, id=835560009810444328)
+            elo800role = discord.utils.get(ctx.guild.roles, id=TGMatchmakingRoleIDs.ELO_800_ROLE)
+            elo950role = discord.utils.get(ctx.guild.roles, id=TGMatchmakingRoleIDs.ELO_950_ROLE)
+            elo1050role = discord.utils.get(ctx.guild.roles, id=TGMatchmakingRoleIDs.ELO_1050_ROLE)
+            elo1200role = discord.utils.get(ctx.guild.roles, id=TGMatchmakingRoleIDs.ELO_1200_ROLE)
+            elo1300role = discord.utils.get(ctx.guild.roles, id=TGMatchmakingRoleIDs.ELO_1300_ROLE)
+            elomaxrole = discord.utils.get(ctx.guild.roles, id=TGMatchmakingRoleIDs.ELO_MAX_ROLE)
 
             elo_roles = [elo800role, elo950role, elo1050role, elo1200role, elo1300role, elomaxrole]
 
@@ -413,7 +413,7 @@ class Ranking(commands.Cog):
 
         embed_message = await ctx.send(embed=embed)
 
-        if selfcheck is True: #if you invoked your command yourself, this here executes, with the choice of removing or adding your ranked role
+        if selfcheck is True:
             await embed_message.add_reaction("🔔")
             await embed_message.add_reaction("🔕")
 
@@ -428,33 +428,34 @@ class Ranking(commands.Cog):
                 if str(reaction.emoji) == "🔔":
                     elo = ranking[f'{ctx.author.id}']['elo'] #gets your elo score and the according value
                     if elo < 800:
-                        pingrole = discord.utils.get(ctx.guild.roles, id=835559992965988373)
+                        pingrole = discord.utils.get(ctx.guild.roles, id=TGMatchmakingRoleIDs.ELO_800_ROLE)
                     if elo < 950 and elo > 799:
-                        pingrole = discord.utils.get(ctx.guild.roles, id=835559996221554728)
+                        pingrole = discord.utils.get(ctx.guild.roles, id=TGMatchmakingRoleIDs.ELO_950_ROLE)
                     if elo < 1050 and elo > 949:
-                        pingrole = discord.utils.get(ctx.guild.roles, id=835560000658341888)
+                        pingrole = discord.utils.get(ctx.guild.roles, id=TGMatchmakingRoleIDs.ELO_1050_ROLE)
                     if elo < 1200 and elo > 1049:
-                        pingrole = discord.utils.get(ctx.guild.roles, id=835560003556999199)
+                        pingrole = discord.utils.get(ctx.guild.roles, id=TGMatchmakingRoleIDs.ELO_1200_ROLE)
                     if elo < 1300 and elo > 1199:
-                        pingrole = discord.utils.get(ctx.guild.roles, id=835560006907985930)
+                        pingrole = discord.utils.get(ctx.guild.roles, id=TGMatchmakingRoleIDs.ELO_1300_ROLE)
                     if elo > 1299:
-                        pingrole = discord.utils.get(ctx.guild.roles, id=835560009810444328)
+                        pingrole = discord.utils.get(ctx.guild.roles, id=TGMatchmakingRoleIDs.ELO_MAX_ROLE)
                     await ctx.author.add_roles(pingrole)
                 elif str(reaction.emoji) == "🔕":
-                    elo800role = discord.utils.get(ctx.guild.roles, id=835559992965988373)
-                    elo950role = discord.utils.get(ctx.guild.roles, id=835559996221554728)
-                    elo1050role = discord.utils.get(ctx.guild.roles, id=835560000658341888)
-                    elo1200role = discord.utils.get(ctx.guild.roles, id=835560003556999199)
-                    elo1300role = discord.utils.get(ctx.guild.roles, id=835560006907985930)
-                    elomaxrole = discord.utils.get(ctx.guild.roles, id=835560009810444328)
+                    elo800role = discord.utils.get(ctx.guild.roles, id=TGMatchmakingRoleIDs.ELO_800_ROLE)
+                    elo950role = discord.utils.get(ctx.guild.roles, id=TGMatchmakingRoleIDs.ELO_950_ROLE)
+                    elo1050role = discord.utils.get(ctx.guild.roles, id=TGMatchmakingRoleIDs.ELO_1050_ROLE)
+                    elo1200role = discord.utils.get(ctx.guild.roles, id=TGMatchmakingRoleIDs.ELO_1200_ROLE)
+                    elo1300role = discord.utils.get(ctx.guild.roles, id=TGMatchmakingRoleIDs.ELO_1300_ROLE)
+                    elomaxrole = discord.utils.get(ctx.guild.roles, id=TGMatchmakingRoleIDs.ELO_MAX_ROLE)
                     roles = [elo800role, elo950role, elo1050role, elo1200role, elo1300role, elomaxrole]
                     for role in roles:
-                        await ctx.author.remove_roles(role)
+                        if role in ctx.author.roles:
+                            await ctx.author.remove_roles(role)
                 else:
                     pass
 
 
-    #leaderboards are admin only because we dont want people to obsess over rankings, these will stay hidden
+
     @commands.command()
     @commands.has_permissions(administrator=True)
     @commands.guild_only()
@@ -537,8 +538,7 @@ class Ranking(commands.Cog):
     @rankedmm.error
     async def rankedmm_error(self, ctx, error):
         if isinstance(error, commands.CommandOnCooldown):
-            allowed_channels = (835582101926969344, 835582155446681620, 836018137119850557)
-            if ctx.channel.id not in allowed_channels:
+            if ctx.channel.id not in TGArenaChannelIDs.RANKED_ARENAS:
                 await ctx.send("Please only use this command in the ranked matchmaking arenas.")
                 return
             
