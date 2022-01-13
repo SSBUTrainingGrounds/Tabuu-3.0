@@ -26,6 +26,7 @@ The full list of commands with an explanation on how to use them can be found wi
 Since this bot is only intended to be used on the SSBU Training Grounds Discord Server, this means that you cannot just invite the bot to your own server.  
 
 However, you can clone this repository and run the bot yourself, if you want to.  
-First, you need to install at least Python 3.8 or newer and the latest version of the [discord.py](https://github.com/Rapptz/discord.py) alpha, as well as the other packages listed in the requirements.txt file. Then you need to create and host your own Discord Application.  
-This bot needs a lot of server-specific IDs to function properly, so you need to modify the `/utils/ids.py` file with the unique IDs of your servers/channels/roles (Note: If you want the Mee6 leaderboard of your server instead of the Training Grounds one, you need to change that too, in the `/cogs/mee6api.py` file). You may also want to delete the examples in the files in the `/json/` directory, but that is not required at all.  
+First, you need to install at least Python 3.8 or newer and the latest version of the [discord.py](https://github.com/Rapptz/discord.py) alpha, as well as the other packages listed in the `requirements.txt` file.  
+Then you need to create and host your own Discord Application.  
+This bot needs a lot of server-specific IDs to function properly, so you need to modify the `/utils/ids.py` file with the unique IDs of your servers/channels/roles (Note: If you want the Mee6 leaderboard of your server instead of the Training Grounds one, you need to change that too, in the `/cogs/mee6api.py` file). You may also choose to delete the examples in the files in the `/json/` directory, but that is not required at all.  
 For the last step you need to create a file named `token.txt` in the `/files/` directory and paste your discord bot token into it, and you're done!  
