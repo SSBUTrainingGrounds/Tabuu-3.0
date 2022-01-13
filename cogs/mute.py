@@ -2,7 +2,7 @@ import discord
 from discord.ext import commands, tasks
 import json
 import asyncio
-from .reminder import Reminder
+from utils.time import convert_time
 from utils.ids import GuildIDs, TGRoleIDs, BGRoleIDs
 
 #
@@ -119,7 +119,7 @@ class Mute(commands.Cog):
     @commands.has_permissions(administrator=True)
     async def tempmute(self, ctx, member:discord.Member, mute_time, *, reason):
         #this here uses the convert_time function from my reminder to convert the input into the seconds, and also a human-readable-string
-        seconds, time_muted = Reminder.convert_time(self, mute_time)
+        seconds, time_muted = convert_time(mute_time)
 
         #just checking the duration is not at a crazy high/low value
         if seconds < 30:
