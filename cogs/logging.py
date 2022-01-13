@@ -1,6 +1,7 @@
 import discord
 from discord.ext import commands, tasks
 from io import StringIO
+from utils.ids import GuildIDs, TGChannelIDs, BGChannelIDs
 
 #
 #this file here contains the logs, it logs every little user/message update into our logs channel
@@ -10,14 +11,11 @@ class Logging(commands.Cog):
     def __init__(self, bot):
         self.bot = bot
 
-    tg_logs = 739299509670248504
-    bg_logs = 923018569128763482
-
     def get_logchannel(self, guild_id: int):
-        if guild_id == 739299507795132486:
-            return self.tg_logs
-        elif guild_id == 915395890775216188:
-            return self.bg_logs
+        if guild_id == GuildIDs.TRAINING_GROUNDS:
+            return TGChannelIDs.LOGCHANNEL
+        elif guild_id == GuildIDs.BATTLEGROUNDS:
+            return BGChannelIDs.LOGCHANNEL
 
     #if a user updates their profile, since its global, and users dont have an assigned guild we need to send it to each logchannel separately
     #using try except just in case the bot left one of these servers
@@ -29,13 +27,13 @@ class Logging(commands.Cog):
             embed.set_author(name=f"{str(after)} ({after.id})", icon_url=after.display_avatar.url)
             embed.timestamp = discord.utils.utcnow()
             try:
-                tg_logs = self.bot.get_channel(self.tg_logs)
+                tg_logs = self.bot.get_channel(TGChannelIDs.LOGCHANNEL)
                 await tg_logs.send(embed=embed)
             except:
                 pass
 
             try:
-                bg_logs = self.bot.get_channel(self.bg_logs)
+                bg_logs = self.bot.get_channel(BGChannelIDs.LOGCHANNEL)
                 await bg_logs.send(embed=embed)
             except:
                 pass
@@ -46,13 +44,13 @@ class Logging(commands.Cog):
             embed.set_author(name=f"{str(after)} ({after.id})", icon_url=after.display_avatar.url)
             embed.timestamp = discord.utils.utcnow()
             try:
-                tg_logs = self.bot.get_channel(self.tg_logs)
+                tg_logs = self.bot.get_channel(TGChannelIDs.LOGCHANNEL)
                 await tg_logs.send(embed=embed)
             except:
                 pass
 
             try:
-                bg_logs = self.bot.get_channel(self.bg_logs)
+                bg_logs = self.bot.get_channel(BGChannelIDs.LOGCHANNEL)
                 await bg_logs.send(embed=embed)
             except:
                 pass
@@ -65,13 +63,13 @@ class Logging(commands.Cog):
             embed.set_author(name=f"{str(after)} ({after.id})", icon_url=after.display_avatar.url)
             embed.timestamp = discord.utils.utcnow()
             try:
-                tg_logs = self.bot.get_channel(self.tg_logs)
+                tg_logs = self.bot.get_channel(TGChannelIDs.LOGCHANNEL)
                 await tg_logs.send(embed=embed)
             except:
                 pass
 
             try:
-                bg_logs = self.bot.get_channel(self.bg_logs)
+                bg_logs = self.bot.get_channel(BGChannelIDs.LOGCHANNEL)
                 await bg_logs.send(embed=embed)
             except:
                 pass

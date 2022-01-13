@@ -4,6 +4,7 @@ import json
 from itertools import cycle
 from fuzzywuzzy import process, fuzz
 import datetime
+from utils.ids import GuildIDs, TGChannelIDs, TGRoleIDs, TGLevelRoleIDs, BGChannelIDs, BGRoleIDs
 
 
 #
@@ -40,15 +41,15 @@ class Events(commands.Cog):
         with open(r'./json/muted.json', 'r') as f:
             muted_users = json.load(f)
 
-        if member.guild.id == 739299507795132486: #the ssbutg server
-            channel = self.bot.get_channel(739299507937738849)
-            rules = self.bot.get_channel(739299507937738843) #rules-and-info channel on ssbutg
+        if member.guild.id == GuildIDs.TRAINING_GROUNDS:
+            channel = self.bot.get_channel(TGChannelIDs.GENERAL_CHANNEL) #ssbutg general: 739299507937738849
+            rules = self.bot.get_channel(TGChannelIDs.RULES_CHANNEL) #rules-and-info channel on ssbutg
 
             #checking if the user is muted when he joins
             if f'{member.id}' in muted_users:
-                #getting both the cadet role too since you dont really have to accept the rules if you come back muted
-                muted_role = discord.utils.get(member.guild.roles, id=739391329779581008)
-                cadet = discord.utils.get(member.guild.roles, id=739299507799326843)
+                #getting both the cadet role and the muted role since you dont really have to accept the rules if you come back muted
+                muted_role = discord.utils.get(member.guild.roles, id=TGRoleIDs.MUTED_ROLE)
+                cadet = discord.utils.get(member.guild.roles, id=TGLevelRoleIDs.RECRUIT_ROLE)
 
                 await member.add_roles(muted_role)
                 await member.add_roles(cadet)
@@ -58,12 +59,12 @@ class Events(commands.Cog):
             #if not this is the normal greeting
             await channel.send(f"{member.mention} has joined the ranks! What's shaking?\nPlease take a look at the {rules.mention} channel for information about server events/functions!")
 
-        elif member.guild.id == 915395890775216188: #the battlegrounds server
-            channel = self.bot.get_channel(915395890775216191)
-            traveller = discord.utils.get(member.guild.roles, id=915403426811244585)
+        elif member.guild.id == GuildIDs.BATTLEGROUNDS:
+            channel = self.bot.get_channel(BGChannelIDs.OFF_TOPIC_CHANNEL)
+            traveller = discord.utils.get(member.guild.roles, id=BGRoleIDs.TRAVELLER_ROLE)
 
             if f'{member.id}' in muted_users:
-                muted_role = discord.utils.get(member.guild.roles, id=928985750505140264)
+                muted_role = discord.utils.get(member.guild.roles, id=BGRoleIDs.MUTED_ROLE)
                 await member.add_roles(muted_role)
                 await member.add_roles(traveller)
                 await channel.send(f"Welcome, {member.mention}! You are still muted, so maybe check back later.")
@@ -76,11 +77,11 @@ class Events(commands.Cog):
     #if you join a voice channel, you get this role here
     @commands.Cog.listener()
     async def on_voice_state_update(self, member, before, after):
-        voice_channel = 765625841861394442
-        guild = self.bot.get_guild(739299507795132486)
-        vc_role = discord.utils.get(guild.roles, id=824258210101198889)
+        voice_channel = TGChannelIDs.GENERAL_VOICE_CHAT
+        guild = self.bot.get_guild(GuildIDs.TRAINING_GROUNDS)
+        vc_role = discord.utils.get(guild.roles, id=TGRoleIDs.VOICE_ROLE)
         if before.channel is None or before.channel.id != voice_channel:
-            if after.channel is not None and after.channel.id == voice_channel: #have to do the not None thing in both occasions, otherwise the console gets flooded with errors
+            if after.channel is not None and after.channel.id == voice_channel:
                 try:
                     await member.add_roles(vc_role)
                 except:
@@ -96,30 +97,29 @@ class Events(commands.Cog):
 
 
 
-
     #if a new booster boosts the server, checks role changes
     @commands.Cog.listener()
     async def on_member_update(self, before, after):
-        channel = self.bot.get_channel(739299507937738844) #ssbutg announcements channel: 739299507937738844 
+        channel = self.bot.get_channel(TGChannelIDs.ANNOUNCEMENTS_CHANNEL)
         if len(before.roles) < len(after.roles):
             newRole = next(role for role in after.roles if role not in before.roles) #gets the new role
 
-            if newRole.id == 739344833738571868: #checks if its the booster role
+            if newRole.id == TGRoleIDs.BOOSTER_ROLE:
                 await channel.send(f"{after.mention} has boosted the server!🥳🎉")
 
 
-        if len(before.roles) > len(after.roles): #if you stop boosting, your color roles get removed
-            color_roles = (774290821842862120, 774290823340359721, 774290825927458816, 774290826896605184, 774290829128105984, 774290831271002164, 794726232616206378, 794726234231013437, 794726235518795797)
-            oldRole = next(role for role in before.roles if role not in after.roles) #gets the removed role
+        if len(before.roles) > len(after.roles):
+            oldRole = next(role for role in before.roles if role not in after.roles)
 
-            if oldRole.id == 739344833738571868: #if its the booster role, all of the above color roles will get removed
-                for role in color_roles:
+            if oldRole.id == TGRoleIDs.BOOSTER_ROLE:
+                for role in TGRoleIDs.COLOUR_ROLES:
                     try:
                         removerole = discord.utils.get(after.guild.roles, id=role)
                         if removerole in after.roles:
                             await after.remove_roles(removerole)
                     except:
                         pass
+
         
         #this here gives out the cadet role on a successful member screening, on join was terrible because of shitty android app
         try:
@@ -128,20 +128,20 @@ class Events(commands.Cog):
             else:
                 if before.pending == True:
                     if after.pending == False:
-                        if before.guild.id == 739299507795132486:
-                            cadetrole = discord.utils.get(before.guild.roles, id=739299507799326843)
+                        if before.guild.id == GuildIDs.TRAINING_GROUNDS:
+                            cadetrole = discord.utils.get(before.guild.roles, id=TGLevelRoleIDs.RECRUIT_ROLE)
                             await after.add_roles(cadetrole)
         except AttributeError:
             pass
 
 
-    #general error if the bot didnt find the command specified, searches for the closest match
+
+    
     @commands.Cog.listener()
     async def on_command_error(self, ctx, error):
         if isinstance(error, commands.CommandNotFound):
-            command_list = [command.name for command in self.bot.commands] #every command registered. note that this will not include aliases
+            command_list = [command.name for command in self.bot.commands]
 
-            #makes sure the macros are in that list as well
             with open(r'./json/macros.json', 'r') as f:
                 macros = json.load(f)
             for name in macros:
@@ -174,12 +174,12 @@ class Events(commands.Cog):
             #stops this task from running 1 hour after the desired time. 
             #have to do this because otherwise it would run again if i were to restart the bot after 19:00 utc fridays
             if datetime.datetime.utcnow().hour <= 18:
-                guild = self.bot.get_guild(739299507795132486)
-                streamer_channel = self.bot.get_channel(766721811962396672)
-                streamer_role = discord.utils.get(guild.roles, id=752291084058755192)
+                guild = self.bot.get_guild(GuildIDs.TRAINING_GROUNDS)
+                streamer_channel = self.bot.get_channel(TGChannelIDs.STREAM_TEAM)
+                streamer_role = discord.utils.get(guild.roles, id=TGRoleIDs.STREAMER_ROLE)
 
-                to_channel = self.bot.get_channel(812433498013958205)
-                to_role = discord.utils.get(guild.roles, id=739299507816366104)
+                to_channel = self.bot.get_channel(TGChannelIDs.TOURNAMENT_TEAM)
+                to_role = discord.utils.get(guild.roles, id=TGRoleIDs.TOURNAMENT_OFFICIAL_ROLE)
 
                 await streamer_channel.send(f"{streamer_role.mention} Reminder that Smash Overseas begins in 1 hour, who is available to stream?")
                 await to_channel.send(f"{to_role.mention} Reminder that Smash Overseas begins in 1 hour, who is available?")
@@ -189,13 +189,13 @@ class Events(commands.Cog):
         #runs every day, checks if it is saturday in utc (might wanna keep watching that event cause timezones could be weird here since its sunday for me)
         if datetime.datetime.utcnow().weekday() == 5:
             if datetime.datetime.utcnow().hour <= 23:
-                guild = self.bot.get_guild(739299507795132486)
-                streamer_channel = self.bot.get_channel(766721811962396672)
-                streamer_role = discord.utils.get(guild.roles, id=752291084058755192)
-    
-                to_channel = self.bot.get_channel(812433498013958205)
-                to_role = discord.utils.get(guild.roles, id=739299507816366104)
-    
+                guild = self.bot.get_guild(GuildIDs.TRAINING_GROUNDS)
+                streamer_channel = self.bot.get_channel(TGChannelIDs.STREAM_TEAM)
+                streamer_role = discord.utils.get(guild.roles, id=TGRoleIDs.STREAMER_ROLE)
+
+                to_channel = self.bot.get_channel(TGChannelIDs.TOURNAMENT_TEAM)
+                to_role = discord.utils.get(guild.roles, id=TGRoleIDs.TOURNAMENT_OFFICIAL_ROLE)
+
                 await streamer_channel.send(f"{streamer_role.mention} Reminder that Trials of Smash begins in 1 hour, who is available to stream?")
                 await to_channel.send(f"{to_role.mention} Reminder that Trials of Smash begins in 1 hour, who is available?")
 

@@ -2,6 +2,7 @@ import discord
 from discord.ext import commands, tasks
 import json
 from datetime import datetime, timezone
+from utils.ids import TGChannelIDs
 
 
 #
@@ -15,8 +16,8 @@ class Starboard(commands.Cog):
         self.bot = bot
 
     #since this is only for our charity events the channels are hardcoded. might change in the future.
-    starboard_channel = 788921409648066610
-    listening_channels = [783120161992605706]
+    starboard_channel = TGChannelIDs.STARBOARD_CHANNEL
+    listening_channels = TGChannelIDs.STARBOARD_LISTENING_CHANNELS
 
 
     #first the command to set the emoji, pretty basic
