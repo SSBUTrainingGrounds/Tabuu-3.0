@@ -2,6 +2,7 @@ import discord
 from discord.ext import commands, tasks
 import asyncio
 from .stats import Stats
+from utils.ids import GuildIDs
 
 #
 #this file here contains general purpose admin commands, they all need the @commands.has_permissions(administrator=True) decorator
@@ -83,11 +84,11 @@ class Admin(commands.Cog):
     @commands.command(aliases=['syncbans'])
     @commands.has_permissions(administrator=True)
     async def syncbanlist(self, ctx):
-        if ctx.guild.id != 915395890775216188:
+        if ctx.guild.id != GuildIDs.BATTLEGROUNDS:
             await ctx.send("This command is only available on the Battlegrounds server!")
             return
 
-        tg_guild = self.bot.get_guild(739299507795132486)
+        tg_guild = self.bot.get_guild(GuildIDs.TRAINING_GROUNDS)
 
         bans = await tg_guild.bans()
 
