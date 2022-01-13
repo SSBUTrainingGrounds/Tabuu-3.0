@@ -1,8 +1,8 @@
 import discord
 from discord.ext import commands, tasks
 import asyncio
-from .stats import Stats
 from utils.ids import GuildIDs
+from utils.role import search_role
 
 #
 #this file here contains general purpose admin commands, they all need the @commands.has_permissions(administrator=True) decorator
@@ -149,7 +149,7 @@ class Admin(commands.Cog):
     @commands.has_permissions(administrator=True) #checking permissions
     async def addrole(self, ctx, member:discord.Member, *, input_role):
         #searches the closest matching role
-        role = Stats.search_role(self, ctx.guild, input_role)
+        role = search_role(ctx.guild, input_role)
 
         await member.add_roles(role)
         await ctx.send(f"{member.mention} was given the {role} role.")
@@ -158,7 +158,7 @@ class Admin(commands.Cog):
     @commands.command()
     @commands.has_permissions(administrator=True) #checking permissions
     async def removerole(self, ctx, member:discord.Member, *,input_role):
-        role = Stats.search_role(self, ctx.guild, input_role)
+        role = search_role(ctx.guild, input_role)
 
         await member.remove_roles(role) #same as above here
         await ctx.send(f"{member.mention} no longer has the {role} role.")
