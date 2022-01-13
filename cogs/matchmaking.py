@@ -2,15 +2,11 @@ import discord
 from discord.ext import commands, tasks
 import json
 import asyncio
+from utils.ids import TGArenaChannelIDs, TGMatchmakingRoleIDs
 
 #
-#this file here contains the basic unranked matchmaking system
+#this file here contains our matchmaking system
 #
-
-
-#first we define the allowed channels here for the whole matchmaking system
-arena_channels = (739299508403437626, 739299508403437627, 742190378051960932)
-special_arenas = (801176498274172950, 764882596118790155, 739299509670248503, 831673163812569108)
 
 
 class Matchmaking(commands.Cog):
@@ -75,9 +71,9 @@ class Matchmaking(commands.Cog):
     @commands.cooldown(1, 600, commands.BucketType.user) #1 use, 10m cooldown, per user
     async def singles(self, ctx):
         timestamp = discord.utils.utcnow().timestamp()
-        singles_role = discord.utils.get(ctx.guild.roles, id=739299507799326842)
+        singles_role = discord.utils.get(ctx.guild.roles, id=TGMatchmakingRoleIDs.SINGLES_ROLE)
         
-        if ctx.message.channel.id in arena_channels:
+        if ctx.message.channel.id in TGArenaChannelIDs.PUBLIC_ARENAS:
             await self.store_ping(ctx, "singles", timestamp)
             
             searches = await self.get_recent_pings("singles", timestamp)
@@ -98,7 +94,7 @@ class Matchmaking(commands.Cog):
             await self.delete_ping(ctx, "singles")
 
             
-        elif ctx.message.channel.id in special_arenas:
+        elif ctx.message.channel.id in TGArenaChannelIDs.PRIVATE_ARENAS:
             searches = await self.get_recent_pings("singles", timestamp)
 
             embed = discord.Embed(
@@ -116,7 +112,7 @@ class Matchmaking(commands.Cog):
     async def singles_error(self, ctx, error):
         if isinstance(error, commands.CommandOnCooldown):
             timestamp = discord.utils.utcnow().timestamp()
-            if ctx.message.channel.id in arena_channels or ctx.message.channel.id in special_arenas:
+            if ctx.message.channel.id in TGArenaChannelIDs.PUBLIC_ARENAS or ctx.message.channel.id in TGArenaChannelIDs.PRIVATE_ARENAS:
                 searches = await self.get_recent_pings("singles", timestamp)
 
                 embed = discord.Embed(
@@ -136,9 +132,9 @@ class Matchmaking(commands.Cog):
     @commands.cooldown(1, 600, commands.BucketType.user) #1 use, 10m cooldown, per user
     async def doubles(self, ctx):
         timestamp = discord.utils.utcnow().timestamp()
-        doubles_role = discord.utils.get(ctx.guild.roles, id=739299507799326841)
+        doubles_role = discord.utils.get(ctx.guild.roles, id=TGMatchmakingRoleIDs.DOUBLES_ROLE)
 
-        if ctx.message.channel.id in arena_channels:
+        if ctx.message.channel.id in TGArenaChannelIDs.PUBLIC_ARENAS:
             await self.store_ping(ctx, "doubles", timestamp)
             
             searches = await self.get_recent_pings("doubles", timestamp)
@@ -152,14 +148,14 @@ class Matchmaking(commands.Cog):
             mm_thread = await mm_message.create_thread(name=f"Doubles Arena of {ctx.author.name}", auto_archive_duration=60)
 
             await mm_thread.add_user(ctx.author)
-            await mm_thread.send(f"Hi there, {ctx.author.mention}! Please use this thread for communicating with your opponents.")
+            await mm_thread.send(f"Hi there, {ctx.author.mention}! Please use this thread for communicating with your opponent.")
 
             await asyncio.sleep(1800)
 
             await self.delete_ping(ctx, "doubles")
 
             
-        elif ctx.message.channel.id in special_arenas:
+        elif ctx.message.channel.id in TGArenaChannelIDs.PRIVATE_ARENAS:
             searches = await self.get_recent_pings("doubles", timestamp)
 
             embed = discord.Embed(
@@ -177,7 +173,7 @@ class Matchmaking(commands.Cog):
     async def doubles_error(self, ctx, error):
         if isinstance(error, commands.CommandOnCooldown):
             timestamp = discord.utils.utcnow().timestamp()
-            if ctx.message.channel.id in arena_channels or ctx.message.channel.id in special_arenas:
+            if ctx.message.channel.id in TGArenaChannelIDs.PUBLIC_ARENAS or ctx.message.channel.id in TGArenaChannelIDs.PRIVATE_ARENAS:
                 searches = await self.get_recent_pings("doubles", timestamp)
 
                 embed = discord.Embed(
@@ -196,9 +192,9 @@ class Matchmaking(commands.Cog):
     @commands.cooldown(1, 600, commands.BucketType.user) #1 use, 10m cooldown, per user
     async def funnies(self, ctx):
         timestamp = discord.utils.utcnow().timestamp()
-        funnies_role = discord.utils.get(ctx.guild.roles, id=739299507795132495)
+        funnies_role = discord.utils.get(ctx.guild.roles, id=TGMatchmakingRoleIDs.FUNNIES_ROLE)
 
-        if ctx.message.channel.id in arena_channels:
+        if ctx.message.channel.id in TGArenaChannelIDs.PUBLIC_ARENAS:
             await self.store_ping(ctx, "funnies", timestamp)
             
             searches = await self.get_recent_pings("funnies", timestamp)
@@ -219,13 +215,13 @@ class Matchmaking(commands.Cog):
             await self.delete_ping(ctx, "funnies")
 
             
-        elif ctx.message.channel.id in special_arenas:
+        elif ctx.message.channel.id in TGArenaChannelIDs.PRIVATE_ARENAS:
             searches = await self.get_recent_pings("funnies", timestamp)
 
             embed = discord.Embed(
                 title="Funnies pings in the last 30 Minutes:", 
                 description=searches, 
-                colour=discord.Colour.green())
+                colour=discord.Colour.dark_red())
 
             await ctx.send(f"{ctx.author.mention} is looking for {funnies_role.mention} games!\nHere are the most recent Funnies pings in our open arenas:", embed=embed)
 
@@ -237,7 +233,7 @@ class Matchmaking(commands.Cog):
     async def funnies_error(self, ctx, error):
         if isinstance(error, commands.CommandOnCooldown):
             timestamp = discord.utils.utcnow().timestamp()
-            if ctx.message.channel.id in arena_channels or ctx.message.channel.id in special_arenas:
+            if ctx.message.channel.id in TGArenaChannelIDs.PUBLIC_ARENAS or ctx.message.channel.id in TGArenaChannelIDs.PRIVATE_ARENAS:
                 searches = await self.get_recent_pings("funnies", timestamp)
 
                 embed = discord.Embed(

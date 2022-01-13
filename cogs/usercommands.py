@@ -2,6 +2,7 @@ import discord
 from discord.ext import commands, tasks
 import random
 import asyncio
+from utils.ids import GuildIDs, TGChannelIDs, TGRoleIDs
 
 
 #
@@ -17,9 +18,9 @@ class Usercommands(commands.Cog):
     @commands.command()
     async def modmail(self, ctx, *, args):
         if str(ctx.channel.type) == 'private': #only works in dm's
-            guild = self.bot.get_guild(739299507795132486) #ssbu tg server
-            modmail_channel = self.bot.get_channel(806860630073409567) #modmail channel
-            mod_role = discord.utils.get(guild.roles, id=739299507816366106)
+            guild = self.bot.get_guild(GuildIDs.TRAINING_GROUNDS) #ssbu tg server
+            modmail_channel = self.bot.get_channel(TGChannelIDs.MODMAIL_CHANNEL) #modmail channel
+            mod_role = discord.utils.get(guild.roles, id=TGRoleIDs.MOD_ROLE)
 
             atm = ''
             if ctx.message.attachments:

@@ -3,6 +3,7 @@ from discord.ext import commands, tasks
 import json
 from .matchmaking import Matchmaking
 from .ranking import Ranking
+from utils.ids import TGArenaChannelIDs
 
 
 #
@@ -93,12 +94,9 @@ class Matchmakingpings(commands.Cog):
     #if a matchmaking thread gets inactive, it gets deleted right away to clear space
     @commands.Cog.listener()
     async def on_thread_update(self, before, after):
-        arena_channels = (739299508403437626, 739299508403437627, 742190378051960932)
-        ranked_arenas = (835582101926969344, 835582155446681620, 836018137119850557)
         if before.archived is False and after.archived is True:
-            if after.parent_id in arena_channels or after.parent_id in ranked_arenas:
+            if after.parent_id in TGArenaChannelIDs.PUBLIC_ARENAS or after.parent_id in TGArenaChannelIDs.RANKED_ARENAS:
                 await after.delete()
-
 
 
     @commands.command()
@@ -107,11 +105,10 @@ class Matchmakingpings(commands.Cog):
 
 
 
-    #added this command so that if a ping gets stuck in the files i dont have to restart the bot
     @commands.command(aliases=['clearmmrequests', 'clearmm', 'clearmatchmaking'])
     @commands.has_permissions(administrator=True)
     async def clearmmpings(self, ctx):
-        await self.clear_mmrequests() #just calls the function below
+        await self.clear_mmrequests()
         await ctx.send("Cleared the matchmaking pings!")
 
     @clearmmpings.error
