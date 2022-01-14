@@ -409,11 +409,13 @@ class Ranking(commands.Cog):
         embed.add_field(name="Wins", value=wins, inline=True)
         embed.add_field(name="Losses", value=losses, inline=True)
         embed.add_field(name="Last Matches", value=gamelist, inline=True)
-        embed.set_footer(text="React within 120s to turn ranked notifications on or off until the next match" if selfcheck is True else "")
+        if selfcheck is True and ctx.guild is not None and ctx.guild.id == GuildIDs.TRAINING_GROUNDS:
+            #i have to add the ctx.guild is not None check, otherwise we get an error in DMs
+            embed.set_footer(text="React within 120s to turn ranked notifications on or off until the next match")
 
         embed_message = await ctx.send(embed=embed)
 
-        #i have to add the ctx.guild is not None check, otherwise we get an error in DMs
+        #same here
         if selfcheck is True and ctx.guild is not None and ctx.guild.id == GuildIDs.TRAINING_GROUNDS:
             await embed_message.add_reaction("🔔")
             await embed_message.add_reaction("🔕")
