@@ -2,7 +2,7 @@ import discord
 from discord.ext import commands, tasks
 import json
 import asyncio
-from utils.ids import TGArenaChannelIDs, TGMatchmakingRoleIDs
+from utils.ids import GuildIDs, TGArenaChannelIDs, TGMatchmakingRoleIDs
 
 #
 #this file will contain our ranking system
@@ -250,11 +250,9 @@ class Ranking(commands.Cog):
 
 
         if ranking[f'{ctx.author.id}']['wins'] + ranking[f'{ctx.author.id}']['losses'] > 4: #only assigns these roles after 5 games
-            elo = ranking[f'{ctx.author.id}']['elo']
             await updaterankroles(ctx.author)
         
         if ranking[f'{user.id}']['wins'] + ranking[f'{user.id}']['losses'] > 4:
-            elo = ranking[f'{user.id}']['elo']
             await updaterankroles(user) 
 
 
@@ -268,6 +266,10 @@ class Ranking(commands.Cog):
     async def forcereportmatch(self, ctx, user1: discord.Member, user2: discord.Member):
         #if someone abandons the game, a mod can step in and report that game for them
         #most of this command is just copied from the one above, with a few tweaks
+
+        if ctx.guild.id != GuildIDs.TRAINING_GROUNDS:
+            await ctx.send("This command is only available on the SSBU Training Grounds Server.")
+            return
 
         def check(message):
             return message.content.lower() == "y" and message.author == ctx.author and message.channel == ctx.channel
@@ -376,19 +378,17 @@ class Ranking(commands.Cog):
 
 
         if ranking[f'{user1.id}']['wins'] + ranking[f'{user1.id}']['losses'] > 4:
-            elo = ranking[f'{user1.id}']['elo']
             await updaterankroles(user1)
         
         if ranking[f'{user2.id}']['wins'] + ranking[f'{user2.id}']['losses'] > 4:
-            elo = ranking[f'{user2.id}']['elo']
-            await updaterankroles(user2) 
+            await updaterankroles(user2)
 
         await ctx.send(f"Game successfully reported!\n{user1.mention} won!\nUpdated Elo score: {user1.mention} = {winnerupdate} (+{winnerdiff}) | {user2.mention} = {loserupdate} (-{loserdiff})\nGame was forcefully reported by: {ctx.author.mention}")
 
 
 
     @commands.command(aliases=['rankedstats'])
-    async def rankstats(self, ctx, member: discord.Member = None):
+    async def rankstats(self, ctx, member: discord.User = None):
         selfcheck = False
         if member is None:
             member = ctx.author
@@ -403,7 +403,7 @@ class Ranking(commands.Cog):
         last5games = ranking[f'{member.id}']['matches'][-5:] #gets the last 5 games played
         gamelist = (''.join(last5games[::-1])) #reverses that list, makes it more intuitive to read
 
-        embed = discord.Embed(title=f"Ranked stats of {str(member)}", colour=member.colour)
+        embed = discord.Embed(title=f"Ranked stats of {str(member)}", colour=0x3498db)
         embed.set_thumbnail(url=member.display_avatar.url)
         embed.add_field(name="Elo score", value=eloscore, inline=True)
         embed.add_field(name="Wins", value=wins, inline=True)
@@ -413,7 +413,8 @@ class Ranking(commands.Cog):
 
         embed_message = await ctx.send(embed=embed)
 
-        if selfcheck is True:
+        #i have to add the ctx.guild is not None check, otherwise we get an error in DMs
+        if selfcheck is True and ctx.guild is not None and ctx.guild.id == GuildIDs.TRAINING_GROUNDS:
             await embed_message.add_reaction("🔔")
             await embed_message.add_reaction("🔕")
 
