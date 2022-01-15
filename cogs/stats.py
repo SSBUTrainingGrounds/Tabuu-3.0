@@ -103,7 +103,7 @@ class Stats(commands.Cog):
             activity = "None"
 
         if not ctx.guild:
-            await ctx.send("This command can only be used in the SSBU TG Discord Server.")
+            await ctx.send("This command is only available on servers.")
             return
 
         sorted_members = sorted(ctx.guild.members, key=lambda x:x.joined_at)
