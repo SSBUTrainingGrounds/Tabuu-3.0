@@ -30,7 +30,9 @@ However, you can clone this repository and run the bot yourself, if you want to.
 2) Create and host your own Discord Application.  
 3) This bot needs a lot of server-specific IDs to function properly, so you need to modify the `/utils/ids.py` file with the unique IDs of your servers/channels/roles.  
 4) For the last step you need to create a file named `token.txt` in the `/files/` directory and paste your discord bot token into it, and you're done! 
+
 Run `main.py` and enjoy.  
+
 A few optional extra steps to consider:  
 1) If you want the Mee6 leaderboard of your server instead of the Training Grounds one, you need to change that too, in the `/cogs/mee6api.py` file. Make sure that Mee6 is present in your server and the levels plugin is enabled.  
 2) The name `"SSBU Training Grounds"` and `"SSBU TG"` is present in a few parts of the code, feel free to switch these to your liking.  
