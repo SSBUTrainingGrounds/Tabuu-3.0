@@ -37,4 +37,5 @@ A few optional extra steps to consider:
 1) If you want the Mee6 leaderboard of your server instead of the Training Grounds one, you need to change that too, in the `/cogs/mee6api.py` file. Make sure that Mee6 is present in your server and the levels plugin is enabled.  
 2) The name `"SSBU Training Grounds"` and `"SSBU TG"` is present in a few parts of the code, feel free to switch these to your liking.  
 3) You may also choose to delete the examples in the files in the `/json/` directory, make sure to keep all the json files itself though and leave a pair of curly brackets `{}`.  
+
 These are entirely optional, but if you are planning on seriously using this bot for your own server, I highly recommend doing these steps for appearance purposes.  
