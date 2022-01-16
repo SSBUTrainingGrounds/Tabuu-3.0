@@ -33,7 +33,11 @@ class Funcommands(commands.Cog):
         "It takes guts to be an organ donor.",
         "What do you call a band of Tabuus? The Blue Man Group! I'm sorry.",
         "What do you call a belt made of watches? A waist of time",
-        "Did you hear about the new high-tech broom? It's sweeping the nation!"]
+        "Did you hear about the new high-tech broom? It's sweeping the nation!",
+        "You know, working in a mirror factory is something I could really see myself doing",
+        "I broke my hand last week, but on the other hand, I'm ok",
+        "Did you hear about the new restaurant on the moon? The food is great, but it has no atmosphere!",
+        "What do sprinters eat before a race? Nothing, they fast"]
         await ctx.send(random.choice(messages))
 
     @commands.command()
@@ -79,7 +83,9 @@ class Funcommands(commands.Cog):
         'I only lost cause arto accidentally banned me from this server',
         'I only lost because I didn’t DI away from plats',
         'I only lost cause spoon pinged everyone again',
-        'I only lost because someone pinged %singles in our arena midmatch']
+        'I only lost because someone pinged %singles in our arena midmatch',
+        'I only lost cause ewans bald head was blinding me',
+        'I only lost cause i was distracted by ewan explaining scottish independence to me']
         await ctx.send(random.choice(messages))
 
     @commands.command()
