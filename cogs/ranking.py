@@ -2,7 +2,7 @@ import discord
 from discord.ext import commands, tasks
 import json
 import asyncio
-from utils.ids import GuildIDs, TGArenaChannelIDs, TGMatchmakingRoleIDs
+from utils.ids import GuildNames, GuildIDs, TGArenaChannelIDs, TGMatchmakingRoleIDs
 
 #
 #this file will contain our ranking system
@@ -268,7 +268,7 @@ class Ranking(commands.Cog):
         #most of this command is just copied from the one above, with a few tweaks
 
         if ctx.guild.id != GuildIDs.TRAINING_GROUNDS:
-            await ctx.send("This command is only available on the SSBU Training Grounds Server.")
+            await ctx.send(f"This command is only available on the {GuildNames.TRAINING_GROUNDS} Server.")
             return
 
         def check(message):
@@ -493,7 +493,7 @@ class Ranking(commands.Cog):
 
         embedstats = ''.join(rawstats) #needed for a neat embed
 
-        embed = discord.Embed(title="Top 10 Players of SSBU TG Ranked Matchmaking", description=f"**Rank | Username | Elo score | W/L**\n{embedstats}", colour=discord.Colour.blue())
+        embed = discord.Embed(title=f"Top 10 Players of {GuildNames.TRAINING_GROUNDS} Ranked Matchmaking", description=f"**Rank | Username | Elo score | W/L**\n{embedstats}", colour=discord.Colour.blue())
         embed.set_thumbnail(url=ctx.guild.icon.url)
         embed.timestamp = discord.utils.utcnow()
         await ctx.send(embed=embed)
@@ -507,7 +507,7 @@ class Ranking(commands.Cog):
         if isinstance(error, commands.CommandOnCooldown):
             await ctx.send(f"You are on cooldown! Try again in {round(error.retry_after)} seconds.")
         elif isinstance(error, commands.NoPrivateMessage):
-            await ctx.send("Please only use this command in the SSBU TG Discord Server.")
+            await ctx.send(f"Please only use this command in the {GuildNames.TRAINING_GROUNDS} Discord Server.")
         elif isinstance(error, commands.MissingRequiredArgument):
             await ctx.send("Please mention the member that you beat in the match.")
         elif isinstance(error, commands.MemberNotFound):

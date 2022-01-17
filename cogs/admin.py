@@ -1,7 +1,7 @@
 import discord
 from discord.ext import commands, tasks
 import asyncio
-from utils.ids import GuildIDs
+from utils.ids import GuildNames, GuildIDs
 from utils.role import search_role
 
 #
@@ -85,7 +85,7 @@ class Admin(commands.Cog):
     @commands.has_permissions(administrator=True)
     async def syncbanlist(self, ctx):
         if ctx.guild.id != GuildIDs.BATTLEGROUNDS:
-            await ctx.send("This command is only available on the Battlegrounds server!")
+            await ctx.send(f"This command is only available on the {GuildNames.BATTLEGROUNDS} server!")
             return
 
         tg_guild = self.bot.get_guild(GuildIDs.TRAINING_GROUNDS)
@@ -100,7 +100,7 @@ class Admin(commands.Cog):
             try:
                 await ctx.guild.fetch_ban(u.user)
             except discord.NotFound:
-                await ctx.guild.ban(u.user, reason="Automatic ban because user was banned on the TG server.")
+                await ctx.guild.ban(u.user, reason=f"Automatic ban because user was banned on the {GuildNames.TG} server.")
                 await ctx.send(f"Banned {str(u.user)}!")
                 i += 1
             

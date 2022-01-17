@@ -3,7 +3,7 @@ from discord.ext import commands, tasks
 from mee6_py_api import API
 from discord.utils import get
 from math import ceil
-from utils.ids import GuildIDs, TGLevelRoleIDs
+from utils.ids import GuildNames, GuildIDs, TGLevelRoleIDs
 
 #
 #this file here gets the mee6 level and assigns the matching role
@@ -29,7 +29,7 @@ class Mee6api(commands.Cog):
     @commands.cooldown(1, 300, commands.BucketType.user) #1 use, 5m cooldown, per user. since the response time of the api isnt too great, i wanted to limit these requests
     async def updatelevel(self, ctx, member: discord.Member = None):
         if ctx.guild.id != GuildIDs.TRAINING_GROUNDS:
-            await ctx.send("This command can only be used in the SSBU TG Discord Server.")
+            await ctx.send(f"This command can only be used in the {GuildNames.TRAINING_GROUNDS} Discord Server.")
             ctx.command.reset_cooldown(ctx)
             return
 
@@ -100,7 +100,7 @@ class Mee6api(commands.Cog):
         if isinstance(error, commands.CommandOnCooldown):
             await ctx.send(f"{ctx.author.mention}, you are on cooldown for another {round((error.retry_after)/60)} minutes to use this command.")
         elif isinstance(error, commands.NoPrivateMessage):
-            await ctx.send("This command can only be used in the SSBU TG Discord Server.")
+            await ctx.send(f"This command can only be used in the {GuildNames.TRAINING_GROUNDS} Discord Server.")
         elif isinstance(error, commands.MemberNotFound):
             await ctx.send("Please mention a valid member, or leave it blank.")
         elif isinstance(error, commands.CommandInvokeError):

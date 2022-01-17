@@ -25,7 +25,7 @@ class Mute(commands.Cog):
             tg_member = tg_guild.get_member(member.id)
             await tg_member.add_roles(tg_role)
         except:
-            print("tried to add muted role in tg server but it failed")
+            print(f"tried to add muted role in {tg_guild.name} server but it failed")
 
         #then we add the mute on the bg server, or try to
         try:
@@ -34,7 +34,7 @@ class Mute(commands.Cog):
             bg_member = bg_guild.get_member(member.id)
             await bg_member.add_roles(bg_role)
         except:
-            print("tried to muted role in bg server but it failed")
+            print(f"tried to add muted role in {bg_guild.name} server but it failed")
 
         #checking if the user is already muted.
         #we dont need that for the mute command but for the automatic mute this is useful as to not write someone 2x into the json file
@@ -56,7 +56,7 @@ class Mute(commands.Cog):
             tg_member = tg_guild.get_member(member.id)
             await tg_member.remove_roles(tg_role)
         except:
-            print("tried to add muted role in tg server but it failed")
+            print(f"tried to remove muted role in {tg_guild.name} server but it failed")
 
         try:
             bg_guild = self.bot.get_guild(GuildIDs.BATTLEGROUNDS)
@@ -64,7 +64,7 @@ class Mute(commands.Cog):
             bg_member = bg_guild.get_member(member.id)
             await bg_member.remove_roles(bg_role)
         except:
-            print("tried to muted role in bg server but it failed")
+            print(f"tried to remove muted role in {bg_guild.name} server but it failed")
 
         if f'{member.id}' in muted_users:
             del muted_users[f'{member.id}']

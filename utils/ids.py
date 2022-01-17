@@ -1,11 +1,19 @@
 #this is the place where the unique IDs are stored. 
 #if you are planning on running the bot yourself, you should probably change them to suit your needs
 
-class GuildIDs:
+class GuildNames:
     #the training grounds server, the "main" server
-    TRAINING_GROUNDS = 739299507795132486
+    TRAINING_GROUNDS = "SSBU Training Grounds"
+    #abbreviation for the server
+    TG = "TG"
     #battlegrounds is the smaller spin-off server
-    BATTLEGROUNDS = 915395890775216188
+    BATTLEGROUNDS = "SSBU Battlegrounds"
+    BG = "BG"
+
+class GuildIDs:
+    #the guild id's of the servers
+    TRAINING_GROUNDS = 775528948683374632
+    BATTLEGROUNDS = 928984979508199455
 
 class TGChannelIDs:
     #general chat
