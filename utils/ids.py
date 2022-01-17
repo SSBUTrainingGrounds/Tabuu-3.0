@@ -12,8 +12,8 @@ class GuildNames:
 
 class GuildIDs:
     #the guild id's of the servers
-    TRAINING_GROUNDS = 775528948683374632
-    BATTLEGROUNDS = 928984979508199455
+    TRAINING_GROUNDS = 739299507795132486
+    BATTLEGROUNDS = 915395890775216188
 
 class TGChannelIDs:
     #general chat
