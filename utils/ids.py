@@ -1,5 +1,6 @@
 #this is the place where the unique IDs are stored. 
-#if you are planning on running the bot yourself, you should probably change them to suit your needs
+#change the values as you wish, but please keep the names of the constants.
+#also, if you plan on only having one channel in a tuple, you need to add a comma after the only value so it gets recognised properly.
 
 class GuildNames:
     #the training grounds server, the "main" server

@@ -28,7 +28,7 @@ Since this bot is only intended to be used on the SSBU Training Grounds Discord 
 However, you can clone this repository and run the bot yourself, if you want to. Here's how to do it:  
 1) Install at least Python 3.8 or newer and the latest version of the [discord.py](https://github.com/Rapptz/discord.py) alpha, as well as the other packages listed in the `requirements.txt` file.  
 2) Create and host your own Discord Application.  
-3) This bot needs a lot of server-specific IDs to function properly, so you need to modify the `/utils/ids.py` file with the unique IDs of your servers/channels/roles. In there, you can also change the server name to your liking, as these names are also referenced in some places.  
+3) This bot needs a lot of server-specific IDs to function properly, so you need to modify the values in the `/utils/ids.py` file with the unique IDs of your servers/channels/roles. In there, you can also change the server name to your liking, as these names are also referenced in some places.  
 4) For the last step you need to create a file named `token.txt` in the `/files/` directory and paste your discord bot token into it, and you're done! 
 
 Run `main.py` and enjoy.  
