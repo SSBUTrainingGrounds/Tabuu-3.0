@@ -117,6 +117,7 @@ class Responses(discord.ui.Select):
 ```%rps <@user>``` - Plays a match of Rock, Paper, Scissors with the mentioned user.\n\
 ```%roll <NdN>``` - Rolling dice, format %roll 1d100.\n\
 ```%countdown <number>``` - Counts down from number.\n\
+```%time``` - Current time as a timezone aware object.\n\
 ```%poll <"question"> <"option 1"> <"option 2">``` - Starts a poll with a maximum of 10 choices.\n\
 ```%reminder <time> <message>``` - Reminds you about something.\n\
 ```%viewreminders``` - Lists your active reminders.\n\

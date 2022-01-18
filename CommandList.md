@@ -296,6 +296,10 @@ I will try to keep this up-to-date, no promises.
     Info: Admin only. Mutes a user for the specified time, which is in a shortened format with any number and d/h/m/s. Minimum time is 30 seconds, maximum is 1 day. Mention the user or use User ID. The reason will get DM'd to the muted person.  
     Example: `%tempmute @Phxenix 12h30m what an idiot`  
   
+**%time**  
+    Info: Shows the current time as a timezone aware object.  
+    Aliases: currenttime  
+  
 **%unban** `<@user>`  
     Info: Admin only. Unbans a user. Mention the User or use User ID.  
     Example: `%unban @Phxenix`  

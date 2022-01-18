@@ -200,6 +200,11 @@ class Usercommands(commands.Cog):
             await ctx.send(f"https://open.spotify.com/track/{listeningstatus.track_id}")
 
 
+    #shows the current time as a timezone aware object
+    @commands.command(aliases=['currenttime'])
+    async def time(self, ctx):
+        await ctx.send(f"The current time is: {discord.utils.format_dt(discord.utils.utcnow(), style='T')}")
+
 
 
     #error handling for the above
