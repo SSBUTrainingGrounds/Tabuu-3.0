@@ -284,7 +284,9 @@ class Usercommands(commands.Cog):
 
     @convert.error
     async def convert_error(self, ctx, error):
-        if isinstance(error, commands.CommandInvokeError):
+        if isinstance(error, commands.MissingRequiredArgument):
+            await ctx.send("Invalid input! Please try again.")
+        elif isinstance(error, commands.CommandInvokeError):
             await ctx.send("Invalid input! Please try again.")
         else:
             raise error
