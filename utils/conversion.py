@@ -13,8 +13,8 @@ def convert_input(input: str):
     input = input.split()
 
     miles_list = ["miles", "mi", "mile"]
-    feet_list = ['foot', 'feet', 'ft' ,'"']
-    inches_list = ["inch", "in", "'", "inches"]
+    feet_list = ["foot", "feet", "ft" ,"'"]
+    inches_list = ['inch', 'in', '"', 'inches']
     km_list = ['km', 'kilometer', 'kilometre', 'kilometers', 'kilometres', 'kms']
     meter_list = ['m', 'meter', 'metre', 'meters', 'meters', 'ms']
     cm_list = ['cm', 'centimeter', 'centimetre', 'centimeters', 'centimetres', 'cms']
