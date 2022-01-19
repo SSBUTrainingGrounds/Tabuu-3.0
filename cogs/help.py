@@ -118,6 +118,7 @@ class Responses(discord.ui.Select):
 ```%roll <NdN>``` - Rolling dice, format %roll 1d100.\n\
 ```%countdown <number>``` - Counts down from number.\n\
 ```%time``` - Current time as a timezone aware object.\n\
+```%convert <input>``` - Converts the input from metric to imperial and vice versa.\n\
 ```%poll <"question"> <"option 1"> <"option 2">``` - Starts a poll with a maximum of 10 choices.\n\
 ```%reminder <time> <message>``` - Reminds you about something.\n\
 ```%viewreminders``` - Lists your active reminders.\n\

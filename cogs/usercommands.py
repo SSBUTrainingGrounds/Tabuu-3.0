@@ -3,6 +3,7 @@ from discord.ext import commands, tasks
 import random
 import asyncio
 from utils.ids import GuildIDs, TGChannelIDs, TGRoleIDs
+import utils.conversion
 
 
 #
@@ -205,6 +206,11 @@ class Usercommands(commands.Cog):
     async def time(self, ctx):
         await ctx.send(f"The current time is: {discord.utils.format_dt(discord.utils.utcnow(), style='T')}")
 
+    #converts your input between metric and imperial units
+    @commands.command(aliases=['conversion'])
+    async def convert(self, ctx, *, input):
+        await ctx.send(utils.conversion.convert_input(input))
+
 
 
     #error handling for the above
@@ -273,6 +279,13 @@ class Usercommands(commands.Cog):
     async def spotify_error(self, ctx, error):
         if isinstance(error, commands.MemberNotFound):
             await ctx.send("You need to mention a member, or just leave it blank.")
+        else:
+            raise error
+
+    @convert.error
+    async def convert_error(self, ctx, error):
+        if isinstance(error, commands.CommandInvokeError):
+            await ctx.send("Invalid input! Please try again.")
         else:
             raise error
 

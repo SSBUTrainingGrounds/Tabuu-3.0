@@ -47,6 +47,11 @@ I will try to keep this up-to-date, no promises.
     Example: `%colour #FFFFFF`  
     Aliases: color, spcolour, spcolor, setcolour, setcolor  
     
+**%convert** `<input>`  
+    Info: Converts the input between metric and imperial, and vice versa. Works with most units of length, weight, temperature and volume.  
+    Example: `%convert 14 feet`  
+    Aliases: conversion  
+
 **%countdown** `<number>`  
     Info: Counts down from the specified number between 2 and 50.  
     Example: `%countdown 5`  
