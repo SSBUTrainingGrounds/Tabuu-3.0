@@ -16,8 +16,12 @@ def convert_input(input: str):
     feet_list = ["foot", "feet", "ft" ,"'"]
     inches_list = ['inch', 'in', '"', 'inches']
     km_list = ['km', 'kilometer', 'kilometre', 'kilometers', 'kilometres', 'kms']
-    meter_list = ['m', 'meter', 'metre', 'meters', 'meters', 'ms']
+    meter_list = ['m', 'meter', 'metre', 'meters', 'meters']
     cm_list = ['cm', 'centimeter', 'centimetre', 'centimeters', 'centimetres', 'cms']
+
+    kmh_list = ['kmh', 'kph', 'km/h']
+    ms_list = ['ms', 'm/s', 'mps']
+    mph_list = ['mph', 'mi/h']
 
     fahrenheit_list = ['f', '°f', 'fahrenheit']
     celsius_list = ['c', '°c', 'celsius']
@@ -46,6 +50,13 @@ def convert_input(input: str):
         return(f"`{number} m` is equal to `{Conversion.meter_to_feet(number)} feet`.")
     elif any(substring in input for substring in cm_list):
         return(f"`{number} cm` is equal to `{Conversion.cm_to_inches(number)} inches.`")
+
+    elif any(substring in input for substring in kmh_list):
+        return(f"`{number} km/h` is equal to `{Conversion.km_to_miles(number)} mph`.")
+    elif any(substring in input for substring in ms_list):
+        return(f"`{number} m/s` is equal to `{Conversion.ms_to_mph(number)} mph`.")
+    elif any(substring in input for substring in mph_list):
+        return(f"`{number} mph` is equal to `{Conversion.miles_to_km(number)} km/h ({Conversion.mph_to_ms(number)} m/s)`.")
 
     elif any(substring in input for substring in fahrenheit_list):
         return(f"`{number}°F` is equal to `{Conversion.f_to_c(number)}°C.`")
@@ -81,6 +92,12 @@ class Conversion:
 
     def miles_to_km(miles: float):
         return round((miles * 1.609344), 2)
+
+    def ms_to_mph(ms: float):
+        return round((ms * 2.237), 2)
+
+    def mph_to_ms(mph: float):
+        return round((mph * 0.44704), 2)
 
     def cm_to_inches(cm: float):
         return round((cm * 0.3937), 2)
