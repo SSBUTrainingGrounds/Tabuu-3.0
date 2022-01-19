@@ -61,17 +61,18 @@ class Events(commands.Cog):
 
         elif member.guild.id == GuildIDs.BATTLEGROUNDS:
             channel = self.bot.get_channel(BGChannelIDs.OFF_TOPIC_CHANNEL)
+            rules_channel = self.bot.get_channel(BGChannelIDs.RULES_CHANNEL)
             traveller = discord.utils.get(member.guild.roles, id=BGRoleIDs.TRAVELLER_ROLE)
 
             if f'{member.id}' in muted_users:
                 muted_role = discord.utils.get(member.guild.roles, id=BGRoleIDs.MUTED_ROLE)
                 await member.add_roles(muted_role)
                 await member.add_roles(traveller)
-                await channel.send(f"Welcome, {member.mention}! You are still muted, so maybe check back later.")
+                await channel.send(f"Welcome back, {member.mention}! You are still muted, so maybe check back later.")
                 return
             
             await member.add_roles(traveller)
-            await channel.send(f"{member.mention} has entered the battlegrounds. ⚔️")
+            await channel.send(f"{member.mention} has entered the battlegrounds. ⚔️\nIf you are interested on getting in on some crew battle action, head to {rules_channel.mention} to get familiar with how the server works!")
 
 
     #if you join a voice channel, you get this role here

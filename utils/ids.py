@@ -55,6 +55,8 @@ class BGChannelIDs:
     OFF_TOPIC_CHANNEL = 915395890775216191
     #logchannel for bg
     LOGCHANNEL = 923018569128763482
+    #rules and info
+    RULES_CHANNEL = 923018112729759794
 
 class TGRoleIDs:
     #the grounds warrior role
