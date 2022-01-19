@@ -409,7 +409,9 @@
             "id": ["42"],
             "emoji": "<:ROB:929070515329589268>",
             "aliases":[
-                "rob"
+                "rob",
+                "r.o.b",
+                "robert"
             ]
         },
         {
@@ -767,6 +769,7 @@
                 "pyra",
                 "mythra",
                 "pyra/mythra",
+                "pyra / mythra",
                 "pyra and mythra",
                 "pyra mythra"
             ]
