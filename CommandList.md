@@ -1,7 +1,7 @@
 # Full list of commands:
 
 This here contains every command with a detailed explanation on how to use them. They are ordered alphabetically, search them with Ctrl+F.  
-Last updated: 10 January 2022  
+Last updated: 20 January 2022  
 I will try to keep this up-to-date, no promises.  
 
 **%8ball** `<question>`  
@@ -48,7 +48,7 @@ I will try to keep this up-to-date, no promises.
     Aliases: color, spcolour, spcolor, setcolour, setcolor  
     
 **%convert** `<input>`  
-    Info: Converts the input between metric and imperial, and vice versa. Works with most units of length, weight, temperature and volume.  
+    Info: Converts the input between metric and imperial, and vice versa. Works with most units of length, speed, weight, temperature and volume.  
     Example: `%convert 14 feet`  
     Aliases: conversion  
 
