@@ -55,7 +55,7 @@ class Profile(commands.Cog):
                 json.dump(profiles, f, indent=4)
 
 
-    @commands.command(aliases=["smashprofile", "profileinfo", "userprofile"])
+    @commands.command(aliases=["smashprofile", "profileinfo"])
     async def profile(self, ctx, user: discord.User = None):
         if user is None:
             user = ctx.author
@@ -75,6 +75,14 @@ class Profile(commands.Cog):
         note = profiles[f'{user.id}']['note']
         colour = profiles[f'{user.id}']['colour']
 
+        with open(r'./json/ranking.json', 'r') as f:
+            ranking = json.load(f)
+
+        try:
+            elo = ranking[f'{user.id}']['elo']
+        except KeyError:
+            elo = 1000
+
         embed = discord.Embed(title=f"Smash profile of {str(user)}", colour=colour)
         embed.set_thumbnail(url=user.display_avatar.url)
 
@@ -82,6 +90,9 @@ class Profile(commands.Cog):
 
         if region != "":
             embed.add_field(name="Region", value=region, inline=True)
+
+        embed.add_field(name="Elo score", value=elo, inline=True)
+
         if mains != "":
             embed.add_field(name="Mains", value=mains, inline=True)
         if secondaries != "":
