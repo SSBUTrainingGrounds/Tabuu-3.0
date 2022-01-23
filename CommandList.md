@@ -1,7 +1,7 @@
 # Full list of commands:
 
 This here contains every command with a detailed explanation on how to use them. They are ordered alphabetically, search them with Ctrl+F.  
-Last updated: 20 January 2022  
+Last updated: 23 January 2022  
 I will try to keep this up-to-date, no promises.  
 
 **%8ball** `<question>`  
@@ -140,7 +140,7 @@ I will try to keep this up-to-date, no promises.
     
 **%`<macro>`**  
     Info: Invokes the macro command, list them all with either %macro or %listmacros  
-    Example: %test  
+    Example: `%test`  
 
 **%mains** `<main1, main2,..: Optional>`  
     Info: Updates your mains listed on your profile. Up to 7 characters, separate them by commas. Accepts names, commonly used nicknames and the Fighter Numbers. Leave the field blank to delete the characters.  
@@ -160,7 +160,7 @@ I will try to keep this up-to-date, no promises.
     Example: `%mp4woosh`  
   
 **%mute** `<@user> <reason>`  
-    Info: Admin only. Mutes a user in the server. The reason will get DM'd to the user.  
+    Info: Admin only. Mutes a user in both servers. The reason will get DM'd to the user.  
     Example: `%mute @Phxenix what an idiot`  
   
 **%newrolemenu** `<message ID> <emoji> <role>`  
@@ -195,9 +195,9 @@ I will try to keep this up-to-date, no promises.
 **%randomquote**  
     Info: Gets you a random quote from someone.  
   
-**%rankedmm**  
+**%ranked**  
     Info: Pings your ranked role according to you Elo value and stores your ping for 30 Minutes. Has a 2 minute cooldown and can only be used in our ranked arena channels.  
-    Aliases: ranked, rankedmatchmaking, rankedsingles  
+    Aliases: rankedmm, rankedmatchmaking, rankedsingles  
   
 **%rankedstats** `<@user: Optional>`  
     Info: Gets you the ranked stats of any optional user. If you dont specify a user, this will get your own stats where you can also choose to remove or add your Elo role.
@@ -211,7 +211,7 @@ I will try to keep this up-to-date, no promises.
     Info: Admin only. Gets you our ban records.  
 
 **%region** `<region: Optional>`  
-    Info: Sets your region on your profile. The regions are the 6 commonly used continents, matches some inputs to those. So EU will work, as well as europe. Leave the field blank to delete the region from your profile.  
+    Info: Sets your region on your profile. The regions are the 6 commonly used continents, plus some more for North America, matches some inputs to those. So EU will work, as well as europe. Leave the field blank to delete the region from your profile.  
     Example: `%region europe`  
     Aliases: setregion, spregion, country  
 
@@ -272,11 +272,11 @@ I will try to keep this up-to-date, no promises.
     
 **%starboardemoji** `<emoji>`  
     Info: Admin only. Changes the emoji used in our starboard.  
-    Example: %starboardemoji :BowserFail:  
+    Example: `%starboardemoji :BowserFail:`  
     
 **%starboardthreshold** `<number>`  
     Info: Admin only. Changes the threshold for messages to appear on our starboard.  
-    Example: %starboardthreshold 5  
+    Example: `%starboardthreshold 5`  
   
 **%stats**  
     Info: Gets you various stats about this bot.  
@@ -298,7 +298,7 @@ I will try to keep this up-to-date, no promises.
     Aliases: smashtag, sptag, settag  
   
 **%tempmute** `<@user> <time> <reason>`  
-    Info: Admin only. Mutes a user for the specified time, which is in a shortened format with any number and d/h/m/s. Minimum time is 30 seconds, maximum is 1 day. Mention the user or use User ID. The reason will get DM'd to the muted person.  
+    Info: Admin only. Mutes a user in both servers for the specified time, which is in a shortened format with any number and d/h/m/s. Minimum time is 30 seconds, maximum is 1 day. Mention the user or use User ID. The reason will get DM'd to the muted person.  
     Example: `%tempmute @Phxenix 12h30m what an idiot`  
   
 **%time**  
@@ -310,10 +310,10 @@ I will try to keep this up-to-date, no promises.
     Example: `%unban @Phxenix`  
   
 **%unmute** `<@user>`  
-    Info: Admin only. Unmutes a user. Please use this in all cases to unmute someone. Mention the User or use User ID.  
+    Info: Admin only. Unmutes a user in both servers. Please use this in all cases to unmute someone. Mention the User or use User ID.  
     Example: `%unmute @Phxenix`  
   
-**%updatelevel <@user: Optional>**  
+**%updatelevel** `<@user: Optional>`  
     Info: Updates your level role or the one of the mentioned user according to your MEE6 level manually. Has a 10 minute cooldown. Note that this gets done anyways every 23 hours for everyone in the server.  
     Example: `%updatelevel @Phxenix`  
   
