@@ -42,9 +42,9 @@ class Ranking(commands.Cog):
         return searches
 
 
-    @commands.command(aliases=['ranked', 'rankedmatchmaking', 'rankedsingles'])
+    @commands.command(aliases=['rankedmm', 'rankedmatchmaking', 'rankedsingles'])
     @commands.cooldown(1, 120, commands.BucketType.user)
-    async def rankedmm(self, ctx):
+    async def ranked(self, ctx):
         #this is a basic mm command, just pings the role and checks the channel. also has a cooldown
         if ctx.channel.id not in TGArenaChannelIDs.RANKED_ARENAS:
             await ctx.send("Please only use this command in the ranked matchmaking arenas.")
@@ -538,8 +538,8 @@ class Ranking(commands.Cog):
         else:
             raise error
 
-    @rankedmm.error
-    async def rankedmm_error(self, ctx, error):
+    @ranked.error
+    async def ranked_error(self, ctx, error):
         if isinstance(error, commands.CommandOnCooldown):
             if ctx.channel.id not in TGArenaChannelIDs.RANKED_ARENAS:
                 await ctx.send("Please only use this command in the ranked matchmaking arenas.")

@@ -90,10 +90,10 @@ class Responses(discord.ui.Select):
 ```%singles``` - Used for 1v1 matchmaking in our arena channels.\n\
 ```%doubles``` - Used for 2v2 matchmaking in our arena channels.\n\
 ```%funnies``` - Used for non-competitive matchmaking in our arena channels.\n\
-```%recentpings <type>``` - Gets you the recent pings of any matchmaking type.\n\
-```%rankedmm``` - Used for 1v1 ranked matchmaking in our ranked channels.\n\
+```%ranked``` - Used for 1v1 ranked matchmaking in our ranked channels.\n\
 ```%reportmatch <@user>``` - Winner of the set reports the result, <@user> being the person you won against.\n\
 ```%rankedstats``` - Your ranked stats.\n\
+```%recentpings``` - Gets you the recent pings of any matchmaking type.\n\
         ')
             await interaction.response.send_message(embed=matchmaking_embed, ephemeral=True)
 
