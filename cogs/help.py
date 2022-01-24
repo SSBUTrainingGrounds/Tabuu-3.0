@@ -89,7 +89,7 @@ class Responses(discord.ui.Select):
             matchmaking_embed = discord.Embed(title="⚔️Matchmaking Commands⚔️", color=0x420202, description='\n\
 ```%singles``` - Used for 1v1 matchmaking in our arena channels.\n\
 ```%doubles``` - Used for 2v2 matchmaking in our arena channels.\n\
-```%funnies``` - Used for non-competitive matchmaking in our arena channels.\n\
+```%funnies <message>``` - Used for non-competitive matchmaking in our arena channels.\n\
 ```%ranked``` - Used for 1v1 ranked matchmaking in our ranked channels.\n\
 ```%reportmatch <@user>``` - Winner of the set reports the result, <@user> being the person you won against.\n\
 ```%rankedstats``` - Your ranked stats.\n\

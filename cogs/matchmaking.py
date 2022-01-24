@@ -190,9 +190,12 @@ class Matchmaking(commands.Cog):
 
     @commands.command(aliases=['matchmakingfunnies', 'mmfunnies', 'Funnies'])
     @commands.cooldown(1, 600, commands.BucketType.user) #1 use, 10m cooldown, per user
-    async def funnies(self, ctx):
+    async def funnies(self, ctx, *, msg = None):
         timestamp = discord.utils.utcnow().timestamp()
         funnies_role = discord.utils.get(ctx.guild.roles, id=TGMatchmakingRoleIDs.FUNNIES_ROLE)
+
+        if msg:
+            msg = discord.utils.remove_markdown(msg[:100])
 
         if ctx.message.channel.id in TGArenaChannelIDs.PUBLIC_ARENAS:
             await self.store_ping(ctx, "funnies", timestamp)
@@ -204,7 +207,10 @@ class Matchmaking(commands.Cog):
                 description=searches, 
                 colour=discord.Colour.green())
 
-            mm_message = await ctx.send(f"{ctx.author.mention} is looking for {funnies_role.mention} games!", embed=embed)
+            if not msg:
+                mm_message = await ctx.send(f"{ctx.author.mention} is looking for {funnies_role.mention} games!", embed=embed)
+            else:
+                mm_message = await ctx.send(f"{ctx.author.mention} is looking for {funnies_role.mention} games: `{msg}`", embed=embed)
             mm_thread = await mm_message.create_thread(name=f"Funnies Arena of {ctx.author.name}", auto_archive_duration=60)
 
             await mm_thread.add_user(ctx.author)
@@ -221,9 +227,12 @@ class Matchmaking(commands.Cog):
             embed = discord.Embed(
                 title="Funnies pings in the last 30 Minutes:", 
                 description=searches, 
-                colour=discord.Colour.dark_red())
+                colour=discord.Colour.green())
 
-            await ctx.send(f"{ctx.author.mention} is looking for {funnies_role.mention} games!\nHere are the most recent Funnies pings in our open arenas:", embed=embed)
+            if not msg:
+                await ctx.send(f"{ctx.author.mention} is looking for {funnies_role.mention} games!\nHere are the most recent Funnies pings in our open arenas:", embed=embed)
+            else:
+                await ctx.send(f"{ctx.author.mention} is looking for {funnies_role.mention} games: `{msg}`\nHere are the most recent Funnies pings in our open arenas:", embed=embed)
 
         else:
             await ctx.send("Please only use this command in our arena channels!")

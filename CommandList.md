@@ -102,8 +102,8 @@ I will try to keep this up-to-date, no promises.
     Example: `%forcereportmatch @Tabuu 3.0 @Phxenix`  
     Aliases: forcereportgame  
     
-**%funnies**  
-    Info: Pings the funnies role and stores your ping for 30 Minutes. Also creates a thread and invites the user to it. Has a 10 minute cooldown and can only be used in our arena channels.  
+**%funnies** `<message: Optional>`  
+    Info: Pings the funnies role with an optional custom message and stores your ping for 30 Minutes. Also creates a thread and invites the user to it. Has a 10 minute cooldown and can only be used in our arena channels.  
     Aliases: matchmakingfunnies, mmfunnies, Funnies  
     
 **%geteveryrolemenu**  
