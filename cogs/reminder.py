@@ -39,6 +39,8 @@ class Reminder(commands.Cog):
         if len(reminder_message[200:]) > 0:
             reminder_message = reminder_message[:200]
 
+        reminder_message = discord.utils.remove_markdown(reminder_message)
+
         #if the duration is fairly short, i wont bother writing it to the file, a sleep statement will do
         if seconds < 299:
             message_dt = datetime.datetime.fromtimestamp(discord.utils.utcnow().timestamp() + seconds)

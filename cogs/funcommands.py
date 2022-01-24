@@ -129,6 +129,9 @@ class Funcommands(commands.Cog):
             "My sources say no.",
             "Outlook not so good.",
             "Very doubtful."]
+
+        question = discord.utils.remove_markdown(question)
+
         try:
             await ctx.send(f"{ctx.author.mention} asked: `{question}`:\n{random.choice(messages)}")
         except: #this is in the case if a user inputs a question with more than 2000 chars in length, the bot cant respond with the question.
@@ -143,6 +146,9 @@ class Funcommands(commands.Cog):
         if question is None:
             await ctx.send("Please input a question so I can look for the right user.")
             return
+
+        question = discord.utils.remove_markdown(question)
+
         online_members = [member for member in ctx.guild.members if member.status != discord.Status.offline] #only gets online members
         user = random.choice(online_members)
         try:
