@@ -30,8 +30,9 @@ However, you can run the bot yourself, if you want to. Here's how to do it:
 2) Install at least Python 3.8 or newer and the latest version of the [discord.py](https://github.com/Rapptz/discord.py) alpha, as well as the other packages listed in the `requirements.txt` file with `pip install -r requirements.txt`.  
 3) [Create and host your own Discord Application](https://discord.com/developers/applications).  
 4) This bot needs *a lot* of server-specific IDs to function properly, so you need to modify the values in the `./utils/ids.py` file with the unique IDs of your servers/channels/roles.  
-5) Create a file named `token.txt` in the `./files/` directory and paste your discord bot token into it.  
-6) Run `main.py` and enjoy!  
+5) Replace the contents of `./files/badwords.txt` with the words you want to see get automatically warned on usage.  
+6) Create a file named `token.txt` in the `./files/` directory and paste your discord bot token into it.  
+7) Run `main.py` and enjoy!  
 
 A few optional extra steps to consider:  
 1) If you want the Mee6 leaderboard of your server instead of the Training Grounds one, you need to change that too, in the `./cogs/mee6api.py` file. Make sure that Mee6 is present in your server and the levels plugin is enabled.  
