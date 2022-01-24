@@ -1,2 +1,8 @@
+#bytecode stuff
 __pycache__/
+
+#bot token
 token.txt
+
+#some logs
+*.log
