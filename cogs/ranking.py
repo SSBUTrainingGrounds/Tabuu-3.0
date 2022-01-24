@@ -533,7 +533,7 @@ class Ranking(commands.Cog):
     async def rankstats_error(self, ctx, error):
         if isinstance(error, commands.CommandInvokeError):
             await ctx.send("This user hasn't played a ranked match yet.")
-        elif isinstance(error, commands.MemberNotFound):
+        elif isinstance(error, commands.UserNotFound):
             await ctx.send("I couldn't find this member, make sure you have the right one or just leave it blank.")
         else:
             raise error

@@ -5,6 +5,7 @@ from itertools import cycle
 from fuzzywuzzy import process, fuzz
 import datetime
 from utils.ids import GuildIDs, TGChannelIDs, TGRoleIDs, TGLevelRoleIDs, BGChannelIDs, BGRoleIDs
+import utils.logger
 
 
 #
@@ -140,6 +141,9 @@ class Events(commands.Cog):
     
     @commands.Cog.listener()
     async def on_command_error(self, ctx, error):
+        logger = utils.logger.get_logger()
+        logger.info(f"Command triggered an Error: %{ctx.invoked_with} (invoked by {str(ctx.author)}) - Error message: {error}")
+
         if isinstance(error, commands.CommandNotFound):
             command_list = [command.name for command in self.bot.commands]
 
@@ -159,6 +163,11 @@ class Events(commands.Cog):
         else:
             if ctx.command.has_error_handler() is False:
                 raise error
+
+    @commands.Cog.listener()
+    async def on_command_completion(self, ctx):
+        logger = utils.logger.get_logger()
+        logger.info(f"Command successfully ran: %{ctx.invoked_with} (invoked by {str(ctx.author)})")
 
 
     #this here pings the streamers and TOs 1 hour before each weekly tournament

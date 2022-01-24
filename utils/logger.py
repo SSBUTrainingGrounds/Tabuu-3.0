@@ -11,3 +11,6 @@ def create_logger():
     handler.setFormatter(logging.Formatter('%(asctime)s:%(levelname)s:%(name)s: %(message)s'))
 
     logger.addHandler(handler)
+
+def get_logger():
+    return logging.getLogger('discord')
