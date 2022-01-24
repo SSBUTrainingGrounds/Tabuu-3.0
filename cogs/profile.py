@@ -222,7 +222,7 @@ class Profile(commands.Cog):
         with open(r'./json/profile.json', 'w') as f:
             json.dump(profiles, f, indent=4)
 
-        await ctx.send(f"{ctx.author.mention}, I have set your tag to: `{input}`")
+        await ctx.send(f"{ctx.author.mention}, I have set your tag to: `{discord.utils.remove_markdown(input)}`")
 
 
     #matches your input to a general region
@@ -294,7 +294,7 @@ class Profile(commands.Cog):
         if input == "":
             await ctx.send(f"{ctx.author.mention}, I have deleted your note.")
         else:
-            await ctx.send(f"{ctx.author.mention}, I have set your note to: `{input}`")
+            await ctx.send(f"{ctx.author.mention}, I have set your note to: `{discord.utils.remove_markdown(input)}`")
 
 
     #sets a colour for their profile in a hex value format
