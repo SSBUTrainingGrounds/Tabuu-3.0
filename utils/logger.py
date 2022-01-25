@@ -12,5 +12,5 @@ def create_logger():
 
     logger.addHandler(handler)
 
-def get_logger():
-    return logging.getLogger('discord')
+def get_logger(name):
+    return logging.getLogger(f'discord.{name}')

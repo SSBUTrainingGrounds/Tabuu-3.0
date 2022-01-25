@@ -141,8 +141,8 @@ class Events(commands.Cog):
     
     @commands.Cog.listener()
     async def on_command_error(self, ctx, error):
-        logger = utils.logger.get_logger()
-        logger.info(f"Command triggered an Error: %{ctx.invoked_with} (invoked by {str(ctx.author)}) - Error message: {error}")
+        logger = utils.logger.get_logger("bot.commands")
+        logger.warning(f"Command triggered an Error: %{ctx.invoked_with} (invoked by {str(ctx.author)}) - Error message: {error}")
 
         if isinstance(error, commands.CommandNotFound):
             command_list = [command.name for command in self.bot.commands]
@@ -166,7 +166,7 @@ class Events(commands.Cog):
 
     @commands.Cog.listener()
     async def on_command_completion(self, ctx):
-        logger = utils.logger.get_logger()
+        logger = utils.logger.get_logger("bot.commands")
         logger.info(f"Command successfully ran: %{ctx.invoked_with} (invoked by {str(ctx.author)})")
 
 
