@@ -98,7 +98,7 @@ I will try to keep this up-to-date, no promises.
     Example: `%forcedeleteprofile @Phxenix`  
   
 **%forcereportmatch** `<@winner> <@loser>`  
-    Info: **Admin only.** If a user abandons their ranked match an admin will use this to report the match anyways. Mention the users or use User IDs. Has a 41 second cooldown.  
+    Info: **Admin only.** If a user abandons their ranked match an admin will use this to report the match anyways. Mention the users or use User IDs. Has a 41 second cooldown. Only works in the Training Grounds Server.  
     Example: `%forcereportmatch @Tabuu 3.0 @Phxenix`  
     Aliases: forcereportgame  
   
@@ -232,7 +232,7 @@ I will try to keep this up-to-date, no promises.
     Example: `%rename @Phxenix Example Name`  
   
 **%reportmatch** `<@user>`  
-    Info: The winner uses this command after a ranked match to report the result of the match, @user being the person who lost the ranked match. Mention the User or use User ID. Has a 41 second cooldown.  
+    Info: The winner uses this command after a ranked match to report the result of the match, @user being the person who lost the ranked match. Mention the User or use User ID. Has a 41 second cooldown. Only works in ranked arenas or the threads within.  
     Example: `%reportmatch @Phxenix`  
     Aliases: reportgame  
   
@@ -315,11 +315,11 @@ I will try to keep this up-to-date, no promises.
     Example: `%unmute @Phxenix`  
   
 **%updatelevel** `<@user: Optional>`  
-    Info: Updates your level role or the one of the mentioned user according to your MEE6 level manually. Has a 10 minute cooldown. Note that this gets done anyways every 23 hours for everyone in the server.  
+    Info: Updates your level role or the one of the mentioned user according to your MEE6 level manually. Has a 10 minute cooldown. Note that this gets done anyways every 23 hours for everyone in the server. Only works in the Training Grounds server.  
     Example: `%updatelevel @Phxenix`  
   
 **%userinfo** `<@user: Optional>`  
-    Info: Gets you various information about a user. If you haven't specified a user, this will get your own info. Mention the User or use User ID.  
+    Info: Gets you various information about a user. If you haven't specified a user, this will get your own info. Mention the User or use User ID. Does not work in DMs.  
     Example: `%userinfo @Phxenix`  
     Aliases: user  
   
@@ -344,7 +344,7 @@ I will try to keep this up-to-date, no promises.
     Aliases: warnings, infractions  
   
 **%who** `<question>`  
-    Info: Ask a question and you get a random user that is currently online as a response.  
+    Info: Ask a question and you get a random user that is currently online as a response. Does not work in DMs.  
     Example: `%who is the most beautiful user?`  
   
 **%wisdom**  
