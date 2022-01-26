@@ -3,6 +3,7 @@ from discord.ext import commands, tasks
 import json
 import asyncio
 from utils.ids import TGArenaChannelIDs, TGMatchmakingRoleIDs
+import utils.logger
 
 #
 #this file here contains our matchmaking system
@@ -33,7 +34,8 @@ class Matchmaking(commands.Cog):
         try:
             del user_pings[f'{ctx.message.author.id}']
         except KeyError:
-            print(f"tried to delete a {mm_type} ping but the deletion failed")
+            logger = utils.logger.get_logger("bot.mm")
+            logger.warning(f"Tried to delete a {mm_type} ping by {str(ctx.message.author)} but the ping was already deleted.")
 
         with open(r'./json/{filename}.json'.format(filename=mm_type), 'w') as f:
             json.dump(user_pings, f, indent=4)

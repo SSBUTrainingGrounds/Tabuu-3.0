@@ -3,9 +3,10 @@ from discord.ext import commands, tasks
 import json
 import asyncio
 from utils.ids import GuildNames, GuildIDs, TGArenaChannelIDs, TGMatchmakingRoleIDs
+import utils.logger
 
 #
-#this file will contain our ranking system
+#this file contains our ranked matchmaking system
 #
 
 class Ranking(commands.Cog):
@@ -107,7 +108,8 @@ class Ranking(commands.Cog):
         try:
             del rankedusers[f'{ctx.message.author.id}']
         except KeyError:
-            print("tried to delete a ranked ping but the deletion failed")
+            logger = utils.logger.get_logger("bot.mm")
+            logger.warning(f"Tried to delete a ranked ping by {str(ctx.message.author)} but the ping was already deleted.")
 
         with open(r'./json/rankedpings.json', 'w') as fp:
             json.dump(rankedusers, fp, indent=4)

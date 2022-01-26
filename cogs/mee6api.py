@@ -4,6 +4,7 @@ from mee6_py_api import API
 from discord.utils import get
 from math import ceil
 from utils.ids import GuildNames, GuildIDs, TGLevelRoleIDs
+import utils.logger
 
 #
 #this file here gets the mee6 level and assigns the matching role
@@ -117,6 +118,9 @@ class Mee6api(commands.Cog):
 
         await self.bot.wait_until_ready() #waits until the bot is connected fully and then starts the task, otherwise not everything is cached properly
 
+        logger = utils.logger.get_logger("bot.level")
+        logger.info("Starting to update level roles...")
+
         guild = self.bot.get_guild(GuildIDs.TRAINING_GROUNDS)
 
         defaultrole = get(guild.roles, id=TGLevelRoleIDs.RECRUIT_ROLE)
@@ -169,7 +173,7 @@ class Mee6api(commands.Cog):
                                     await member.remove_roles(role)
                             await member.add_roles(level75)
         
-        print("level roles updated!")
+        logger.info("Successfully updated level roles!")
 
 
 

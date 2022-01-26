@@ -4,6 +4,7 @@ import json
 from .matchmaking import Matchmaking
 from .ranking import Ranking
 from utils.ids import TGArenaChannelIDs
+import utils.logger
 
 
 #
@@ -122,6 +123,8 @@ class Matchmakingpings(commands.Cog):
 
     #this clears the mm files so that no ping gets stuck if i restart the bot
     async def clear_mmrequests(self):
+        logger = utils.logger.get_logger("bot.mm")
+        logger.info("Starting to delete pings in the matchmaking files...")
 
         #deleting singles file
 
@@ -139,7 +142,7 @@ class Matchmakingpings(commands.Cog):
         with open(r'./json/singles.json', 'w') as f:
             json.dump(singles, f, indent=4)
 
-        print("singles file cleared!")
+        logger.info("Singles file cleared!")
 
         #deleting doubles file
 
@@ -157,7 +160,7 @@ class Matchmakingpings(commands.Cog):
         with open(r'./json/doubles.json', 'w') as f:
             json.dump(doubles, f, indent=4)
 
-        print("doubles file cleared!")
+        logger.info("Doubles file cleared!")
 
         #deleting funnies file
 
@@ -175,7 +178,7 @@ class Matchmakingpings(commands.Cog):
         with open(r'./json/funnies.json', 'w') as f:
             json.dump(funnies, f, indent=4)
 
-        print("funnies file cleared!")
+        logger.info("Funnies file cleared!")
 
         #deleting ranked file
 
@@ -193,7 +196,7 @@ class Matchmakingpings(commands.Cog):
         with open(r'./json/rankedpings.json', 'w') as f:
             json.dump(ranked, f, indent=4)
 
-        print("ranked file cleared!")
+        logger.info("Ranked file cleared!")
 
 
 
