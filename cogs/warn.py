@@ -6,6 +6,7 @@ import time
 from datetime import datetime, timedelta
 from .mute import Mute
 from utils.ids import TGChannelIDs
+import utils.logger
 
 #
 #this file here contains the custom warning system
@@ -65,16 +66,18 @@ class Warn(commands.Cog):
         if warns > 6:
             try:
                 await member.send(f"You have been automatically banned from the {guild.name} Server for reaching warning #***{warns}***.\nPlease contact Tabuu#0720 for an appeal.\nhttps://docs.google.com/spreadsheets/d/1EZhyKa69LWerQl0KxeVJZuLFFjBIywMRTNOPUUKyVCc/")
-            except:
-                print("user has blocked me :(")
+            except Exception as exc:
+                logger = utils.logger.get_logger("bot.warn")
+                logger.warning(f"Tried to message automatic ban reason to {str(member)}, but it failed: {exc}")
 
             await channel.send(f"{member.mention} has reached warning #{warns}. They have been automatically banned.")
             await member.ban(reason=f"Automatic ban for reaching {warns} warnings")
         elif warns > 4:
             try:
                 await member.send(f"You have been automatically kicked from the {guild.name} Server for reaching warning #***{warns}***. \nIf you would like to discuss your punishment, please contact Tabuu#0720, Phxenix#1104 or Parz#5811")
-            except:
-                print("user has blocked me :(")
+            except Exception as exc:
+                logger = utils.logger.get_logger("bot.warn")
+                logger.warning(f"Tried to message automatic kick reason to {str(member)}, but it failed: {exc}")
 
             await channel.send(f"{member.mention} has reached warning #{warns}. They have been automatically kicked.")        
             await member.kick(reason=f"Automatic kick for reaching {warns} warnings")
@@ -84,8 +87,9 @@ class Warn(commands.Cog):
 
             try:
                 await member.send(f"You have been automatically muted in the {guild.name} Server for reaching warning #***{warns}***. \nIf you would like to discuss your punishment, please contact Tabuu#0720, Phxenix#1104 or Parz#5811")
-            except:
-                print("user has blocked me :(")
+            except Exception as exc:
+                logger = utils.logger.get_logger("bot.warn")
+                logger.warning(f"Tried to message automatic mute reason to {str(member)}, but it failed: {exc}")
             
 
 
@@ -103,8 +107,10 @@ class Warn(commands.Cog):
         #tries to dm user
         try:
             await member.send(f"You have been warned in the {ctx.guild.name} Server for the following reason: \n```{reason}```\nIf you would like to discuss your punishment, please contact Tabuu#0720, Phxenix#1104 or Parz#5811")
-        except:
-            print("user has blocked me :(")
+        except Exception as exc:
+            logger = utils.logger.get_logger("bot.warn")
+            logger.warning(f"Tried to message warn reason to {str(member)}, but it failed: {exc}")
+            
         await ctx.send(f"{member.mention} has been warned!")
 
         #checks warn count for further actions
@@ -271,6 +277,8 @@ class Warn(commands.Cog):
 
         tbd_warnings = []
 
+        logger = utils.logger.get_logger("bot.warn")
+
         #checks every warning for every user
         #we first need to append the warnings to a separate list and then we can delete them
         for warned_user in users:
@@ -283,13 +291,13 @@ class Warn(commands.Cog):
                 #so if its been longer than 30 days since the warning was handed out, we will hand the warning over to the loop below which will delete it
                 if daydiff > 29:
                     tbd_warnings.append((warned_user, warn_id))
-                    print(f"deleting warn_id #{warn_id} for user {warned_user} after 30 days")
+                    logger.info(f"Deleting warn_id #{warn_id} for user {warned_user} after 30 days...")
 
         #deletes the warnings
         for i in tbd_warnings:
             #i00 is the user id, i01 is the warn id
             del users[[i][0][0]][[i][0][1]]
-            print(f"deleted warn #{[i][0][1]}!")
+            logger.info(f"Successfully deleted warn #{[i][0][1]}!")
         
         with open(r'./json/warns.json', 'w') as f:
             json.dump(users, f, indent=4)

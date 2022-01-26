@@ -3,6 +3,7 @@ from discord.ext import commands, tasks
 import asyncio
 from utils.ids import GuildNames, GuildIDs
 from utils.role import search_role
+import utils.logger
 
 #
 #this file here contains general purpose admin commands, they all need the @commands.has_permissions(administrator=True) decorator
@@ -62,8 +63,9 @@ class Admin(commands.Cog):
                 #tries to dm them first, need a try/except block cause you can ban ppl not on your server, or ppl can block your bot
                 try:
                     await user.send(f"You have been banned from the {ctx.guild.name} Server for the following reason: \n```{reason}```\nPlease contact Tabuu#0720 for an appeal.\nhttps://docs.google.com/spreadsheets/d/1EZhyKa69LWerQl0KxeVJZuLFFjBIywMRTNOPUUKyVCc/")
-                except:
-                    print("user has blocked me :(")
+                except Exception as exc:
+                    logger = utils.logger.get_logger("bot.admin")
+                    logger.warning(f"Tried to message ban reason to {str(user)}, but it failed: {exc}")
 
                 await ctx.guild.ban(user, reason=reason)
                 await ctx.send(f"{user.mention} has been banned!")
@@ -134,8 +136,10 @@ class Admin(commands.Cog):
             if msg.content.lower() == "y":
                 try:
                     await member.send(f"You have been kicked from the {ctx.guild.name} Server for the following reason: \n```{reason}```\nIf you would like to discuss your punishment, please contact Tabuu#0720, Phxenix#1104 or Parz#5811")
-                except:
-                    print("user has blocked me :(")
+                except Exception as exc:
+                    logger = utils.logger.get_logger("bot.admin")
+                    logger.warning(f"Tried to message kick reason to {str(member)}, but it failed: {exc}")
+                    
                 await member.kick(reason=reason)
                 await ctx.send(f"Kicked {member}!")
             elif msg.content.lower() == "n":

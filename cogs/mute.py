@@ -4,6 +4,7 @@ import json
 import asyncio
 from utils.time import convert_time
 from utils.ids import GuildNames, GuildIDs, TGRoleIDs, BGRoleIDs
+import utils.logger
 
 #
 #this file here contains our custom mute system
@@ -24,8 +25,9 @@ class Mute(commands.Cog):
             tg_role = discord.utils.get(tg_guild.roles, id=TGRoleIDs.MUTED_ROLE)
             tg_member = tg_guild.get_member(member.id)
             await tg_member.add_roles(tg_role)
-        except:
-            print(f"tried to add muted role in {GuildNames.TG} server but it failed")
+        except Exception as exc:
+            logger = utils.logger.get_logger("bot.mute")
+            logger.warning(f"Tried to add muted role in {GuildNames.TG} server but it failed: {exc}")
 
         #then we add the mute on the bg server, or try to
         try:
@@ -33,8 +35,9 @@ class Mute(commands.Cog):
             bg_role = discord.utils.get(bg_guild.roles, id=BGRoleIDs.MUTED_ROLE)
             bg_member = bg_guild.get_member(member.id)
             await bg_member.add_roles(bg_role)
-        except:
-            print(f"tried to add muted role in {GuildNames.BG} server but it failed")
+        except Exception as exc:
+            logger = utils.logger.get_logger("bot.mute")
+            logger.warning(f"Tried to add muted role in {GuildNames.BG} server but it failed: {exc}")
 
         #checking if the user is already muted.
         #we dont need that for the mute command but for the automatic mute this is useful as to not write someone 2x into the json file
@@ -55,16 +58,18 @@ class Mute(commands.Cog):
             tg_role = discord.utils.get(tg_guild.roles, id=TGRoleIDs.MUTED_ROLE)
             tg_member = tg_guild.get_member(member.id)
             await tg_member.remove_roles(tg_role)
-        except:
-            print(f"tried to remove muted role in {GuildNames.TG} server but it failed")
+        except Exception as exc:
+            logger = utils.logger.get_logger("bot.mute")
+            logger.warning(f"Tried to remove muted role in {GuildNames.TG} server but it failed: {exc}")
 
         try:
             bg_guild = self.bot.get_guild(GuildIDs.BATTLEGROUNDS)
             bg_role = discord.utils.get(bg_guild.roles, id=BGRoleIDs.MUTED_ROLE)
             bg_member = bg_guild.get_member(member.id)
             await bg_member.remove_roles(bg_role)
-        except:
-            print(f"tried to remove muted role in {GuildNames.BG} server but it failed")
+        except Exception as exc:
+            logger = utils.logger.get_logger("bot.mute")
+            logger.warning(f"Tried to remove muted role in {GuildNames.BG} server but it failed: {exc}")
 
         if f'{member.id}' in muted_users:
             del muted_users[f'{member.id}']
@@ -87,8 +92,9 @@ class Mute(commands.Cog):
             await ctx.send(f"{member.mention} was muted!")
             try:
                 await member.send(f"You have been muted in the {ctx.guild.name} Server for the following reason: \n```{reason}```\nIf you would like to discuss your punishment, please contact Tabuu#0720, Phxenix#1104 or Parz#5811")
-            except:
-                print("user has blocked me :(")
+            except Exception as exc:
+                logger = utils.logger.get_logger("bot.mute")
+                logger.warning(f"Tried to message mute reason to {str(member)}, but it failed: {exc}")
 
         else:
             await ctx.send("This user was already muted!")
@@ -106,8 +112,9 @@ class Mute(commands.Cog):
             await ctx.send(f"{member.mention} was unmuted!")
             try:
                 await member.send(f"You have been unmuted in the {ctx.guild.name} Server! Don't break the rules again")
-            except:
-                print("user has blocked me :(")
+            except Exception as exc:
+                logger = utils.logger.get_logger("bot.mute")
+                logger.warning(f"Tried to message unmute message to {str(member)}, but it failed: {exc}")
         else:
             await ctx.send("This user was not muted!")
 
@@ -140,8 +147,9 @@ class Mute(commands.Cog):
             await ctx.send(f"{member.mention} was muted for *{time_muted}*!")
             try:
                 await member.send(f"You have been muted in the {ctx.guild.name} Server for ***{time_muted}*** for the following reason: \n```{reason}``` \nIf you would like to discuss your punishment, please contact Tabuu#0720, Phxenix#1104 or Parz#5811")
-            except:
-                print("user has blocked me :(")
+            except Exception as exc:
+                logger = utils.logger.get_logger("bot.mute")
+                logger.warning(f"Tried to message temp mute reason to {str(member)}, but it failed: {exc}")
 
         else:
             await ctx.send("This user is already muted!")
@@ -160,8 +168,9 @@ class Mute(commands.Cog):
             await ctx.send(f"{member.mention} was automatically unmuted!")
             try:
                 await member.send(f"You have been automatically unmuted in the {ctx.guild.name} Server! Don't break the rules again")
-            except:
-                print("user has blocked me :(")
+            except Exception as exc:
+                logger = utils.logger.get_logger("bot.mute")
+                logger.warning(f"Tried to message temp unmute message to {str(member)}, but it failed: {exc}")
 
         
         
