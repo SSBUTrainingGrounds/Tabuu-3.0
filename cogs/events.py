@@ -137,7 +137,6 @@ class Events(commands.Cog):
             pass
 
 
-
     
     @commands.Cog.listener()
     async def on_command_error(self, ctx, error):
@@ -168,6 +167,24 @@ class Events(commands.Cog):
     async def on_command_completion(self, ctx):
         logger = utils.logger.get_logger("bot.commands")
         logger.info(f"Command successfully ran: %{ctx.invoked_with} (invoked by {str(ctx.author)})")
+
+    
+    #these just log when the bot loses/regains connection
+    @commands.Cog.listener()
+    async def on_connect(self):
+        logger = utils.logger.get_logger("bot.connection")
+        logger.info("Connected to discord.")
+
+    @commands.Cog.listener()
+    async def on_disconnect(self):
+        logger = utils.logger.get_logger("bot.connection")
+        logger.error("Lost connection to discord.")
+
+    @commands.Cog.listener()
+    async def on_resumed(self):
+        logger = utils.logger.get_logger("bot.connection")
+        logger.info("Resumed connection to discord.")
+
 
 
     #this here pings the streamers and TOs 1 hour before each weekly tournament
