@@ -40,16 +40,16 @@ def convert_input(input: str):
         if word in miles_list:
             return(f"`{number} miles` is equal to `{Conversion.miles_to_km(number)} km`.")
         elif word in feet_list:
-            return(f"`{number} feet` is equal to `{Conversion.feet_to_meter(number)} m.`")
+            return(f"`{number} feet` is equal to `{Conversion.feet_to_meter(number)} m`.")
         elif word in inches_list:
-            return(f"`{number} inches` is equal to `{Conversion.inches_to_cm(number)} cm.`")
+            return(f"`{number} inches` is equal to `{Conversion.inches_to_cm(number)} cm`.")
 
         elif word in km_list:
             return(f"`{number} km` is equal to `{Conversion.km_to_miles(number)} miles`.")
         elif word in meter_list:
             return(f"`{number} m` is equal to `{Conversion.meter_to_feet(number)} feet`.")
         elif word in cm_list:
-            return(f"`{number} cm` is equal to `{Conversion.cm_to_inches(number)} inches.`")
+            return(f"`{number} cm` is equal to `{Conversion.cm_to_inches(number)} inches`.")
 
         elif word in kmh_list:
             return(f"`{number} km/h` is equal to `{Conversion.km_to_miles(number)} mph`.")
@@ -59,27 +59,27 @@ def convert_input(input: str):
             return(f"`{number} mph` is equal to `{Conversion.miles_to_km(number)} km/h ({Conversion.mph_to_ms(number)} m/s)`.")
 
         elif word in fahrenheit_list:
-            return(f"`{number}°F` is equal to `{Conversion.f_to_c(number)}°C.`")
+            return(f"`{number}°F` is equal to `{Conversion.f_to_c(number)}°C`.")
         elif word in celsius_list:
-            return(f"`{number}°C` is equal to `{Conversion.c_to_f(number)}°F.`")
+            return(f"`{number}°C` is equal to `{Conversion.c_to_f(number)}°F`.")
 
         elif word in pounds_list:
-            return(f"`{number} lbs` is equal to `{Conversion.lbs_to_kg(number)} kg.`")
+            return(f"`{number} lbs` is equal to `{Conversion.lbs_to_kg(number)} kg`.")
         elif word in ounces_list:
-            return(f"`{number} oz` is equal to `{Conversion.oz_to_g(number)} g.`")
+            return(f"`{number} oz` is equal to `{Conversion.oz_to_g(number)} g`.")
         elif word in kg_list:
-            return(f"`{number} kg` is equal to `{Conversion.kg_to_lbs(number)} lbs.`")
+            return(f"`{number} kg` is equal to `{Conversion.kg_to_lbs(number)} lbs`.")
         elif word in grams_list:
-            return(f"`{number} g` is equal to `{Conversion.g_to_oz(number)} oz.`")
+            return(f"`{number} g` is equal to `{Conversion.g_to_oz(number)} oz`.")
 
         elif word in gallons_list:
-            return(f"`{number} gal` is equal to `{Conversion.gal_to_l(number)} l.`")
+            return(f"`{number} gal` is equal to `{Conversion.gal_to_l(number)} l`.")
         elif word in fluid_ounces_list:
-            return(f"`{number} fl oz` is equal to `{Conversion.floz_to_ml(number)} ml.`")
+            return(f"`{number} fl oz` is equal to `{Conversion.floz_to_ml(number)} ml`.")
         elif word in liter_list:
-            return(f"`{number} l` is equal to `{Conversion.l_to_gal(number)} gal.`")
+            return(f"`{number} l` is equal to `{Conversion.l_to_gal(number)} gal`.")
         elif word in ml_list:
-            return(f"`{number} ml` is equal to `{Conversion.ml_to_floz(number)} fl oz.`")
+            return(f"`{number} ml` is equal to `{Conversion.ml_to_floz(number)} fl oz`.")
 
 
     return("Invalid input! Please specify a valid measurement.")
