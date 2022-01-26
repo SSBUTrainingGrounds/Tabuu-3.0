@@ -9,7 +9,7 @@ def convert_input(input: str):
 
     #this block here gets you all the words in the input in a list, to compare those to the lists below
     input = input.lower()
-    input = ''.join([i for i in input if not i.isdigit()])
+    input = ''.join([i for i in input if not i.isdigit() and i not in ('+', '-')])
     input = input.split()
 
     miles_list = ["miles", "mi", "mile"]
