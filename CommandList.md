@@ -57,7 +57,7 @@ I will try to keep this up-to-date, no promises.
     Example: `%countdown 5`  
   
 **%createmacro** `<name> <payload>`  
-    Info: Admin only, creates a new macro command with your desired payload.  
+    Info: **Admin only.** creates a new macro command with your desired payload.  
     Example: `%createmacro test hello this is a test`  
   
 **%delete** `<message IDs>`  
@@ -94,7 +94,7 @@ I will try to keep this up-to-date, no promises.
     Aliases: emoji  
   
 **%forcedeleteprofile** `<@user>`  
-    Info: Admin only, deletes the profile of the mentioned user.  
+    Info: **Admin only.** deletes the profile of the mentioned user.  
     Example: `%forcedeleteprofile @Phxenix`  
   
 **%forcereportmatch** `<@winner> <@loser>`  
@@ -287,7 +287,7 @@ I will try to keep this up-to-date, no promises.
     Example: `%sticker Attach Random Sticker Here`  
   
 **%syncbanlist**  
-    Info: Admin only, applies the bans from the SSBUTG server to the SSBUBG server. Can only be used in the SSBUBG server.  
+    Info: **Admin only.** applies the bans from the SSBUTG server to the SSBUBG server. Can only be used in the SSBUBG server.  
     Aliases: syncbans  
   
 **%tabuwu**  
