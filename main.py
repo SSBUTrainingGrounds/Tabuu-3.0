@@ -1,7 +1,7 @@
 #Tabuu 3.0
 #by Phxenix for SSBU Training Grounds
-#Version: 5.5.0
-#Last Changes: 24 January 2022
+#Version: 5.5.3
+#Last Changes: 28 January 2022
 #Report any bugs to: Phxenix#1104
 #
 
@@ -17,27 +17,24 @@ import utils.logger
 #
 
 intents = discord.Intents.all() #intents so the bot can track its users
-bot = commands.Bot(command_prefix='%', intents=intents)
+bot = commands.Bot(command_prefix='%', intents=intents, status=discord.Status.online)
 bot.remove_command('help') #for a custom help command
 
-bot.version_number = "5.5.0" #the "version", maintain every now and then
+bot.version_number = "5.5.3" #the "version", maintain every now and then
 
 utils.logger.create_logger()
 
 
-#bot startup
+#prints to the console when its ready
 @bot.event
 async def on_ready():
-    await bot.change_presence(status=discord.Status.online)
-    print("Lookin' good, connected as", bot.user)
-
+    print(f"Lookin' good, connected as: {str(bot.user)}")
 
     
 #loads all of our cogs
 for filename in os.listdir(r'./cogs'):
     if filename.endswith('.py'):
         bot.load_extension(f'cogs.{filename[:-3]}')
-
 
 
 #command for manually reloading all cogs, so i dont have to restart the bot for every change. can only be used by me
