@@ -11,17 +11,18 @@ import utils.logger
 #
 
 #this is purposefully not made into GuildIDs.TRAINING_GROUNDS.
-#even in testing i specifically want the TG leaderboard, not the leaderboard of my testing server. change it if you want to.
+#even in testing i want the TG leaderboard, not the leaderboard of my testing server. change it if you want to.
 mee6API = API(739299507795132486)
 
 class Mee6api(commands.Cog):
     def __init__(self, bot):
         self.bot = bot
 
+        self.update_roles.start()
 
-    @commands.Cog.listener()
-    async def on_ready(self): #the pylint below is required, so that we dont get a false error
-        self.update_roles.start() #pylint: disable=no-member
+
+    def cog_unload(self):
+        self.update_roles.cancel()
 
 
     #command if someone wants to do it manually
@@ -116,8 +117,6 @@ class Mee6api(commands.Cog):
     async def update_roles(self):
         #pretty much the same command as above, just with different names so that it works for everyone in the server and also in a background task
 
-        await self.bot.wait_until_ready() #waits until the bot is connected fully and then starts the task, otherwise not everything is cached properly
-
         logger = utils.logger.get_logger("bot.level")
         logger.info("Starting to update level roles...")
 
@@ -176,6 +175,9 @@ class Mee6api(commands.Cog):
         logger.info("Successfully updated level roles!")
 
 
+    @update_roles.before_loop
+    async def before_update_roles(self):
+        await self.bot.wait_until_ready()
 
 
 

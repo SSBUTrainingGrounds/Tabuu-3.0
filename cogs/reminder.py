@@ -15,11 +15,11 @@ class Reminder(commands.Cog):
     def __init__(self, bot):
         self.bot = bot
 
-    #starts the loop below, checks every minute
-    @commands.Cog.listener()
-    async def on_ready(self):
         self.reminder_loop.start()
 
+
+    def cog_unload(self):
+        self.reminder_loop.cancel()
 
 
     #saves a new reminder
@@ -155,6 +155,11 @@ class Reminder(commands.Cog):
 
         with open(r'./json/reminder.json', 'w') as f:
             json.dump(reminders, f, indent=4)
+
+
+    @reminder_loop.before_loop
+    async def before_reminder_loop(self):
+        await self.bot.wait_until_ready()
 
 
 

@@ -16,10 +16,11 @@ class Warn(commands.Cog):
     def __init__(self, bot):
         self.bot = bot
 
+        self.warnloop.start()
 
-    @commands.Cog.listener()
-    async def on_ready(self): #the pylint below is required, so that we dont get a false error
-        self.warnloop.start() #pylint: disable=no-member
+
+    def cog_unload(self):
+        self.warnloop.cancel()
 
 
     async def add_warn(self, author: discord.Member, member: discord.Member, reason):
@@ -110,7 +111,7 @@ class Warn(commands.Cog):
         except Exception as exc:
             logger = utils.logger.get_logger("bot.warn")
             logger.warning(f"Tried to message warn reason to {str(member)}, but it failed: {exc}")
-            
+
         await ctx.send(f"{member.mention} has been warned!")
 
         #checks warn count for further actions
@@ -301,6 +302,11 @@ class Warn(commands.Cog):
         
         with open(r'./json/warns.json', 'w') as f:
             json.dump(users, f, indent=4)
+
+
+    @warnloop.before_loop
+    async def before_warnloop(self):
+        await self.bot.wait_until_ready()
 
 
 
