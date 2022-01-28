@@ -29,6 +29,12 @@ class Events(commands.Cog):
         self.so_ping.start()
         self.tos_ping.start()
         
+    #stops the tasks on cog unload, so that they wont get executed multiple times
+    def cog_unload(self):
+        self.change_status.cancel()
+        self.so_ping.cancel()
+        self.tos_ping.cancel()
+
 
     #changes the status every now and then
     @tasks.loop(seconds=300)
