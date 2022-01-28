@@ -124,8 +124,8 @@ class Stats(commands.Cog):
 
 
     #some bot stats
-    @commands.command(aliases=['stats'])
-    async def botstats(self, ctx):
+    @commands.command(aliases=['botstats'])
+    async def stats(self, ctx):
         proc = psutil.Process(os.getpid())
         uptimeSeconds = time.time() - proc.create_time()
 
