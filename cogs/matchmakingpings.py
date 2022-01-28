@@ -88,9 +88,8 @@ class Matchmakingpings(commands.Cog):
     def __init__(self, bot):
         self.bot = bot
 
-    @commands.Cog.listener()
-    async def on_ready(self):
-        await self.clear_mmrequests() #clears the mm files on bot startup, otherwise pings would get stuck in there forever when i shut the bot down
+        self.clear_mmrequests()
+
 
     #if a matchmaking thread gets inactive, it gets deleted right away to clear space
     @commands.Cog.listener()
@@ -122,7 +121,7 @@ class Matchmakingpings(commands.Cog):
 
 
     #this clears the mm files so that no ping gets stuck if i restart the bot
-    async def clear_mmrequests(self):
+    def clear_mmrequests(self):
         logger = utils.logger.get_logger("bot.mm")
         logger.info("Starting to delete pings in the matchmaking files...")
 
