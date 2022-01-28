@@ -91,7 +91,7 @@ class Mute(commands.Cog):
             await self.add_mute(ctx.guild, member)
             await ctx.send(f"{member.mention} was muted!")
             try:
-                await member.send(f"You have been muted in the {ctx.guild.name} Server for the following reason: \n```{reason}```\nIf you would like to discuss your punishment, please contact Tabuu#0720, Phxenix#1104 or Parz#5811")
+                await member.send(f"You have been muted in the {ctx.guild.name} Server for the following reason: \n```{reason}```\nIf you would like to discuss your punishment, please contact Tabuu#0720, Phxenix#1104, Fahim#2800 or Parz#5811")
             except Exception as exc:
                 logger = utils.logger.get_logger("bot.mute")
                 logger.warning(f"Tried to message mute reason to {str(member)}, but it failed: {exc}")
@@ -146,7 +146,7 @@ class Mute(commands.Cog):
             await self.add_mute(ctx.guild, member)
             await ctx.send(f"{member.mention} was muted for *{time_muted}*!")
             try:
-                await member.send(f"You have been muted in the {ctx.guild.name} Server for ***{time_muted}*** for the following reason: \n```{reason}``` \nIf you would like to discuss your punishment, please contact Tabuu#0720, Phxenix#1104 or Parz#5811")
+                await member.send(f"You have been muted in the {ctx.guild.name} Server for ***{time_muted}*** for the following reason: \n```{reason}``` \nIf you would like to discuss your punishment, please contact Tabuu#0720, Phxenix#1104, Fahim#2800 or Parz#5811")
             except Exception as exc:
                 logger = utils.logger.get_logger("bot.mute")
                 logger.warning(f"Tried to message temp mute reason to {str(member)}, but it failed: {exc}")

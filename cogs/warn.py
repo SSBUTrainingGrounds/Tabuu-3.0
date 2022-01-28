@@ -75,7 +75,7 @@ class Warn(commands.Cog):
             await member.ban(reason=f"Automatic ban for reaching {warns} warnings")
         elif warns > 4:
             try:
-                await member.send(f"You have been automatically kicked from the {guild.name} Server for reaching warning #***{warns}***. \nIf you would like to discuss your punishment, please contact Tabuu#0720, Phxenix#1104 or Parz#5811")
+                await member.send(f"You have been automatically kicked from the {guild.name} Server for reaching warning #***{warns}***. \nIf you would like to discuss your punishment, please contact Tabuu#0720, Phxenix#1104, Fahim#2800 or Parz#5811")
             except Exception as exc:
                 logger = utils.logger.get_logger("bot.warn")
                 logger.warning(f"Tried to message automatic kick reason to {str(member)}, but it failed: {exc}")
@@ -87,7 +87,7 @@ class Warn(commands.Cog):
             await channel.send(f"{member.mention} has reached warning #{warns}. They have been automatically muted.")
 
             try:
-                await member.send(f"You have been automatically muted in the {guild.name} Server for reaching warning #***{warns}***. \nIf you would like to discuss your punishment, please contact Tabuu#0720, Phxenix#1104 or Parz#5811")
+                await member.send(f"You have been automatically muted in the {guild.name} Server for reaching warning #***{warns}***. \nIf you would like to discuss your punishment, please contact Tabuu#0720, Phxenix#1104, Fahim#2800 or Parz#5811")
             except Exception as exc:
                 logger = utils.logger.get_logger("bot.warn")
                 logger.warning(f"Tried to message automatic mute reason to {str(member)}, but it failed: {exc}")
@@ -107,7 +107,7 @@ class Warn(commands.Cog):
 
         #tries to dm user
         try:
-            await member.send(f"You have been warned in the {ctx.guild.name} Server for the following reason: \n```{reason}```\nIf you would like to discuss your punishment, please contact Tabuu#0720, Phxenix#1104 or Parz#5811")
+            await member.send(f"You have been warned in the {ctx.guild.name} Server for the following reason: \n```{reason}```\nIf you would like to discuss your punishment, please contact Tabuu#0720, Phxenix#1104, Fahim#2800 or Parz#5811")
         except Exception as exc:
             logger = utils.logger.get_logger("bot.warn")
             logger.warning(f"Tried to message warn reason to {str(member)}, but it failed: {exc}")
