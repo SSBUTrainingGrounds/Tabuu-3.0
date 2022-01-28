@@ -24,7 +24,7 @@ I will try to keep this up-to-date, no promises.
     Info: Gets you the banner of a User. User argument is optional, if there is none, this gets your own avatar. Otherwise mention the User or use User ID.  
     Example: `%banner @Phxenix`
   
-**%boo**    
+**%boo**  
     Info: Comes up with some scary stuff.  
   
 **%clear** `<amount: Optional>`  
@@ -204,7 +204,7 @@ I will try to keep this up-to-date, no promises.
     Example: `%rankedstats @Phxenix`  
     Aliases: rankstats  
   
-**%recentpings**
+**%recentpings**  
     Info: Gets you all pings in the last 30 Minutes of any matchmaking type without pinging the role yourself. Available dropdowns are: Singles, Doubles, Funnies, Ranked.  
   
 **%records**  
@@ -245,7 +245,7 @@ I will try to keep this up-to-date, no promises.
     Example: `%roll 2d6`  
     Aliases: r  
   
-**%rps** `<@user: Optional>`
+**%rps** `<@user: Optional>`  
     Info: Plays a game of Rock, Paper, Scissors with the mentioned user. If you don't mention a user, you will play against Tabuu 3.0 himself.  
     Example: `%rps @Phxenix`  
     Aliases: rockpaperscissors, rochambeau, roshambo  
