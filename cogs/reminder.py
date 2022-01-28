@@ -128,7 +128,7 @@ class Reminder(commands.Cog):
 
         tbd_reminders = []
 
-        logger = utils.logger.get_logger("bog.reminder")
+        logger = utils.logger.get_logger("bot.reminder")
 
         for user in reminders:
             for reminder_id in reminders[user]:
