@@ -5,7 +5,7 @@ import random
 import datetime
 import asyncio
 from utils.time import convert_time
-
+import utils.logger
 
 #
 #this file here contains the new reminder system
@@ -128,11 +128,15 @@ class Reminder(commands.Cog):
 
         tbd_reminders = []
 
+        logger = utils.logger.get_logger("bog.reminder")
+
         for user in reminders:
             for reminder_id in reminders[user]:
                 reminder_date = reminders[user][reminder_id]['date']
                 date_now = discord.utils.utcnow().timestamp()
                 if reminder_date < date_now:
+                    logger.info(f"Reminder #{reminder_id} from user {user} has passed. Notifying user and deleting reminder...")
+
                     message = reminders[user][reminder_id]['message']
                     time = reminders[user][reminder_id]['read_time']
                     try:
@@ -152,6 +156,7 @@ class Reminder(commands.Cog):
 
         for i in tbd_reminders:
             del reminders[i[0]][i[1]]
+            logger.info(f"Successfully deleted Reminder #{i[1]}")
 
         with open(r'./json/reminder.json', 'w') as f:
             json.dump(reminders, f, indent=4)
