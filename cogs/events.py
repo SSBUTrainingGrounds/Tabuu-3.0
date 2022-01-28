@@ -15,27 +15,33 @@ import utils.logger
 #status cycles through these, update these once in a while to keep it fresh
 status = cycle(["type %help",
 "Always watching 👀",
-"Use the %modmail command in my DM's to privately contact the moderator team",
+"%modmail in my DM's to contact the mod team privately",
 "What is love?",
-"Harder, better, faster, stronger"])
+"Harder, better, faster, stronger",
+"Reading menu..."])
 
 
 class Events(commands.Cog):
     def __init__(self, bot):
         self.bot = bot
 
-    @commands.Cog.listener()
-    async def on_ready(self): #the pylint below is required, so that we dont get a false error
-        self.change_status.start() #pylint: disable=no-member
+        self.change_status.start()
         self.so_ping.start()
         self.tos_ping.start()
         
-    @tasks.loop(seconds=300) #the status loop, every 5 mins, could maybe increase it further
+
+    #changes the status every now and then
+    @tasks.loop(seconds=300)
     async def change_status(self):
         await self.bot.change_presence(activity=discord.Game(next(status)))
 
+    #need to wait until the bot is ready
+    @change_status.before_loop
+    async def before_change_status(self):
+        await self.bot.wait_until_ready()
+
     
-    
+
     #member join msg
     @commands.Cog.listener()
     async def on_member_join(self, member):
@@ -137,7 +143,7 @@ class Events(commands.Cog):
             pass
 
 
-    
+
     @commands.Cog.listener()
     async def on_command_error(self, ctx, error):
         logger = utils.logger.get_logger("bot.commands")
@@ -225,6 +231,14 @@ class Events(commands.Cog):
 
                 await streamer_channel.send(f"{streamer_role.mention} Reminder that Trials of Smash begins in 1 hour, who is available to stream?")
                 await to_channel.send(f"{to_role.mention} Reminder that Trials of Smash begins in 1 hour, who is available?")
+
+    @so_ping.before_loop
+    async def before_so_ping(self):
+        await self.bot.wait_until_ready()
+
+    @tos_ping.before_loop
+    async def before_tos_ping(self):
+        await self.bot.wait_until_ready()
 
 
 
