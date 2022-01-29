@@ -1,7 +1,7 @@
 #Tabuu 3.0
 #by Phxenix for SSBU Training Grounds
-#Version: 5.5.3
-#Last Changes: 28 January 2022
+#Version: 5.5.5
+#Last Changes: 29 January 2022
 #Report any bugs to: Phxenix#1104
 #
 
@@ -20,7 +20,7 @@ intents = discord.Intents.all() #intents so the bot can track its users
 bot = commands.Bot(command_prefix='%', intents=intents, status=discord.Status.online)
 bot.remove_command('help') #for a custom help command
 
-bot.version_number = "5.5.3" #the "version", maintain every now and then
+bot.version_number = "5.5.5" #the "version", maintain every now and then
 
 utils.logger.create_logger()
 
@@ -28,7 +28,7 @@ utils.logger.create_logger()
 #prints to the console when its ready
 @bot.event
 async def on_ready():
-    print(f"Lookin' good, connected as: {str(bot.user)}")
+    print(f"Lookin' good, connected as: {str(bot.user)}, at: {discord.utils.utcnow().strftime('%d-%m-%Y %H:%M:%S')} UTC")
 
     
 #loads all of our cogs
