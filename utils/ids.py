@@ -16,6 +16,14 @@ class GuildIDs:
     TRAINING_GROUNDS = 739299507795132486
     BATTLEGROUNDS = 915395890775216188
 
+class AdminVars:
+    #big daddy
+    GROUNDS_KEEPER = "Tabuu#0720"
+    #used in the warn/mute/kick messages, it says: "..contact {GROUNDS_GENERALS}", thats why its worded like that.
+    GROUNDS_GENERALS = "Tabuu#0720, Phxenix#1104, Parz#5811, or Fahim#2800"
+    #google doc with ban records, leave it empty if you dont have one i guess
+    BAN_RECORDS = "https://docs.google.com/spreadsheets/d/1EZhyKa69LWerQl0KxeVJZuLFFjBIywMRTNOPUUKyVCc/"
+
 class TGChannelIDs:
     #general chat
     GENERAL_CHANNEL = 739299507937738849

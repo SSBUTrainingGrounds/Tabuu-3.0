@@ -3,7 +3,7 @@ from discord.ext import commands, tasks
 import re
 import string
 from .warn import Warn
-from utils.ids import GuildIDs, TGRoleIDs, TGChannelIDs
+from utils.ids import GuildIDs, TGRoleIDs, TGChannelIDs, AdminVars
 import utils.logger
 
 #
@@ -70,7 +70,7 @@ class On_message(commands.Cog):
                     logger.warning(f"Tried to delete a message for containing a blacklisted word, but it failed: {exc}")
             
                 try:
-                    await message.author.send(f"You have been automatically warned in the {message.guild.name} Server for sending a message containing a blacklisted word.\nIf you would like to discuss your punishment, please contact Tabuu#0720, Phxenix#1104, Fahim#2800 or Parz#5811")
+                    await message.author.send(f"You have been automatically warned in the {message.guild.name} Server for sending a message containing a blacklisted word.\nIf you would like to discuss your punishment, please contact {AdminVars.GROUNDS_GENERALS}.")
                 except Exception as exc:
                     logger = utils.logger.get_logger("bot.autowarn")
                     logger.warning(f"Tried to message automatic warn reason to {str(message.author)}, but it failed: {exc}")

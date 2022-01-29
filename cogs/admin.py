@@ -1,7 +1,7 @@
 import discord
 from discord.ext import commands, tasks
 import asyncio
-from utils.ids import GuildNames, GuildIDs
+from utils.ids import GuildNames, GuildIDs, AdminVars
 from utils.role import search_role
 import utils.logger
 
@@ -62,7 +62,7 @@ class Admin(commands.Cog):
             if msg.content.lower() == "y":
                 #tries to dm them first, need a try/except block cause you can ban ppl not on your server, or ppl can block your bot
                 try:
-                    await user.send(f"You have been banned from the {ctx.guild.name} Server for the following reason: \n```{reason}```\nPlease contact Tabuu#0720 for an appeal.\nhttps://docs.google.com/spreadsheets/d/1EZhyKa69LWerQl0KxeVJZuLFFjBIywMRTNOPUUKyVCc/")
+                    await user.send(f"You have been banned from the {ctx.guild.name} Server for the following reason: \n```{reason}```\nPlease contact {AdminVars.GROUNDS_KEEPER} for an appeal.\n{AdminVars.BAN_RECORDS}")
                 except Exception as exc:
                     logger = utils.logger.get_logger("bot.admin")
                     logger.warning(f"Tried to message ban reason to {str(user)}, but it failed: {exc}")
@@ -72,7 +72,7 @@ class Admin(commands.Cog):
             elif msg.content.lower() == "n":
                 await ctx.send(f"Ban for {user.mention} cancelled.")
                 return
-        
+
 
     #unban
     @commands.command()
@@ -135,11 +135,11 @@ class Admin(commands.Cog):
         else:
             if msg.content.lower() == "y":
                 try:
-                    await member.send(f"You have been kicked from the {ctx.guild.name} Server for the following reason: \n```{reason}```\nIf you would like to discuss your punishment, please contact Tabuu#0720, Phxenix#1104, Fahim#2800 or Parz#5811")
+                    await member.send(f"You have been kicked from the {ctx.guild.name} Server for the following reason: \n```{reason}```\nIf you would like to discuss your punishment, please contact {AdminVars.GROUNDS_GENERALS}.")
                 except Exception as exc:
                     logger = utils.logger.get_logger("bot.admin")
                     logger.warning(f"Tried to message kick reason to {str(member)}, but it failed: {exc}")
-                    
+
                 await member.kick(reason=reason)
                 await ctx.send(f"Kicked {member}!")
             elif msg.content.lower() == "n":
@@ -171,7 +171,7 @@ class Admin(commands.Cog):
     @commands.command()
     @commands.has_permissions(administrator=True)
     async def records(self, ctx):
-        await ctx.send("https://docs.google.com/spreadsheets/d/1EZhyKa69LWerQl0KxeVJZuLFFjBIywMRTNOPUUKyVCc/") #google doc link to spreadsheet
+        await ctx.send(f"Link to our ban records:\n{AdminVars.BAN_RECORDS}")
 
 
     #renames the bot. thanks tabuu
