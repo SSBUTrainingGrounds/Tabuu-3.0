@@ -108,7 +108,7 @@ class Matchmakingpings(commands.Cog):
     @commands.command(aliases=['clearmmrequests', 'clearmm', 'clearmatchmaking'])
     @commands.has_permissions(administrator=True)
     async def clearmmpings(self, ctx):
-        await self.clear_mmrequests()
+        self.clear_mmrequests()
         await ctx.send("Cleared the matchmaking pings!")
 
     @clearmmpings.error
