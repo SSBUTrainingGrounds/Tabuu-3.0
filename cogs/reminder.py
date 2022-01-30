@@ -30,9 +30,9 @@ class Reminder(commands.Cog):
         if seconds < 30:
             await ctx.send("Duration is too short! I'm sure you can remember that yourself.")
             return
-        #30 days, chosen at will. maybe increase it to a year or so in the future
-        if seconds > 2592000:
-            await ctx.send("Duration is too long! Maximum duration is 30 days.")
+        #90 days, maybe increase it to 1 year in the future, idk
+        if seconds > 7776000:
+            await ctx.send("Duration is too long! Maximum duration is 90 days.")
             return
 
         #i think 200 chars is enough for a reminder message, have to keep discord max message length in mind for viewreminders
