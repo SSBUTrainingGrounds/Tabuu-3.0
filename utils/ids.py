@@ -24,6 +24,20 @@ class AdminVars:
     #google doc with ban records, leave it empty if you dont have one i guess
     BAN_RECORDS = "https://docs.google.com/spreadsheets/d/1EZhyKa69LWerQl0KxeVJZuLFFjBIywMRTNOPUUKyVCc/"
 
+class TournamentReminders:
+    #change this to False if you dont wanna get reminded
+    PING_ENABLED = True
+    #the weekday as an int, keep in mind weeks start at 0 = Monday. which means that 4 = Friday
+    SMASH_OVERSEAS_DAY = 4
+    #this needs to be set to 1 hour before smash overseas in UTC time as it is in winter, without DST.
+    SMASH_OVERSEAS_HOUR = 18
+    SMASH_OVERSEAS_MINUTE = 0
+    #same here, 5 = saturday
+    TRIALS_OF_SMASH_DAY = 5
+    #trials of smash is at midnight UTC
+    TRIALS_OF_SMASH_HOUR = 23
+    TRIALS_OF_SMASH_MINUTE = 0
+
 class TGChannelIDs:
     #general chat
     GENERAL_CHANNEL = 739299507937738849

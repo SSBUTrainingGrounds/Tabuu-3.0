@@ -3,3 +3,4 @@ psutil==5.8.0
 fuzzywuzzy==0.18.0
 mee6_py_api==0.0.1
 discord==1.0.1
+tzdata==2021.5

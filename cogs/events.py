@@ -4,8 +4,9 @@ import json
 from itertools import cycle
 from fuzzywuzzy import process, fuzz
 import datetime
-from utils.ids import GuildIDs, TGChannelIDs, TGRoleIDs, TGLevelRoleIDs, BGChannelIDs, BGRoleIDs
+from utils.ids import GuildIDs, TGChannelIDs, TGRoleIDs, TGLevelRoleIDs, BGChannelIDs, BGRoleIDs, TournamentReminders
 import utils.logger
+from utils.time import TournamentTimes
 
 
 #
@@ -28,7 +29,7 @@ class Events(commands.Cog):
         self.change_status.start()
         self.so_ping.start()
         self.tos_ping.start()
-        
+
     #stops the tasks on cog unload, so that they wont get executed multiple times
     def cog_unload(self):
         self.change_status.cancel()
@@ -198,21 +199,17 @@ class Events(commands.Cog):
         logger.info("Resumed connection to discord.")
 
 
-
-    #this here pings the streamers and TOs 1 hour before each weekly tournament
-    #when DST is in effect (summer), the values should be: smash overseas: (17, 0, 0, 0) and trials of smash: (22, 0, 0, 0)
-    #without DST in effect (winter), the values should be: smash overseas: (18, 0, 0, 0) and trials of smash: (23, 0, 0, 0)
-    #there seems to be no good way to do this since time objects do not support timezones with DST?
-    so_time = datetime.time(18, 0, 0, 0)
-    tos_time = datetime.time(23, 0, 0, 0)
-
-    @tasks.loop(time=so_time)
+    #these here ping TOs/streamers one hour before our tournaments
+    @tasks.loop(time=TournamentTimes.smash_overseas)
     async def so_ping(self):
+        if not TournamentReminders.PING_ENABLED:
+            return
+
         #runs every day, checks if it is friday in utc
-        if datetime.datetime.utcnow().weekday() == 4:
+        if datetime.datetime.utcnow().weekday() == TournamentReminders.SMASH_OVERSEAS_DAY:
             #stops this task from running 1 hour after the desired time. 
             #have to do this because otherwise it would run again if i were to restart the bot after 19:00 utc fridays
-            if datetime.datetime.utcnow().hour <= 18:
+            if datetime.datetime.utcnow().hour <= TournamentReminders.SMASH_OVERSEAS_HOUR:
                 guild = self.bot.get_guild(GuildIDs.TRAINING_GROUNDS)
                 streamer_channel = self.bot.get_channel(TGChannelIDs.STREAM_TEAM)
                 streamer_role = discord.utils.get(guild.roles, id=TGRoleIDs.STREAMER_ROLE)
@@ -223,11 +220,14 @@ class Events(commands.Cog):
                 await streamer_channel.send(f"{streamer_role.mention} Reminder that Smash Overseas begins in 1 hour, who is available to stream?")
                 await to_channel.send(f"{to_role.mention} Reminder that Smash Overseas begins in 1 hour, who is available?")
 
-    @tasks.loop(time=tos_time)
+    @tasks.loop(time=TournamentTimes.trials_of_smash)
     async def tos_ping(self):
+        if not TournamentReminders.PING_ENABLED:
+            return
+
         #runs every day, checks if it is saturday in utc (might wanna keep watching that event cause timezones could be weird here since its sunday for me)
-        if datetime.datetime.utcnow().weekday() == 5:
-            if datetime.datetime.utcnow().hour <= 23:
+        if datetime.datetime.utcnow().weekday() == TournamentReminders.TRIALS_OF_SMASH_DAY:
+            if datetime.datetime.utcnow().hour <= TournamentReminders.TRIALS_OF_SMASH_HOUR:
                 guild = self.bot.get_guild(GuildIDs.TRAINING_GROUNDS)
                 streamer_channel = self.bot.get_channel(TGChannelIDs.STREAM_TEAM)
                 streamer_role = discord.utils.get(guild.roles, id=TGRoleIDs.STREAMER_ROLE)
