@@ -211,7 +211,7 @@ class Events(commands.Cog):
         if datetime.datetime.utcnow().weekday() == TournamentReminders.SMASH_OVERSEAS_DAY:
             #stops this task from running 1 hour after the desired time. 
             #have to do this because otherwise it would run again if i were to restart the bot after 19:00 utc fridays
-            if datetime.datetime.utcnow().hour <= TournamentReminders.SMASH_OVERSEAS_HOUR:
+            if datetime.datetime.utcnow().hour <= utils.time.get_dst_adjusted_time(datetime.time(TournamentReminders.SMASH_OVERSEAS_HOUR, 0, 0, 0), utils.time.is_dst()).hour:
                 guild = self.bot.get_guild(GuildIDs.TRAINING_GROUNDS)
                 streamer_channel = self.bot.get_channel(TGChannelIDs.STREAM_TEAM)
                 streamer_role = discord.utils.get(guild.roles, id=TGRoleIDs.STREAMER_ROLE)
@@ -230,7 +230,7 @@ class Events(commands.Cog):
 
         #runs every day, checks if it is saturday in utc (might wanna keep watching that event cause timezones could be weird here since its sunday for me)
         if datetime.datetime.utcnow().weekday() == TournamentReminders.TRIALS_OF_SMASH_DAY:
-            if datetime.datetime.utcnow().hour <= TournamentReminders.TRIALS_OF_SMASH_HOUR:
+            if datetime.datetime.utcnow().hour <= utils.time.get_dst_adjusted_time(datetime.time(TournamentReminders.TRIALS_OF_SMASH_HOUR, 0, 0, 0), utils.time.is_dst()).hour:
                 guild = self.bot.get_guild(GuildIDs.TRAINING_GROUNDS)
                 streamer_channel = self.bot.get_channel(TGChannelIDs.STREAM_TEAM)
                 streamer_role = discord.utils.get(guild.roles, id=TGRoleIDs.STREAMER_ROLE)

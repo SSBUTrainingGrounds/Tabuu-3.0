@@ -13,7 +13,10 @@ def get_dst_adjusted_time(dtime: datetime.time, dst: bool):
     if not dst:
         return dtime
     else:
-        return dtime.replace(hour=dtime.hour + 1)
+        new_hour = dtime.hour + 1
+        if new_hour == 24:
+            new_hour = 0
+        return dtime.replace(hour=new_hour)
 
 #this here converts the input time into the raw seconds, plus a nice string for the user to make sense of
 def convert_time(input_time:str):
