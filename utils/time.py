@@ -1,7 +1,6 @@
 from discord.ext import commands
 from zoneinfo import ZoneInfo
 import datetime
-from .ids import TournamentReminders
 
 #checks if the timezone is currently in dst. we operate out of the eastern us
 def is_dst(tz: str = "US/Eastern"):
@@ -15,12 +14,6 @@ def get_dst_adjusted_time(dtime: datetime.time, dst: bool):
         return dtime
     else:
         return dtime.replace(hour=dtime.hour + 1)
-
-#these are here to save on imports. returns the (hopefully) right value as a UTC time.
-class TournamentTimes:
-    smash_overseas = get_dst_adjusted_time(datetime.time(TournamentReminders.SMASH_OVERSEAS_HOUR, TournamentReminders.SMASH_OVERSEAS_MINUTE, 0, 0), is_dst())
-    trials_of_smash = get_dst_adjusted_time(datetime.time(TournamentReminders.TRIALS_OF_SMASH_HOUR, TournamentReminders.SMASH_OVERSEAS_MINUTE, 0, 0), is_dst())
-
 
 #this here converts the input time into the raw seconds, plus a nice string for the user to make sense of
 def convert_time(input_time:str):

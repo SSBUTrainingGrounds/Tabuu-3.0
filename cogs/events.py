@@ -6,7 +6,7 @@ from fuzzywuzzy import process, fuzz
 import datetime
 from utils.ids import GuildIDs, TGChannelIDs, TGRoleIDs, TGLevelRoleIDs, BGChannelIDs, BGRoleIDs, TournamentReminders
 import utils.logger
-from utils.time import TournamentTimes
+import utils.time
 
 
 #
@@ -200,7 +200,9 @@ class Events(commands.Cog):
 
 
     #these here ping TOs/streamers one hour before our tournaments
-    @tasks.loop(time=TournamentTimes.smash_overseas)
+    #the function just adds one hour to the time, if dst is active
+    @tasks.loop(time=utils.time.get_dst_adjusted_time(datetime.time(
+        TournamentReminders.SMASH_OVERSEAS_HOUR, TournamentReminders.SMASH_OVERSEAS_MINUTE, 0, 0), utils.time.is_dst()))
     async def so_ping(self):
         if not TournamentReminders.PING_ENABLED:
             return
@@ -220,7 +222,8 @@ class Events(commands.Cog):
                 await streamer_channel.send(f"{streamer_role.mention} Reminder that Smash Overseas begins in 1 hour, who is available to stream?")
                 await to_channel.send(f"{to_role.mention} Reminder that Smash Overseas begins in 1 hour, who is available?")
 
-    @tasks.loop(time=TournamentTimes.trials_of_smash)
+    @tasks.loop(time=utils.time.get_dst_adjusted_time(datetime.time(
+        TournamentReminders.TRIALS_OF_SMASH_HOUR, TournamentReminders.SMASH_OVERSEAS_MINUTE, 0, 0), utils.time.is_dst()))
     async def tos_ping(self):
         if not TournamentReminders.PING_ENABLED:
             return
