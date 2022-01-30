@@ -8,13 +8,13 @@ def is_dst(tz: str = "US/Eastern"):
     dt = datetime.datetime.now(ZoneInfo(tz))
     return dt.dst() != datetime.timedelta(0)
 
-#if the timezone is in dst, subtracts one hour to get the "normal" timezone
+#if the timezone is in dst, adds one hour to the utc time to adjust
 #i have to do this, since datetime.time wont work with DST? at least it really sucks and this is the only solution i came up with
 def get_dst_adjusted_time(dtime: datetime.time, dst: bool):
     if not dst:
         return dtime
     else:
-        return dtime.replace(hour=dtime.hour - 1)
+        return dtime.replace(hour=dtime.hour + 1)
 
 #these are here to save on imports. returns the (hopefully) right value as a UTC time.
 class TournamentTimes:
