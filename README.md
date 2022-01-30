@@ -28,7 +28,7 @@ What you can do instead is run your own instance of this bot. Please keep in min
 
 **With all that said, here's how to run the bot yourself:**  
 1) Clone this repository.  
-2) Install at least Python 3.8 or newer and the latest version of the [discord.py](https://github.com/Rapptz/discord.py) alpha, as well as the other packages needed with `pip install -r requirements.txt`.  
+2) Install at least Python 3.9 or newer and the latest version of the [discord.py](https://github.com/Rapptz/discord.py) alpha, as well as the other packages needed with `pip install -r requirements.txt`.  
 3) [Create and host your own Discord Application](https://discord.com/developers/applications).  
 4) This bot needs *a lot* of server-specific IDs to function properly, so you need to modify the values in the `./utils/ids.py` file with the unique IDs of your servers/channels/roles.  
 5) Replace the contents of `./files/badwords.txt` with words that will get you automatically warned on usage.  
