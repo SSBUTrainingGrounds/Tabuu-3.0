@@ -1,7 +1,6 @@
 import discord
 from discord.ext import commands, tasks
 from mee6_py_api import API
-from discord.utils import get
 from math import ceil
 from utils.ids import GuildNames, GuildIDs, TGLevelRoleIDs
 import utils.logger
@@ -47,13 +46,14 @@ class Mee6api(commands.Cog):
 
         userlevel = await mee6API.levels.get_user_level(member.id, dont_use_cache=True) #gets the level
 
-        defaultrole = get(ctx.guild.roles, id=TGLevelRoleIDs.RECRUIT_ROLE)
-        level10 = get(ctx.guild.roles, id=TGLevelRoleIDs.LEVEL_10_ROLE)
-        level25 = get(ctx.guild.roles, id=TGLevelRoleIDs.LEVEL_25_ROLE)
-        level50 = get(ctx.guild.roles, id=TGLevelRoleIDs.LEVEL_50_ROLE)
-        level75 = get(ctx.guild.roles, id=TGLevelRoleIDs.LEVEL_75_ROLE)
+        defaultrole = discord.utils.get(ctx.guild.roles, id=TGLevelRoleIDs.RECRUIT_ROLE)
+        level10 = discord.utils.get(ctx.guild.roles, id=TGLevelRoleIDs.LEVEL_10_ROLE)
+        level25 = discord.utils.get(ctx.guild.roles, id=TGLevelRoleIDs.LEVEL_25_ROLE)
+        level50 = discord.utils.get(ctx.guild.roles, id=TGLevelRoleIDs.LEVEL_50_ROLE)
+        level75 = discord.utils.get(ctx.guild.roles, id=TGLevelRoleIDs.LEVEL_75_ROLE)
+        level100 = discord.utils.get(ctx.guild.roles, id=TGLevelRoleIDs.LEVEL_100_ROLE)
 
-        levelroles = [defaultrole, level10, level25, level50, level75]
+        levelroles = [defaultrole, level10, level25, level50, level75, level100]
 
         rolegiven = None
         
@@ -81,13 +81,21 @@ class Mee6api(commands.Cog):
                 await member.add_roles(level50)
                 rolegiven = level50
 
-        elif userlevel > 74:
+        elif userlevel > 74 and userlevel < 100:
             if level75 not in member.roles:
                 for role in levelroles:
                     if role in member.roles:
                         await member.remove_roles(role)
                 await member.add_roles(level75)
                 rolegiven = level75
+
+        elif userlevel > 99:
+            if level100 not in member.roles:
+                for role in levelroles:
+                    if role in member.roles:
+                        await member.remove_roles(role)
+                await member.add_roles(level100)
+                rolegiven = level100
 
 
         if rolegiven is None:
@@ -122,13 +130,14 @@ class Mee6api(commands.Cog):
 
         guild = self.bot.get_guild(GuildIDs.TRAINING_GROUNDS)
 
-        defaultrole = get(guild.roles, id=TGLevelRoleIDs.RECRUIT_ROLE)
-        level10 = get(guild.roles, id=TGLevelRoleIDs.LEVEL_10_ROLE)
-        level25 = get(guild.roles, id=TGLevelRoleIDs.LEVEL_25_ROLE)
-        level50 = get(guild.roles, id=TGLevelRoleIDs.LEVEL_50_ROLE)
-        level75 = get(guild.roles, id=TGLevelRoleIDs.LEVEL_75_ROLE)
+        defaultrole = discord.utils.get(guild.roles, id=TGLevelRoleIDs.RECRUIT_ROLE)
+        level10 = discord.utils.get(guild.roles, id=TGLevelRoleIDs.LEVEL_10_ROLE)
+        level25 = discord.utils.get(guild.roles, id=TGLevelRoleIDs.LEVEL_25_ROLE)
+        level50 = discord.utils.get(guild.roles, id=TGLevelRoleIDs.LEVEL_50_ROLE)
+        level75 = discord.utils.get(guild.roles, id=TGLevelRoleIDs.LEVEL_75_ROLE)
+        level100 = discord.utils.get(guild.roles, id=TGLevelRoleIDs.LEVEL_100_ROLE)
 
-        levelroles = [defaultrole, level10, level25, level50, level75]
+        levelroles = [defaultrole, level10, level25, level50, level75, level100]
 
         pageNumber = ceil(len(guild.members)/100) #gets the correct amount of pages
         for i in range(pageNumber):
@@ -164,13 +173,22 @@ class Mee6api(commands.Cog):
                                     await member.remove_roles(role)
                             await member.add_roles(level50)
                     
-                    elif user["level"] > 74:
+                    elif user["level"] > 74 and user["level"] < 100:
                         member = await guild.fetch_member(user["id"])
                         if level75 not in member.roles:
                             for role in levelroles:
                                 if role in member.roles:
                                     await member.remove_roles(role)
                             await member.add_roles(level75)
+
+                    elif user["level"] > 99:
+                        member = await guild.fetch_member(user["id"])
+                        if level100 not in member.roles:
+                            for role in levelroles:
+                                if role in member.roles:
+                                    await member.remove_roles(role)
+                            await member.add_roles(level100)
+                    
         
         logger.info("Successfully updated level roles!")
 
