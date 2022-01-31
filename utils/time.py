@@ -18,6 +18,20 @@ def get_dst_adjusted_time(dtime: datetime.time, dst: bool):
             new_hour = 0
         return dtime.replace(hour=new_hour)
 
+#when you add one hour to a time, sometimes you roll over to the next day
+def get_dst_adjusted_day(dtime: datetime.time, day: int, dst:bool):
+    if not dst:
+        return day
+    else:
+        if dtime.hour == 23:
+            new_day = day + 1
+            #and sometimes you roll over into the next week
+            if new_day == 7:
+                new_day = 0
+            return new_day
+        else:
+            return day
+
 #this here converts the input time into the raw seconds, plus a nice string for the user to make sense of
 def convert_time(input_time:str):
     total_seconds = 0

@@ -28,6 +28,7 @@ class TournamentReminders:
     #change this to False if you dont wanna get reminded
     PING_ENABLED = True
     #the weekday as an int, keep in mind weeks start at 0 = Monday. which means that 4 = Friday
+    #also keep in mind that this is the weekday when the tourney happens in UTC time, which might be different in other timezones
     SMASH_OVERSEAS_DAY = 4
     #this needs to be set to 1 hour & 5 mins before smash overseas in UTC time.
     SMASH_OVERSEAS_HOUR = 17
