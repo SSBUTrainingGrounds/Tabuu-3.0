@@ -27,16 +27,17 @@ class AdminVars:
 class TournamentReminders:
     #change this to False if you dont wanna get reminded
     PING_ENABLED = True
+    #the timezone the other times are based on
+    TIMEZONE = "US/Eastern"
     #the weekday as an int, keep in mind weeks start at 0 = Monday. which means that 4 = Friday
-    #also keep in mind that this is the weekday when the tourney happens in UTC time, which might be different in other timezones
     SMASH_OVERSEAS_DAY = 4
-    #this needs to be set to 1 hour & 5 mins before smash overseas in UTC time.
-    SMASH_OVERSEAS_HOUR = 17
+    #this needs to be set to 1 hour & 5 mins before smash overseas. which is at 2pm
+    SMASH_OVERSEAS_HOUR = 12
     SMASH_OVERSEAS_MINUTE = 55
     #same here, 5 = saturday
     TRIALS_OF_SMASH_DAY = 5
-    #trials of smash is at midnight UTC
-    TRIALS_OF_SMASH_HOUR = 22
+    #trials of smash is at 7pm EDT/EST
+    TRIALS_OF_SMASH_HOUR = 17
     TRIALS_OF_SMASH_MINUTE = 55
 
 class TGChannelIDs:

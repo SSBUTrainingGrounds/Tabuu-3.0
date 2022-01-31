@@ -4,6 +4,7 @@ import json
 from itertools import cycle
 from fuzzywuzzy import process, fuzz
 import datetime
+from zoneinfo import ZoneInfo
 from utils.ids import GuildIDs, TGChannelIDs, TGRoleIDs, TGLevelRoleIDs, BGChannelIDs, BGRoleIDs, TournamentReminders
 import utils.logger
 import utils.time
@@ -203,17 +204,17 @@ class Events(commands.Cog):
     tos_time = datetime.time(TournamentReminders.TRIALS_OF_SMASH_HOUR, TournamentReminders.TRIALS_OF_SMASH_MINUTE, 0, 0)
 
     #these here ping TOs/streamers one hour before our tournaments
-    #the function just adds one hour to the time, if dst is active
-    @tasks.loop(time=utils.time.get_dst_adjusted_time(so_time, utils.time.is_dst()))
+    #the function just converts the time to utc ourselves, the auto-converter doesnt seem to work
+    @tasks.loop(time=utils.time.convert_to_utc(so_time, TournamentReminders.TIMEZONE))
     async def so_ping(self):
         if not TournamentReminders.PING_ENABLED:
             return
 
-        #runs every day, checks if it is the desired day in utc
-        if datetime.datetime.utcnow().weekday() == utils.time.get_dst_adjusted_day(self.so_time, TournamentReminders.SMASH_OVERSEAS_DAY, utils.time.is_dst()):
-            #stops this task from running the hour after the desired time. 
-            #have to do this because otherwise it would run again if i were to restart the bot after the time
-            if datetime.datetime.utcnow().hour <= utils.time.get_dst_adjusted_time(self.so_time, utils.time.is_dst()).hour:
+        #runs every day, checks if it is the desired day in that timezone (utc could be off)
+        if datetime.datetime.now(ZoneInfo(TournamentReminders.TIMEZONE)).weekday() == TournamentReminders.SMASH_OVERSEAS_DAY:
+            #stops this task from running the hour after the desired time in that timezone.
+            #have to do this because otherwise it would run again if i were to restart the bot after the task has already been run
+            if datetime.datetime.now(ZoneInfo(TournamentReminders.TIMEZONE)).hour <= TournamentReminders.SMASH_OVERSEAS_HOUR:
                 guild = self.bot.get_guild(GuildIDs.TRAINING_GROUNDS)
                 streamer_channel = self.bot.get_channel(TGChannelIDs.STREAM_TEAM)
                 streamer_role = discord.utils.get(guild.roles, id=TGRoleIDs.STREAMER_ROLE)
@@ -223,15 +224,15 @@ class Events(commands.Cog):
 
                 await streamer_channel.send(f"{streamer_role.mention} Reminder that Smash Overseas begins in 1 hour, who is available to stream?")
                 await to_channel.send(f"{to_role.mention} Reminder that Smash Overseas begins in 1 hour, who is available?")
-
+    
     #same stuff here
-    @tasks.loop(time=utils.time.get_dst_adjusted_time(tos_time, utils.time.is_dst()))
+    @tasks.loop(time=utils.time.convert_to_utc(tos_time, TournamentReminders.TIMEZONE))
     async def tos_ping(self):
         if not TournamentReminders.PING_ENABLED:
             return
 
-        if datetime.datetime.utcnow().weekday() == utils.time.get_dst_adjusted_day(self.tos_time, TournamentReminders.TRIALS_OF_SMASH_DAY, utils.time.is_dst()):
-            if datetime.datetime.utcnow().hour <= utils.time.get_dst_adjusted_time(self.tos_time, utils.time.is_dst()).hour:
+        if datetime.datetime.now(ZoneInfo(TournamentReminders.TIMEZONE)).weekday() == TournamentReminders.TRIALS_OF_SMASH_DAY:
+            if datetime.datetime.now(ZoneInfo(TournamentReminders.TIMEZONE)).hour <= TournamentReminders.TRIALS_OF_SMASH_HOUR:
                 guild = self.bot.get_guild(GuildIDs.TRAINING_GROUNDS)
                 streamer_channel = self.bot.get_channel(TGChannelIDs.STREAM_TEAM)
                 streamer_role = discord.utils.get(guild.roles, id=TGRoleIDs.STREAMER_ROLE)

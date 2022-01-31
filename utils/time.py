@@ -2,35 +2,13 @@ from discord.ext import commands
 from zoneinfo import ZoneInfo
 import datetime
 
-#checks if the timezone is currently in dst. we operate out of the eastern us
-def is_dst(tz: str = "US/Eastern"):
-    dt = datetime.datetime.now(ZoneInfo(tz))
-    return dt.dst() != datetime.timedelta(0)
-
-#if the timezone is in dst, adds one hour to the utc time to adjust
-#i have to do this, since datetime.time wont work with DST? at least it really sucks and this is the only solution i came up with
-def get_dst_adjusted_time(dtime: datetime.time, dst: bool):
-    if not dst:
-        return dtime
-    else:
-        new_hour = dtime.hour + 1
-        if new_hour == 24:
-            new_hour = 0
-        return dtime.replace(hour=new_hour)
-
-#when you add one hour to a time, sometimes you roll over to the next day
-def get_dst_adjusted_day(dtime: datetime.time, day: int, dst:bool):
-    if not dst:
-        return day
-    else:
-        if dtime.hour == 23:
-            new_day = day + 1
-            #and sometimes you roll over into the next week
-            if new_day == 7:
-                new_day = 0
-            return new_day
-        else:
-            return day
+#i have no idea why we have to do this, but the time argument in the task loops doesnt convert the times properly for some reason
+#thats why we have to convert it to utc ourselves and pass that in as the time argument
+#at least this should account for dst?
+def convert_to_utc(dtime: datetime.time, tz: str):
+    offset = datetime.datetime.now(ZoneInfo(tz)).utcoffset()
+    temp_dtime = datetime.datetime.combine(datetime.datetime.now(ZoneInfo(tz)), dtime)
+    return (temp_dtime - offset).time()
 
 #this here converts the input time into the raw seconds, plus a nice string for the user to make sense of
 def convert_time(input_time:str):
