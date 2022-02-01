@@ -10,15 +10,7 @@ class Funcommands(commands.Cog):
     def __init__(self, bot):
         self.bot = bot
 
-
-    @commands.command()
-    async def uwu(self, ctx):
-        messages = ["Stop this, you're making a fool of yourself",
-        "Take a break from the internet",
-        "Why do you exist?"]
-        await ctx.send(random.choice(messages))
-
-    @commands.command()
+    @commands.command(aliases=["uwu"])
     async def tabuwu(self, ctx):
         messages = ["Stop this, you're making a fool of yourself",
         "Take a break from the internet",
@@ -37,7 +29,10 @@ class Funcommands(commands.Cog):
         "You know, working in a mirror factory is something I could really see myself doing",
         "I broke my hand last week, but on the other hand, I'm ok",
         "Did you hear about the new restaurant on the moon? The food is great, but it has no atmosphere!",
-        "What do sprinters eat before a race? Nothing, they fast"]
+        "What do sprinters eat before a race? Nothing, they fast",
+        "What's the difference between a regular joke and a dad joke? It should be a-parent",
+        "I took the shell off my racing snail to try to make him go faster. It just made him more slug-ish",
+        "Why did the chicken go to the seance? To get to the other side"]
         await ctx.send(random.choice(messages))
 
     @commands.command()

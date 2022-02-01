@@ -146,8 +146,7 @@ class Responses(discord.ui.Select):
 ```%pickmeup``` - Nice words.\n\
 ```%wisdom``` - It\'s wisdom.\n\
 ```%boo``` - Looking for a scare, huh?\n\
-```%uwu``` - For the silly people.\n\
-```%tabuwu``` - For the dumb people.\n\
+```%tabuwu``` - For the silly people.\n\
 ```%john``` - If you need a john.\n\
 ```%hypemeup``` - Hypes you up before that next game of smash.\n\
 ```%8ball <question>``` - Ask the magic 8-ball.\n\

@@ -292,6 +292,7 @@ I will try to keep this up-to-date, no promises.
   
 **%tabuwu**  
     Info: For the silly people.  
+    Aliases: uwu  
   
 **%tag** `<tag: Optional>`  
     Info: Updates your tag on your profile, up to 30 characters long. Leave the field blank to reset the tag to your discord username.  
@@ -322,9 +323,6 @@ I will try to keep this up-to-date, no promises.
     Info: Gets you various information about a user. If you haven't specified a user, this will get your own info. Mention the User or use User ID. Does not work in DMs.  
     Example: `%userinfo @Phxenix`  
     Aliases: user  
-  
-**%uwu**  
-    Info: For the silly people.  
   
 **%viewreminders**  
     Info: Lists out your active reminders. If you have too many it will only display the first 6.  
