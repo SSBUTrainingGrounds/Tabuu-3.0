@@ -7,7 +7,6 @@ def create_logger():
     logger.setLevel(logging.INFO)
 
     handler = TimedRotatingFileHandler(filename=path, when="midnight", backupCount=7, encoding='utf-8')
-    handler.suffix = "%Y%m%d"
     handler.setFormatter(logging.Formatter('%(asctime)s:%(levelname)s:%(name)s: %(message)s'))
 
     logger.addHandler(handler)
