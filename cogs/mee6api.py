@@ -5,32 +5,40 @@ from math import ceil
 from utils.ids import GuildNames, GuildIDs, TGLevelRoleIDs
 import utils.logger
 
-#
-#this file here gets the mee6 level and assigns the matching role
-#
-
-#this is purposefully not made into GuildIDs.TRAINING_GROUNDS.
-#even in testing i want the TG leaderboard, not the leaderboard of my testing server. change it if you want to.
+# this is purposefully not made into GuildIDs.TRAINING_GROUNDS.
+# even in testing i want the TG leaderboard, not the leaderboard of my testing server. change it if you want to.
 mee6API = API(739299507795132486)
 
+
 class Mee6api(commands.Cog):
+    """
+    This class calls the Mee6 API, gets the Level of a User and assigns the Level Role to them.
+    Both manually via a Command and automatically via a Task.
+    """
+
     def __init__(self, bot):
+        """
+        Starts the Update Roles Task on Startup.
+        """
         self.bot = bot
 
         self.update_roles.start()
 
-
     def cog_unload(self):
         self.update_roles.cancel()
 
-
-    #command if someone wants to do it manually
     @commands.command(aliases=["updatelvl", "updaterank"], cooldown_after_parsing=True)
-    @commands.guild_only() #cant be used in dms
-    @commands.cooldown(1, 300, commands.BucketType.user) #1 use, 5m cooldown, per user. since the response time of the api isnt too great, i wanted to limit these requests
+    @commands.guild_only()
+    @commands.cooldown(1, 300, commands.BucketType.user)
     async def updatelevel(self, ctx, member: discord.Member = None):
+        """
+        Updates your Level Role manually.
+        Can also be used on the behalf of other users.
+        """
         if ctx.guild.id != GuildIDs.TRAINING_GROUNDS:
-            await ctx.send(f"This command can only be used in the {GuildNames.TRAINING_GROUNDS} Discord Server.")
+            await ctx.send(
+                f"This command can only be used in the {GuildNames.TRAINING_GROUNDS} Discord Server."
+            )
             ctx.command.reset_cooldown(ctx)
             return
 
@@ -42,9 +50,10 @@ class Mee6api(commands.Cog):
             ctx.command.reset_cooldown(ctx)
             return
 
-        botmessage = await ctx.send("Please wait a few seconds...") #again, api is sometimes very slow so we send this message out first
+        # sometimes the API can take a while to respond.
+        botmessage = await ctx.send("Please wait a few seconds...")
 
-        userlevel = await mee6API.levels.get_user_level(member.id, dont_use_cache=True) #gets the level
+        userlevel = await mee6API.levels.get_user_level(member.id, dont_use_cache=True)
 
         defaultrole = discord.utils.get(ctx.guild.roles, id=TGLevelRoleIDs.RECRUIT_ROLE)
         level10 = discord.utils.get(ctx.guild.roles, id=TGLevelRoleIDs.LEVEL_10_ROLE)
@@ -56,7 +65,7 @@ class Mee6api(commands.Cog):
         levelroles = [defaultrole, level10, level25, level50, level75, level100]
 
         rolegiven = None
-        
+
         if userlevel > 9 and userlevel < 25:
             if level10 not in member.roles:
                 for role in levelroles:
@@ -64,7 +73,7 @@ class Mee6api(commands.Cog):
                         await member.remove_roles(role)
                 await member.add_roles(level10)
                 rolegiven = level10
-        
+
         elif userlevel > 24 and userlevel < 50:
             if level25 not in member.roles:
                 for role in levelroles:
@@ -72,7 +81,7 @@ class Mee6api(commands.Cog):
                         await member.remove_roles(role)
                 await member.add_roles(level25)
                 rolegiven = level25
-            
+
         elif userlevel > 49 and userlevel < 75:
             if level50 not in member.roles:
                 for role in levelroles:
@@ -97,33 +106,43 @@ class Mee6api(commands.Cog):
                 await member.add_roles(level100)
                 rolegiven = level100
 
-
         if rolegiven is None:
-            await botmessage.edit(content=f"{member.mention}, you are Level {userlevel}, so no new role for you.")
+            await botmessage.edit(
+                content=f"{member.mention}, you are Level {userlevel}, so no new role for you."
+            )
         else:
-            await botmessage.edit(content=f"{member.mention}, you are Level {userlevel}, and thus I have given you the {rolegiven} role.")
+            await botmessage.edit(
+                content=f"{member.mention}, you are Level {userlevel}, and thus I have given you the {rolegiven} role."
+            )
 
-
-    #generic error message
+    # generic error message
     @updatelevel.error
     async def updatelevel_error(self, ctx, error):
         if isinstance(error, commands.CommandOnCooldown):
-            await ctx.send(f"{ctx.author.mention}, you are on cooldown for another {round((error.retry_after)/60)} minutes to use this command.")
+            await ctx.send(
+                f"{ctx.author.mention}, you are on cooldown for another {round((error.retry_after)/60)} minutes to use this command."
+            )
         elif isinstance(error, commands.NoPrivateMessage):
-            await ctx.send(f"This command can only be used in the {GuildNames.TRAINING_GROUNDS} Discord Server.")
+            await ctx.send(
+                f"This command can only be used in the {GuildNames.TRAINING_GROUNDS} Discord Server."
+            )
         elif isinstance(error, commands.MemberNotFound):
             await ctx.send("Please mention a valid member, or leave it blank.")
         elif isinstance(error, commands.CommandInvokeError):
-            await ctx.send("Something went wrong! Either the API is down or the user was not in the leaderboard yet. Please try again later.")
+            await ctx.send(
+                "Something went wrong! Either the API is down or the user was not in the leaderboard yet. Please try again later."
+            )
         else:
             raise error
 
-
-
-    #task that assigns roles automatically
-    @tasks.loop(hours=23) #have set it to 23 hours so that it doesnt overlap often with the warnloop daily task, but doesnt matter that much
+    @tasks.loop(hours=23)
     async def update_roles(self):
-        #pretty much the same command as above, just with different names so that it works for everyone in the server and also in a background task
+        """
+        Updates the Level Roles of every User in the Server automatically, every 23 hours.
+        Pretty much the same as the Command above, with a few minor tweaks.
+        Right now we have 4000 Members and this takes around 1:10 Minutes.
+        We'll see how this scales in the future.
+        """
 
         logger = utils.logger.get_logger("bot.level")
         logger.info("Starting to update level roles...")
@@ -139,16 +158,18 @@ class Mee6api(commands.Cog):
 
         levelroles = [defaultrole, level10, level25, level50, level75, level100]
 
-        pageNumber = ceil(len(guild.members)/100) #gets the correct amount of pages
+        # gets the correct amount of pages
+        pageNumber = ceil(len(guild.members) / 100)
         for i in range(pageNumber):
             leaderboard_page = await mee6API.levels.get_leaderboard_page(i)
             for user in leaderboard_page["players"]:
-                if int(user["id"]) in [guildMember.id for guildMember in guild.members]: #checks if the user is still in the guild
-        
-                    #need to fetch the member, since get_member is unreliable.
-                    #even with member intents it kind of fails sometimes since not all members are cached
-                    #this fetching step can take some time depending on guild size
-                    #we also just can remove all level roles since this code only triggers if you rank up. after that add the new role
+                # checks if the user even is in the guild
+                if int(user["id"]) in [guildMember.id for guildMember in guild.members]:
+
+                    # need to fetch the member, since get_member is unreliable.
+                    # even with member intents it kind of fails sometimes since not all members are cached
+                    # this fetching step can take some time depending on guild size
+                    # we also just can remove all level roles since this code only triggers if you rank up. after that add the new role
                     if user["level"] > 9 and user["level"] < 25:
                         member = await guild.fetch_member(user["id"])
                         if level10 not in member.roles:
@@ -156,7 +177,7 @@ class Mee6api(commands.Cog):
                                 if role in member.roles:
                                     await member.remove_roles(role)
                             await member.add_roles(level10)
-                    
+
                     elif user["level"] > 24 and user["level"] < 50:
                         member = await guild.fetch_member(user["id"])
                         if level25 not in member.roles:
@@ -164,7 +185,7 @@ class Mee6api(commands.Cog):
                                 if role in member.roles:
                                     await member.remove_roles(role)
                             await member.add_roles(level25)
-                        
+
                     elif user["level"] > 49 and user["level"] < 75:
                         member = await guild.fetch_member(user["id"])
                         if level50 not in member.roles:
@@ -172,7 +193,7 @@ class Mee6api(commands.Cog):
                                 if role in member.roles:
                                     await member.remove_roles(role)
                             await member.add_roles(level50)
-                    
+
                     elif user["level"] > 74 and user["level"] < 100:
                         member = await guild.fetch_member(user["id"])
                         if level75 not in member.roles:
@@ -188,16 +209,12 @@ class Mee6api(commands.Cog):
                                 if role in member.roles:
                                     await member.remove_roles(role)
                             await member.add_roles(level100)
-                    
-        
-        logger.info("Successfully updated level roles!")
 
+        logger.info("Successfully updated level roles!")
 
     @update_roles.before_loop
     async def before_update_roles(self):
         await self.bot.wait_until_ready()
-
-
 
 
 def setup(bot):
