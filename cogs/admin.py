@@ -1,58 +1,78 @@
 import discord
-from discord.ext import commands, tasks
+from discord.ext import commands
 import asyncio
 from utils.ids import GuildNames, GuildIDs, AdminVars
 from utils.role import search_role
 import utils.logger
 
-#
-#this file here contains general purpose admin commands, they all need the @commands.has_permissions(administrator=True) decorator
-#
 
 class Admin(commands.Cog):
+    """
+    Contains most general purpose Admin Commands.
+    """
+
     def __init__(self, bot):
         self.bot = bot
 
-
-    #clear
     @commands.command()
     @commands.has_permissions(administrator=True)
-    async def clear(self, ctx, amount=1): #default amount for the clear is 1 message
+    async def clear(self, ctx, amount=1):
+        """
+        Clears the last X messages from the channel the command is used in.
+        If you do not specify an amount it defaults to 1.
+        """
         if amount < 1:
             await ctx.send("Please input a valid number!")
             return
 
-        deleted = await ctx.channel.purge(limit=amount+1)
-        await ctx.send(f"Successfully deleted `{len(deleted)}` messages, {ctx.author.mention}")
+        deleted = await ctx.channel.purge(limit=amount + 1)
+        await ctx.send(
+            f"Successfully deleted `{len(deleted)}` messages, {ctx.author.mention}"
+        )
 
-
-    #delete
     @commands.command()
     @commands.has_permissions(administrator=True)
-    async def delete(self, ctx, *messages:discord.Message): #* so it detects multiple messages, works via message ID
-        for message in messages: #deletes every one of them
+    async def delete(self, ctx, *messages: discord.Message):
+        """
+        Deletes one or more messages via Message ID.
+        The messages have to be in the same channel the command is used in.
+        """
+        for message in messages:
             await message.delete()
-        await ctx.message.delete() #deletes the original message aswell
+        await ctx.message.delete()
 
-
-    #ban command
     @commands.command()
     @commands.has_permissions(administrator=True)
     async def ban(self, ctx, user: discord.User, *, reason):
-        #since the mod team cannot stop playing with the ban command for fun, i had to add a check to verify
-        def check(m):
-            return m.content.lower() in ("y", "n") and m.author == ctx.author and m.channel == ctx.channel
+        """
+        Bans a user from the current server with the specified reason, also tries to DM the user.
+        Asks you for confirmation beforehand, because the Mod Team couldn't stop playing with this command.
+        """
 
-        #if the reason provided is too long for the embed, we'll just cut it off
+        def check(m):
+            return (
+                m.content.lower() in ("y", "n")
+                and m.author == ctx.author
+                and m.channel == ctx.channel
+            )
+
+        # if the reason provided is too long for the embed, we'll just cut it off
         if len(reason[2000:]) > 0:
             reason = reason[:2000]
 
-        embed = discord.Embed(title=f"{str(user)} ({user.id})", description = f"**Reason:** {reason}", colour=discord.Colour.dark_red())
+        embed = discord.Embed(
+            title=f"{str(user)} ({user.id})",
+            description=f"**Reason:** {reason}",
+            colour=discord.Colour.dark_red(),
+        )
         embed.set_thumbnail(url=user.display_avatar.url)
         embed.timestamp = discord.utils.utcnow()
 
-        await ctx.send(f"{ctx.author.mention}, are you sure you want to ban this user? **Type y to verify** or **Type n to cancel**.", embed=embed)
-        
+        await ctx.send(
+            f"{ctx.author.mention}, are you sure you want to ban this user? **Type y to verify** or **Type n to cancel**.",
+            embed=embed,
+        )
+
         try:
             msg = await self.bot.wait_for("message", timeout=30.0, check=check)
         except asyncio.TimeoutError:
@@ -60,12 +80,16 @@ class Admin(commands.Cog):
             return
         else:
             if msg.content.lower() == "y":
-                #tries to dm them first, need a try/except block cause you can ban ppl not on your server, or ppl can block your bot
+                # tries to dm them first, need a try/except block cause you can ban ppl not on your server, or ppl can block your bot
                 try:
-                    await user.send(f"You have been banned from the {ctx.guild.name} Server for the following reason: \n```{reason}```\nPlease contact {AdminVars.GROUNDS_KEEPER} for an appeal.\n{AdminVars.BAN_RECORDS}")
+                    await user.send(
+                        f"You have been banned from the {ctx.guild.name} Server for the following reason: \n```{reason}```\nPlease contact {AdminVars.GROUNDS_KEEPER} for an appeal.\n{AdminVars.BAN_RECORDS}"
+                    )
                 except Exception as exc:
                     logger = utils.logger.get_logger("bot.admin")
-                    logger.warning(f"Tried to message ban reason to {str(user)}, but it failed: {exc}")
+                    logger.warning(
+                        f"Tried to message ban reason to {str(user)}, but it failed: {exc}"
+                    )
 
                 await ctx.guild.ban(user, reason=reason)
                 await ctx.send(f"{user.mention} has been banned!")
@@ -73,21 +97,27 @@ class Admin(commands.Cog):
                 await ctx.send(f"Ban for {user.mention} cancelled.")
                 return
 
-
-    #unban
     @commands.command()
     @commands.has_permissions(administrator=True)
     async def unban(self, ctx, user: discord.User):
+        """
+        Unbans a user from the current server.
+        """
         await ctx.guild.unban(user)
         await ctx.send(f"{user.mention} has been unbanned!")
 
-
-    #automatically bans the users on bg that are on our ban list over at tg
-    @commands.command(aliases=['syncbans'])
+    @commands.command(aliases=["syncbans"])
     @commands.has_permissions(administrator=True)
     async def syncbanlist(self, ctx):
+        """
+        Only available on the Battlegrounds Server.
+        Automatically bans every user who is banned on the Training Grounds Server.
+        Warning: Very slow & inefficient.
+        """
         if ctx.guild.id != GuildIDs.BATTLEGROUNDS:
-            await ctx.send(f"This command is only available on the {GuildNames.BATTLEGROUNDS} server!")
+            await ctx.send(
+                f"This command is only available on the {GuildNames.BATTLEGROUNDS} server!"
+            )
             return
 
         tg_guild = self.bot.get_guild(GuildIDs.TRAINING_GROUNDS)
@@ -102,30 +132,46 @@ class Admin(commands.Cog):
             try:
                 await ctx.guild.fetch_ban(u.user)
             except discord.NotFound:
-                await ctx.guild.ban(u.user, reason=f"Automatic ban because user was banned on the {GuildNames.TG} server.")
+                await ctx.guild.ban(
+                    u.user,
+                    reason=f"Automatic ban because user was banned on the {GuildNames.TG} server.",
+                )
                 await ctx.send(f"Banned {str(u.user)}!")
                 i += 1
-            
+
         await ctx.send(f"Ban list was successfully synced. Banned {i} users.")
 
-
-
-    #kick command
     @commands.command()
     @commands.has_permissions(administrator=True)
-    async def kick(self, ctx, member:discord.Member, *, reason):
-        #same as the ban command, there would be an easier fix involving the mod team not to fuck around with that but here we are
+    async def kick(self, ctx, member: discord.Member, *, reason):
+        """
+        Kicks a user from the current server with the specified reason, also tries to DM the user.
+        Asks you for confirmation beforehand, because the Mod Team couldn't stop playing with this command.
+        Very similar to the ban command.
+        """
+
         def check(m):
-            return m.content.lower() in ("y", "n") and m.author == ctx.author and m.channel == ctx.channel
+            return (
+                m.content.lower() in ("y", "n")
+                and m.author == ctx.author
+                and m.channel == ctx.channel
+            )
 
         if len(reason[2000:]) > 0:
             reason = reason[:2000]
 
-        embed = discord.Embed(title=f"{str(member)} ({member.id})", description = f"**Reason:** {reason}", colour=discord.Colour.dark_orange())
+        embed = discord.Embed(
+            title=f"{str(member)} ({member.id})",
+            description=f"**Reason:** {reason}",
+            colour=discord.Colour.dark_orange(),
+        )
         embed.set_thumbnail(url=member.display_avatar.url)
         embed.timestamp = discord.utils.utcnow()
 
-        await ctx.send(f"{ctx.author.mention}, are you sure you want to kick this user? **Type y to verify** or **Type n to cancel**.", embed=embed)
+        await ctx.send(
+            f"{ctx.author.mention}, are you sure you want to kick this user? **Type y to verify** or **Type n to cancel**.",
+            embed=embed,
+        )
 
         try:
             msg = await self.bot.wait_for("message", timeout=30.0, check=check)
@@ -135,10 +181,14 @@ class Admin(commands.Cog):
         else:
             if msg.content.lower() == "y":
                 try:
-                    await member.send(f"You have been kicked from the {ctx.guild.name} Server for the following reason: \n```{reason}```\nIf you would like to discuss your punishment, please contact {AdminVars.GROUNDS_GENERALS}.")
+                    await member.send(
+                        f"You have been kicked from the {ctx.guild.name} Server for the following reason: \n```{reason}```\nIf you would like to discuss your punishment, please contact {AdminVars.GROUNDS_GENERALS}."
+                    )
                 except Exception as exc:
                     logger = utils.logger.get_logger("bot.admin")
-                    logger.warning(f"Tried to message kick reason to {str(member)}, but it failed: {exc}")
+                    logger.warning(
+                        f"Tried to message kick reason to {str(member)}, but it failed: {exc}"
+                    )
 
                 await member.kick(reason=reason)
                 await ctx.send(f"Kicked {member}!")
@@ -146,52 +196,54 @@ class Admin(commands.Cog):
                 await ctx.send(f"Kick for {member.mention} cancelled.")
                 return
 
-
-    
-    #role commands
     @commands.command()
-    @commands.has_permissions(administrator=True) #checking permissions
-    async def addrole(self, ctx, member:discord.Member, *, input_role):
-        #searches the closest matching role
+    @commands.has_permissions(administrator=True)
+    async def addrole(self, ctx, member: discord.Member, *, input_role):
+        """
+        Adds the specified role to the specified member.
+        """
         role = search_role(ctx.guild, input_role)
 
         await member.add_roles(role)
         await ctx.send(f"{member.mention} was given the {role} role.")
 
-
     @commands.command()
-    @commands.has_permissions(administrator=True) #checking permissions
-    async def removerole(self, ctx, member:discord.Member, *,input_role):
+    @commands.has_permissions(administrator=True)
+    async def removerole(self, ctx, member: discord.Member, *, input_role):
+        """
+        Removes the specified role from the specified member.
+        """
         role = search_role(ctx.guild, input_role)
 
-        await member.remove_roles(role) #same as above here
+        await member.remove_roles(role)
         await ctx.send(f"{member.mention} no longer has the {role} role.")
-
 
     @commands.command()
     @commands.has_permissions(administrator=True)
     async def records(self, ctx):
+        """
+        Links our ban records google doc.
+        """
         await ctx.send(f"Link to our ban records:\n{AdminVars.BAN_RECORDS}")
 
-
-    #renames the bot. thanks tabuu
     @commands.command()
     @commands.has_permissions(administrator=True)
-    async def rename(self, ctx, member: discord.Member, *, name = None):
+    async def rename(self, ctx, member: discord.Member, *, name=None):
+        """
+        Renames the specified member to the specified name.
+        """
         await member.edit(nick=name)
         await ctx.send(f"Changed the display name of `{str(member)}` to `{name}`.")
 
-
-
-
-    #error handling for the commands above, they all work in very similar ways
+    # error handling for the commands above
+    # they all are fairly similar
     @kick.error
     async def kick_error(self, ctx, error):
-        if isinstance(error, commands.MissingRequiredArgument): #if the user fails to write a reason, also used as a failsafe
+        if isinstance(error, commands.MissingRequiredArgument):
             await ctx.send("You need to specify a reason for the kick!")
-        elif isinstance(error, commands.MemberNotFound): #if there is no valid user
+        elif isinstance(error, commands.MemberNotFound):
             await ctx.send("You need to mention a member!")
-        elif isinstance(error, commands.MissingPermissions): #if a non-admin uses this command
+        elif isinstance(error, commands.MissingPermissions):
             await ctx.send("Nice try, but you don't have the permissions to do that!")
         else:
             raise error
@@ -205,7 +257,9 @@ class Admin(commands.Cog):
         elif isinstance(error, commands.MissingPermissions):
             await ctx.send("Nice try, but you don't have the permissions to do that!")
         elif isinstance(error, commands.CommandInvokeError):
-            await ctx.send("Invalid ID, please make sure you got the right one, or just mention a member.")
+            await ctx.send(
+                "Invalid ID, please make sure you got the right one, or just mention a member."
+            )
         else:
             raise error
 
@@ -218,7 +272,9 @@ class Admin(commands.Cog):
         elif isinstance(error, commands.UserNotFound):
             await ctx.send("I could not find this user!")
         elif isinstance(error, commands.CommandInvokeError):
-            await ctx.send("I couldn't find a ban for this ID, make sure you have the right one.")
+            await ctx.send(
+                "I couldn't find a ban for this ID, make sure you have the right one."
+            )
         else:
             raise error
 
@@ -240,7 +296,9 @@ class Admin(commands.Cog):
         elif isinstance(error, commands.MissingPermissions):
             await ctx.send("Nice try, but you don't have the permissions to do that!")
         elif isinstance(error, commands.CommandInvokeError):
-            await ctx.send("I didn't find a good match for the role you provided. Please be more specific, or mention the role, or use the Role ID.")
+            await ctx.send(
+                "I didn't find a good match for the role you provided. Please be more specific, or mention the role, or use the Role ID."
+            )
         else:
             raise error
 
@@ -255,7 +313,9 @@ class Admin(commands.Cog):
         elif isinstance(error, commands.MissingPermissions):
             await ctx.send("Nice try, but you don't have the permissions to do that!")
         elif isinstance(error, commands.CommandInvokeError):
-            await ctx.send("I didn't find a good match for the role you provided. Please be more specific, or mention the role, or use the Role ID.")
+            await ctx.send(
+                "I didn't find a good match for the role you provided. Please be more specific, or mention the role, or use the Role ID."
+            )
         else:
             raise error
 
@@ -266,7 +326,9 @@ class Admin(commands.Cog):
         elif isinstance(error, commands.BadArgument):
             await ctx.send("Please input a valid number!")
         elif isinstance(error, commands.CommandInvokeError):
-            await ctx.send("I could not delete one or more of these messages! Make sure they were not send too long ago or try a different amount.")
+            await ctx.send(
+                "I could not delete one or more of these messages! Make sure they were not send too long ago or try a different amount."
+            )
         else:
             raise error
 
@@ -275,7 +337,9 @@ class Admin(commands.Cog):
         if isinstance(error, commands.MissingPermissions):
             await ctx.send("Nice try, but you don't have the permissions to do that!")
         elif isinstance(error, commands.MessageNotFound):
-            await ctx.send("Could not find a message with that ID! Make sure you are in the same channel as the message(s) you want to delete.")
+            await ctx.send(
+                "Could not find a message with that ID! Make sure you are in the same channel as the message(s) you want to delete."
+            )
         elif isinstance(error, commands.MissingRequiredArgument):
             await ctx.send("Please supply one or more valid message IDs")
         else:

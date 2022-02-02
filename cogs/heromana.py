@@ -1,14 +1,16 @@
 import discord
-from discord.ext import commands, tasks
+from discord.ext import commands
 
-#
-#this file here contains all of the hero mana cost commands, probably the least useful one lol
-#
 
 class Heromana(commands.Cog):
+    """
+    Contains the Hero Mana Commands.
+    They all just return the amount of Mana used for X move.
+    Very self-explanatory.
+    """
+
     def __init__(self, bot):
         self.bot = bot
-
 
     @commands.command()
     async def mp4acceleratle(self, ctx):
@@ -68,7 +70,9 @@ class Heromana(commands.Cog):
 
     @commands.command()
     async def mp4hocuspocus(self, ctx):
-        await ctx.send("The MP cost for *Hocus Pocus* is 4 MP (unless Magic Burst or MP is completely refilled/depleted).")
+        await ctx.send(
+            "The MP cost for *Hocus Pocus* is 4 MP (unless Magic Burst or MP is completely refilled/depleted)."
+        )
 
     @commands.command()
     async def mp4heal(self, ctx):
@@ -125,6 +129,7 @@ class Heromana(commands.Cog):
     @commands.command()
     async def mp4kaswoosh(self, ctx):
         await ctx.send("The MP cost for *Kaswoosh* is 18 MP.")
+
 
 def setup(bot):
     bot.add_cog(Heromana(bot))
