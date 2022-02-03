@@ -18,7 +18,7 @@ class Rolemenu(commands.Cog):
         """
         Creates a brand new role menu.
         """
-        with open(r".\json\reactrole.json", "r") as f:
+        with open(r"./json/reactrole.json", "r") as f:
             data = json.load(f)
 
         # makes sure the message and emoji are valid
@@ -41,7 +41,7 @@ class Rolemenu(commands.Cog):
             ]  # default values for the special properties, only once per message
             data[f"{message}"] += [[{"emoji": emoji, "role": role.id}]]
 
-        with open(r".\json\reactrole.json", "w") as f:  # writes it to the file
+        with open(r"./json/reactrole.json", "w") as f:  # writes it to the file
             json.dump(data, f, indent=4)
 
         await ctx.send(
@@ -57,7 +57,7 @@ class Rolemenu(commands.Cog):
         Modifies a role menu with either a role requirement, or makes it "exclusive".
         Which means that a user can only have 1 of those roles at once.
         """
-        with open(r".\json\reactrole.json", "r") as f:
+        with open(r"./json/reactrole.json", "r") as f:
             data = json.load(f)
 
         if not f"{message}" in data.keys():  # quick check if the message is in there
@@ -71,7 +71,7 @@ class Rolemenu(commands.Cog):
         )
         data[f"{message}"][0]["exclusive"] = exclusive
 
-        with open(r".\json\reactrole.json", "w") as f:  # writes it to the file
+        with open(r"./json/reactrole.json", "w") as f:  # writes it to the file
             json.dump(data, f, indent=4)
         try:
             await ctx.send(
@@ -89,7 +89,7 @@ class Rolemenu(commands.Cog):
         """
         Completely deletes a role menu entry from the json file.
         """
-        with open(r".\json\reactrole.json", "r") as f:
+        with open(r"./json/reactrole.json", "r") as f:
             data = json.load(f)
 
         if f"{message}" in data.keys():  # quick check if the message is in there
@@ -98,7 +98,7 @@ class Rolemenu(commands.Cog):
         else:
             await ctx.send("This message was not used for role menus.")
 
-        with open(r".\json\reactrole.json", "w") as f:  # writes it to the file
+        with open(r"./json/reactrole.json", "w") as f:  # writes it to the file
             json.dump(data, f, indent=4)
 
     @commands.command()
@@ -107,7 +107,7 @@ class Rolemenu(commands.Cog):
         """
         Lists every currently active role menu.
         """
-        with open(r".\json\reactrole.json", "r") as f:
+        with open(r"./json/reactrole.json", "r") as f:
             data = json.load(f)
 
         message = []
@@ -148,7 +148,7 @@ class Rolemenu(commands.Cog):
     async def on_raw_reaction_add(self, payload):
         # The listener to actually add the correct role on a raw reaction event
         # Also does the checking for the special properties
-        with open(r".\json\reactrole.json", "r") as f:
+        with open(r"./json/reactrole.json", "r") as f:
             data = json.load(f)
 
         # reactions outside of the server would throw an error otherwise
@@ -188,7 +188,7 @@ class Rolemenu(commands.Cog):
     async def on_raw_reaction_remove(self, payload):
         # The listener to remove the correct role on a raw reaction remove event
         # Does not need any additional checking
-        with open(r".\json\reactrole.json", "r") as f:
+        with open(r"./json/reactrole.json", "r") as f:
             data = json.load(f)
 
         if f"{payload.message_id}" in data.keys():
