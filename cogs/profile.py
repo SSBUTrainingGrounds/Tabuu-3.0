@@ -166,7 +166,6 @@ class Profile(commands.Cog):
             f"{ctx.author.mention}, I have successfully deleted the profile of {str(user)}."
         )
 
-    # these commands set your characters in your profile
     @commands.command(aliases=["main", "setmain", "spmains", "profilemains"])
     async def mains(self, ctx, *, input=None):
         """
@@ -244,7 +243,6 @@ class Profile(commands.Cog):
                 f"{ctx.author.mention}, I have set your pockets to: " + " ".join(chars)
             )
 
-    # sets your tag in your profile
     @commands.command(aliases=["smashtag", "sptag", "settag"])
     async def tag(self, ctx, *, input=None):
         """
@@ -271,7 +269,6 @@ class Profile(commands.Cog):
             f"{ctx.author.mention}, I have set your tag to: `{discord.utils.remove_markdown(input)}`"
         )
 
-    # matches your input to a general region
     @commands.command(aliases=["setregion", "spregion", "country"])
     async def region(self, ctx, *, input=None):
         """
@@ -358,7 +355,6 @@ class Profile(commands.Cog):
                 f"{ctx.author.mention}, I have set your region to: `{input}`"
             )
 
-    # sets up a note on your profile
     @commands.command(aliases=["setnote", "spnote"])
     async def note(self, ctx, *, input=None):
         """
@@ -387,7 +383,6 @@ class Profile(commands.Cog):
                 f"{ctx.author.mention}, I have set your note to: `{discord.utils.remove_markdown(input)}`"
             )
 
-    # sets a colour for their profile in a hex value format
     @commands.command(aliases=["color", "spcolour", "spcolor", "setcolour", "setcolor"])
     async def colour(self, ctx, input):
         """
