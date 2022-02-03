@@ -1,121 +1,97 @@
 import discord
-from discord.ext import commands, tasks
+from discord.ext import commands
 import random
 import asyncio
 from utils.ids import GuildIDs, TGChannelIDs, TGRoleIDs
 import utils.conversion
 
 
-#
-#this file here mostly contains various commands who dont fit into the other categories
-#
-
 class Usercommands(commands.Cog):
+    """
+    Mostly contains various commands which did not fit with the others.
+    """
+
     def __init__(self, bot):
         self.bot = bot
 
-
-    #modmail
     @commands.command()
     async def modmail(self, ctx, *, args):
-        if str(ctx.channel.type) == 'private': #only works in dm's
-            guild = self.bot.get_guild(GuildIDs.TRAINING_GROUNDS) #ssbu tg server
-            modmail_channel = self.bot.get_channel(TGChannelIDs.MODMAIL_CHANNEL) #modmail channel
+        """
+        Very basic one-way modmail system.
+        Only works in the Bots DMs.
+        """
+        if str(ctx.channel.type) == "private":
+            guild = self.bot.get_guild(GuildIDs.TRAINING_GROUNDS)
+            modmail_channel = self.bot.get_channel(TGChannelIDs.MODMAIL_CHANNEL)
             mod_role = discord.utils.get(guild.roles, id=TGRoleIDs.MOD_ROLE)
 
-            atm = ''
+            atm = ""
             if ctx.message.attachments:
                 atm = " , ".join([i.url for i in ctx.message.attachments])
 
             complete_message = f"**✉️ New Modmail {mod_role.mention}! ✉️**\nFrom: {ctx.author} \nMessage:\n{args} \n{atm}"
 
-            #with the message attachments combined with the normal message lengths, the message can reach over 4k characters, but we can only send 2k at a time.
+            # with the message attachments combined with the normal message lengths, the message can reach over 4k characters, but we can only send 2k at a time.
             if len(complete_message[4000:]) > 0:
                 await modmail_channel.send(complete_message[:2000])
                 await modmail_channel.send(complete_message[2000:4000])
                 await modmail_channel.send(complete_message[4000:])
-                await ctx.send("Your message has been sent to the Moderator Team. They will get back to you shortly.")
+                await ctx.send(
+                    "Your message has been sent to the Moderator Team. They will get back to you shortly."
+                )
 
             elif len(complete_message[2000:]) > 0:
                 await modmail_channel.send(complete_message[:2000])
                 await modmail_channel.send(complete_message[2000:])
-                await ctx.send("Your message has been sent to the Moderator Team. They will get back to you shortly.")
+                await ctx.send(
+                    "Your message has been sent to the Moderator Team. They will get back to you shortly."
+                )
 
             else:
                 await modmail_channel.send(complete_message)
-                await ctx.send("Your message has been sent to the Moderator Team. They will get back to you shortly.")
-
+                await ctx.send(
+                    "Your message has been sent to the Moderator Team. They will get back to you shortly."
+                )
 
         else:
             await ctx.message.delete()
-            await ctx.send("For the sake of privacy, please only use this command in my DM's. They are always open for you.")
-    
+            await ctx.send(
+                "For the sake of privacy, please only use this command in my DM's. They are always open for you."
+            )
 
-    #just returns the avatar of a user
-    @commands.command(aliases=['icon'])
-    async def avatar(self, ctx, member:discord.Member = None):
-        if member is None:
-            member = ctx.author
-        await ctx.send(member.display_avatar.url)
-
-    #returns their banner
-    @commands.command()
-    async def banner(self, ctx, member:discord.Member = None):
-        if member is None:
-            member = ctx.author
-        user = await self.bot.fetch_user(member.id) #we have to fetch the user first for whatever reason
-        try:
-            await ctx.send(user.banner.url) #if the user does not have a banner, we get an error referencing it
-        except:
-            await ctx.send("This user does not have a banner.")
-
-    #makes a basic poll
-    @commands.command()
-    async def poll(self, ctx, question, *options: str):
-        if len(options) < 2:
-            await ctx.send("You need at least 2 options to make a poll!") #obviously
-            return
-        if len(options) > 10:
-            await ctx.send("You can only have 10 options at most!") #reaction emoji limit
-            return
-        try:
-            await ctx.message.delete()
-        except:
-            pass
-
-        reactions = ['1️⃣','2️⃣','3️⃣','4️⃣','5️⃣','6️⃣','7️⃣','8️⃣','9️⃣','0️⃣'] #in order
-        description = []
-
-        for x, option in enumerate(options):
-            description += f'\n{reactions[x]}: {option}' #adds the emoji: option to the embed
-        embed = discord.Embed(title=question, description=''.join(description), colour=discord.Colour.dark_purple())
-        embed.set_footer(text=f'Poll by {ctx.author}')
-        embed_message = await ctx.send(embed=embed) #sends the embed out
-        for reaction in reactions[:len(options)]: #and then reacts with the correct number of emojis
-            await embed_message.add_reaction(reaction)
-
-
-    #classic ping
     @commands.command()
     async def ping(self, ctx):
-        pingtime=self.bot.latency * 1000
+        """
+        Classic ping command.
+        """
+        pingtime = self.bot.latency * 1000
         await ctx.send(f"Ping: {round(pingtime)}ms")
 
-    #generic coin toss
     @commands.command()
     async def coin(self, ctx):
-        coin = ['Coin toss: **Heads!**', 'Coin toss: **Tails!**']
+        """
+        Generic coin toss.
+        """
+        coin = ["Coin toss: **Heads!**", "Coin toss: **Tails!**"]
         await ctx.send(random.choice(coin))
 
     @commands.command()
     async def stagelist(self, ctx):
+        """
+        Picture with our stagelist on it.
+        We dont send a link because that could change over time.
+        An image saved locally is just more reliable.
+        Although it is around 700kb big and we do have to send it every time.
+        """
         await ctx.send(file=discord.File(r"./files/stagelist.png"))
 
-    #neat dice roll
-    @commands.command(aliases=['r'])
-    async def roll(self, ctx, dice:str):
+    @commands.command(aliases=["r"])
+    async def roll(self, ctx, dice: str):
+        """
+        A dice roll, in NdN format.
+        """
         try:
-            amount, sides = map(int, dice.split('d'))
+            amount, sides = map(int, dice.split("d"))
         except:
             await ctx.send("Wrong format!\nTry something like: %roll 1d100")
             return
@@ -132,60 +108,155 @@ class Usercommands(commands.Cog):
         if len(results) == 1:
             await ctx.send(f"Rolling **1**-**{sides}** \nResult: **{results}**")
         else:
-            await ctx.send(f"Rolling **1**-**{sides}** **{r+1}** times \nResults: **{results}** \nTotal: **{sum(results)}**")
+            await ctx.send(
+                f"Rolling **1**-**{sides}** **{r+1}** times \nResults: **{results}** \nTotal: **{sum(results)}**"
+            )
 
-    #generic countdown
     @commands.command()
-    async def countdown(self, ctx, count:int):
+    async def countdown(self, ctx, count: int):
+        """
+        Counts down from a number < 50.
+        """
         if count > 50:
-            await ctx.send("Please don't use numbers that big.")
+            await ctx.send("Maximum limit is 50.")
             return
         if count < 1:
             await ctx.send("Invalid number!")
             return
-        
+
         initial_count = count
 
-        countdown_message = await ctx.send(f"Counting down from {initial_count}...\n{count}")
+        countdown_message = await ctx.send(
+            f"Counting down from {initial_count}...\n{count}"
+        )
 
         while count > 1:
             count -= 1
-            await asyncio.sleep(2) #sleeps 2 secs instead of 1
-            await countdown_message.edit(content=f"Counting down from {initial_count}...\n{count}") #edits the message with the new count
+            await asyncio.sleep(2)
+            await countdown_message.edit(
+                content=f"Counting down from {initial_count}...\n{count}"
+            )
 
-        await asyncio.sleep(2) #sleeps again before sending the final message
-        await countdown_message.edit(content=f"Counting down from {initial_count}...\nFinished!")
+        await asyncio.sleep(2)
+        await countdown_message.edit(
+            content=f"Counting down from {initial_count}...\nFinished!"
+        )
 
+    @commands.command()
+    async def avatar(self, ctx, member: discord.Member = None):
+        """
+        Gets you the avatar of a mentioned member, or yourself.
+        """
+        if member is None:
+            member = ctx.author
+        await ctx.send(member.display_avatar.url)
 
-    #info about an emoji
-    @commands.command(aliases=['emoji'])
-    async def emote(self, ctx, emoji:discord.PartialEmoji):
-        embed = discord.Embed(title="Emoji Info", colour=discord.Colour.orange(), description=f"\
+    @commands.command()
+    async def banner(self, ctx, member: discord.Member = None):
+        """
+        Gets you the banner of a mentioned member, or yourself.
+        """
+        if member is None:
+            member = ctx.author
+        # we have to fetch the user first for whatever reason
+        user = await self.bot.fetch_user(member.id)
+        # if the user does not have a banner, we get an error referencing it
+        try:
+            await ctx.send(user.banner.url)
+        except:
+            await ctx.send("This user does not have a banner.")
+
+    @commands.command()
+    async def poll(self, ctx, question, *options: str):
+        """
+        Poll command, with up to 10 options.
+        Sends it out in a neat embed and adds the reactions.
+        """
+        if len(options) < 2:
+            await ctx.send("You need at least 2 options to make a poll!")
+            return
+        if len(options) > 10:
+            await ctx.send("You can only have 10 options at most!")
+            return
+        try:
+            await ctx.message.delete()
+        except:
+            pass
+
+        reactions = [
+            "1️⃣",
+            "2️⃣",
+            "3️⃣",
+            "4️⃣",
+            "5️⃣",
+            "6️⃣",
+            "7️⃣",
+            "8️⃣",
+            "9️⃣",
+            "0️⃣",
+        ]
+        description = []
+
+        for x, option in enumerate(options):
+            description += f"\n{reactions[x]}: {option}"
+        embed = discord.Embed(
+            title=question,
+            description="".join(description),
+            colour=discord.Colour.dark_purple(),
+        )
+        embed.set_footer(text=f"Poll by {ctx.author}")
+        embed_message = await ctx.send(embed=embed)
+        for reaction in reactions[: len(options)]:
+            await embed_message.add_reaction(reaction)
+
+    @commands.command(aliases=["emoji"])
+    async def emote(self, ctx, emoji: discord.PartialEmoji):
+        """
+        Gives you information about an Emoji.
+        """
+        embed = discord.Embed(
+            title="Emoji Info",
+            colour=discord.Colour.orange(),
+            description=f"\
 **Url:** {emoji.url}\n\
 **Name:** {emoji.name}\n\
 **ID:** {emoji.id}\n\
 **Created at:** {discord.utils.format_dt(emoji.created_at, style='F')}\n\
-            ")
+            ",
+        )
         embed.set_image(url=emoji.url)
         await ctx.send(embed=embed)
 
-    #same but for stickers
     @commands.command()
     async def sticker(self, ctx):
+        """
+        Gives you information about a Sticker.
+        Note that Stickers work very differently from Emojis.
+        They count as a message attachment, so we fetch the first of those.
+        Also you cant send a message together with a Sticker on Mobile,
+        so this command is straight up useless on anything other than Desktop.
+        """
         sticker = await ctx.message.stickers[0].fetch()
-        embed = discord.Embed(title="Sticker Info", colour=discord.Colour.orange(), description=f"\
+        embed = discord.Embed(
+            title="Sticker Info",
+            colour=discord.Colour.orange(),
+            description=f"\
 **Url:** {sticker.url}\n\
 **Name:** {sticker.name}\n\
 **ID:** {sticker.id}\n\
 **Created at:** {discord.utils.format_dt(sticker.created_at, style='F')}\n\
-            ")
+            ",
+        )
         embed.set_image(url=sticker.url)
         await ctx.send(embed=embed)
 
-
-    #returns the spotify status
     @commands.command()
-    async def spotify(self, ctx, member:discord.Member = None):
+    async def spotify(self, ctx, member: discord.Member = None):
+        """
+        Posts the Spotify Song Link the member (or yourself) is listening to.
+        You need to enable the feature that displays the current Song as your Activity for this to work.
+        Still is finicky on Mobile though.
+        """
         if member is None:
             member = ctx.author
 
@@ -193,27 +264,41 @@ class Usercommands(commands.Cog):
             await ctx.send("This command does not work in my DM channel.")
             return
 
-        listeningstatus = next((activity for activity in member.activities if isinstance(activity, discord.Spotify)), None)
+        listeningstatus = next(
+            (
+                activity
+                for activity in member.activities
+                if isinstance(activity, discord.Spotify)
+            ),
+            None,
+        )
 
         if listeningstatus is None:
-            await ctx.send("This user is not listening to Spotify right now or their account is not connected.")
+            await ctx.send(
+                "This user is not listening to Spotify right now or their account is not connected."
+            )
         else:
             await ctx.send(f"https://open.spotify.com/track/{listeningstatus.track_id}")
 
-
-    #shows the current time as a timezone aware object
-    @commands.command(aliases=['currenttime'])
+    @commands.command(aliases=["currenttime"])
     async def time(self, ctx):
-        await ctx.send(f"The current time is: {discord.utils.format_dt(discord.utils.utcnow(), style='T')}")
+        """
+        Shows the current time as a timezone aware object.
+        """
+        await ctx.send(
+            f"The current time is: {discord.utils.format_dt(discord.utils.utcnow(), style='T')}"
+        )
 
-    #converts your input between metric and imperial units
-    @commands.command(aliases=['conversion'])
+    @commands.command(aliases=["conversion"])
     async def convert(self, ctx, *, input):
+        """
+        Converts your input between metric and imperial
+        and the other way around.
+        Works with most commonly used measurements.
+        """
         await ctx.send(utils.conversion.convert_input(input))
 
-
-
-    #error handling for the above
+    # error handling for the above
     @avatar.error
     async def avatar_error(self, ctx, error):
         if isinstance(error, commands.MemberNotFound):
@@ -231,15 +316,18 @@ class Usercommands(commands.Cog):
     @poll.error
     async def poll_error(self, ctx, error):
         if isinstance(error, commands.MissingRequiredArgument):
-            await ctx.send("You need to specify a question, and then at least 2 options!")
+            await ctx.send(
+                "You need to specify a question, and then at least 2 options!"
+            )
         else:
             raise error
-
 
     @modmail.error
     async def modmail_error(self, ctx, error):
         if isinstance(error, commands.MissingRequiredArgument):
-            await ctx.send("Please provide a message to the moderators. It should look something like:\n```%modmail (your message here)```")
+            await ctx.send(
+                "Please provide a message to the moderators. It should look something like:\n```%modmail (your message here)```"
+            )
         else:
             raise error
 
@@ -264,7 +352,9 @@ class Usercommands(commands.Cog):
         if isinstance(error, commands.MissingRequiredArgument):
             await ctx.send("You need to specify an emoji!")
         elif isinstance(error, commands.PartialEmojiConversionFailure):
-            await ctx.send("I couldn't find information on this emoji! Make sure this is not a default emoji.")
+            await ctx.send(
+                "I couldn't find information on this emoji! Make sure this is not a default emoji."
+            )
         else:
             raise error
 
@@ -290,7 +380,6 @@ class Usercommands(commands.Cog):
             await ctx.send("Invalid input! Please try again.")
         else:
             raise error
-
 
 
 def setup(bot):

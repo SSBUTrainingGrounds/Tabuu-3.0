@@ -1,15 +1,15 @@
-#bytecode stuff
+# bytecode stuff
 __pycache__/
 *.py[cod]
 
-#vscode
+# vscode
 .vscode/
 
-#virtual environment
+# virtual environment
 .venv/
 
-#bot token
+# bot token
 token.txt
 
-#log files
+# log files
 *.log*
