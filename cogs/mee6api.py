@@ -17,9 +17,6 @@ class Mee6api(commands.Cog):
     """
 
     def __init__(self, bot):
-        """
-        Starts the Update Roles Task on Startup.
-        """
         self.bot = bot
 
         self.update_roles.start()
