@@ -59,6 +59,11 @@ class TournamentReminders:
     # trials of smash is at 7pm EDT/EST
     TRIALS_OF_SMASH_HOUR = 17
     TRIALS_OF_SMASH_MINUTE = 55
+    # pings to remind the design team for the graphics, arbitrary time and day
+    # chose sundays at the same time of smash overseas
+    DESIGN_TEAM_DAY = 6
+    DESIGN_TEAM_HOUR = 12
+    DESIGN_TEAM_MINUTE = 55
 
 
 class TGChannelIDs:
@@ -78,6 +83,8 @@ class TGChannelIDs:
     STREAM_TEAM = 766721811962396672
     # channel for our tournament officials
     TOURNAMENT_TEAM = 812433498013958205
+    # channel for our designers
+    DESIGN_TEAM = 762475241514991687
     # the channel for the logs
     LOGCHANNEL = 739299509670248504
     # log channel specifically for warnings
@@ -159,6 +166,8 @@ class TGRoleIDs:
     STREAMER_ROLE = 752291084058755192
     # role for tournament officials
     TOURNAMENT_OFFICIAL_ROLE = 739299507816366104
+    # role for our designers
+    DESIGN_TEAM_ROLE = 801640022423371776
     # role for promoters
     PROMOTER_ROLE = 739299507799326847
 

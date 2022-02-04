@@ -43,11 +43,13 @@ class Events(commands.Cog):
         self.change_status.start()
         self.so_ping.start()
         self.tos_ping.start()
+        self.dt_ping.start()
 
     def cog_unload(self):
         self.change_status.cancel()
         self.so_ping.cancel()
         self.tos_ping.cancel()
+        self.dt_ping.cancel()
 
     @tasks.loop(seconds=300)
     async def change_status(self):
@@ -230,7 +232,7 @@ class Events(commands.Cog):
         logger = utils.logger.get_logger("bot.connection")
         logger.info("Resumed connection to discord.")
 
-    # the times of the tournament (or well 1 hour & 5 mins before it)
+    # the times of the tournaments (or well 1 hour & 5 mins before it)
     so_time = datetime.time(
         TournamentReminders.SMASH_OVERSEAS_HOUR,
         TournamentReminders.SMASH_OVERSEAS_MINUTE,
@@ -240,6 +242,12 @@ class Events(commands.Cog):
     tos_time = datetime.time(
         TournamentReminders.TRIALS_OF_SMASH_HOUR,
         TournamentReminders.TRIALS_OF_SMASH_MINUTE,
+        0,
+        0,
+    )
+    dt_time = datetime.time(
+        TournamentReminders.DESIGN_TEAM_HOUR,
+        TournamentReminders.DESIGN_TEAM_MINUTE,
         0,
         0,
     )
@@ -313,12 +321,43 @@ class Events(commands.Cog):
                     f"{to_role.mention} Reminder that Trials of Smash begins in 1 hour, who is available?"
                 )
 
+    @tasks.loop(time=utils.time.convert_to_utc(dt_time, TournamentReminders.TIMEZONE))
+    async def dt_ping(self):
+        """
+        This pings the design team sundays to start working on the tournament graphics
+        """
+
+        if not TournamentReminders.PING_ENABLED:
+            return
+
+        if (
+            datetime.datetime.now(ZoneInfo(TournamentReminders.TIMEZONE)).weekday()
+            == TournamentReminders.DESIGN_TEAM_DAY
+        ):
+            if (
+                datetime.datetime.now(ZoneInfo(TournamentReminders.TIMEZONE)).hour
+                <= TournamentReminders.DESIGN_TEAM_HOUR
+            ):
+                guild = self.bot.get_guild(GuildIDs.TRAINING_GROUNDS)
+                design_channel = self.bot.get_channel(TGChannelIDs.DESIGN_TEAM)
+                design_role = discord.utils.get(
+                    guild.roles, id=TGRoleIDs.DESIGN_TEAM_ROLE
+                )
+
+                await design_channel.send(
+                    f"{design_role.mention} Reminder that it is time to get to work on SO/ToS graphics! Who is able to take one or both?\n(Assuming alts have already been collected.)"
+                )
+
     @so_ping.before_loop
     async def before_so_ping(self):
         await self.bot.wait_until_ready()
 
     @tos_ping.before_loop
     async def before_tos_ping(self):
+        await self.bot.wait_until_ready()
+
+    @dt_ping.before_loop
+    async def before_dt_ping(self):
         await self.bot.wait_until_ready()
 
 
