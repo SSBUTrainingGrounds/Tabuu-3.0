@@ -89,9 +89,11 @@ class Funcommands(commands.Cog):
         Scary stuff.
         """
         messages = [
-            "Looking for a scare, huh... TAXES Oooooh very scary",
-            "Looking for a scare, huh... BIG DISJOINTS Oooooh super scary",
-            "Looking for a scare, huh... NINTENDO SWITCH ONLINE Oooooh hella scary",
+            "Looking for a scare, huh... TAXES Oooooh very scary!",
+            "Looking for a scare, huh... ARMORED SMASH ATTACKS Oooooh so scary!",
+            "Looking for a scare, huh... BIG DISJOINTS Oooooh super scary!",
+            "Looking for a scare, huh... NINTENDO SWITCH ONLINE Oooooh hella scary!",
+            "Looking for a scare, huh... ARTO BANNING YOU Oooooh incredibly scary!",
         ]
         await ctx.send(random.choice(messages))
 
