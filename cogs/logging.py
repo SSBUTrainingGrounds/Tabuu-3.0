@@ -34,19 +34,10 @@ class Logging(commands.Cog):
                 name=f"{str(after)} ({after.id})", icon_url=after.display_avatar.url
             )
             embed.timestamp = discord.utils.utcnow()
-            # users dont have an assigned guild we need to send it to each logchannel separately
-            # using try/except in case the bot is not on one of the servers
-            try:
-                tg_logs = self.bot.get_channel(TGChannelIDs.LOGCHANNEL)
-                await tg_logs.send(embed=embed)
-            except:
-                pass
-
-            try:
-                bg_logs = self.bot.get_channel(BGChannelIDs.LOGCHANNEL)
-                await bg_logs.send(embed=embed)
-            except:
-                pass
+            # we send the embed in every server that we have in common with the user
+            for server in after.mutual_guilds:
+                logs = self.bot.get_channel(self.get_logchannel(server.id))
+                await logs.send(embed=embed)
 
         # discriminator change
         if before.discriminator != after.discriminator:
@@ -59,17 +50,9 @@ class Logging(commands.Cog):
                 name=f"{str(after)} ({after.id})", icon_url=after.display_avatar.url
             )
             embed.timestamp = discord.utils.utcnow()
-            try:
-                tg_logs = self.bot.get_channel(TGChannelIDs.LOGCHANNEL)
-                await tg_logs.send(embed=embed)
-            except:
-                pass
-
-            try:
-                bg_logs = self.bot.get_channel(BGChannelIDs.LOGCHANNEL)
-                await bg_logs.send(embed=embed)
-            except:
-                pass
+            for server in after.mutual_guilds:
+                logs = self.bot.get_channel(self.get_logchannel(server.id))
+                await logs.send(embed=embed)
 
         # avatar change
         if before.display_avatar.url != after.display_avatar.url:
@@ -84,17 +67,9 @@ class Logging(commands.Cog):
                 name=f"{str(after)} ({after.id})", icon_url=after.display_avatar.url
             )
             embed.timestamp = discord.utils.utcnow()
-            try:
-                tg_logs = self.bot.get_channel(TGChannelIDs.LOGCHANNEL)
-                await tg_logs.send(embed=embed)
-            except:
-                pass
-
-            try:
-                bg_logs = self.bot.get_channel(BGChannelIDs.LOGCHANNEL)
-                await bg_logs.send(embed=embed)
-            except:
-                pass
+            for server in after.mutual_guilds:
+                logs = self.bot.get_channel(self.get_logchannel(server.id))
+                await logs.send(embed=embed)
 
     @commands.Cog.listener()
     async def on_member_update(self, before, after):
