@@ -61,10 +61,12 @@ class Stats(commands.Cog):
             return
         else:
             for member in members:
-                memberlist.append(f"{member.name}#{member.discriminator}")
+                memberlist.append(
+                    f"{discord.utils.escape_markdown(member.name)}#{member.discriminator}"
+                )
             all_members = ", ".join(memberlist)
             await ctx.send(
-                f"Users with the {role} role ({len(role.members)}):\n`{all_members}`"
+                f"Users with the {role} role ({len(role.members)}):\n{all_members}"
             )
 
     @commands.command(aliases=["serverinfo"])

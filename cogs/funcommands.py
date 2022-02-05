@@ -180,7 +180,8 @@ class Funcommands(commands.Cog):
             await ctx.send(
                 f"{ctx.author.mention} asked: `{question}`:\n{random.choice(messages)}"
             )
-        except:  # this is in the case if a user inputs a question with more than 2000 chars in length, the bot cant respond with the question.
+        # this is in the case if a user inputs a question with more than 2000 chars in length, the bot cant respond with the question.
+        except:
             await ctx.send(random.choice(messages))
 
     @commands.command()
@@ -198,18 +199,19 @@ class Funcommands(commands.Cog):
 
         question = discord.utils.remove_markdown(question)
 
+        # only gets online members
         online_members = [
             member
             for member in ctx.guild.members
             if member.status != discord.Status.offline
-        ]  # only gets online members
+        ]
         user = random.choice(online_members)
         try:
             await ctx.send(
-                f"{ctx.author.mention} asked: `Who {question}`:\n{str(user)}"
+                f"{ctx.author.mention} asked: `Who {question}`:\n{discord.utils.escape_markdown(str(user))}"
             )
-        except:  # same as above
-            await ctx.send(str(user))
+        except:
+            await ctx.send(discord.utils.escape_markdown(str(user)))
 
 
 def setup(bot):

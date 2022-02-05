@@ -136,7 +136,7 @@ class Admin(commands.Cog):
                     u.user,
                     reason=f"Automatic ban because user was banned on the {GuildNames.TG} server.",
                 )
-                await ctx.send(f"Banned {str(u.user)}!")
+                await ctx.send(f"Banned {discord.utils.escape_markdown(str(u.user))}!")
                 i += 1
 
         await ctx.send(f"Ban list was successfully synced. Banned {i} users.")
@@ -233,7 +233,9 @@ class Admin(commands.Cog):
         Renames the specified member to the specified name.
         """
         await member.edit(nick=name)
-        await ctx.send(f"Changed the display name of `{str(member)}` to `{name}`.")
+        await ctx.send(
+            f"Changed the display name of {discord.utils.escape_markdown(str(member))} to `{name}`."
+        )
 
     # error handling for the commands above
     # they all are fairly similar

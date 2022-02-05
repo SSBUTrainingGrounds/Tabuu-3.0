@@ -163,7 +163,7 @@ class Profile(commands.Cog):
             json.dump(profiles, f, indent=4)
 
         await ctx.send(
-            f"{ctx.author.mention}, I have successfully deleted the profile of {str(user)}."
+            f"{ctx.author.mention}, I have successfully deleted the profile of {discord.utils.escape_markdown(str(user))}."
         )
 
     @commands.command(aliases=["main", "setmain", "spmains", "profilemains"])
