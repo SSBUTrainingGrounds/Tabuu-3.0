@@ -37,7 +37,7 @@ class Profile(commands.Cog):
 
         for i_char in input_characters:
             # this strips leading and trailing whitespaces
-            i_char = i_char.lstrip()
+            i_char = i_char.strip()
 
             for match_char in characters["Characters"]:
                 # 2 characters (pt, aegis) have more than 1 id, so the ids need to be in a list

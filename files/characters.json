@@ -1,120 +1,140 @@
 {
-    "Characters":[
+    "Characters": [
         {
             "name": "random",
-            "id": ["0"],
+            "id": [
+                "0"
+            ],
             "emoji": "<:Random:929323351032340480>",
-            "aliases":[
+            "aliases": [
                 "everyone"
             ]
         },
         {
             "name": "mario",
-            "id": ["1"],
+            "id": [
+                "1"
+            ],
             "emoji": "<:Mario:929067419861913680>",
-            "aliases":[
+            "aliases": [
                 "jump man",
                 "red luigi"
             ]
         },
         {
             "name": "donkey kong",
-            "id": ["2"],
+            "id": [
+                "2"
+            ],
             "emoji": "<:DonkeyKong:929068080510939196>",
-            "aliases":[
+            "aliases": [
                 "dk",
                 "donkey",
-                "kong"
+                "kong",
+                "donkeykong"
             ]
         },
         {
             "name": "link",
-            "id": ["3"],
+            "id": [
+                "3"
+            ],
             "emoji": "<:Link:929068097640484935>",
-            "aliases":[
-
-            ]
+            "aliases": []
         },
         {
             "name": "samus",
-            "id": ["4"],
+            "id": [
+                "4"
+            ],
             "emoji": "<:Samus:929068111498457118>",
-            "aliases":[
-
-            ]
+            "aliases": []
         },
         {
             "name": "dark samus",
-            "id": ["4e"],
+            "id": [
+                "4e"
+            ],
             "emoji": "<:DarkSamus:929068123020202004>",
-            "aliases":[
-
+            "aliases": [
+                "darksamus"
             ]
         },
         {
             "name": "yoshi",
-            "id": ["5"],
+            "id": [
+                "5"
+            ],
             "emoji": "<:Yoshi:929068133694726165>",
-            "aliases":[
-
-            ]
+            "aliases": []
         },
         {
             "name": "kirby",
-            "id": ["6"],
+            "id": [
+                "6"
+            ],
             "emoji": "<:Kirby:929068624000483420>",
-            "aliases":[
+            "aliases": [
                 "kirbs"
             ]
         },
         {
             "name": "fox",
-            "id": ["7"],
+            "id": [
+                "7"
+            ],
             "emoji": "<:Fox:929068638810538004>",
-            "aliases":[
-
-            ]
+            "aliases": []
         },
         {
             "name": "pikachu",
-            "id": ["8"],
+            "id": [
+                "8"
+            ],
             "emoji": "<:Pikachu:929068651284402226>",
-            "aliases":[
+            "aliases": [
                 "pika"
             ]
         },
         {
             "name": "luigi",
-            "id": ["9"],
+            "id": [
+                "9"
+            ],
             "emoji": "<:Luigi:929068664911712346>",
-            "aliases":[
+            "aliases": [
                 "loogi",
                 "green mario"
             ]
         },
         {
             "name": "ness",
-            "id": ["10"],
+            "id": [
+                "10"
+            ],
             "emoji": "<:Ness:929068679205888103>",
-            "aliases":[
-
-            ]
+            "aliases": []
         },
         {
             "name": "captain falcon",
-            "id": ["11"],
+            "id": [
+                "11"
+            ],
             "emoji": "<:CaptainFalcon:929068694338940928>",
-            "aliases":[
+            "aliases": [
                 "falcon",
                 "cpt falcon",
-                "cpt. falcon"
+                "cpt. falcon",
+                "captainfalcon"
             ]
         },
         {
             "name": "jigglypuff",
-            "id": ["12"],
+            "id": [
+                "12"
+            ],
             "emoji": "<:Jigglypuff:929068706443698206>",
-            "aliases":[
+            "aliases": [
                 "jiggs",
                 "jiggly",
                 "puff"
@@ -122,112 +142,132 @@
         },
         {
             "name": "peach",
-            "id": ["13"],
+            "id": [
+                "13"
+            ],
             "emoji": "<:Peach:929068723829080105>",
-            "aliases":[
+            "aliases": [
                 "paisy"
             ]
         },
         {
             "name": "daisy",
-            "id": ["13e"],
+            "id": [
+                "13e"
+            ],
             "emoji": "<:Daisy:929068737317986324>",
-            "aliases":[
+            "aliases": [
                 "paisy"
             ]
         },
         {
             "name": "bowser",
-            "id": ["14"],
+            "id": [
+                "14"
+            ],
             "emoji": "<:Bowser:929068751758979124>",
-            "aliases":[
+            "aliases": [
                 "king koopa"
             ]
         },
         {
             "name": "ice climbers",
-            "id": ["15"],
+            "id": [
+                "15"
+            ],
             "emoji": "<:IceClimbers:929068764748734604>",
-            "aliases":[
+            "aliases": [
                 "icies",
                 "ice",
-                "climbers"
+                "climbers",
+                "iceclimbers"
             ]
         },
         {
             "name": "sheik",
-            "id": ["16"],
+            "id": [
+                "16"
+            ],
             "emoji": "<:Sheik:929068778556358726>",
-            "aliases":[
+            "aliases": [
                 "shiek"
             ]
         },
         {
             "name": "zelda",
-            "id": ["17"],
+            "id": [
+                "17"
+            ],
             "emoji": "<:Zelda:929068791147663461>",
-            "aliases":[
-
-            ]
+            "aliases": []
         },
         {
             "name": "dr. mario",
-            "id": ["18"],
+            "id": [
+                "18"
+            ],
             "emoji": "<:DrMario:929131885525868595>",
-            "aliases":[
+            "aliases": [
                 "doc",
                 "doctor mario",
                 "dr mario",
-                "doc mario"
+                "doc mario",
+                "drmario",
+                "doctormario"
             ]
         },
         {
             "name": "pichu",
-            "id": ["19"],
+            "id": [
+                "19"
+            ],
             "emoji": "<:Pichu:929068802094805023>",
-            "aliases":[
-
-            ]
+            "aliases": []
         },
         {
             "name": "falco",
-            "id": ["20"],
+            "id": [
+                "20"
+            ],
             "emoji": "<:Falco:929069454011277363>",
-            "aliases":[
-
-            ]
+            "aliases": []
         },
         {
             "name": "marth",
-            "id": ["21"],
+            "id": [
+                "21"
+            ],
             "emoji": "<:Marth:929069469005930546>",
-            "aliases":[
-
-            ]
+            "aliases": []
         },
         {
             "name": "lucina",
-            "id": ["21e"],
+            "id": [
+                "21e"
+            ],
             "emoji": "<:Lucina:929069481861447690>",
-            "aliases":[
-
-            ]
+            "aliases": []
         },
         {
             "name": "young link",
-            "id": ["22"],
+            "id": [
+                "22"
+            ],
             "emoji": "<:YoungLink:929069496264708166>",
-            "aliases":[
+            "aliases": [
                 "yl",
                 "yink",
-                "ylink"
+                "ylink",
+                "younglink"
             ]
         },
         {
             "name": "ganondorf",
-            "id": ["23"],
+            "id": [
+                "23"
+            ],
             "emoji": "<:Ganondorf:929069510844121128>",
-            "aliases":[
+            "aliases": [
                 "ganon",
                 "dorf",
                 "gdorf"
@@ -235,34 +275,42 @@
         },
         {
             "name": "mewtwo",
-            "id": ["24"],
+            "id": [
+                "24"
+            ],
             "emoji": "<:Mewtwo:929069525981343884>",
-            "aliases":[
+            "aliases": [
                 "mew2",
                 "m2"
             ]
         },
         {
             "name": "roy",
-            "id": ["25"],
+            "id": [
+                "25"
+            ],
             "emoji": "<:Roy:929069540460097537>",
-            "aliases":[
+            "aliases": [
                 "chroy"
             ]
         },
         {
             "name": "chrom",
-            "id": ["25e"],
+            "id": [
+                "25e"
+            ],
             "emoji": "<:Chrom:929069556243238932>",
-            "aliases":[
+            "aliases": [
                 "chroy"
             ]
         },
         {
             "name": "mr. game & watch",
-            "id": ["26"],
+            "id": [
+                "26"
+            ],
             "emoji": "<:MrGameAndWatch:929069732391419914>",
-            "aliases":[
+            "aliases": [
                 "g&w",
                 "game and watch",
                 "game & watch",
@@ -281,134 +329,162 @@
         },
         {
             "name": "meta knight",
-            "id": ["27"],
+            "id": [
+                "27"
+            ],
             "emoji": "<:MetaKnight:929069577042796614>",
-            "aliases":[
-                "mk"
+            "aliases": [
+                "mk",
+                "metaknight"
             ]
         },
         {
             "name": "pit",
-            "id": ["28"],
+            "id": [
+                "28"
+            ],
             "emoji": "<:Pit:929069591861280790>",
-            "aliases":[
+            "aliases": [
                 "pits",
                 "the pits"
             ]
         },
         {
             "name": "dark pit",
-            "id": ["28e"],
+            "id": [
+                "28e"
+            ],
             "emoji": "<:DarkPit:929069603999580160>",
-            "aliases":[
+            "aliases": [
                 "pits",
                 "the pits",
-                "pittoo"
+                "pittoo",
+                "darkpit"
             ]
         },
         {
             "name": "zero suit samus",
-            "id": ["29"],
+            "id": [
+                "29"
+            ],
             "emoji": "<:ZeroSuitSamus:929069615953379430>",
-            "aliases":[
+            "aliases": [
                 "zss",
-                "zero samus"
+                "zero samus",
+                "zero suit",
+                "zerosuitsamus",
+                "zerosuit"
             ]
         },
         {
             "name": "wario",
-            "id": ["30"],
+            "id": [
+                "30"
+            ],
             "emoji": "<:Wario:929069628108460123>",
-            "aliases":[
-
-            ]
+            "aliases": []
         },
         {
             "name": "snake",
-            "id": ["31"],
+            "id": [
+                "31"
+            ],
             "emoji": "<:Snake:929069642415214712>",
-            "aliases":[
-
-            ]
+            "aliases": []
         },
         {
             "name": "ike",
-            "id": ["32"],
+            "id": [
+                "32"
+            ],
             "emoji": "<:Ike:929069776364503090>",
-            "aliases":[
-
-            ]
+            "aliases": []
         },
         {
             "name": "pokémon trainer",
-            "id": ["33", "34", "35"],
+            "id": [
+                "33",
+                "34",
+                "35"
+            ],
             "emoji": "<:PokemonTrainer:929069790268620851>",
-            "aliases":[
+            "aliases": [
                 "pokémon trainer",
                 "pt",
                 "pokemon trainer",
                 "squirtle",
                 "ivysaur",
                 "charizard",
-                "zard"
+                "zard",
+                "pokemontrainer"
             ]
         },
         {
             "name": "diddy kong",
-            "id": ["36"],
+            "id": [
+                "36"
+            ],
             "emoji": "<:DiddyKong:929069841720160357>",
-            "aliases":[
-                "diddy"
+            "aliases": [
+                "diddy",
+                "diddykong"
             ]
         },
         {
             "name": "lucas",
-            "id": ["37"],
+            "id": [
+                "37"
+            ],
             "emoji": "<:Lucas:929070444823330888>",
-            "aliases":[
-
-            ]
+            "aliases": []
         },
         {
             "name": "sonic",
-            "id": ["38"],
+            "id": [
+                "38"
+            ],
             "emoji": "<:Sonic:929070459562127421>",
-            "aliases":[
+            "aliases": [
                 "sanic"
             ]
         },
         {
             "name": "king dedede",
-            "id": ["39"],
+            "id": [
+                "39"
+            ],
             "emoji": "<:KingDedede:929070473311027300>",
-            "aliases":[
+            "aliases": [
                 "dedede",
                 "d3",
                 "king d3",
-                "king dede"
+                "king dede",
+                "kingdedede"
             ]
         },
         {
             "name": "olimar",
-            "id": ["40"],
+            "id": [
+                "40"
+            ],
             "emoji": "<:Olimar:929070486833491989>",
-            "aliases":[
-
-            ]
+            "aliases": []
         },
         {
             "name": "lucario",
-            "id": ["41"],
+            "id": [
+                "41"
+            ],
             "emoji": "<:Lucario:929070500406247444>",
-            "aliases":[
-
-            ]
+            "aliases": []
         },
         {
             "name": "r.o.b.",
-            "id": ["42"],
+            "id": [
+                "42"
+            ],
             "emoji": "<:ROB:929070515329589268>",
-            "aliases":[
+            "aliases": [
                 "rob",
                 "r.o.b",
                 "robert"
@@ -416,120 +492,152 @@
         },
         {
             "name": "toon link",
-            "id": ["43"],
+            "id": [
+                "43"
+            ],
             "emoji": "<:ToonLink:929070531209199646>",
-            "aliases":[
+            "aliases": [
                 "tink",
-                "tl"
+                "tl",
+                "toonlink"
             ]
         },
         {
             "name": "wolf",
-            "id": ["44"],
+            "id": [
+                "44"
+            ],
             "emoji": "<:Wolf:929070546166120469>",
-            "aliases":[
-
-            ]
+            "aliases": []
         },
         {
             "name": "villager",
-            "id": ["45"],
+            "id": [
+                "45"
+            ],
             "emoji": "<:Villager:929070559650775050>",
-            "aliases":[
+            "aliases": [
                 "villy"
             ]
         },
         {
             "name": "mega man",
-            "id": ["46"],
+            "id": [
+                "46"
+            ],
             "emoji": "<:MegaMan:929086966178398209>",
-            "aliases":[
-                "mm"
+            "aliases": [
+                "mm",
+                "megaman"
             ]
         },
         {
             "name": "wii fit trainer",
-            "id": ["47"],
+            "id": [
+                "47"
+            ],
             "emoji": "<:WiiFitTrainer:929086966115483748>",
-            "aliases":[
+            "aliases": [
                 "wft",
                 "wii fit",
-                "wtf"
+                "wtf",
+                "wiifittrainer"
             ]
         },
         {
             "name": "rosalina & luma",
-            "id": ["48"],
+            "id": [
+                "48"
+            ],
             "emoji": "<:RosalinaAndLuma:929086965977075823>",
-            "aliases":[
+            "aliases": [
                 "rosa",
                 "rosalina",
                 "luma",
                 "rosalina and luma",
-                "rosalina n luma"
+                "rosalina n luma",
+                "rosalinaandluma"
             ]
         },
         {
             "name": "little mac",
-            "id": ["49"],
+            "id": [
+                "49"
+            ],
             "emoji": "<:LittleMac:929086966069346324>",
-            "aliases":[
+            "aliases": [
                 "mac",
-                "lil mac"
+                "lil mac",
+                "littlemac"
             ]
         },
         {
             "name": "greninja",
-            "id": ["50"],
+            "id": [
+                "50"
+            ],
             "emoji": "<:Greninja:929086966065160242>",
-            "aliases":[
+            "aliases": [
                 "gren",
                 "ninja"
             ]
         },
         {
             "name": "mii brawler",
-            "id": ["51"],
+            "id": [
+                "51"
+            ],
             "emoji": "<:MiiBrawler:929086966136447026>",
-            "aliases":[
-                "brawler"
+            "aliases": [
+                "brawler",
+                "miibrawler"
             ]
         },
         {
             "name": "mii swordfighter",
-            "id": ["52"],
+            "id": [
+                "52"
+            ],
             "emoji": "<:MiiSwordfighter:929086965868036138>",
-            "aliases":[
+            "aliases": [
                 "swordfighter",
                 "swordie",
                 "mii swordie",
                 "mii sword",
-                "sword"
+                "sword",
+                "miiswordfighter"
             ]
         },
         {
             "name": "mii gunner",
-            "id": ["53"],
+            "id": [
+                "53"
+            ],
             "emoji": "<:MiiGunner:929086966207750214>",
-            "aliases":[
+            "aliases": [
                 "gunner",
                 "mii gun",
-                "gun"
+                "gun",
+                "miigunner"
             ]
         },
         {
             "name": "palutena",
-            "id": ["54"],
+            "id": [
+                "54"
+            ],
             "emoji": "<:Palutena:929086966367158283>",
-            "aliases":[
+            "aliases": [
                 "palu"
             ]
         },
         {
             "name": "pac man",
-            "id": ["55"],
+            "id": [
+                "55"
+            ],
             "emoji": "<:PacMan:929086966274875432>",
-            "aliases":[
+            "aliases": [
                 "pac",
                 "pacman",
                 "pac-man"
@@ -537,214 +645,254 @@
         },
         {
             "name": "robin",
-            "id": ["56"],
+            "id": [
+                "56"
+            ],
             "emoji": "<:Robin:929086966287446066>",
-            "aliases":[
-
-            ]
+            "aliases": []
         },
         {
             "name": "shulk",
-            "id": ["57"],
+            "id": [
+                "57"
+            ],
             "emoji": "<:Shulk:929086965897363538>",
-            "aliases":[
-
-            ]
+            "aliases": []
         },
         {
             "name": "bowser jr.",
-            "id": ["58"],
+            "id": [
+                "58"
+            ],
             "emoji": "<:BowserJr:929086966216151130>",
-            "aliases":[
+            "aliases": [
                 "bj",
                 "bowser junior",
                 "bowser jr",
-                "bjr"
+                "bjr",
+                "bowserjr"
             ]
         },
         {
             "name": "duck hunt",
-            "id": ["59"],
+            "id": [
+                "59"
+            ],
             "emoji": "<:DuckHunt:929086965746389065>",
-            "aliases":[
+            "aliases": [
                 "dh",
                 "dhd",
-                "duck hunt duo"
+                "duck hunt duo",
+                "duckhunt"
             ]
         },
         {
             "name": "ryu",
-            "id": ["60"],
+            "id": [
+                "60"
+            ],
             "emoji": "<:Ryu:929086966224547850>",
-            "aliases":[
+            "aliases": [
                 "shotos",
                 "shoto"
             ]
         },
         {
             "name": "ken",
-            "id": ["60e"],
+            "id": [
+                "60e"
+            ],
             "emoji": "<:Ken:929086965826060299>",
-            "aliases":[
+            "aliases": [
                 "shotos",
                 "shoto"
             ]
         },
         {
             "name": "cloud",
-            "id": ["61"],
+            "id": [
+                "61"
+            ],
             "emoji": "<:Cloud:929086966060945428>",
-            "aliases":[
-
-            ]
+            "aliases": []
         },
         {
             "name": "corrin",
-            "id": ["62"],
+            "id": [
+                "62"
+            ],
             "emoji": "<:Corrin:929086966300016650>",
-            "aliases":[
+            "aliases": [
                 "corn"
             ]
         },
         {
             "name": "bayonetta",
-            "id": ["63"],
+            "id": [
+                "63"
+            ],
             "emoji": "<:Bayonetta:929086965930938409>",
-            "aliases":[
+            "aliases": [
                 "bayo"
             ]
         },
         {
             "name": "inkling",
-            "id": ["64"],
+            "id": [
+                "64"
+            ],
             "emoji": "<:Inkling:929086966039982090>",
-            "aliases":[
+            "aliases": [
                 "ink",
                 "squid"
             ]
         },
         {
             "name": "ridley",
-            "id": ["65"],
+            "id": [
+                "65"
+            ],
             "emoji": "<:Ridley:929086966023217252>",
-            "aliases":[
-
-            ]
+            "aliases": []
         },
         {
             "name": "simon",
-            "id": ["66"],
+            "id": [
+                "66"
+            ],
             "emoji": "<:Simon:929086965926748242>",
-            "aliases":[
+            "aliases": [
                 "belmont",
                 "belmonts"
             ]
         },
         {
             "name": "richter",
-            "id": ["66e"],
+            "id": [
+                "66e"
+            ],
             "emoji": "<:Richter:929086965985460294>",
-            "aliases":[
+            "aliases": [
                 "belmont",
                 "belmonts"
             ]
         },
         {
             "name": "king k. rool",
-            "id": ["67"],
+            "id": [
+                "67"
+            ],
             "emoji": "<:KingKRool:929086966035796039>",
-            "aliases":[
+            "aliases": [
                 "kkr",
                 "king k rool",
                 "king rool",
                 "king k",
                 "king k.",
-                "k rool"
+                "k rool",
+                "kingkrool",
+                "krool"
             ]
         },
         {
             "name": "isabelle",
-            "id": ["68"],
+            "id": [
+                "68"
+            ],
             "emoji": "<:Isabelle:929086965897363547>",
-            "aliases":[
+            "aliases": [
                 "isa",
                 "belle"
             ]
         },
         {
             "name": "incineroar",
-            "id": ["69"],
+            "id": [
+                "69"
+            ],
             "emoji": "<:Incineroar:929086965763145828>",
-            "aliases":[
+            "aliases": [
                 "incin"
             ]
         },
         {
             "name": "piranha plant",
-            "id": ["70"],
+            "id": [
+                "70"
+            ],
             "emoji": "<:PiranhaPlant:929086965410857012>",
-            "aliases":[
+            "aliases": [
                 "plant",
-                "piranha"
+                "piranha",
+                "piranhaplant"
             ]
         },
         {
             "name": "joker",
-            "id": ["71"],
+            "id": [
+                "71"
+            ],
             "emoji": "<:Joker:929086965402464307>",
-            "aliases":[
-
-            ]
+            "aliases": []
         },
         {
             "name": "hero",
-            "id": ["72"],
+            "id": [
+                "72"
+            ],
             "emoji": "<:Hero:929086965717028934>",
-            "aliases":[
-
-            ]
+            "aliases": []
         },
         {
             "name": "banjo & kazooie",
-            "id": ["73"],
+            "id": [
+                "73"
+            ],
             "emoji": "<:BanjoAndKazooie:929086965595402311>",
-            "aliases":[
+            "aliases": [
                 "banjo",
                 "kazooie",
                 "banjo and kazooie",
                 "banjo n kazooie",
-                "banjo kazooie"
+                "banjo kazooie",
+                "banjoandkazooie",
+                "banjokazooie"
             ]
         },
         {
             "name": "terry",
-            "id": ["74"],
+            "id": [
+                "74"
+            ],
             "emoji": "<:Terry:929086965721215016>",
-            "aliases":[
-
-            ]
+            "aliases": []
         },
         {
             "name": "byleth",
-            "id": ["75"],
+            "id": [
+                "75"
+            ],
             "emoji": "<:Byleth:929086965331152998>",
-            "aliases":[
-
-            ]
+            "aliases": []
         },
         {
             "name": "min min",
-            "id": ["76"],
+            "id": [
+                "76"
+            ],
             "emoji": "<:MinMin:929086965410848859>",
-            "aliases":[
-                "min"
+            "aliases": [
+                "min",
+                "minmin"
             ]
         },
         {
             "name": "steve / alex",
-            "id": ["77"],
+            "id": [
+                "77"
+            ],
             "emoji": "<:Steve:929086965729611876>",
-            "aliases":[
+            "aliases": [
                 "steve",
                 "alex",
                 "enderman",
@@ -753,17 +901,22 @@
         },
         {
             "name": "sephiroth",
-            "id": ["78"],
+            "id": [
+                "78"
+            ],
             "emoji": "<:Sephiroth:929086965842837554>",
-            "aliases":[
+            "aliases": [
                 "seph"
             ]
         },
         {
             "name": "aegis",
-            "id": ["79", "80"],
+            "id": [
+                "79",
+                "80"
+            ],
             "emoji": "<:Aegis:929086965758976040>",
-            "aliases":[
+            "aliases": [
                 "pythra",
                 "aegis",
                 "pyra",
@@ -771,24 +924,27 @@
                 "pyra/mythra",
                 "pyra / mythra",
                 "pyra and mythra",
-                "pyra mythra"
+                "pyra mythra",
+                "pyramythra"
             ]
         },
         {
             "name": "kazuya",
-            "id": ["81"],
+            "id": [
+                "81"
+            ],
             "emoji": "<:Kazuya:929087989936709652>",
-            "aliases":[
+            "aliases": [
                 "kazooya"
             ]
         },
         {
             "name": "sora",
-            "id": ["82"],
+            "id": [
+                "82"
+            ],
             "emoji": "<:Sora:929086965586997268>",
-            "aliases":[
-                
-            ]
+            "aliases": []
         }
     ]
 }
