@@ -63,47 +63,47 @@ class Ranking(commands.Cog):
         with open(r"./json/ranking.json", "r") as f:
             ranking = json.load(f)
 
-            elo800role = discord.utils.get(
-                guild.roles, id=TGMatchmakingRoleIDs.ELO_800_ROLE
-            )
-            elo950role = discord.utils.get(
-                guild.roles, id=TGMatchmakingRoleIDs.ELO_950_ROLE
-            )
-            elo1050role = discord.utils.get(
-                guild.roles, id=TGMatchmakingRoleIDs.ELO_1050_ROLE
-            )
-            elo1200role = discord.utils.get(
-                guild.roles, id=TGMatchmakingRoleIDs.ELO_1200_ROLE
-            )
-            elo1300role = discord.utils.get(
-                guild.roles, id=TGMatchmakingRoleIDs.ELO_1300_ROLE
-            )
-            elomaxrole = discord.utils.get(
-                guild.roles, id=TGMatchmakingRoleIDs.ELO_MAX_ROLE
-            )
+        elo800role = discord.utils.get(
+            guild.roles, id=TGMatchmakingRoleIDs.ELO_800_ROLE
+        )
+        elo950role = discord.utils.get(
+            guild.roles, id=TGMatchmakingRoleIDs.ELO_950_ROLE
+        )
+        elo1050role = discord.utils.get(
+            guild.roles, id=TGMatchmakingRoleIDs.ELO_1050_ROLE
+        )
+        elo1200role = discord.utils.get(
+            guild.roles, id=TGMatchmakingRoleIDs.ELO_1200_ROLE
+        )
+        elo1300role = discord.utils.get(
+            guild.roles, id=TGMatchmakingRoleIDs.ELO_1300_ROLE
+        )
+        elomaxrole = discord.utils.get(
+            guild.roles, id=TGMatchmakingRoleIDs.ELO_MAX_ROLE
+        )
 
-            elo_roles = [
-                elo800role,
-                elo950role,
-                elo1050role,
-                elo1200role,
-                elo1300role,
-                elomaxrole,
-            ]
-            # the role change only triggers if the user does not have their current elo role,
-            # so its fine to remove ALL others first and then give the new one out.
-            # Also we only start to give these out at 5 games played automatically,
-            # or after 1 game if you want it using %rankstats.
-            if (
-                ranking[f"{member.id}"]["wins"] + ranking[f"{member.id}"]["losses"]
-                >= threshold
-            ):
-                role = self.get_ranked_role(member, guild)
-                if role not in member.roles:
-                    for r in elo_roles:
-                        if r in member.roles:
-                            await member.remove_roles(r)
-                    await member.add_roles(role)
+        elo_roles = [
+            elo800role,
+            elo950role,
+            elo1050role,
+            elo1200role,
+            elo1300role,
+            elomaxrole,
+        ]
+        # the role change only triggers if the user does not have their current elo role,
+        # so its fine to remove ALL others first and then give the new one out.
+        # Also we only start to give these out at 5 games played automatically,
+        # or after 1 game if you want it using %rankstats.
+        if (
+            ranking[f"{member.id}"]["wins"] + ranking[f"{member.id}"]["losses"]
+            >= threshold
+        ):
+            role = self.get_ranked_role(member, guild)
+            if role not in member.roles:
+                for r in elo_roles:
+                    if r in member.roles:
+                        await member.remove_roles(r)
+                await member.add_roles(role)
 
     async def remove_ranked_role(self, member: discord.Member, guild: discord.Guild):
         """
@@ -284,7 +284,6 @@ class Ranking(commands.Cog):
 
         timestamp = discord.utils.utcnow().timestamp()
 
-        # gets your elo score and the according value
         pingrole = self.get_ranked_role(ctx.author, ctx.guild)
 
         self.store_ranked_ping(ctx, pingrole, timestamp)
