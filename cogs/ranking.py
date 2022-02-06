@@ -14,10 +14,232 @@ class Ranking(commands.Cog):
     def __init__(self, bot):
         self.bot = bot
 
+    def get_ranked_role(self, member: discord.Member, guild: discord.Guild):
+        """
+        This function retrieves the ranked role of a member.
+        """
+        with open(r"./json/ranking.json", "r") as f:
+            ranking = json.load(f)
+
+        try:
+            elo = ranking[f"{member.id}"]["elo"]
+            if elo < 800:
+                pingrole = discord.utils.get(
+                    guild.roles, id=TGMatchmakingRoleIDs.ELO_800_ROLE
+                )
+            if elo < 950 and elo > 799:
+                pingrole = discord.utils.get(
+                    guild.roles, id=TGMatchmakingRoleIDs.ELO_950_ROLE
+                )
+            if elo < 1050 and elo > 949:
+                pingrole = discord.utils.get(
+                    guild.roles, id=TGMatchmakingRoleIDs.ELO_1050_ROLE
+                )
+            if elo < 1200 and elo > 1049:
+                pingrole = discord.utils.get(
+                    guild.roles, id=TGMatchmakingRoleIDs.ELO_1200_ROLE
+                )
+            if elo < 1300 and elo > 1199:
+                pingrole = discord.utils.get(
+                    guild.roles, id=TGMatchmakingRoleIDs.ELO_1300_ROLE
+                )
+            if elo > 1299:
+                pingrole = discord.utils.get(
+                    guild.roles, id=TGMatchmakingRoleIDs.ELO_MAX_ROLE
+                )
+        except KeyError:
+            pingrole = discord.utils.get(
+                guild.roles, id=TGMatchmakingRoleIDs.ELO_1050_ROLE
+            )
+
+        return pingrole
+
+    async def update_ranked_role(
+        self, member: discord.Member, guild: discord.Guild, threshold: int = 5
+    ):
+        """
+        This function updates the ranked roles of a member.
+        """
+        with open(r"./json/ranking.json", "r") as f:
+            ranking = json.load(f)
+
+            elo800role = discord.utils.get(
+                guild.roles, id=TGMatchmakingRoleIDs.ELO_800_ROLE
+            )
+            elo950role = discord.utils.get(
+                guild.roles, id=TGMatchmakingRoleIDs.ELO_950_ROLE
+            )
+            elo1050role = discord.utils.get(
+                guild.roles, id=TGMatchmakingRoleIDs.ELO_1050_ROLE
+            )
+            elo1200role = discord.utils.get(
+                guild.roles, id=TGMatchmakingRoleIDs.ELO_1200_ROLE
+            )
+            elo1300role = discord.utils.get(
+                guild.roles, id=TGMatchmakingRoleIDs.ELO_1300_ROLE
+            )
+            elomaxrole = discord.utils.get(
+                guild.roles, id=TGMatchmakingRoleIDs.ELO_MAX_ROLE
+            )
+
+            elo_roles = [
+                elo800role,
+                elo950role,
+                elo1050role,
+                elo1200role,
+                elo1300role,
+                elomaxrole,
+            ]
+            # the role change only triggers if the user does not have their current elo role,
+            # so its fine to remove ALL others first and then give the new one out.
+            # Also we only start to give these out at 5 games played automatically,
+            # or after 1 game if you want it using %rankstats.
+            if (
+                ranking[f"{member.id}"]["wins"] + ranking[f"{member.id}"]["losses"]
+                >= threshold
+            ):
+                role = self.get_ranked_role(member, guild)
+                if role not in member.roles:
+                    for r in elo_roles:
+                        if r in member.roles:
+                            await member.remove_roles(r)
+                    await member.add_roles(role)
+
+    async def remove_ranked_role(self, member: discord.Member, guild: discord.Guild):
+        """
+        Removes every ranked role a user has.
+        """
+        elo800role = discord.utils.get(
+            guild.roles, id=TGMatchmakingRoleIDs.ELO_800_ROLE
+        )
+        elo950role = discord.utils.get(
+            guild.roles, id=TGMatchmakingRoleIDs.ELO_950_ROLE
+        )
+        elo1050role = discord.utils.get(
+            guild.roles, id=TGMatchmakingRoleIDs.ELO_1050_ROLE
+        )
+        elo1200role = discord.utils.get(
+            guild.roles, id=TGMatchmakingRoleIDs.ELO_1200_ROLE
+        )
+        elo1300role = discord.utils.get(
+            guild.roles, id=TGMatchmakingRoleIDs.ELO_1300_ROLE
+        )
+        elomaxrole = discord.utils.get(
+            guild.roles, id=TGMatchmakingRoleIDs.ELO_MAX_ROLE
+        )
+        elo_roles = [
+            elo800role,
+            elo950role,
+            elo1050role,
+            elo1200role,
+            elo1300role,
+            elomaxrole,
+        ]
+        for role in elo_roles:
+            if role in member.roles:
+                await member.remove_roles(role)
+
+    def create_ranked_profile(self, member: discord.Member):
+        """
+        Creates an entry in the ranked file for a user,
+        if the user is not already in there.
+        """
+        with open(r"./json/ranking.json", "r") as f:
+            ranking = json.load(f)
+
+        if not f"{member.id}" in ranking:
+            ranking[f"{member.id}"] = {}
+            ranking[f"{member.id}"]["wins"] = 0
+            ranking[f"{member.id}"]["losses"] = 0
+            ranking[f"{member.id}"]["elo"] = 1000
+            ranking[f"{member.id}"]["matches"] = []
+
+        with open(r"./json/ranking.json", "w") as f:
+            json.dump(ranking, f, indent=4)
+
+    def calculate_elo(self, winner: discord.Member, loser: discord.Member, k=32):
+        """
+        Calculates the new Elo value of the winner and loser.
+        Uses the classic Elo calculations.
+        """
+        with open(r"./json/ranking.json", "r") as f:
+            ranking = json.load(f)
+
+        winner_elo = ranking[f"{winner.id}"]["elo"]
+        loser_elo = ranking[f"{loser.id}"]["elo"]
+
+        winner_expected = 1 / (1 + 10 ** ((loser_elo - winner_elo) / 400))
+        loser_expected = 1 / (1 + 10 ** ((winner_elo - loser_elo) / 400))
+
+        new_winner_elo = round(winner_elo + k * (1 - winner_expected))
+        new_loser_elo = round(loser_elo + k * (0 - loser_expected))
+
+        # the winner gains as much elo as the loser loses.
+        difference = new_winner_elo - winner_elo
+
+        return new_winner_elo, new_loser_elo, difference
+
+    def update_ranked_stats(self, member: discord.Member, outcome: str, eloupdate: int):
+        """
+        Updates the stats after a match of a user.
+        """
+        with open(r"./json/ranking.json", "r") as f:
+            ranking = json.load(f)
+
+        if outcome == "win":
+            ranking[f"{member.id}"]["wins"] += 1
+            ranking[f"{member.id}"]["matches"].append("W")
+
+        elif outcome == "lose":
+            ranking[f"{member.id}"]["losses"] += 1
+            ranking[f"{member.id}"]["matches"].append("L")
+
+        ranking[f"{member.id}"]["elo"] = eloupdate
+
+        with open(r"./json/ranking.json", "w") as f:
+            json.dump(ranking, f, indent=4)
+
+    def store_ranked_ping(self, ctx, role: discord.Role, timestamp: float):
+        """
+        Stores your ranked ping.
+        """
+        with open(r"./json/rankedpings.json", "r") as fp:
+            rankedusers = json.load(fp)
+
+        # stores your ping
+        rankedusers[f"{ctx.author.id}"] = {}
+        rankedusers[f"{ctx.author.id}"] = {
+            "rank": role.id,
+            "channel": ctx.channel.id,
+            "time": timestamp,
+        }
+
+        with open(r"./json/rankedpings.json", "w") as fp:
+            json.dump(rankedusers, fp, indent=4)
+
+    def delete_ranked_ping(self, ctx):
+        """
+        Deletes your ranked ping.
+        """
+        with open(r"./json/rankedpings.json", "r") as fp:
+            rankedusers = json.load(fp)
+
+        try:
+            del rankedusers[f"{ctx.message.author.id}"]
+        except KeyError:
+            logger = utils.logger.get_logger("bot.mm")
+            logger.warning(
+                f"Tried to delete a ranked ping by {str(ctx.message.author)} but the ping was already deleted."
+            )
+
+        with open(r"./json/rankedpings.json", "w") as fp:
+            json.dump(rankedusers, fp, indent=4)
+
     async def get_recent_ranked_pings(self, timestamp: float):
         """
         Gets a list with all the recent ranked pings.
         We need a different approach than unranked here because we also store the rank role here.
+        This is its own function because we need to export it.
         """
         with open(r"./json/rankedpings.json", "r") as f:
             user_pings = json.load(f)
@@ -62,55 +284,10 @@ class Ranking(commands.Cog):
 
         timestamp = discord.utils.utcnow().timestamp()
 
-        with open(r"./json/ranking.json", "r") as f:
-            ranking = json.load(f)
-
         # gets your elo score and the according value
-        try:
-            elo = ranking[f"{ctx.author.id}"]["elo"]
-            if elo < 800:
-                pingrole = discord.utils.get(
-                    ctx.guild.roles, id=TGMatchmakingRoleIDs.ELO_800_ROLE
-                )
-            if elo < 950 and elo > 799:
-                pingrole = discord.utils.get(
-                    ctx.guild.roles, id=TGMatchmakingRoleIDs.ELO_950_ROLE
-                )
-            if elo < 1050 and elo > 949:
-                pingrole = discord.utils.get(
-                    ctx.guild.roles, id=TGMatchmakingRoleIDs.ELO_1050_ROLE
-                )
-            if elo < 1200 and elo > 1049:
-                pingrole = discord.utils.get(
-                    ctx.guild.roles, id=TGMatchmakingRoleIDs.ELO_1200_ROLE
-                )
-            if elo < 1300 and elo > 1199:
-                pingrole = discord.utils.get(
-                    ctx.guild.roles, id=TGMatchmakingRoleIDs.ELO_1300_ROLE
-                )
-            if elo > 1299:
-                pingrole = discord.utils.get(
-                    ctx.guild.roles, id=TGMatchmakingRoleIDs.ELO_MAX_ROLE
-                )
-        except:
-            # default elo role, in case someone isnt in the database
-            pingrole = discord.utils.get(
-                ctx.guild.roles, id=TGMatchmakingRoleIDs.ELO_1050_ROLE
-            )
+        pingrole = self.get_ranked_role(ctx.author, ctx.guild)
 
-        with open(r"./json/rankedpings.json", "r") as fp:
-            rankedusers = json.load(fp)
-
-        # stores your ping
-        rankedusers[f"{ctx.author.id}"] = {}
-        rankedusers[f"{ctx.author.id}"] = {
-            "rank": pingrole.id,
-            "channel": ctx.channel.id,
-            "time": timestamp,
-        }
-
-        with open(r"./json/rankedpings.json", "w") as fp:
-            json.dump(rankedusers, fp, indent=4)
+        self.store_ranked_ping(ctx, pingrole, timestamp)
 
         # gets all of the other active pings
         searches = await self.get_recent_ranked_pings(timestamp)
@@ -136,19 +313,7 @@ class Ranking(commands.Cog):
         # waits 30 mins and deletes the ping afterwards
         await asyncio.sleep(1800)
 
-        with open(r"./json/rankedpings.json", "r") as fp:
-            rankedusers = json.load(fp)
-
-        try:
-            del rankedusers[f"{ctx.message.author.id}"]
-        except KeyError:
-            logger = utils.logger.get_logger("bot.mm")
-            logger.warning(
-                f"Tried to delete a ranked ping by {str(ctx.message.author)} but the ping was already deleted."
-            )
-
-        with open(r"./json/rankedpings.json", "w") as fp:
-            json.dump(rankedusers, fp, indent=4)
+        self.delete_ranked_ping(ctx)
 
     @commands.command(aliases=["reportgame"], cooldown_after_parsing=True)
     @commands.cooldown(1, 41, commands.BucketType.user)
@@ -205,145 +370,19 @@ class Ranking(commands.Cog):
             )
             return
 
-        with open(r"./json/ranking.json", "r+") as f:
-            ranking = json.load(f)
+        self.create_ranked_profile(ctx.author)
+        self.create_ranked_profile(user)
 
-        # if someone does not exist in the file, it'll create a "profile"
-        if not f"{ctx.author.id}" in ranking:
-            ranking[f"{ctx.author.id}"] = {}
-            ranking[f"{ctx.author.id}"]["wins"] = 0
-            ranking[f"{ctx.author.id}"]["losses"] = 0
-            ranking[f"{ctx.author.id}"]["elo"] = 1000
-            ranking[f"{ctx.author.id}"]["matches"] = []
+        winnerupdate, loserupdate, difference = self.calculate_elo(ctx.author, user)
 
-        if not f"{user.id}" in ranking:
-            ranking[f"{user.id}"] = {}
-            ranking[f"{user.id}"]["wins"] = 0
-            ranking[f"{user.id}"]["losses"] = 0
-            ranking[f"{user.id}"]["elo"] = 1000
-            ranking[f"{user.id}"]["matches"] = []
+        self.update_ranked_stats(ctx.author, "win", winnerupdate)
+        self.update_ranked_stats(user, "lose", loserupdate)
 
-        def expected(A, B):
-            """
-            The expected outcome of the match.
-            """
-            return 1 / (1 + 10 ** ((B - A) / 400))
-
-        def elo(old, exp, score, k=32):
-            """
-            The classic elo formula.
-            """
-            return old + k * (score - exp)
-
-        winnerexpected = expected(
-            ranking[f"{ctx.author.id}"]["elo"], ranking[f"{user.id}"]["elo"]
-        )
-        loserexpected = expected(
-            ranking[f"{user.id}"]["elo"], ranking[f"{ctx.author.id}"]["elo"]
-        )
-
-        # 1 is a win, 0 is a loss. 0.5 would be a draw but there are no draws here
-        winnerupdate = round(elo(ranking[f"{ctx.author.id}"]["elo"], winnerexpected, 1))
-        loserupdate = round(elo(ranking[f"{user.id}"]["elo"], loserexpected, 0))
-
-        ranking[f"{ctx.author.id}"]["wins"] += 1
-        ranking[f"{user.id}"]["losses"] += 1
-
-        ranking[f"{ctx.author.id}"]["matches"].append("W")
-        ranking[f"{user.id}"]["matches"].append("L")
-
-        winnerdiff = winnerupdate - ranking[f"{ctx.author.id}"]["elo"]
-        loserdiff = ranking[f"{user.id}"]["elo"] - loserupdate
-
-        ranking[f"{ctx.author.id}"]["elo"] = winnerupdate
-        ranking[f"{user.id}"]["elo"] = loserupdate
-
-        with open(r"./json/ranking.json", "w") as f:
-            json.dump(ranking, f, indent=4)
-
-        async def updaterankroles(user):
-            """
-            Checks the elo of the user, and assigns the elo role based on that.
-            """
-            elo = ranking[f"{user.id}"]["elo"]
-            elo800role = discord.utils.get(
-                ctx.guild.roles, id=TGMatchmakingRoleIDs.ELO_800_ROLE
-            )
-            elo950role = discord.utils.get(
-                ctx.guild.roles, id=TGMatchmakingRoleIDs.ELO_950_ROLE
-            )
-            elo1050role = discord.utils.get(
-                ctx.guild.roles, id=TGMatchmakingRoleIDs.ELO_1050_ROLE
-            )
-            elo1200role = discord.utils.get(
-                ctx.guild.roles, id=TGMatchmakingRoleIDs.ELO_1200_ROLE
-            )
-            elo1300role = discord.utils.get(
-                ctx.guild.roles, id=TGMatchmakingRoleIDs.ELO_1300_ROLE
-            )
-            elomaxrole = discord.utils.get(
-                ctx.guild.roles, id=TGMatchmakingRoleIDs.ELO_MAX_ROLE
-            )
-
-            elo_roles = [
-                elo800role,
-                elo950role,
-                elo1050role,
-                elo1200role,
-                elo1300role,
-                elomaxrole,
-            ]
-
-            # the role change only triggers if the user does not have their current elo role, so its fine to remove ALL others first and then give the new one out
-            if elo < 800:
-                if elo800role not in user.roles:
-                    for role in elo_roles:
-                        if role in user.roles:
-                            await user.remove_roles(role)
-                    await user.add_roles(elo800role)
-            if elo < 950 and elo > 799:
-                if elo950role not in user.roles:
-                    for role in elo_roles:
-                        if role in user.roles:
-                            await user.remove_roles(role)
-                    await user.add_roles(elo950role)
-            if elo < 1050 and elo > 949:
-                if elo1050role not in user.roles:
-                    for role in elo_roles:
-                        if role in user.roles:
-                            await user.remove_roles(role)
-                    await user.add_roles(elo1050role)
-            if elo < 1200 and elo > 1049:
-                if elo1200role not in user.roles:
-                    for role in elo_roles:
-                        if role in user.roles:
-                            await user.remove_roles(role)
-                    await user.add_roles(elo1200role)
-            if elo < 1300 and elo > 1199:
-                if elo1300role not in user.roles:
-                    for role in elo_roles:
-                        if role in user.roles:
-                            await user.remove_roles(role)
-                    await user.add_roles(elo1300role)
-            if elo > 1299:
-                if elomaxrole not in user.roles:
-                    for role in elo_roles:
-                        if role in user.roles:
-                            await user.remove_roles(role)
-                    await user.add_roles(elomaxrole)
-
-        # only assigns these roles after 5 games
-        if (
-            ranking[f"{ctx.author.id}"]["wins"] + ranking[f"{ctx.author.id}"]["losses"]
-            > 4
-        ):
-            await updaterankroles(ctx.author)
-
-        if ranking[f"{user.id}"]["wins"] + ranking[f"{user.id}"]["losses"] > 4:
-            await updaterankroles(user)
+        await self.update_ranked_role(ctx.author, ctx.guild, 5)
+        await self.update_ranked_role(user, ctx.guild, 5)
 
         await ctx.send(
-            f"Game successfully reported!\n{ctx.author.mention} won!\nUpdated Elo score: {ctx.author.mention} = {winnerupdate} (+{winnerdiff}) | {user.mention} = {loserupdate} (-{loserdiff})"
+            f"Game successfully reported!\n{ctx.author.mention} won!\nUpdated Elo score: {ctx.author.mention} = {winnerupdate} (+{difference}) | {user.mention} = {loserupdate} (-{difference})"
         )
 
     @commands.command(aliases=["forcereportgame"], cooldown_after_parsing=True)
@@ -379,140 +418,19 @@ class Ranking(commands.Cog):
             )
             return
 
-        with open(r"./json/ranking.json", "r+") as f:
-            ranking = json.load(f)
+        self.create_ranked_profile(user1)
+        self.create_ranked_profile(user2)
 
-        # if someone does not exist in the file, it'll create a "profile"
-        if not f"{user1.id}" in ranking:
-            ranking[f"{user1.id}"] = {}
-            ranking[f"{user1.id}"]["wins"] = 0
-            ranking[f"{user1.id}"]["losses"] = 0
-            ranking[f"{user1.id}"]["elo"] = 1000
-            ranking[f"{user1.id}"]["matches"] = []
+        winnerupdate, loserupdate, difference = self.calculate_elo(user1, user2)
 
-        if not f"{user2.id}" in ranking:
-            ranking[f"{user2.id}"] = {}
-            ranking[f"{user2.id}"]["wins"] = 0
-            ranking[f"{user2.id}"]["losses"] = 0
-            ranking[f"{user2.id}"]["elo"] = 1000
-            ranking[f"{user2.id}"]["matches"] = []
+        self.update_ranked_stats(user1, "win", winnerupdate)
+        self.update_ranked_stats(user2, "lose", loserupdate)
 
-        def expected(A, B):
-            """
-            The expected outcome of the match.
-            """
-            return 1 / (1 + 10 ** ((B - A) / 400))
-
-        def elo(old, exp, score, k=32):
-            """
-            The classic elo formula.
-            """
-            return old + k * (score - exp)
-
-        winnerexpected = expected(
-            ranking[f"{user1.id}"]["elo"], ranking[f"{user2.id}"]["elo"]
-        )
-        loserexpected = expected(
-            ranking[f"{user2.id}"]["elo"], ranking[f"{user1.id}"]["elo"]
-        )
-
-        # 1 is a win, 0 is a loss. 0.5 would be a draw but there are no draws here
-        winnerupdate = round(elo(ranking[f"{user1.id}"]["elo"], winnerexpected, 1))
-        loserupdate = round(elo(ranking[f"{user2.id}"]["elo"], loserexpected, 0))
-
-        winnerdiff = winnerupdate - ranking[f"{user1.id}"]["elo"]
-        loserdiff = ranking[f"{user2.id}"]["elo"] - loserupdate
-
-        ranking[f"{user1.id}"]["wins"] += 1
-        ranking[f"{user2.id}"]["losses"] += 1
-
-        ranking[f"{user1.id}"]["matches"].append("W")
-        ranking[f"{user2.id}"]["matches"].append("L")
-
-        ranking[f"{user1.id}"]["elo"] = winnerupdate
-        ranking[f"{user2.id}"]["elo"] = loserupdate
-
-        with open(r"./json/ranking.json", "w") as f:
-            json.dump(ranking, f, indent=4)
-
-        async def updaterankroles(user):
-            """
-            Checks the elo of the user, and assigns the elo role based on that.
-            """
-            elo = ranking[f"{user.id}"]["elo"]
-            elo800role = discord.utils.get(
-                ctx.guild.roles, id=TGMatchmakingRoleIDs.ELO_800_ROLE
-            )
-            elo950role = discord.utils.get(
-                ctx.guild.roles, id=TGMatchmakingRoleIDs.ELO_950_ROLE
-            )
-            elo1050role = discord.utils.get(
-                ctx.guild.roles, id=TGMatchmakingRoleIDs.ELO_1050_ROLE
-            )
-            elo1200role = discord.utils.get(
-                ctx.guild.roles, id=TGMatchmakingRoleIDs.ELO_1200_ROLE
-            )
-            elo1300role = discord.utils.get(
-                ctx.guild.roles, id=TGMatchmakingRoleIDs.ELO_1300_ROLE
-            )
-            elomaxrole = discord.utils.get(
-                ctx.guild.roles, id=TGMatchmakingRoleIDs.ELO_MAX_ROLE
-            )
-
-            elo_roles = [
-                elo800role,
-                elo950role,
-                elo1050role,
-                elo1200role,
-                elo1300role,
-                elomaxrole,
-            ]
-
-            if elo < 800:
-                if elo800role not in user.roles:
-                    for role in elo_roles:
-                        if role in user.roles:
-                            await user.remove_roles(role)
-                    await user.add_roles(elo800role)
-            if elo < 950 and elo > 799:
-                if elo950role not in user.roles:
-                    for role in elo_roles:
-                        if role in user.roles:
-                            await user.remove_roles(role)
-                    await user.add_roles(elo950role)
-            if elo < 1050 and elo > 949:
-                if elo1050role not in user.roles:
-                    for role in elo_roles:
-                        if role in user.roles:
-                            await user.remove_roles(role)
-                    await user.add_roles(elo1050role)
-            if elo < 1200 and elo > 1049:
-                if elo1200role not in user.roles:
-                    for role in elo_roles:
-                        if role in user.roles:
-                            await user.remove_roles(role)
-                    await user.add_roles(elo1200role)
-            if elo < 1300 and elo > 1199:
-                if elo1300role not in user.roles:
-                    for role in elo_roles:
-                        if role in user.roles:
-                            await user.remove_roles(role)
-                    await user.add_roles(elo1300role)
-            if elo > 1299:
-                if elomaxrole not in user.roles:
-                    for role in elo_roles:
-                        if role in user.roles:
-                            await user.remove_roles(role)
-                    await user.add_roles(elomaxrole)
-
-        if ranking[f"{user1.id}"]["wins"] + ranking[f"{user1.id}"]["losses"] > 4:
-            await updaterankroles(user1)
-
-        if ranking[f"{user2.id}"]["wins"] + ranking[f"{user2.id}"]["losses"] > 4:
-            await updaterankroles(user2)
+        await self.update_ranked_role(user1, ctx.guild, 5)
+        await self.update_ranked_role(user2, ctx.guild, 5)
 
         await ctx.send(
-            f"Game successfully reported!\n{user1.mention} won!\nUpdated Elo score: {user1.mention} = {winnerupdate} (+{winnerdiff}) | {user2.mention} = {loserupdate} (-{loserdiff})\nGame was forcefully reported by: {ctx.author.mention}"
+            f"Game successfully reported!\n{user1.mention} won!\nUpdated Elo score: {user1.mention} = {winnerupdate} (+{difference}) | {user2.mention} = {loserupdate} (-{difference})\nGame was forcefully reported by: {ctx.author.mention}"
         )
 
     @commands.command(aliases=["rankedstats"])
@@ -578,62 +496,9 @@ class Ranking(commands.Cog):
                 return
             else:
                 if str(reaction.emoji) == "🔔":
-                    elo = ranking[f"{ctx.author.id}"]["elo"]
-                    if elo < 800:
-                        pingrole = discord.utils.get(
-                            ctx.guild.roles, id=TGMatchmakingRoleIDs.ELO_800_ROLE
-                        )
-                    if elo < 950 and elo > 799:
-                        pingrole = discord.utils.get(
-                            ctx.guild.roles, id=TGMatchmakingRoleIDs.ELO_950_ROLE
-                        )
-                    if elo < 1050 and elo > 949:
-                        pingrole = discord.utils.get(
-                            ctx.guild.roles, id=TGMatchmakingRoleIDs.ELO_1050_ROLE
-                        )
-                    if elo < 1200 and elo > 1049:
-                        pingrole = discord.utils.get(
-                            ctx.guild.roles, id=TGMatchmakingRoleIDs.ELO_1200_ROLE
-                        )
-                    if elo < 1300 and elo > 1199:
-                        pingrole = discord.utils.get(
-                            ctx.guild.roles, id=TGMatchmakingRoleIDs.ELO_1300_ROLE
-                        )
-                    if elo > 1299:
-                        pingrole = discord.utils.get(
-                            ctx.guild.roles, id=TGMatchmakingRoleIDs.ELO_MAX_ROLE
-                        )
-                    await ctx.author.add_roles(pingrole)
+                    await self.update_ranked_role(ctx.author, ctx.guild, 1)
                 elif str(reaction.emoji) == "🔕":
-                    elo800role = discord.utils.get(
-                        ctx.guild.roles, id=TGMatchmakingRoleIDs.ELO_800_ROLE
-                    )
-                    elo950role = discord.utils.get(
-                        ctx.guild.roles, id=TGMatchmakingRoleIDs.ELO_950_ROLE
-                    )
-                    elo1050role = discord.utils.get(
-                        ctx.guild.roles, id=TGMatchmakingRoleIDs.ELO_1050_ROLE
-                    )
-                    elo1200role = discord.utils.get(
-                        ctx.guild.roles, id=TGMatchmakingRoleIDs.ELO_1200_ROLE
-                    )
-                    elo1300role = discord.utils.get(
-                        ctx.guild.roles, id=TGMatchmakingRoleIDs.ELO_1300_ROLE
-                    )
-                    elomaxrole = discord.utils.get(
-                        ctx.guild.roles, id=TGMatchmakingRoleIDs.ELO_MAX_ROLE
-                    )
-                    roles = [
-                        elo800role,
-                        elo950role,
-                        elo1050role,
-                        elo1200role,
-                        elo1300role,
-                        elomaxrole,
-                    ]
-                    for role in roles:
-                        if role in ctx.author.roles:
-                            await ctx.author.remove_roles(role)
+                    await self.remove_ranked_role(ctx.author, ctx.guild)
                 else:
                     pass
 
