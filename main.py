@@ -1,7 +1,7 @@
 # Tabuu 3.0
 # by Phxenix for SSBU Training Grounds
-# Version: 6.0.1
-# Last Changes: 2 February 2022
+# Version: 6.1.4
+# Last Changes: 6 February 2022
 # Contact me on Discord: Phxenix#1104
 
 
@@ -17,7 +17,7 @@ bot = commands.Bot(command_prefix="%", intents=intents, status=discord.Status.on
 # for a custom help command
 bot.remove_command("help")
 
-bot.version_number = "6.0.1"
+bot.version_number = "6.1.4"
 
 utils.logger.create_logger()
 
