@@ -189,7 +189,12 @@ class Stats(commands.Cog):
         Statistics and information about this bot.
         """
         proc = psutil.Process(os.getpid())
-        uptimeSeconds = time.time() - proc.create_time()
+        uptime_seconds = time.time() - proc.create_time()
+
+        # they return byte values but we want gigabytes
+        ram_used = round(psutil.virtual_memory()[3] / (1024 * 1024 * 1024), 2)
+        ram_total = round(psutil.virtual_memory()[0] / (1024 * 1024 * 1024), 2)
+        ram_percent = round((ram_used / ram_total) * 100, 1)
 
         with open(r"./json/macros.json", "r") as f:
             macros = json.load(f)
@@ -223,12 +228,12 @@ class Stats(commands.Cog):
         )
         embed.add_field(
             name="RAM Usage:",
-            value=f"{round(psutil.virtual_memory()[3]/(1024*1024*1024), 2)}GB/{round(psutil.virtual_memory()[0]/(1024*1024*1024), 2)}GB ({round((psutil.virtual_memory()[3]/psutil.virtual_memory()[0]) * 100, 1)}%)",
+            value=f"{ram_used}GB/{ram_total}GB ({ram_percent}%)",
             inline=True,
         )
         embed.add_field(
             name="Uptime:",
-            value=str(datetime.timedelta(seconds=uptimeSeconds)).split(".")[0],
+            value=str(datetime.timedelta(seconds=uptime_seconds)).split(".")[0],
             inline=True,
         )
 
