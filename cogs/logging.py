@@ -235,21 +235,40 @@ class Logging(commands.Cog):
                         "cdn.discordapp.com", "media.discordapp.net"
                     )
                     embed.set_image(url=new_url)
+                    embed.add_field(
+                        name="Attachment:", value="See below.", inline=False
+                    )
                 else:
-                    embed.add_field(name="Attachment", value=message.attachments[0].url)
+                    embed.add_field(
+                        name="Attachment:",
+                        value=message.attachments[0].url,
+                        inline=False,
+                    )
             # for multiple, putting it all into one embed value might result in too many characters, so this is needed
             else:
                 i = 1
                 for x in message.attachments:
                     embed.add_field(
-                        name=f"Attachment ({i}/{len(message.attachments)})",
+                        name=f"Attachment ({i}/{len(message.attachments)}):",
                         value=x.url,
                         inline=False,
                     )
                     i += 1
+
+        if message.stickers:
+            # so as far as i know, you can only have 1 sticker attached to a message
+            # but you can have 1 sticker and some other attachments
+            if not message.attachments:
+                embed.set_image(url=message.stickers[0].url)
+                embed.add_field(name="Sticker:", value="See below.", inline=False)
+            else:
+                embed.add_field(name="Sticker:", value=f"{message.stickers[0].url}")
+
         embed.add_field(name="Message ID:", value=message.id)
         embed.timestamp = discord.utils.utcnow()
         logs = self.bot.get_channel(self.get_logchannel(message.guild.id))
+        # as far as i can tell, the maximum message possible with 4k chars + 10 attachments + 1 sticker just barely fits in one embed
+        # the limit for embeds are 6k chars total. so we might wanna keep watching this in case of errors.
         await logs.send(embed=embed)
 
     @commands.Cog.listener()
