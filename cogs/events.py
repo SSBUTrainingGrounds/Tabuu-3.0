@@ -216,6 +216,14 @@ class Events(commands.Cog):
             f"Command successfully ran: %{ctx.invoked_with} (invoked by {str(ctx.author)})"
         )
 
+    @commands.Cog.listener()
+    async def on_command(self, ctx):
+        self.bot.commands_ran += 1
+
+    @commands.Cog.listener()
+    async def on_socket_event_type(self, event_type):
+        self.bot.events_listened_to += 1
+
     # these just log when the bot loses/regains connection
     @commands.Cog.listener()
     async def on_connect(self):

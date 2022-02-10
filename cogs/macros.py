@@ -26,6 +26,7 @@ class Macros(commands.Cog):
                 or message.content.startswith(f"%{name} ")
             ):
                 await message.channel.send(payload)
+                self.bot.commands_ran += 1
 
     @commands.command()
     @commands.has_permissions(administrator=True)

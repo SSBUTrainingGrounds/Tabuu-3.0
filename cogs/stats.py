@@ -199,42 +199,58 @@ class Stats(commands.Cog):
         with open(r"./json/macros.json", "r") as f:
             macros = json.load(f)
 
+        bot_description = f"""
+```yml
+Servers: {len(self.bot.guilds)}
+Total Users: {len(set(self.bot.get_all_members()))}
+Latency: {round(self.bot.latency * 1000)}ms
+Uptime: {str(datetime.timedelta(seconds=uptime_seconds)).split(".")[0]}
+```
+        """
+
+        software_description = f"""
+```yml
+Tabuu 3.0: {self.bot.version_number}
+Python: {platform.python_version()}
+discord.py: {discord.__version__}
+```
+        """
+
+        hardware_description = f"""
+```yml
+CPU Usage: {psutil.cpu_percent(interval=None)}%
+CPU Frequency: {round(psutil.cpu_freq()[0])} MHz
+RAM Usage: {ram_used}GB/{ram_total}GB ({ram_percent}%)
+```
+        """
+
+        listeners_description = f"""
+```yml
+Number of Commands: {(len(self.bot.commands) + len(macros))}
+Number of Events: {len(self.bot.extra_events)}
+```
+        """
+
+        interactions_description = f"""
+```yml
+Commands executed: {(self.bot.commands_ran + 1)}
+Events parsed: {self.bot.events_listened_to}
+```
+        """
+
         embed = discord.Embed(
             title="Tabuu 3.0 Stats",
             color=0x007377,
             url="https://github.com/phxenix-w/Tabuu-3.0-Bot",
         )
-        embed.add_field(name="Servers:", value=len(self.bot.guilds), inline=True)
+        embed.add_field(name="Bot", value=bot_description, inline=False)
+        embed.add_field(name="Software", value=software_description, inline=False)
+        embed.add_field(name="Hardware", value=hardware_description, inline=False)
+        embed.add_field(name="Listeners", value=listeners_description, inline=False)
         embed.add_field(
-            name="Total Users:", value=len(set(self.bot.get_all_members())), inline=True
-        )
-        embed.add_field(
-            name="Number of Commands:",
-            value=f"{len(self.bot.commands) + len(macros)} (Events: {len(self.bot.extra_events)})",
-        )
-
-        embed.add_field(name="Bot Version:", value=self.bot.version_number, inline=True)
-        embed.add_field(
-            name="Python Version:", value=platform.python_version(), inline=True
-        )
-        embed.add_field(
-            name="discord.py Version:", value=discord.__version__, inline=True
-        )
-
-        embed.add_field(
-            name="CPU Usage:",
-            value=f"{psutil.cpu_percent(interval=None)}%",
-            inline=True,
-        )
-        embed.add_field(
-            name="RAM Usage:",
-            value=f"{ram_used}GB/{ram_total}GB ({ram_percent}%)",
-            inline=True,
-        )
-        embed.add_field(
-            name="Uptime:",
-            value=str(datetime.timedelta(seconds=uptime_seconds)).split(".")[0],
-            inline=True,
+            name="Interactions since last reboot",
+            value=interactions_description,
+            inline=False,
         )
 
         embed.set_footer(text="Creator: Phxenix#1104, hosted on: Raspberry Pi 4")
