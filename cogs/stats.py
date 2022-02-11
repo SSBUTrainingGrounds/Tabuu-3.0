@@ -199,6 +199,9 @@ class Stats(commands.Cog):
         with open(r"./json/macros.json", "r") as f:
             macros = json.load(f)
 
+        # we use codeblocks with yml syntax highlighting
+        # just cause it looks nice, in my opinion.
+        # well at least on desktop.
         bot_description = f"""
 ```yml
 Servers: {len(self.bot.guilds)}
@@ -244,7 +247,9 @@ Events parsed: {self.bot.events_listened_to}
             url="https://github.com/phxenix-w/Tabuu-3.0-Bot",
         )
         embed.add_field(name="Bot", value=bot_description, inline=False)
-        embed.add_field(name="Software", value=software_description, inline=False)
+        embed.add_field(
+            name="Software Versions", value=software_description, inline=False
+        )
         embed.add_field(name="Hardware", value=hardware_description, inline=False)
         embed.add_field(name="Listeners", value=listeners_description, inline=False)
         embed.add_field(
