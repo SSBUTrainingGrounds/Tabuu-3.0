@@ -1,5 +1,6 @@
 import discord
 from discord.ext import commands
+import aiosqlite
 import json
 from datetime import datetime, timezone
 from utils.ids import TGChannelIDs
@@ -69,10 +70,7 @@ class Starboard(commands.Cog):
             with open(r"./json/starboard.json", "r") as f:
                 data = json.load(f)
 
-            # these all prevent error messages in my console if the setup wasnt done yet.
-            if not "messages" in data:
-                data["messages"] = []
-
+            # these prevent error messages in my console if the setup wasnt done yet.
             if not "emoji" in data:
                 data["emoji"] = "placeholder"
 
@@ -90,8 +88,13 @@ class Starboard(commands.Cog):
                 for reaction in message.reactions:
                     if str(reaction.emoji) == data["emoji"]:
                         if reaction.count >= data["threshold"]:
+                            async with aiosqlite.connect("./db/database.db") as db:
+                                message_list = await db.execute_fetchall(
+                                    """SELECT original_id, starboard_id FROM starboardmessages"""
+                                )
+
                             # just editing the number on already existing messages
-                            for x in data["messages"]:
+                            for x in message_list:
                                 if x[0] == payload.message_id:
                                     star_channel = await self.bot.fetch_channel(
                                         self.starboard_channel
@@ -154,11 +157,15 @@ class Starboard(commands.Cog):
 
                             star_message = await star_channel.send(embed=embed)
 
-                            # we need to save both message id's for editing the embed later, its not the most readable in the json file but fine for our purposes
-                            data["messages"].append((message.id, star_message.id))
-
-                            with open(r"./json/starboard.json", "w") as f:
-                                json.dump(data, f, indent=4)
+                            async with aiosqlite.connect("./db/database.db") as db:
+                                await db.execute(
+                                    """INSERT INTO starboardmessages VALUES (:original_id, :starboard_id)""",
+                                    {
+                                        "original_id": message.id,
+                                        "starboard_id": star_message.id,
+                                    },
+                                )
+                                await db.commit()
 
     @commands.Cog.listener()
     async def on_raw_reaction_remove(self, payload):
@@ -168,10 +175,7 @@ class Starboard(commands.Cog):
             with open(r"./json/starboard.json", "r") as f:
                 data = json.load(f)
 
-            # these all prevent error messages in my console if the setup wasnt done yet.
-            if not "messages" in data:
-                data["messages"] = []
-
+            # these prevent error messages in my console if the setup wasnt done yet.
             if not "emoji" in data:
                 data["emoji"] = "placeholder"
 
@@ -188,8 +192,12 @@ class Starboard(commands.Cog):
 
                 for reaction in message.reactions:
                     if str(reaction.emoji) == data["emoji"]:
+                        async with aiosqlite.connect("./db/database.db") as db:
+                            message_list = await db.execute_fetchall(
+                                """SELECT original_id, starboard_id FROM starboardmessages"""
+                            )
                         # just editing the number on already existing messages, cant go below 1 though
-                        for x in data["messages"]:
+                        for x in message_list:
                             if x[0] == payload.message_id:
                                 star_channel = await self.bot.fetch_channel(
                                     self.starboard_channel

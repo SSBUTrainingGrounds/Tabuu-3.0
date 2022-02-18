@@ -1,6 +1,6 @@
 import discord
 from discord.ext import commands
-import json
+import aiosqlite
 import asyncio
 from utils.ids import GuildNames, GuildIDs, TGRoleIDs, BGRoleIDs, AdminVars
 from utils.time import convert_time
@@ -17,11 +17,25 @@ class Mute(commands.Cog):
 
     async def add_mute(self, guild: discord.Guild, member: discord.Member):
         """
-        Adds the mute entry in the json file,
+        Adds the mute entry in the database,
         and tries to add the role in both servers.
         """
-        with open(r"./json/muted.json", "r") as f:
-            muted_users = json.load(f)
+        # checks if the user is already flagged as muted in the file
+        # if not, goes ahead and adds the mute.
+        # no reason to have someone in there multiple times
+        async with aiosqlite.connect("./db/database.db") as db:
+            matching_user = await db.execute_fetchall(
+                """SELECT * FROM muted WHERE user_id = :user_id""",
+                {"user_id": member.id},
+            )
+
+            if len(matching_user) == 0:
+                await db.execute(
+                    """INSERT INTO muted VALUES (:user_id, :muted)""",
+                    {"user_id": member.id, "muted": True},
+                )
+
+                await db.commit()
 
         # first we add the mute on the tg server, or try to
         try:
@@ -47,23 +61,19 @@ class Mute(commands.Cog):
                 f"Tried to add muted role in {GuildNames.BG} server but it failed: {exc}"
             )
 
-        # checking if the user is already muted.
-        # we dont need that for the mute command but for the automatic mute this is useful as to not write someone 2x into the json file
-        if not f"{member.id}" in muted_users:
-            muted_users[f"{member.id}"] = {}
-            muted_users[f"{member.id}"]["muted"] = True
-
-            with open(r"./json/muted.json", "w") as f:
-                json.dump(muted_users, f, indent=4)
-
     async def remove_mute(self, guild: discord.Guild, member: discord.Member):
         """
         Basically reverses the add_mute function.
-        Removes the muted entry from the json file
+        Removes the muted entry from the database
         and tries to remove the role in both servers.
         """
-        with open(r"./json/muted.json", "r") as f:
-            muted_users = json.load(f)
+        async with aiosqlite.connect("./db/database.db") as db:
+            await db.execute(
+                """DELETE FROM muted WHERE user_id = :user_id""",
+                {"user_id": member.id},
+            )
+
+            await db.commit()
 
         try:
             tg_guild = self.bot.get_guild(GuildIDs.TRAINING_GROUNDS)
@@ -87,24 +97,21 @@ class Mute(commands.Cog):
                 f"Tried to remove muted role in {GuildNames.BG} server but it failed: {exc}"
             )
 
-        if f"{member.id}" in muted_users:
-            del muted_users[f"{member.id}"]
-
-            with open(r"./json/muted.json", "w") as f:
-                json.dump(muted_users, f, indent=4)
-
     @commands.command()
     @commands.has_permissions(administrator=True)
     async def mute(self, ctx, member: discord.Member, *, reason):
         """
         Mutes a member in both servers indefinitely and DMs them the reason for it.
         """
-        with open(r"./json/muted.json", "r") as f:
-            muted_users = json.load(f)
+        async with aiosqlite.connect("./db/database.db") as db:
+            matching_user = await db.execute_fetchall(
+                """SELECT * FROM muted WHERE user_id = :user_id""",
+                {"user_id": member.id},
+            )
 
         # we check again if the user is muted here because i dont want the user to get dm'd again if he already is muted
         # didn't wanna put a separate dm function as well because the dm's change depending on what command calls it
-        if not f"{member.id}" in muted_users:
+        if len(matching_user) == 0:
             await self.add_mute(ctx.guild, member)
             await ctx.send(f"{member.mention} was muted!")
             try:
@@ -126,10 +133,13 @@ class Mute(commands.Cog):
         """
         Unmutes a member in both servers and notifies them via DM.
         """
-        with open(r"./json/muted.json", "r") as f:
-            muted_users = json.load(f)
+        async with aiosqlite.connect("./db/database.db") as db:
+            matching_user = await db.execute_fetchall(
+                """SELECT * FROM muted WHERE user_id = :user_id""",
+                {"user_id": member.id},
+            )
 
-        if f"{member.id}" in muted_users:
+        if len(matching_user) != 0:
             await self.remove_mute(ctx.guild, member)
             await ctx.send(f"{member.mention} was unmuted!")
             try:
@@ -163,11 +173,14 @@ class Mute(commands.Cog):
             return
 
         # now this is basically just "%mute, wait specified time, %unmute" but automated into one command
-        with open(r"./json/muted.json", "r") as f:
-            muted_users = json.load(f)
+        async with aiosqlite.connect("./db/database.db") as db:
+            matching_user = await db.execute_fetchall(
+                """SELECT * FROM muted WHERE user_id = :user_id""",
+                {"user_id": member.id},
+            )
 
         # the mute block from %mute, with the inclusion of time_muted
-        if not f"{member.id}" in muted_users:
+        if len(matching_user) == 0:
             await self.add_mute(ctx.guild, member)
             await ctx.send(f"{member.mention} was muted for *{time_muted}*!")
             try:
@@ -187,12 +200,15 @@ class Mute(commands.Cog):
         # waits the specified time
         await asyncio.sleep(seconds)
 
-        # need to refresh the contents of the json file
-        with open(r"./json/muted.json", "r") as f:
-            muted_users = json.load(f)
+        # need to refresh the contents of the database
+        async with aiosqlite.connect("./db/database.db") as db:
+            matching_user = await db.execute_fetchall(
+                """SELECT * FROM muted WHERE user_id = :user_id""",
+                {"user_id": member.id},
+            )
 
         # the unmute block from %unmute, no need for another unmute confirmation if the user was unmuted before manually
-        if f"{member.id}" in muted_users:
+        if len(matching_user) != 0:
             await self.remove_mute(ctx.guild, member)
             await ctx.send(f"{member.mention} was automatically unmuted!")
             try:

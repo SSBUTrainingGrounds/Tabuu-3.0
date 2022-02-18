@@ -1,6 +1,6 @@
 import discord
 from discord.ext import commands, tasks
-import json
+import aiosqlite
 import random
 import datetime
 import asyncio
@@ -63,30 +63,22 @@ class Reminder(commands.Cog):
             )
         # otherwise it will get saved in the file
         else:
-            with open(r"./json/reminder.json", "r") as f:
-                reminders = json.load(f)
-
             reminder_id = random.randint(1000000, 9999999)
-            reminder_date = discord.utils.utcnow().timestamp() + seconds
+            reminder_date = int(discord.utils.utcnow().timestamp() + seconds)
 
-            try:
-                reminders[f"{ctx.author.id}"][reminder_id] = {
-                    "channel": ctx.channel.id,
-                    "date": reminder_date,
-                    "read_time": reminder_time,
-                    "message": reminder_message,
-                }
-            except KeyError:
-                reminders[f"{ctx.author.id}"] = {}
-                reminders[f"{ctx.author.id}"][reminder_id] = {
-                    "channel": ctx.channel.id,
-                    "date": reminder_date,
-                    "read_time": reminder_time,
-                    "message": reminder_message,
-                }
-
-            with open(r"./json/reminder.json", "w") as f:
-                json.dump(reminders, f, indent=4)
+            async with aiosqlite.connect("./db/database.db") as db:
+                await db.execute(
+                    """INSERT INTO reminder VALUES (:user_id, :reminder_id, :channel_id, :date, :read_time, :message)""",
+                    {
+                        "user_id": ctx.author.id,
+                        "reminder_id": reminder_id,
+                        "channel_id": ctx.channel.id,
+                        "date": reminder_date,
+                        "read_time": reminder_time,
+                        "message": reminder_message,
+                    },
+                )
+                await db.commit()
 
             message_dt = datetime.datetime.fromtimestamp(
                 discord.utils.utcnow().timestamp() + seconds
@@ -103,20 +95,25 @@ class Reminder(commands.Cog):
         """
         Displays your active reminders.
         """
-        with open(r"./json/reminder.json", "r") as f:
-            reminders = json.load(f)
+        async with aiosqlite.connect("./db/database.db") as db:
+            user_reminders = await db.execute_fetchall(
+                """SELECT * FROM reminder WHERE user_id = :user_id""",
+                {"user_id": ctx.author.id},
+            )
 
         reminder_list = []
 
-        for reminder in reminders[f"{ctx.author.id}"]:
-            dt = reminders[f"{ctx.author.id}"][reminder]["date"]
+        for reminder in user_reminders:
+            # the underscores are user id, channel id and read_time
+            (_, reminder_id, _, date, _, message) = reminder
+
             dt_now = discord.utils.utcnow().timestamp()
-            timediff = str(datetime.timedelta(seconds=(dt - dt_now))).split(".")[0]
+            timediff = str(datetime.timedelta(seconds=(date - dt_now))).split(".")[0]
             # in a unfortunate case of timing, a user could view their reminder when it already "expired" but the loop has not checked yet. this here prevents a dumb number displaying
-            if (dt - dt_now) <= 30:
+            if (date - dt_now) <= 30:
                 timediff = "Less than a minute..."
             reminder_list.append(
-                f"**ID:** {reminder} - **Time remaining:** {timediff} - **Message:** `{reminders[f'{ctx.author.id}'][reminder]['message']}`\n"
+                f"**ID:** {reminder_id} - **Time remaining:** {timediff} - **Message:** `{message}`\n"
             )
 
         if len(reminder_list) == 0:
@@ -139,19 +136,25 @@ class Reminder(commands.Cog):
         """
         Deletes a reminder of yours.
         """
-        with open(r"./json/reminder.json", "r") as f:
-            reminders = json.load(f)
-
-        if reminder_id in reminders[f"{ctx.author.id}"]:
-            del reminders[f"{ctx.author.id}"][reminder_id]
-            await ctx.send(f"Deleted reminder ID {reminder_id}.")
-        else:
-            await ctx.send(
-                "I could not find any reminder with this ID. \nView all of your active reminders with `%viewreminders`"
+        async with aiosqlite.connect("./db/database.db") as db:
+            matching_reminder = await db.execute_fetchall(
+                """SELECT * FROM reminder WHERE user_id = :user_id AND reminder_id = :reminder_id""",
+                {"user_id": ctx.author.id, "reminder_id": reminder_id},
             )
 
-        with open(r"./json/reminder.json", "w") as f:
-            json.dump(reminders, f, indent=4)
+            if len(matching_reminder) == 0:
+                await ctx.send(
+                    "I could not find any reminder with this ID. \nView all of your active reminders with `%viewreminders`"
+                )
+                return
+
+            await db.execute(
+                """DELETE FROM reminder WHERE user_id = :user_id AND reminder_id = :reminder_id""",
+                {"user_id": ctx.author.id, "reminder_id": reminder_id},
+            )
+            await db.commit()
+
+        await ctx.send(f"Deleted reminder ID {reminder_id}.")
 
     @tasks.loop(seconds=60)
     async def reminder_loop(self):
@@ -159,51 +162,44 @@ class Reminder(commands.Cog):
         Checks every minute if a reminder has passed.
         If that is the case, notifies the user and deletes the reminder.
         """
-        with open(r"./json/reminder.json", "r") as f:
-            reminders = json.load(f)
-
-        tbd_reminders = []
+        async with aiosqlite.connect("./db/database.db") as db:
+            every_reminder = await db.execute_fetchall("""SELECT * FROM reminder""")
 
         logger = utils.logger.get_logger("bot.reminder")
 
-        for user in reminders:
-            for reminder_id in reminders[user]:
-                reminder_date = reminders[user][reminder_id]["date"]
-                date_now = discord.utils.utcnow().timestamp()
-                if reminder_date < date_now:
-                    logger.info(
-                        f"Reminder #{reminder_id} from user {user} has passed. Notifying user and deleting reminder..."
+        for reminder in every_reminder:
+            (user_id, reminder_id, channel_id, date, read_time, message) = reminder
+
+            date_now = discord.utils.utcnow().timestamp()
+            if date < date_now:
+                logger.info(
+                    f"Reminder #{reminder_id} from user {user_id} has passed. Notifying user and deleting reminder..."
+                )
+
+                try:
+                    channel = await self.bot.fetch_channel(channel_id)
+                    await channel.send(
+                        f"<@!{user_id}>, you wanted me to remind you of `{message}`, {read_time} ago."
                     )
-
-                    message = reminders[user][reminder_id]["message"]
-                    time = reminders[user][reminder_id]["read_time"]
+                    # the channel could get deleted in the meantime, or something else can prevent us having access
+                except Exception as exc:
+                    # unfortunately we need a second try/except block because people can block your bot and this would throw an error otherwise, and we dont wanna interrupt the loop
                     try:
-                        channel = await self.bot.fetch_channel(
-                            reminders[user][reminder_id]["channel"]
+                        member = await self.bot.fetch_user(user_id)
+                        await member.send(
+                            f"<@!{user_id}>, you wanted me to remind you of `{message}`, {read_time} ago, in a deleted channel."
                         )
-                        await channel.send(
-                            f"<@!{user}>, you wanted me to remind you of `{message}`, {time} ago."
-                        )
-                    # the channel could get deleted in the meantime
-                    except discord.errors.NotFound:
-                        # unfortunately we need a second try/except block because people can block your bot and this would throw an error otherwise, and we dont wanna interrupt the loop
-                        try:
-                            member = await self.bot.fetch_user(user)
-                            await member.send(
-                                f"<@!{user}>, you wanted me to remind you of `{message}`, {time} ago, in a deleted channel."
-                            )
-                        except:
-                            pass
+                    except:
+                        logger.info(f"Could not notify user due to: {exc}")
 
-                    # need to append these first, then delete them. otherwise we'll get an error saying our loop changed or whatever
-                    tbd_reminders.append((user, reminder_id))
+                async with aiosqlite.connect("./db/database.db") as db:
+                    await db.execute(
+                        """DELETE FROM reminder WHERE user_id = :user_id AND reminder_id = :reminder_id""",
+                        {"user_id": user_id, "reminder_id": reminder_id},
+                    )
+                    await db.commit()
 
-        for i in tbd_reminders:
-            del reminders[i[0]][i[1]]
-            logger.info(f"Successfully deleted Reminder #{i[1]}")
-
-        with open(r"./json/reminder.json", "w") as f:
-            json.dump(reminders, f, indent=4)
+                logger.info(f"Deleted reminder successfully.")
 
     @reminder_loop.before_loop
     async def before_reminder_loop(self):

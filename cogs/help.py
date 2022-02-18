@@ -88,7 +88,7 @@ class Responses(discord.ui.Select):
 ```%leaderboard``` - Leaderboards of ranked matchmaking.
 ```%newrolemenu <message ID> <emoji> <role>``` - Adds an entry for a role menu.
 ```%deleterolemenu <message ID>``` - Deletes every entry for a Message with a role menu.
-```%modifyrolemenu <message ID> <exclusive> <Optional Role>``` - Sets special permissions for a Role menu.
+```%modifyrolemenu <message ID> <exclusive> <Optional Role(s)>``` - Sets special permissions for a Role menu.
 ```%geteveryrolemenu``` - Gets you every role menu entry currently active.
 ```%rename <@user> <name>``` - Sets a new nickname for a user or removes it.
 ```%createmacro <name> <output>``` - Creates a new macro.

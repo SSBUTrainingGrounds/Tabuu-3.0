@@ -1,9 +1,0 @@
-{
-    "1000000000000000000": {
-        "999999": {
-            "mod": 1000000000000000000,
-            "reason": "Example warning",
-            "timestamp": "Thursday, April 15 2021 @ 21:16:00 PM"
-        }
-    }
-}

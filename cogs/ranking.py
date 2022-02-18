@@ -1,7 +1,8 @@
 import discord
 from discord.ext import commands
-import json
 import asyncio
+import aiosqlite
+import json
 from utils.ids import GuildNames, GuildIDs, TGArenaChannelIDs, TGMatchmakingRoleIDs
 import utils.logger
 
@@ -14,15 +15,25 @@ class Ranking(commands.Cog):
     def __init__(self, bot):
         self.bot = bot
 
-    def get_ranked_role(self, member: discord.Member, guild: discord.Guild):
+    async def get_ranked_role(self, member: discord.Member, guild: discord.Guild):
         """
         This function retrieves the ranked role of a member.
         """
-        with open(r"./json/ranking.json", "r") as f:
-            ranking = json.load(f)
+        async with aiosqlite.connect("./db/database.db") as db:
+            matching_player = await db.execute_fetchall(
+                """SELECT elo FROM ranking WHERE user_id = :user_id""",
+                {"user_id": member.id},
+            )
 
-        try:
-            elo = ranking[f"{member.id}"]["elo"]
+        # if the player is not in the database,
+        # this is the default role
+        if len(matching_player) == 0:
+            pingrole = discord.utils.get(
+                guild.roles, id=TGMatchmakingRoleIDs.ELO_1050_ROLE
+            )
+        else:
+            elo = matching_player[0][0]
+
             if elo < 800:
                 pingrole = discord.utils.get(
                     guild.roles, id=TGMatchmakingRoleIDs.ELO_800_ROLE
@@ -47,10 +58,6 @@ class Ranking(commands.Cog):
                 pingrole = discord.utils.get(
                     guild.roles, id=TGMatchmakingRoleIDs.ELO_MAX_ROLE
                 )
-        except KeyError:
-            pingrole = discord.utils.get(
-                guild.roles, id=TGMatchmakingRoleIDs.ELO_1050_ROLE
-            )
 
         return pingrole
 
@@ -98,45 +105,72 @@ class Ranking(commands.Cog):
         Also we only start to give these out at 5 games played automatically,
         or after 1 game if you want it using %rankstats.
         """
-        with open(r"./json/ranking.json", "r") as f:
-            ranking = json.load(f)
-        if (
-            ranking[f"{member.id}"]["wins"] + ranking[f"{member.id}"]["losses"]
-            >= threshold
-        ):
-            role = self.get_ranked_role(member, guild)
+        async with aiosqlite.connect("./db/database.db") as db:
+            matching_player = await db.execute_fetchall(
+                """SELECT wins, losses FROM ranking WHERE user_id = :user_id""",
+                {"user_id": member.id},
+            )
+
+        if len(matching_player) == 0:
+            wins = 0
+            losses = 0
+        else:
+            wins = matching_player[0][0]
+            losses = matching_player[0][1]
+
+        if wins + losses >= threshold:
+            role = await self.get_ranked_role(member, guild)
             if role not in member.roles:
                 await self.remove_ranked_roles(member, guild)
                 await member.add_roles(role)
 
-    def create_ranked_profile(self, member: discord.Member):
+    async def create_ranked_profile(self, member: discord.Member):
         """
         Creates an entry in the ranked file for a user,
         if the user is not already in there.
         """
-        with open(r"./json/ranking.json", "r") as f:
-            ranking = json.load(f)
+        async with aiosqlite.connect("./db/database.db") as db:
+            matching_player = await db.execute_fetchall(
+                """SELECT * FROM ranking WHERE user_id = :user_id""",
+                {"user_id": member.id},
+            )
 
-        if not f"{member.id}" in ranking:
-            ranking[f"{member.id}"] = {}
-            ranking[f"{member.id}"]["wins"] = 0
-            ranking[f"{member.id}"]["losses"] = 0
-            ranking[f"{member.id}"]["elo"] = 1000
-            ranking[f"{member.id}"]["matches"] = []
+            if len(matching_player) == 0:
+                wins = 0
+                losses = 0
+                elo = 1000
+                matches = ""
 
-        with open(r"./json/ranking.json", "w") as f:
-            json.dump(ranking, f, indent=4)
+                await db.execute(
+                    """INSERT INTO ranking VALUES (:user_id, :wins, :losses, :elo, :matches)""",
+                    {
+                        "user_id": member.id,
+                        "wins": wins,
+                        "losses": losses,
+                        "elo": elo,
+                        "matches": matches,
+                    },
+                )
 
-    def calculate_elo(self, winner: discord.Member, loser: discord.Member, k=32):
+                await db.commit()
+
+    async def calculate_elo(self, winner: discord.Member, loser: discord.Member, k=32):
         """
         Calculates the new Elo value of the winner and loser.
         Uses the classic Elo calculations.
         """
-        with open(r"./json/ranking.json", "r") as f:
-            ranking = json.load(f)
+        async with aiosqlite.connect("./db/database.db") as db:
+            matching_winner = await db.execute_fetchall(
+                """SELECT elo FROM ranking WHERE user_id = :winner_id""",
+                {"winner_id": winner.id},
+            )
+            matching_loser = await db.execute_fetchall(
+                """SELECT elo FROM ranking WHERE user_id = :loser_id""",
+                {"loser_id": loser.id},
+            )
 
-        winner_elo = ranking[f"{winner.id}"]["elo"]
-        loser_elo = ranking[f"{loser.id}"]["elo"]
+        winner_elo = matching_winner[0][0]
+        loser_elo = matching_loser[0][0]
 
         winner_expected = 1 / (1 + 10 ** ((loser_elo - winner_elo) / 400))
         loser_expected = 1 / (1 + 10 ** ((winner_elo - loser_elo) / 400))
@@ -149,7 +183,7 @@ class Ranking(commands.Cog):
 
         return new_winner_elo, new_loser_elo, difference
 
-    def update_ranked_stats(
+    async def update_ranked_stats(
         self,
         winner: discord.Member,
         winnerelo: int,
@@ -159,19 +193,25 @@ class Ranking(commands.Cog):
         """
         Updates the stats of both players after a match.
         """
-        with open(r"./json/ranking.json", "r") as f:
-            ranking = json.load(f)
+        async with aiosqlite.connect("./db/database.db") as db:
+            await db.execute(
+                """UPDATE ranking SET 
+                wins = wins + 1, 
+                matches = matches || "W", 
+                elo = :winnerelo 
+                WHERE user_id = :winner_id""",
+                {"winnerelo": winnerelo, "winner_id": winner.id},
+            )
+            await db.execute(
+                """UPDATE ranking SET 
+                losses = losses + 1, 
+                matches = matches || "L", 
+                elo = :loserelo 
+                WHERE user_id = :loser_id""",
+                {"loserelo": loserelo, "loser_id": loser.id},
+            )
 
-        ranking[f"{winner.id}"]["wins"] += 1
-        ranking[f"{winner.id}"]["matches"].append("W")
-        ranking[f"{winner.id}"]["elo"] = winnerelo
-
-        ranking[f"{loser.id}"]["losses"] += 1
-        ranking[f"{loser.id}"]["matches"].append("L")
-        ranking[f"{loser.id}"]["elo"] = loserelo
-
-        with open(r"./json/ranking.json", "w") as f:
-            json.dump(ranking, f, indent=4)
+            await db.commit()
 
     def store_ranked_ping(self, ctx, role: discord.Role, timestamp: float):
         """
@@ -258,7 +298,7 @@ class Ranking(commands.Cog):
 
         timestamp = discord.utils.utcnow().timestamp()
 
-        pingrole = self.get_ranked_role(ctx.author, ctx.guild)
+        pingrole = await self.get_ranked_role(ctx.author, ctx.guild)
 
         self.store_ranked_ping(ctx, pingrole, timestamp)
 
@@ -343,12 +383,14 @@ class Ranking(commands.Cog):
             )
             return
 
-        self.create_ranked_profile(ctx.author)
-        self.create_ranked_profile(user)
+        await self.create_ranked_profile(ctx.author)
+        await self.create_ranked_profile(user)
 
-        winnerupdate, loserupdate, difference = self.calculate_elo(ctx.author, user)
+        winnerupdate, loserupdate, difference = await self.calculate_elo(
+            ctx.author, user
+        )
 
-        self.update_ranked_stats(ctx.author, winnerupdate, user, loserupdate)
+        await self.update_ranked_stats(ctx.author, winnerupdate, user, loserupdate)
 
         await self.update_ranked_role(ctx.author, ctx.guild, 5)
         await self.update_ranked_role(user, ctx.guild, 5)
@@ -390,12 +432,12 @@ class Ranking(commands.Cog):
             )
             return
 
-        self.create_ranked_profile(user1)
-        self.create_ranked_profile(user2)
+        await self.create_ranked_profile(user1)
+        await self.create_ranked_profile(user2)
 
-        winnerupdate, loserupdate, difference = self.calculate_elo(user1, user2)
+        winnerupdate, loserupdate, difference = await self.calculate_elo(user1, user2)
 
-        self.update_ranked_stats(user1, winnerupdate, user2, loserupdate)
+        await self.update_ranked_stats(user1, winnerupdate, user2, loserupdate)
 
         await self.update_ranked_role(user1, ctx.guild, 5)
         await self.update_ranked_role(user2, ctx.guild, 5)
@@ -415,19 +457,21 @@ class Ranking(commands.Cog):
             member = ctx.author
             selfcheck = True
 
-        with open(r"./json/ranking.json", "r") as f:
-            ranking = json.load(f)
+        async with aiosqlite.connect("./db/database.db") as db:
+            matching_member = await db.execute_fetchall(
+                """SELECT * FROM ranking WHERE user_id = :user_id""",
+                {"user_id": member.id},
+            )
 
-        eloscore = ranking[f"{member.id}"]["elo"]
-        wins = ranking[f"{member.id}"]["wins"]
-        losses = ranking[f"{member.id}"]["losses"]
-        # gets the last 5 games played and reversed that list
-        last5games = ranking[f"{member.id}"]["matches"][-5:]
-        gamelist = "".join(last5games[::-1])
+        _, wins, losses, elo, matches = matching_member[0]
+
+        # gets the last 5 games played and reverses that string
+        last5games = matches[-5:]
+        gamelist = last5games[::-1]
 
         embed = discord.Embed(title=f"Ranked stats of {str(member)}", colour=0x3498DB)
         embed.set_thumbnail(url=member.display_avatar.url)
-        embed.add_field(name="Elo score", value=eloscore, inline=True)
+        embed.add_field(name="Elo score", value=elo, inline=True)
         embed.add_field(name="Wins", value=wins, inline=True)
         embed.add_field(name="Losses", value=losses, inline=True)
         embed.add_field(name="Last Matches", value=gamelist, inline=True)
@@ -480,36 +524,22 @@ class Ranking(commands.Cog):
         """
         The Top 10 Players saved in the file, sorted by elo value.
         """
-        with open(r"./json/ranking.json", "r") as f:
-            ranking = json.load(f)
+        async with aiosqlite.connect("./db/database.db") as db:
+            all_users = await db.execute_fetchall(
+                """SELECT * FROM ranking ORDER BY elo DESC"""
+            )
 
-        all_userinfo = []
-
-        for user in ranking:
-            eloscore = ranking[f"{user}"]["elo"]
-            wins = ranking[f"{user}"]["wins"]
-            lose = ranking[f"{user}"]["losses"]
-            userinfo = (user, eloscore, wins, lose)
-            all_userinfo.append(userinfo)
-
-        # sorts them by their elo score, reverses the list and gets the top 10
-        all_userinfo.sort(key=lambda x: x[1])
-        all_userinfo.reverse()
-        all_userinfo = all_userinfo[:10]
-
-        rawstats = []
-
+        embed_description = []
         rank = 1
-
-        for i in all_userinfo:
-            user = i[0]
-            elo = i[1]
-            wins = i[2]
-            lose = i[3]
-            rawstats.append(f"{rank} | <@!{user}> | {elo} | {wins}/{lose}\n")
+        # only gets the top 10
+        for user in all_users[:10]:
+            user_id, wins, losses, elo, _ = user
+            embed_description.append(
+                f"{rank} | <@!{user_id}> | {elo} | {wins}/{losses}\n"
+            )
             rank += 1
 
-        embedstats = "".join(rawstats)
+        embedstats = "".join(embed_description)
 
         embed = discord.Embed(
             title=f"Top 10 Players of {GuildNames.TRAINING_GROUNDS} Ranked Matchmaking",

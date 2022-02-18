@@ -1,6 +1,6 @@
 import discord
 from discord.ext import commands, tasks
-import json
+import aiosqlite
 from itertools import cycle
 from fuzzywuzzy import process, fuzz
 import datetime
@@ -64,15 +64,18 @@ class Events(commands.Cog):
 
     @commands.Cog.listener()
     async def on_member_join(self, member):
-        with open(r"./json/muted.json", "r") as f:
-            muted_users = json.load(f)
+        async with aiosqlite.connect("./db/database.db") as db:
+            matching_user = await db.execute_fetchall(
+                """SELECT * FROM muted WHERE user_id = :user_id""",
+                {"user_id": member.id},
+            )
 
         if member.guild.id == GuildIDs.TRAINING_GROUNDS:
             channel = self.bot.get_channel(TGChannelIDs.GENERAL_CHANNEL)
             rules = self.bot.get_channel(TGChannelIDs.RULES_CHANNEL)
 
             # checking if the user is muted when he joins
-            if f"{member.id}" in muted_users:
+            if len(matching_user) != 0:
                 # getting both the cadet role and the muted role since you dont really have to accept the rules if you come back muted
                 muted_role = discord.utils.get(
                     member.guild.roles, id=TGRoleIDs.MUTED_ROLE
@@ -100,7 +103,7 @@ class Events(commands.Cog):
                 member.guild.roles, id=BGRoleIDs.TRAVELLER_ROLE
             )
 
-            if f"{member.id}" in muted_users:
+            if len(matching_user) != 0:
                 muted_role = discord.utils.get(
                     member.guild.roles, id=BGRoleIDs.MUTED_ROLE
                 )
@@ -183,10 +186,12 @@ class Events(commands.Cog):
         if isinstance(error, commands.CommandNotFound):
             command_list = [command.name for command in self.bot.commands]
 
-            with open(r"./json/macros.json", "r") as f:
-                macros = json.load(f)
-            for name in macros:
-                command_list.append(name)
+            async with aiosqlite.connect("./db/database.db") as db:
+                all_macros = await db.execute_fetchall("""SELECT name FROM macros""")
+
+            # appending all macro names to the list to get those too
+            for m in all_macros:
+                command_list.append(m[0])
 
             if ctx.invoked_with in command_list:
                 return

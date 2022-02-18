@@ -5,7 +5,7 @@ import psutil
 import time
 import datetime
 import os
-import json
+import aiosqlite
 from utils.ids import GuildIDs, TGRoleIDs
 from utils.role import search_role
 
@@ -196,8 +196,8 @@ class Stats(commands.Cog):
         ram_total = round(psutil.virtual_memory()[0] / (1024 * 1024 * 1024), 2)
         ram_percent = round((ram_used / ram_total) * 100, 1)
 
-        with open(r"./json/macros.json", "r") as f:
-            macros = json.load(f)
+        async with aiosqlite.connect("./db/database.db") as db:
+            macro_list = await db.execute_fetchall("""SELECT name FROM macros""")
 
         # we use codeblocks with yml syntax highlighting
         # just cause it looks nice, in my opinion.
@@ -229,7 +229,7 @@ RAM Usage: {ram_used}GB/{ram_total}GB ({ram_percent}%)
 
         listeners_description = f"""
 ```yml
-Number of Commands: {(len(self.bot.commands) + len(macros))}
+Number of Commands: {(len(self.bot.commands) + len(macro_list))}
 Number of Events: {len(self.bot.extra_events)}
 ```
         """

@@ -1,6 +1,6 @@
 import discord
 from discord.ext import commands
-import json
+import aiosqlite
 
 
 class Rolemenu(commands.Cog):
@@ -18,9 +18,6 @@ class Rolemenu(commands.Cog):
         """
         Creates a brand new role menu.
         """
-        with open(r"./json/reactrole.json", "r") as f:
-            data = json.load(f)
-
         # makes sure the message and emoji are valid
         try:
             reactionmessage = await ctx.fetch_message(message)
@@ -32,17 +29,34 @@ class Rolemenu(commands.Cog):
             )
             return
 
-        if f"{message}" in data.keys():
-            data[f"{message}"].append([{"emoji": emoji, "role": role.id}])
-        else:
-            data[f"{message}"] = [[]]  # double list for proper indentation
-            data[f"{message}"] = [
-                {"exclusive": False, "rolereq": None}
-            ]  # default values for the special properties, only once per message
-            data[f"{message}"] += [[{"emoji": emoji, "role": role.id}]]
+        async with aiosqlite.connect("./db/database.db") as db:
+            rolemenu_message = await db.execute_fetchall(
+                """SELECT exclusive, rolereq FROM reactrole WHERE message_id = :message_id""",
+                {"message_id": message},
+            )
 
-        with open(r"./json/reactrole.json", "w") as f:  # writes it to the file
-            json.dump(data, f, indent=4)
+            # if a message already exists in the database,
+            # it will use these values for exclusivity and rolereq
+            # otherwise we'll use the default values
+            if len(rolemenu_message) == 0:
+                exclusive = False
+                rolereq = None
+            else:
+                exclusive = rolemenu_message[0][0]
+                rolereq = rolemenu_message[0][1]
+
+            await db.execute(
+                """INSERT INTO reactrole VALUES (:message_id, :exclusive, :rolereq, :emoji, :role)""",
+                {
+                    "message_id": message,
+                    "exclusive": exclusive,
+                    "rolereq": rolereq,
+                    "emoji": emoji,
+                    "role": role.id,
+                },
+            )
+
+            await db.commit()
 
         await ctx.send(
             f"Added an entry for Message ID #{message}, Emoji {emoji}, and Role {role.name}"
@@ -51,55 +65,84 @@ class Rolemenu(commands.Cog):
     @commands.command()
     @commands.has_permissions(administrator=True)
     async def modifyrolemenu(
-        self, ctx, message: int, exclusive: bool = False, rolereq: discord.Role = None
+        self,
+        ctx,
+        message: int,
+        exclusive: bool = False,
+        rolereqs: commands.Greedy[discord.Role] = None,
     ):
         """
         Modifies a role menu with either a role requirement, or makes it "exclusive".
         Which means that a user can only have 1 of those roles at once.
         """
-        with open(r"./json/reactrole.json", "r") as f:
-            data = json.load(f)
 
-        if not f"{message}" in data.keys():  # quick check if the message is in there
-            await ctx.send("I didn't find an entry for this message.")
-            return
+        rolereq_ids = []
+        rolereq_names = []
 
-        # if the rolereq is a role we need to set it to the role.id if it is not a role and simply a "None"
-        # rolereq will not have an attribute id, and thus we need to set it to just rolereq
-        data[f"{message}"][0]["rolereq"] = (
-            rolereq.id if rolereq is not None else rolereq
+        # if there are rolereqs supplied, gets every role in there
+        if rolereqs is not None:
+            # saves the role ids and names
+            for role in rolereqs:
+                rolereq_ids.append(str(role.id) if role is not None else role)
+                rolereq_names.append(role.name if role is not None else role)
+
+            rolereq_id_store = " ".join(rolereq_ids)
+            rolereq_name_store = ", ".join(rolereq_names)
+        else:
+            rolereq_id_store = None
+            # this is just for the confirmation message
+            rolereq_name_store = "None"
+
+        async with aiosqlite.connect("./db/database.db") as db:
+            rolemenu_entries = await db.execute_fetchall(
+                """SELECT * FROM reactrole WHERE message_id = :message_id""",
+                {"message_id": message},
+            )
+
+            if len(rolemenu_entries) == 0:
+                await ctx.send("I didn't find an entry for this message.")
+                return
+
+            await db.execute(
+                """UPDATE reactrole SET exclusive = :exclusive, rolereq = :rolereq WHERE message_id = :message_id""",
+                {
+                    "exclusive": exclusive,
+                    "rolereq": rolereq_id_store,
+                    "message_id": message,
+                },
+            )
+
+            await db.commit()
+
+        await ctx.send(
+            f"I have set the Role requirement to {rolereq_name_store} and the Exclusive requirement to {exclusive} for the Role menu message ID {message}."
         )
-        data[f"{message}"][0]["exclusive"] = exclusive
-
-        with open(r"./json/reactrole.json", "w") as f:  # writes it to the file
-            json.dump(data, f, indent=4)
-        try:
-            await ctx.send(
-                f"I have set the Role requirement to {rolereq.name} and the Exclusive requirement to {exclusive} for the Role menu message ID {message}."
-            )
-        # if rolereq is none we cant reference it by name
-        except:
-            await ctx.send(
-                f"I have set the Role requirement to {rolereq} and the Exclusive requirement to {exclusive} for the Role menu message ID {message}."
-            )
 
     @commands.command()
     @commands.has_permissions(administrator=True)
     async def deleterolemenu(self, ctx, message: int):
         """
-        Completely deletes a role menu entry from the json file.
+        Completely deletes a role menu entry from the database.
         """
-        with open(r"./json/reactrole.json", "r") as f:
-            data = json.load(f)
 
-        if f"{message}" in data.keys():  # quick check if the message is in there
-            del data[f"{message}"]
-            await ctx.send(f"Deleted every entry for Message ID #{message}.")
-        else:
-            await ctx.send("This message was not used for role menus.")
+        async with aiosqlite.connect("./db/database.db") as db:
+            rolemenu_entries = await db.execute_fetchall(
+                """SELECT * FROM reactrole WHERE message_id = :message_id""",
+                {"message_id": message},
+            )
 
-        with open(r"./json/reactrole.json", "w") as f:  # writes it to the file
-            json.dump(data, f, indent=4)
+            if len(rolemenu_entries) == 0:
+                await ctx.send("This message was not used for role menus.")
+                return
+
+            await db.execute(
+                """DELETE FROM reactrole WHERE message_id = :message_id""",
+                {"message_id": message},
+            )
+
+            await db.commit()
+
+        await ctx.send(f"Deleted every entry for Message ID #{message}.")
 
     @commands.command()
     @commands.has_permissions(administrator=True)
@@ -107,49 +150,62 @@ class Rolemenu(commands.Cog):
         """
         Lists every currently active role menu.
         """
-        with open(r"./json/reactrole.json", "r") as f:
-            data = json.load(f)
-
-        message = []
-
-        for x in data:
-            entrys = data[f"{x}"]
-            list = []
-            for i in entrys:
-                # either gets the role/emoji combo, or the special properties set
-                try:
-                    list.append(f"{i[0]['emoji']} = <@&{i[0]['role']}>")
-                except:
-                    rolereq = i["rolereq"]
-                    exclusive = i["exclusive"]
-                sent_list = "\n".join(list)
-            if rolereq is not None:
-                rolereq = f"<@&{rolereq}>"
-            message.append(
-                f"**{x}:**\nExclusive: {exclusive} | Role required: {rolereq}\n{sent_list}\n\n"
+        async with aiosqlite.connect("./db/database.db") as db:
+            rolemenu_entries = await db.execute_fetchall(
+                """SELECT * FROM reactrole ORDER BY message_id ASC"""
             )
-        all_messages = "".join(message)
 
-        if len(all_messages) == 0:
-            all_messages = "No entry found."
+        unique_messages = []
+        embed_description = []
+
+        for entry in rolemenu_entries:
+            (message_id, exclusive, rolereq, emoji, role) = entry
+            # to make it more readable
+            if exclusive == 0:
+                exclusive = "False"
+            else:
+                exclusive = "True"
+
+            # converts the role reqs saved into mentions, if they exist
+            if rolereq is not None:
+                role_mentions_list = []
+
+                for unique_role in rolereq.split():
+                    role_mentions_list.append(f"<@&{unique_role}>")
+                role_mentions_list = " ".join(role_mentions_list)
+
+                rolereq = role_mentions_list
+
+            # if its the first message in the list, it creates the "header" too
+            if message_id not in unique_messages:
+                unique_messages.append(message_id)
+                embed_description.append(
+                    f"\n**{message_id}:**\nExclusive: {exclusive} | Role(s) required: {rolereq}\n{emoji} = <@&{role}>"
+                )
+
+            # else it will just append
+            else:
+                embed_description.append(f"{emoji} = <@&{role}>")
+
+        embed_description = "\n".join(embed_description)
+
+        if len(embed_description) == 0:
+            embed_description = "No entries found."
 
         try:
             embed = discord.Embed(
                 title="Every role menu saved",
-                description=all_messages,
-                colour=discord.Color.dark_blue(),
+                description=embed_description,
+                colour=discord.Colour.dark_blue(),
             )
-
             await ctx.send(embed=embed)
         except:
-            await ctx.send("Too many to list in a single message.")
+            await ctx.send("Error! Too many entries to list!")
 
     @commands.Cog.listener()
     async def on_raw_reaction_add(self, payload):
         # The listener to actually add the correct role on a raw reaction event
         # Also does the checking for the special properties
-        with open(r"./json/reactrole.json", "r") as f:
-            data = json.load(f)
 
         # reactions outside of the server would throw an error otherwise
         if not payload.guild_id:
@@ -158,54 +214,79 @@ class Rolemenu(commands.Cog):
         if payload.member.bot:
             return
 
-        if f"{payload.message_id}" in data.keys():
-            if data[f"{payload.message_id}"][0]["rolereq"] is not None:
-                role_required = discord.utils.get(
-                    self.bot.get_guild(payload.guild_id).roles,
-                    id=data[f"{payload.message_id}"][0]["rolereq"],
+        async with aiosqlite.connect("./db/database.db") as db:
+            matching_entries = await db.execute_fetchall(
+                """SELECT * FROM reactrole WHERE message_id = :message_id""",
+                {"message_id": payload.message_id},
+            )
+
+        # if the message is not saved, returns
+        if len(matching_entries) == 0:
+            return
+
+        # these values *should* be the same for every entry of a message
+        exclusive = matching_entries[0][1]
+        rolereq = matching_entries[0][2]
+
+        if rolereq is not None:
+            # you can have more than one required role,
+            # you dont need both though, only one of them will be enough.
+            roles_required = []
+            for role_required in rolereq.split():
+                roles_required.append(
+                    discord.utils.get(
+                        self.bot.get_guild(payload.guild_id).roles,
+                        id=int(role_required),
+                    )
                 )
-                if role_required not in payload.member.roles:
-                    return
-            # if the exclusive value is set to true it will fist remove every role you already have that is in that role menu ID
-            if data[f"{payload.message_id}"][0]["exclusive"] == True:
-                entrys = data[f"{payload.message_id}"]
-                # gets every entry except the first one, which is the role/exclusive thing itself so it needs to skip that
-                for x in entrys[1:]:
-                    role = discord.utils.get(
-                        self.bot.get_guild(payload.guild_id).roles, id=x[0]["role"]
-                    )
-                    if role in payload.member.roles:
-                        await payload.member.remove_roles(role)
-            entrys = data[f"{payload.message_id}"]
-            for x in entrys[1:]:
-                if str(payload.emoji) == x[0]["emoji"]:
-                    role = discord.utils.get(
-                        self.bot.get_guild(payload.guild_id).roles, id=x[0]["role"]
-                    )
-                    await payload.member.add_roles(role)
+
+            if not any(role in payload.member.roles for role in roles_required):
+                return
+
+        if exclusive == 1:
+            for entry in matching_entries:
+                (_, _, _, _, role) = entry
+                role_tbd = discord.utils.get(
+                    self.bot.get_guild(payload.guild_id).roles, id=role
+                )
+                if role_tbd in payload.member.roles:
+                    await payload.member.remove_roles(role_tbd)
+
+        for entry in matching_entries:
+            (_, _, _, emoji, role) = entry
+            if str(payload.emoji) == emoji:
+                role_tbd = discord.utils.get(
+                    self.bot.get_guild(payload.guild_id).roles, id=role
+                )
+                await payload.member.add_roles(role_tbd)
 
     @commands.Cog.listener()
     async def on_raw_reaction_remove(self, payload):
         # The listener to remove the correct role on a raw reaction remove event
         # Does not need any additional checking
-        with open(r"./json/reactrole.json", "r") as f:
-            data = json.load(f)
+        async with aiosqlite.connect("./db/database.db") as db:
+            matching_entries = await db.execute_fetchall(
+                """SELECT * FROM reactrole WHERE message_id = :message_id""",
+                {"message_id": payload.message_id},
+            )
 
-        if f"{payload.message_id}" in data.keys():
-            entrys = data[f"{payload.message_id}"]
-            for x in entrys[1:]:
-                # The last 20 digits are the emoji ID, if it is custom.
-                # I have to do this because of animated emojis.
-                # And this event here doesnt recognise them properly.
-                # It doesnt send any information on whether or not the emoji is animated or not.
-                if str(payload.emoji)[-20:] == x[0]["emoji"][-20:]:
-                    role = discord.utils.get(
-                        self.bot.get_guild(payload.guild_id).roles, id=x[0]["role"]
-                    )
-                    # Also i have to get the member like this because this event listener is bs
-                    await self.bot.get_guild(payload.guild_id).get_member(
-                        payload.user_id
-                    ).remove_roles(role)
+        if len(matching_entries) == 0:
+            return
+
+        for entry in matching_entries:
+            (_, _, _, emoji, role) = entry
+            # The last 20 digits are the emoji ID, if it is custom.
+            # I have to do this because of animated emojis.
+            # And this event here doesnt recognise them properly.
+            # It doesnt send any information on whether or not the emoji is animated or not.
+            if str(payload.emoji)[-20:] == emoji:
+                role_tbd = discord.utils.get(
+                    self.bot.get_guild(payload.guild_id).roles, id=role
+                )
+                # Also i have to get the member like this because this event listener is bs
+                await self.bot.get_guild(payload.guild_id).get_member(
+                    payload.user_id
+                ).remove_roles(role_tbd)
 
     # generic error handling
     @newrolemenu.error
@@ -238,6 +319,10 @@ class Rolemenu(commands.Cog):
     async def modifyrolemenu_error(self, ctx, error):
         if isinstance(error, commands.MissingPermissions):
             await ctx.send("Nice try, but you don't have the permissions to do that!")
+        elif isinstance(error, commands.RoleNotFound):
+            await ctx.send(
+                "I could not find one or more of these roles! Make sure you got the right ones."
+            )
         elif isinstance(error, commands.BadBoolArgument):
             await ctx.send(
                 "You need to input a boolean value for both arguments, True or False."

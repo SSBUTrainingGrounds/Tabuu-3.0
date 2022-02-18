@@ -1,6 +1,6 @@
 import discord
 from discord.ext import commands, tasks
-import json
+import aiosqlite
 import random
 import time
 from datetime import datetime
@@ -24,34 +24,25 @@ class Warn(commands.Cog):
 
     async def add_warn(self, author: discord.Member, member: discord.Member, reason):
         """
-        Adds a warning to the json file.
+        Adds a warning to the database.
         Also logs it to our infraction-logs channel.
         """
-        with open(r"./json/warns.json", "r") as f:
-            users = json.load(f)
-
         # assigning each warning a random 6 digit number, hope thats enough to not get duplicates
         warn_id = random.randint(100000, 999999)
         warndate = time.strftime("%A, %B %d %Y @ %H:%M:%S %p")
 
-        try:
-            user_data = users[str(member.id)]
-            user_data[warn_id] = {
-                "mod": author.id,
-                "reason": reason,
-                "timestamp": warndate,
-            }
-        except:
-            users[f"{member.id}"] = {}
-            user_data = users[str(member.id)]
-            user_data[warn_id] = {
-                "mod": author.id,
-                "reason": reason,
-                "timestamp": warndate,
-            }
-
-        with open(r"./json/warns.json", "w") as f:
-            json.dump(users, f, indent=4)
+        async with aiosqlite.connect("./db/database.db") as db:
+            await db.execute(
+                """INSERT INTO warnings VALUES (:user_id, :warn_id, :mod_id, :reason, :timestamp)""",
+                {
+                    "user_id": member.id,
+                    "warn_id": warn_id,
+                    "mod_id": author.id,
+                    "reason": reason,
+                    "timestamp": warndate,
+                },
+            )
+            await db.commit()
 
         # and this second part here logs the warn into the warning log discord channel
         channel = self.bot.get_channel(TGChannelIDs.INFRACTION_LOGS)
@@ -78,11 +69,14 @@ class Warn(commands.Cog):
 
         Also DMs them informing the User of said action.
         """
-        with open(r"./json/warns.json", "r") as f:
-            users = json.load(f)
 
-        user_data = users[str(member.id)]
-        warns = len(user_data)
+        async with aiosqlite.connect("./db/database.db") as db:
+            user_warnings = await db.execute_fetchall(
+                """SELECT * FROM warnings WHERE user_id = :user_id""",
+                {"user_id": member.id},
+            )
+
+        warns = len(user_warnings)
 
         if warns > 6:
             try:
@@ -167,33 +161,33 @@ class Warn(commands.Cog):
         if member is None:
             member = ctx.author
 
-        try:
-            with open(r"./json/warns.json", "r") as f:
-                users = json.load(f)
+        async with aiosqlite.connect("./db/database.db") as db:
+            user_warnings = await db.execute_fetchall(
+                """SELECT * FROM warnings WHERE user_id = :user_id""",
+                {"user_id": member.id},
+            )
 
-            user_data = users[str(member.id)]
+        warns = len(user_warnings)
 
-            await ctx.send(f"{member.mention} has {len(user_data)} warning(s).")
-        except:
+        if warns == 0:
             await ctx.send(f"{member.mention} doesn't have any warnings (yet).")
+        else:
+            await ctx.send(f"{member.mention} has {warns} warning(s).")
 
     @commands.command()
     @commands.has_permissions(administrator=True)
     async def clearwarns(self, ctx, member: discord.Member):
         """
-        Deletes a user and all of their warnings from the database.
+        Deletes all warnings of a user from the database.
         """
-        with open(r"./json/warns.json", "r") as f:
-            users = json.load(f)
+        async with aiosqlite.connect("./db/database.db") as db:
+            await db.execute(
+                """DELETE FROM warnings WHERE user_id = :user_id""",
+                {"user_id": member.id},
+            )
+            await db.commit()
 
-        if f"{member.id}" in users:
-            del users[f"{member.id}"]
-            await ctx.send(f"Cleared all warnings for {member.mention}.")
-        else:
-            await ctx.send(f"No warnings found for {member.mention}")
-
-        with open(r"./json/warns.json", "w") as f:
-            json.dump(users, f, indent=4)
+        await ctx.send(f"Cleared all warnings for {member.mention}.")
 
     @commands.command()
     @commands.has_permissions(administrator=True)
@@ -201,51 +195,47 @@ class Warn(commands.Cog):
         """
         Gets you the details of a Users warnings.
         """
-        try:
-            with open(r"./json/warns.json", "r") as f:
-                users = json.load(f)
+        async with aiosqlite.connect("./db/database.db") as db:
+            user_warnings = await db.execute_fetchall(
+                """SELECT * FROM warnings WHERE user_id = :user_id""",
+                {"user_id": member.id},
+            )
 
-            user_data = users[str(member.id)]
-            embed_list = []
-
-            i = 1
-            for warn_id in user_data.keys():
-                mod = users[f"{member.id}"][warn_id]["mod"]
-                reason = users[f"{member.id}"][warn_id]["reason"]
-                timestamp = users[f"{member.id}"][warn_id]["timestamp"]
-                new_timestamp = datetime.strptime(
-                    timestamp, "%A, %B %d %Y @ %H:%M:%S %p"
-                )
-
-                embed = discord.Embed(
-                    title=f"Warning #{i}", colour=discord.Colour.red()
-                )
-                embed.add_field(name="Moderator: ", value=f"<@{mod}>")
-                embed.add_field(name="Reason: ", value=f"{reason}")
-                embed.add_field(name="ID:", value=f"{warn_id}")
-                embed.add_field(
-                    name="Warning given out at:",
-                    value=discord.utils.format_dt(new_timestamp, style="F"),
-                )
-                embed_list.append(embed)
-
-                i += 1
-
-            # if the user is in the json file but the warnings got deleted, the embeds will be empty, but discord just ignores that so, no big deal
-            # the maximum amount of embeds you can send is 10, we do ban people at 7 warnings but you never know what might happen
-            try:
-                await ctx.send(
-                    f"Active warnings for {member.mention}: {len(user_data)}",
-                    embeds=embed_list,
-                )
-            except:
-                await ctx.send(
-                    f"Active warnings for {member.mention}: {len(user_data)}\nCannot list warnings for this user!"
-                )
-
-        # if the user isnt found at all in the json file, it gives you this generic error message
-        except:
+        if len(user_warnings) == 0:
             await ctx.send(f"{member.mention} doesn't have any active warnings (yet).")
+            return
+
+        embed_list = []
+        i = 1
+
+        for warning in user_warnings:
+            # the first one is the user id, but we dont need it here
+            (_, warn_id, mod_id, reason, timestamp) = warning
+
+            new_timestamp = datetime.strptime(timestamp, "%A, %B %d %Y @ %H:%M:%S %p")
+
+            embed = discord.Embed(title=f"Warning #{i}", colour=discord.Colour.red())
+            embed.add_field(name="Moderator: ", value=f"<@{mod_id}>")
+            embed.add_field(name="Reason: ", value=f"{reason}")
+            embed.add_field(name="ID:", value=f"{warn_id}")
+            embed.add_field(
+                name="Warning given out at:",
+                value=discord.utils.format_dt(new_timestamp, style="F"),
+            )
+            embed_list.append(embed)
+
+            i += 1
+
+        # the maximum amount of embeds you can send is 10, we do ban people at 7 warnings but you never know what might happen
+        try:
+            await ctx.send(
+                f"Active warnings for {member.mention}: {len(user_warnings)}",
+                embeds=embed_list,
+            )
+        except:
+            await ctx.send(
+                f"Active warnings for {member.mention}: {len(user_warnings)}\nCannot list warnings for this user!"
+            )
 
     @commands.command()
     @commands.has_permissions(administrator=True)
@@ -254,24 +244,25 @@ class Warn(commands.Cog):
         Deletes a specific warning of a user, by the randomly generated warning ID.
         Use warndetails to see these warning IDs.
         """
-        try:
-            with open(r"./json/warns.json", "r") as f:
-                users = json.load(f)
+        async with aiosqlite.connect("./db/database.db") as db:
+            warning = await db.execute_fetchall(
+                """SELECT * FROM warnings WHERE user_id = :user_id AND warn_id = :warn_id""",
+                {"user_id": member.id, "warn_id": warn_id},
+            )
 
-            user_data = users[str(member.id)]
-
-            if warn_id in user_data:
-                del users[f"{member.id}"][warn_id]
-                await ctx.send(f"Deleted warning {warn_id} for {member.mention}")
-            else:
+            if len(warning) == 0:
                 await ctx.send(
                     f"I couldnt find a warning with the ID {warn_id} for {member.mention}."
                 )
+                return
 
-            with open(r"./json/warns.json", "w") as f:
-                json.dump(users, f, indent=4)
-        except:
-            await ctx.send("This user does not have any active warnings.")
+            await db.execute(
+                """DELETE FROM warnings WHERE user_id = :user_id AND warn_id = :warn_id""",
+                {"user_id": member.id, "warn_id": warn_id},
+            )
+            await db.commit()
+
+        await ctx.send(f"Deleted warning {warn_id} for {member.mention}")
 
     # basic error handling for the above
     @warn.error
@@ -329,39 +320,31 @@ class Warn(commands.Cog):
         This here checks if a warning is older than 30 days and has expired,
         if that is the case, deletes the expired warnings.
         """
-        with open(r"./json/warns.json", "r") as f:
-            users = json.load(f)
-
-        tbd_warnings = []
-
         logger = utils.logger.get_logger("bot.warn")
 
-        # checks every warning for every user
-        # we first need to append the warnings to a separate list and then we can delete them
-        for warned_user in users:
-            for warn_id in users[warned_user].keys():
-                timestamp = users[warned_user][warn_id]["timestamp"]
-                # this here compares the stored CEST timezone of the warning to the current GMT timezone
-                # its off by 1 hour (or 2 in summer) but thats close enough when we count in differences of 30 days
+        async with aiosqlite.connect("./db/database.db") as db:
+            every_warning = await db.execute_fetchall("""SELECT * FROM warnings""")
+
+            # we check for every warning if it is older than 30 days
+            for warning in every_warning:
+                # the underscores are mod_id and reason
+                (user_id, warn_id, _, _, timestamp) = warning
                 timediff = datetime.utcnow() - datetime.strptime(
                     timestamp, "%A, %B %d %Y @ %H:%M:%S %p"
                 )
-                daydiff = timediff.days
-                # so if its been longer than 30 days since the warning was handed out, we will hand the warning over to the loop below which will delete it
-                if daydiff > 29:
-                    tbd_warnings.append((warned_user, warn_id))
+                if timediff.days > 29:
+                    # user id and warn id should be enough to identify each warning (hopefully)
+                    await db.execute(
+                        """DELETE FROM warnings WHERE user_id = :user_id AND warn_id = :warn_id""",
+                        {"user_id": user_id, "warn_id": warn_id},
+                    )
                     logger.info(
-                        f"Deleting warn_id #{warn_id} for user {warned_user} after 30 days..."
+                        f"Deleted Warning #{warn_id} for user {user_id} after 30 days."
                     )
 
-        # deletes the warnings
-        for i in tbd_warnings:
-            # i00 is the user id, i01 is the warn id
-            del users[[i][0][0]][[i][0][1]]
-            logger.info(f"Successfully deleted warn #{[i][0][1]}!")
+            await db.commit()
 
-        with open(r"./json/warns.json", "w") as f:
-            json.dump(users, f, indent=4)
+        logger.info("Warnloop finished.")
 
     @warnloop.before_loop
     async def before_warnloop(self):

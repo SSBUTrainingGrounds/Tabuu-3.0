@@ -1,6 +1,6 @@
 import discord
 from discord.ext import commands
-import json
+import aiosqlite
 
 
 class Macros(commands.Cog):
@@ -15,63 +15,73 @@ class Macros(commands.Cog):
     @commands.Cog.listener()
     async def on_message(self, message):
         # listens for the macros
-        with open(r"./json/macros.json", "r") as f:
-            macros = json.load(f)
+        async with aiosqlite.connect("./db/database.db") as db:
+            macro_names = await db.execute_fetchall("""SELECT name FROM macros""")
 
-        for name in macros:
-            payload = macros[f"{name}"]
-            if (
-                len(message.content.split()) == 1
-                and message.content == (f"%{name}")
-                or message.content.startswith(f"%{name} ")
-            ):
-                await message.channel.send(payload)
-                self.bot.commands_ran += 1
+            for name in macro_names:
+                # it returns tuples, so we need the first (and only) entry
+                name = name[0]
+                if (
+                    len(message.content.split()) == 1
+                    and message.content == (f"%{name}")
+                    or message.content.startswith(f"%{name} ")
+                ):
+                    matching_macro = await db.execute_fetchall(
+                        """SELECT payload FROM macros WHERE name = :name""",
+                        {"name": name},
+                    )
+                    payload = matching_macro[0][0]
+                    await message.channel.send(payload)
+                    self.bot.commands_ran += 1
 
     @commands.command()
     @commands.has_permissions(administrator=True)
     async def createmacro(self, ctx, name, *, payload):
         """
-        Creates a new macro with the desired name and payload and saves it in the json file.
+        Creates a new macro with the desired name and payload and saves it in the database.
         """
-        with open(r"./json/macros.json", "r") as f:
-            macros = json.load(f)
-
         # converts them to only lower case
         name = name.lower()
 
         # every command registered
         command_list = [command.name for command in self.bot.commands]
 
-        # basic checks for invalid stuff
-        if name in macros:
-            await ctx.send(
-                "This name was already taken. If you want to update this macro please delete it first and then create it again."
+        async with aiosqlite.connect("./db/database.db") as db:
+            matching_macro = await db.execute_fetchall(
+                """SELECT name FROM macros WHERE name = :name""", {"name": name}
             )
-            return
 
-        if name in command_list:
-            await ctx.send(
-                "This name is already being used for a command! Please use a different one."
+            # basic checks for invalid stuff
+            if len(matching_macro) != 0:
+                await ctx.send(
+                    "This name was already taken. If you want to update this macro please delete it first and then create it again."
+                )
+                return
+
+            if name in command_list:
+                await ctx.send(
+                    "This name is already being used for a command! Please use a different one."
+                )
+                return
+
+            if len(name[50:]) > 0:
+                await ctx.send(
+                    "The name of this macro is too long! Please try again with a shorter name."
+                )
+                return
+
+            if len(payload[1500:]) > 0:
+                await ctx.send(
+                    "The output of this macro would be too big to send! Please try again with a shorter output."
+                )
+                return
+
+            await db.execute(
+                """INSERT INTO macros VALUES (:name, :payload)""",
+                {"name": name, "payload": payload},
             )
-            return
 
-        if len(name[50:]) > 0:
-            await ctx.send(
-                "The name of this macro is too long! Please try again with a shorter name."
-            )
-            return
-
-        if len(payload[1500:]) > 0:
-            await ctx.send(
-                "The output of this macro would be too big to send! Please try again with a shorter output."
-            )
-            return
-
-        macros[name] = payload
-
-        with open(r"./json/macros.json", "w") as f:
-            json.dump(macros, f, indent=4)
+            await db.commit()
 
         await ctx.send(f"New macro `{name}` was created. \nOutput: `{payload}`")
 
@@ -79,20 +89,23 @@ class Macros(commands.Cog):
     @commands.has_permissions(administrator=True)
     async def deletemacro(self, ctx, name):
         """
-        Deletes a macro with the specified name from the json file.
+        Deletes a macro with the specified name from the database.
         """
-        with open(r"./json/macros.json", "r") as f:
-            macros = json.load(f)
+        async with aiosqlite.connect("./db/database.db") as db:
+            macro_names = await db.execute_fetchall(
+                """SELECT * FROM macros WHERE name = :name""", {"name": name}
+            )
 
-        # needs to check if the macro exists obviously
-        if name in macros:
-            del macros[f"{name}"]
-        else:
-            await ctx.send(f"The macro `{name}` was not found. Please try again.")
-            return
+            # if the macro does not exist we want some kind of error message for the user
+            if len(macro_names) == 0:
+                await ctx.send(f"The macro `{name}` was not found. Please try again.")
+                return
 
-        with open(r"./json/macros.json", "w") as f:
-            json.dump(macros, f, indent=4)
+            await db.execute(
+                """DELETE FROM macros WHERE name = :name""", {"name": name}
+            )
+
+            await db.commit()
 
         await ctx.send(f"Deleted macro `{name}`")
 
@@ -101,14 +114,16 @@ class Macros(commands.Cog):
         """
         Lists every macro saved.
         """
-        with open(r"./json/macros.json", "r") as f:
-            macros = json.load(f)
+        async with aiosqlite.connect("./db/database.db") as db:
+            macro_list = await db.execute_fetchall("""SELECT name FROM macros""")
 
-        macro_list = []
-        for name in macros:
-            macro_list.append(name)
+        # it returns a list of tuples,
+        # so we need to extract them
+        macro_names = []
+        for m in macro_list:
+            macro_names.append(m[0])
 
-        await ctx.send(f"The registered macros are:\n`%{', %'.join(macro_list)}`")
+        await ctx.send(f"The registered macros are:\n`%{', %'.join(macro_names)}`")
 
     # the error handling for the commands above
     # fairly self-explanatory

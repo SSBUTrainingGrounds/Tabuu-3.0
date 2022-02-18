@@ -1,5 +1,6 @@
 import discord
 from discord.ext import commands
+import aiosqlite
 import json
 
 
@@ -51,25 +52,34 @@ class Profile(commands.Cog):
 
         return output_characters
 
-    def make_new_profile(self, user: discord.User):
+    async def make_new_profile(self, user: discord.User):
         """
         Creates a new profile for the user, if the user does not already have a profile set up.
         """
-        with open(r"./json/profile.json", "r") as f:
-            profiles = json.load(f)
+        async with aiosqlite.connect("./db/database.db") as db:
+            matching_profile = await db.execute_fetchall(
+                """SELECT * FROM profile WHERE user_id = :user_id""",
+                {"user_id": user.id},
+            )
 
-        if not f"{user.id}" in profiles:
-            profiles[f"{user.id}"] = {}
-            profiles[f"{user.id}"]["tag"] = f"{str(user)}"
-            profiles[f"{user.id}"]["region"] = ""
-            profiles[f"{user.id}"]["mains"] = []
-            profiles[f"{user.id}"]["secondaries"] = []
-            profiles[f"{user.id}"]["pockets"] = []
-            profiles[f"{user.id}"]["note"] = ""
-            profiles[f"{user.id}"]["colour"] = 0
+            if len(matching_profile) != 0:
+                return
 
-            with open(r"./json/profile.json", "w") as f:
-                json.dump(profiles, f, indent=4)
+            await db.execute(
+                """INSERT INTO profile VALUES (:user_id, :tag, :region, :mains, :secondaries, :pockets, :note, :colour)""",
+                {
+                    "user_id": user.id,
+                    "tag": f"{str(user)}",
+                    "region": "",
+                    "mains": "",
+                    "secondaries": "",
+                    "pockets": "",
+                    "note": "",
+                    "colour": 0,
+                },
+            )
+
+            await db.commit()
 
     @commands.command(aliases=["smashprofile", "profileinfo"])
     async def profile(self, ctx, user: discord.User = None):
@@ -79,28 +89,25 @@ class Profile(commands.Cog):
         if user is None:
             user = ctx.author
 
-        with open(r"./json/profile.json", "r") as f:
-            profiles = json.load(f)
+        async with aiosqlite.connect("./db/database.db") as db:
+            matching_user = await db.execute_fetchall(
+                """SELECT * FROM profile WHERE user_id = :user_id""",
+                {"user_id": user.id},
+            )
+            matching_user_elo = await db.execute_fetchall(
+                """SELECT elo FROM ranking WHERE user_id = :user_id""",
+                {"user_id": user.id},
+            )
 
-        if not f"{user.id}" in profiles:
+        if len(matching_user) == 0:
             await ctx.send("This user did not set up their profile yet.")
             return
 
-        tag = profiles[f"{user.id}"]["tag"]
-        region = profiles[f"{user.id}"]["region"]
-        mains = " ".join(profiles[f"{user.id}"]["mains"])
-        secondaries = " ".join(profiles[f"{user.id}"]["secondaries"])
-        pockets = " ".join(profiles[f"{user.id}"]["pockets"])
-        note = profiles[f"{user.id}"]["note"]
-        colour = profiles[f"{user.id}"]["colour"]
-
-        with open(r"./json/ranking.json", "r") as f:
-            ranking = json.load(f)
-
-        try:
-            elo = ranking[f"{user.id}"]["elo"]
-        except KeyError:
+        (_, tag, region, mains, secondaries, pockets, note, colour) = matching_user[0]
+        if len(matching_user_elo) == 0:
             elo = 1000
+        else:
+            elo = matching_user_elo[0][0]
 
         embed = discord.Embed(title=f"Smash profile of {str(user)}", colour=colour)
         embed.set_thumbnail(url=user.display_avatar.url)
@@ -128,21 +135,24 @@ class Profile(commands.Cog):
         """
         Deletes your profile.
         """
-        with open(r"./json/profile.json", "r") as f:
-            profiles = json.load(f)
+        async with aiosqlite.connect("./db/database.db") as db:
+            matching_user = await db.execute_fetchall(
+                """SELECT * FROM profile WHERE user_id = :user_id""",
+                {"user_id": ctx.author.id},
+            )
 
-        if not f"{ctx.author.id}" in profiles:
-            await ctx.send("You have no profile saved.")
-            return
+            if len(matching_user) == 0:
+                await ctx.send("You have no profile saved.")
+                return
 
-        del profiles[f"{ctx.author.id}"]
+            await db.execute(
+                """DELETE FROM profile WHERE user_id = :user_id""",
+                {"user_id": ctx.author.id},
+            )
 
-        with open(r"./json/profile.json", "w") as f:
-            json.dump(profiles, f, indent=4)
+            await db.commit()
 
-        await ctx.send(
-            f"{ctx.author.mention}, I have successfully deleted your profile."
-        )
+        await ctx.send(f"Successfully deleted your profile, {ctx.author.mention}.")
 
     @commands.command()
     @commands.has_permissions(administrator=True)
@@ -150,17 +160,22 @@ class Profile(commands.Cog):
         """
         Deletes the profile of another user, just in case.
         """
-        with open(r"./json/profile.json", "r") as f:
-            profiles = json.load(f)
+        async with aiosqlite.connect("./db/database.db") as db:
+            matching_user = await db.execute_fetchall(
+                """SELECT * FROM profile WHERE user_id = :user_id""",
+                {"user_id": user.id},
+            )
 
-        if not f"{user.id}" in profiles:
-            await ctx.send("This user has no profile saved.")
-            return
+            if len(matching_user) == 0:
+                await ctx.send("This user has no profile saved.")
+                return
 
-        del profiles[f"{user.id}"]
+            await db.execute(
+                """DELETE FROM profile WHERE user_id = :user_id""",
+                {"user_id": user.id},
+            )
 
-        with open(r"./json/profile.json", "w") as f:
-            json.dump(profiles, f, indent=4)
+            await db.commit()
 
         await ctx.send(
             f"{ctx.author.mention}, I have successfully deleted the profile of {discord.utils.escape_markdown(str(user))}."
@@ -172,24 +187,22 @@ class Profile(commands.Cog):
         Sets your mains on your smash profile.
         """
         # only getting the first 7 chars, think thats a very generous cutoff
-        chars = self.match_character(input)[:7]
+        chars = " ".join(self.match_character(input)[:7])
 
-        self.make_new_profile(ctx.author)
+        await self.make_new_profile(ctx.author)
 
-        with open(r"./json/profile.json", "r") as f:
-            profiles = json.load(f)
+        async with aiosqlite.connect("./db/database.db") as db:
+            await db.execute(
+                """UPDATE profile SET mains = :chars WHERE user_id = :user_id""",
+                {"chars": chars, "user_id": ctx.author.id},
+            )
 
-        profiles[f"{ctx.author.id}"]["mains"] = chars
-
-        with open(r"./json/profile.json", "w") as f:
-            json.dump(profiles, f, indent=4)
+            await db.commit()
 
         if input is None:
             await ctx.send(f"{ctx.author.mention}, I have deleted your mains.")
         else:
-            await ctx.send(
-                f"{ctx.author.mention}, I have set your mains to: " + " ".join(chars)
-            )
+            await ctx.send(f"{ctx.author.mention}, I have set your mains to: {chars}")
 
     @commands.command(
         aliases=["secondary", "setsecondary", "spsecondaries", "profilesecondaries"]
@@ -198,24 +211,23 @@ class Profile(commands.Cog):
         """
         Sets your secondaries on your smash profile.
         """
-        chars = self.match_character(input)[:7]
+        chars = " ".join(self.match_character(input)[:7])
 
-        self.make_new_profile(ctx.author)
+        await self.make_new_profile(ctx.author)
 
-        with open(r"./json/profile.json", "r") as f:
-            profiles = json.load(f)
+        async with aiosqlite.connect("./db/database.db") as db:
+            await db.execute(
+                """UPDATE profile SET secondaries = :chars WHERE user_id = :user_id""",
+                {"chars": chars, "user_id": ctx.author.id},
+            )
 
-        profiles[f"{ctx.author.id}"]["secondaries"] = chars
-
-        with open(r"./json/profile.json", "w") as f:
-            json.dump(profiles, f, indent=4)
+            await db.commit()
 
         if input is None:
             await ctx.send(f"{ctx.author.mention}, I have deleted your secondaries.")
         else:
             await ctx.send(
-                f"{ctx.author.mention}, I have set your secondaries to: "
-                + " ".join(chars)
+                f"{ctx.author.mention}, I have set your secondaries to: {chars}"
             )
 
     @commands.command(aliases=["pocket", "setpocket", "sppockets", "profilepockets"])
@@ -224,24 +236,22 @@ class Profile(commands.Cog):
         Sets your pockets on your smash profile.
         """
         # since you can have some more pockets, i put it at 10 max. there could be a max of around 25 per embed field however
-        chars = self.match_character(input)[:10]
+        chars = " ".join(self.match_character(input)[:7])
 
-        self.make_new_profile(ctx.author)
+        await self.make_new_profile(ctx.author)
 
-        with open(r"./json/profile.json", "r") as f:
-            profiles = json.load(f)
+        async with aiosqlite.connect("./db/database.db") as db:
+            await db.execute(
+                """UPDATE profile SET pockets = :chars WHERE user_id = :user_id""",
+                {"chars": chars, "user_id": ctx.author.id},
+            )
 
-        profiles[f"{ctx.author.id}"]["pockets"] = chars
-
-        with open(r"./json/profile.json", "w") as f:
-            json.dump(profiles, f, indent=4)
+            await db.commit()
 
         if input is None:
             await ctx.send(f"{ctx.author.mention}, I have deleted your pockets.")
         else:
-            await ctx.send(
-                f"{ctx.author.mention}, I have set your pockets to: " + " ".join(chars)
-            )
+            await ctx.send(f"{ctx.author.mention}, I have set your pockets to: {chars}")
 
     @commands.command(aliases=["smashtag", "sptag", "settag"])
     async def tag(self, ctx, *, input=None):
@@ -255,15 +265,15 @@ class Profile(commands.Cog):
         # think 30 chars for a tag is fair
         input = input[:30]
 
-        self.make_new_profile(ctx.author)
+        await self.make_new_profile(ctx.author)
 
-        with open(r"./json/profile.json", "r") as f:
-            profiles = json.load(f)
+        async with aiosqlite.connect("./db/database.db") as db:
+            await db.execute(
+                """UPDATE profile SET tag = :tag WHERE user_id = :user_id""",
+                {"tag": input, "user_id": ctx.author.id},
+            )
 
-        profiles[f"{ctx.author.id}"]["tag"] = input
-
-        with open(r"./json/profile.json", "w") as f:
-            json.dump(profiles, f, indent=4)
+            await db.commit()
 
         await ctx.send(
             f"{ctx.author.mention}, I have set your tag to: `{discord.utils.remove_markdown(input)}`"
@@ -338,15 +348,15 @@ class Profile(commands.Cog):
             await ctx.send("Please choose a valid region. Example: `%region Europe`")
             return
 
-        self.make_new_profile(ctx.author)
+        await self.make_new_profile(ctx.author)
 
-        with open(r"./json/profile.json", "r") as f:
-            profiles = json.load(f)
+        async with aiosqlite.connect("./db/database.db") as db:
+            await db.execute(
+                """UPDATE profile SET region = :region WHERE user_id = :user_id""",
+                {"region": input, "user_id": ctx.author.id},
+            )
 
-        profiles[f"{ctx.author.id}"]["region"] = input
-
-        with open(r"./json/profile.json", "w") as f:
-            json.dump(profiles, f, indent=4)
+            await db.commit()
 
         if input == "":
             await ctx.send(f"{ctx.author.mention}, I have deleted your region.")
@@ -366,15 +376,15 @@ class Profile(commands.Cog):
         # for a note, 150 chars seem enough to me
         input = input[:150]
 
-        self.make_new_profile(ctx.author)
+        await self.make_new_profile(ctx.author)
 
-        with open(r"./json/profile.json", "r") as f:
-            profiles = json.load(f)
+        async with aiosqlite.connect("./db/database.db") as db:
+            await db.execute(
+                """UPDATE profile SET note = :note WHERE user_id = :user_id""",
+                {"note": input, "user_id": ctx.author.id},
+            )
 
-        profiles[f"{ctx.author.id}"]["note"] = input
-
-        with open(r"./json/profile.json", "w") as f:
-            json.dump(profiles, f, indent=4)
+            await db.commit()
 
         if input == "":
             await ctx.send(f"{ctx.author.mention}, I have deleted your note.")
@@ -406,15 +416,15 @@ class Profile(commands.Cog):
             )
             return
 
-        self.make_new_profile(ctx.author)
+        await self.make_new_profile(ctx.author)
 
-        with open(r"./json/profile.json", "r") as f:
-            profiles = json.load(f)
+        async with aiosqlite.connect("./db/database.db") as db:
+            await db.execute(
+                """UPDATE profile SET colour = :colour WHERE user_id = :user_id""",
+                {"colour": colour, "user_id": ctx.author.id},
+            )
 
-        profiles[f"{ctx.author.id}"]["colour"] = colour
-
-        with open(r"./json/profile.json", "w") as f:
-            json.dump(profiles, f, indent=4)
+            await db.commit()
 
         await ctx.send(f"{ctx.author.mention}, I have set your colour to: `{input}`")
 

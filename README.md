@@ -40,6 +40,5 @@ What you can do instead is run your own instance of this bot. Please keep in min
 1) If you want the Mee6 leaderboard of your server instead of the Training Grounds one, you need to change that too, in the [`./cogs/mee6api.py`](cogs/mee6api.py) file. Make sure that Mee6 is present in your server and the levels plugin is enabled.  
 2) The stagelist file [`./files/stagelist.png`](files/stagelist.png) shows our current stagelist. If your ruleset is different, replace the image but keep the same file name.  
 3) The emojis used in the profile commands are stored in [`./files/characters.json`](files/characters.json), change them if you have your own. If bots do not have access to emojis they will just display `:EmojiName:`, so it will still kind of work.  
-4) You may also choose to delete the examples in the files in the [`./json/`](json/) directory, make sure to keep all the json files itself though and leave a pair of curly brackets `{}`.  
 
 These are entirely optional, but if you are planning on seriously using this bot for your own server, I highly recommend doing these steps for appearance purposes.  

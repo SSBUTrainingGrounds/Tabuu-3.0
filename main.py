@@ -1,6 +1,6 @@
 # Tabuu 3.0
 # by Phxenix for SSBU Training Grounds
-# Version: 6.2.0
+# Version: 7.0.0
 # Last Changes: 10 February 2022
 # Contact me on Discord: Phxenix#1104
 
@@ -9,6 +9,7 @@ import discord
 from discord.ext import commands
 import os
 import utils.logger
+import utils.sqlite
 
 
 # intents so the bot can track its users
@@ -18,11 +19,16 @@ bot = commands.Bot(command_prefix="%", intents=intents, status=discord.Status.on
 bot.remove_command("help")
 
 # to be used in the stats command
-bot.version_number = "6.2.0"
+bot.version_number = "7.0.0"
 bot.commands_ran = 0
 bot.events_listened_to = 0
 
 utils.logger.create_logger()
+
+# sets up the database for first time use
+@bot.event
+async def on_connect():
+    await utils.sqlite.setup_db()
 
 
 # prints to the console when its ready
