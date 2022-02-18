@@ -24,12 +24,6 @@ async def setup_db(filepath: str = "./db/database.db"):
         )
 
         await db.execute(
-            """CREATE TABLE IF NOT EXISTS starboardconfig(
-                emoji TEXT,
-                threshold INTEGER)"""
-        )
-
-        await db.execute(
             """CREATE TABLE IF NOT EXISTS reminder(
                 user_id INTEGER,
                 reminder_id INTEGER,
@@ -43,7 +37,7 @@ async def setup_db(filepath: str = "./db/database.db"):
             """CREATE TABLE IF NOT EXISTS reactrole(
                 message_id INTEGER,
                 exclusive INTEGER,
-                rolereq INTEGER,
+                rolereq TEXT,
                 emoji TEXT,
                 role INTEGER)"""
         )
