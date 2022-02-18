@@ -83,8 +83,8 @@ class Rolemenu(commands.Cog):
         if rolereqs is not None:
             # saves the role ids and names
             for role in rolereqs:
-                rolereq_ids.append(str(role.id) if role is not None else role)
-                rolereq_names.append(role.name if role is not None else role)
+                rolereq_ids.append(str(role.id))
+                rolereq_names.append(role.name)
 
             rolereq_id_store = " ".join(rolereq_ids)
             rolereq_name_store = ", ".join(rolereq_names)
@@ -279,7 +279,7 @@ class Rolemenu(commands.Cog):
             # I have to do this because of animated emojis.
             # And this event here doesnt recognise them properly.
             # It doesnt send any information on whether or not the emoji is animated or not.
-            if str(payload.emoji)[-20:] == emoji:
+            if str(payload.emoji)[-20:] == emoji[-20:]:
                 role_tbd = discord.utils.get(
                     self.bot.get_guild(payload.guild_id).roles, id=role
                 )
