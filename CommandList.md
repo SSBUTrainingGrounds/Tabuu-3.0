@@ -1,7 +1,7 @@
 # Full list of commands:
 
 This here contains every command with a detailed explanation on how to use them. They are ordered alphabetically, search them with Ctrl+F.  
-Last updated: 25 January 2022  
+Last updated: 19 February 2022  
 I will try to keep this up-to-date, no promises.  
 
 **%8ball** `<question>`  
@@ -219,7 +219,7 @@ I will try to keep this up-to-date, no promises.
     Info: **Owner only.** Reloads all of the cogs of this bot, so you don't have to restart it for every little change.  
   
 **%reminder** `<time> <message>`  
-    Info: Reminds you about something. Time is in a shortened format with any number and d/h/m/s. Minimum duration is 30 seconds, maximum is 30 days.  
+    Info: Reminds you about something. Time is in a shortened format with any number and d/h/m/s. Minimum duration is 30 seconds, maximum is 90 days.  
     Example: `%reminder 10h20m get that thing done you wanted to get done`  
     Aliases: remindme, newreminder, newremindme  
   
@@ -316,7 +316,7 @@ I will try to keep this up-to-date, no promises.
     Example: `%unmute @Phxenix`  
   
 **%updatelevel** `<@user: Optional>`  
-    Info: Updates your level role or the one of the mentioned user according to your MEE6 level manually. Has a 10 minute cooldown. Note that this gets done anyways every 23 hours for everyone in the server. Only works in the Training Grounds server.  
+    Info: Updates your level role or the one of the mentioned user according to your MEE6 level manually. Has a 5 minute cooldown. Note that this gets done anyways every 23 hours for everyone in the server. Only works in the Training Grounds server.  
     Example: `%updatelevel @Phxenix`  
   
 **%userinfo** `<@user: Optional>`  
