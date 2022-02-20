@@ -18,19 +18,6 @@ import utils.logger
 import utils.time
 
 
-# status cycles through these, update these once in a while to keep it fresh
-status = cycle(
-    [
-        "type %help",
-        "Always watching 👀",
-        "%modmail in my DM's to contact the mod team privately",
-        "What is love?",
-        "Harder, better, faster, stronger",
-        "Reading menu...",
-    ]
-)
-
-
 class Events(commands.Cog):
     """
     Contains the event listeners, Welcome/Booster messages,
@@ -51,12 +38,39 @@ class Events(commands.Cog):
         self.tos_ping.cancel()
         self.dt_ping.cancel()
 
-    @tasks.loop(seconds=300)
+    # status cycles through these, update these once in a while to keep it fresh
+    status = cycle(
+        [
+            "type %help",
+            "Always watching 👀",
+            "%modmail in my DM's to contact the mod team privately",
+            "What is love?",
+            "Executing Plan Z.",
+            "Harder, better, faster, stronger.",
+            "Reading menu...",
+            "Read the rules!",
+            "I'm in your area.",
+            "Join the Battlegrounds!",
+            "Gambling... 🎰",
+            "1% Evil, 99% Hot Gas.",
+            "{members} Members",
+            "Version {version}",
+        ]
+    )
+
+    @tasks.loop(seconds=600)
     async def change_status(self):
         """
-        Changes the status every 5 Minutes.
+        Changes the status every 10 Minutes.
         """
-        await self.bot.change_presence(activity=discord.Game(next(status)))
+        await self.bot.change_presence(
+            activity=discord.Game(
+                next(self.status).format(
+                    members=len(set(self.bot.get_all_members())),
+                    version=self.bot.version_number,
+                )
+            )
+        )
 
     @change_status.before_loop
     async def before_change_status(self):
