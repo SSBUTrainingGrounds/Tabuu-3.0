@@ -215,8 +215,8 @@ I will try to keep this up-to-date, no promises.
     Example: `%region europe`  
     Aliases: setregion, spregion, country  
   
-**%reloadcogs**  
-    Info: **Owner only.** Reloads all of the cogs of this bot, so you don't have to restart it for every little change.  
+**%reloadcogs** `<cogs: Optional>`  
+    Info: **Owner only.** Tries to reload the specified cogs separated by commas. If you do not specify any cogs, it reloads all of them, so you don't have to restart it for every little change.  
   
 **%reminder** `<time> <message>`  
     Info: Reminds you about something. Time is in a shortened format with any number and d/h/m/s. Minimum duration is 30 seconds, maximum is 90 days.  

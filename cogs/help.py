@@ -81,7 +81,7 @@ class Responses(discord.ui.Select):
     """
 
     admin_util_desc = """
-```%reloadcogs``` - Owner only, reloads all of the modules of this bot.
+```%reloadcogs <cogs>``` - Owner only, reloads some or all of the modules of this bot.
 ```%clearmmpings``` - Clears all matchmaking pings.
 ```%records``` - Shows ban records.
 ```%forcereportmatch <@winner> <@loser>``` - If someone abandons a ranked match.
