@@ -4,7 +4,6 @@ import asyncio
 import os
 from utils.ids import GuildNames, GuildIDs, AdminVars
 from utils.role import search_role
-import utils.logger
 import utils.check
 
 
@@ -88,7 +87,7 @@ class Admin(commands.Cog):
                         f"You have been banned from the {ctx.guild.name} Server for the following reason: \n```{reason}```\nPlease contact {AdminVars.GROUNDS_KEEPER} for an appeal.\n{AdminVars.BAN_RECORDS}"
                     )
                 except Exception as exc:
-                    logger = utils.logger.get_logger("bot.admin")
+                    logger = self.bot.get_logger("bot.admin")
                     logger.warning(
                         f"Tried to message ban reason to {str(user)}, but it failed: {exc}"
                     )
@@ -187,7 +186,7 @@ class Admin(commands.Cog):
                         f"You have been kicked from the {ctx.guild.name} Server for the following reason: \n```{reason}```\nIf you would like to discuss your punishment, please contact {AdminVars.GROUNDS_GENERALS}."
                     )
                 except Exception as exc:
-                    logger = utils.logger.get_logger("bot.admin")
+                    logger = self.bot.get_logger("bot.admin")
                     logger.warning(
                         f"Tried to message kick reason to {str(member)}, but it failed: {exc}"
                     )

@@ -4,7 +4,6 @@ import aiosqlite
 import asyncio
 from utils.ids import GuildNames, GuildIDs, TGRoleIDs, BGRoleIDs, AdminVars
 from utils.time import convert_time
-import utils.logger
 import utils.check
 
 
@@ -45,7 +44,7 @@ class Mute(commands.Cog):
             tg_member = tg_guild.get_member(member.id)
             await tg_member.add_roles(tg_role)
         except Exception as exc:
-            logger = utils.logger.get_logger("bot.mute")
+            logger = self.bot.get_logger("bot.mute")
             logger.warning(
                 f"Tried to add muted role in {GuildNames.TG} server but it failed: {exc}"
             )
@@ -57,7 +56,7 @@ class Mute(commands.Cog):
             bg_member = bg_guild.get_member(member.id)
             await bg_member.add_roles(bg_role)
         except Exception as exc:
-            logger = utils.logger.get_logger("bot.mute")
+            logger = self.bot.get_logger("bot.mute")
             logger.warning(
                 f"Tried to add muted role in {GuildNames.BG} server but it failed: {exc}"
             )
@@ -82,7 +81,7 @@ class Mute(commands.Cog):
             tg_member = tg_guild.get_member(member.id)
             await tg_member.remove_roles(tg_role)
         except Exception as exc:
-            logger = utils.logger.get_logger("bot.mute")
+            logger = self.bot.get_logger("bot.mute")
             logger.warning(
                 f"Tried to remove muted role in {GuildNames.TG} server but it failed: {exc}"
             )
@@ -93,7 +92,7 @@ class Mute(commands.Cog):
             bg_member = bg_guild.get_member(member.id)
             await bg_member.remove_roles(bg_role)
         except Exception as exc:
-            logger = utils.logger.get_logger("bot.mute")
+            logger = self.bot.get_logger("bot.mute")
             logger.warning(
                 f"Tried to remove muted role in {GuildNames.BG} server but it failed: {exc}"
             )
@@ -120,7 +119,7 @@ class Mute(commands.Cog):
                     f"You have been muted in the {ctx.guild.name} Server for the following reason: \n```{reason}```\nIf you would like to discuss your punishment, please contact {AdminVars.GROUNDS_GENERALS}."
                 )
             except Exception as exc:
-                logger = utils.logger.get_logger("bot.mute")
+                logger = self.bot.get_logger("bot.mute")
                 logger.warning(
                     f"Tried to message mute reason to {str(member)}, but it failed: {exc}"
                 )
@@ -148,7 +147,7 @@ class Mute(commands.Cog):
                     f"You have been unmuted in the {ctx.guild.name} Server! Don't break the rules again"
                 )
             except Exception as exc:
-                logger = utils.logger.get_logger("bot.mute")
+                logger = self.bot.get_logger("bot.mute")
                 logger.warning(
                     f"Tried to message unmute message to {str(member)}, but it failed: {exc}"
                 )
@@ -189,7 +188,7 @@ class Mute(commands.Cog):
                     f"You have been muted in the {ctx.guild.name} Server for ***{time_muted}*** for the following reason: \n```{reason}```\nIf you would like to discuss your punishment, please contact {AdminVars.GROUNDS_GENERALS}."
                 )
             except Exception as exc:
-                logger = utils.logger.get_logger("bot.mute")
+                logger = self.bot.get_logger("bot.mute")
                 logger.warning(
                     f"Tried to message temp mute reason to {str(member)}, but it failed: {exc}"
                 )
@@ -217,7 +216,7 @@ class Mute(commands.Cog):
                     f"You have been automatically unmuted in the {ctx.guild.name} Server! Don't break the rules again"
                 )
             except Exception as exc:
-                logger = utils.logger.get_logger("bot.mute")
+                logger = self.bot.get_logger("bot.mute")
                 logger.warning(
                     f"Tried to message temp unmute message to {str(member)}, but it failed: {exc}"
                 )

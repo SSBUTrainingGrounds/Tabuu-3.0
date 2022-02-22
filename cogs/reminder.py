@@ -5,7 +5,6 @@ import random
 import datetime
 import asyncio
 from utils.time import convert_time
-import utils.logger
 
 
 class Reminder(commands.Cog):
@@ -165,7 +164,7 @@ class Reminder(commands.Cog):
         async with aiosqlite.connect("./db/database.db") as db:
             every_reminder = await db.execute_fetchall("""SELECT * FROM reminder""")
 
-        logger = utils.logger.get_logger("bot.reminder")
+        logger = self.bot.get_logger("bot.reminder")
 
         for reminder in every_reminder:
             (user_id, reminder_id, channel_id, date, read_time, message) = reminder

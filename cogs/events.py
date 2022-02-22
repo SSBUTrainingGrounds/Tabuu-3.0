@@ -14,7 +14,6 @@ from utils.ids import (
     BGRoleIDs,
     TournamentReminders,
 )
-import utils.logger
 import utils.time
 
 
@@ -46,6 +45,7 @@ class Events(commands.Cog):
             "%modmail in my DM's to contact the mod team privately",
             "What is love?",
             "Executing Plan Z.",
+            "...with your heart.",
             "Harder, better, faster, stronger.",
             "Reading menu...",
             "Read the rules!",
@@ -53,6 +53,7 @@ class Events(commands.Cog):
             "Join the Battlegrounds!",
             "Gambling... 🎰",
             "1% Evil, 99% Hot Gas.",
+            "⬆️⬆️⬇️⬇️⬅️➡️⬅️➡️🅱️🅰️",
             "{members} Members",
             "Version {version}",
         ]
@@ -192,7 +193,7 @@ class Events(commands.Cog):
 
     @commands.Cog.listener()
     async def on_command_error(self, ctx, error):
-        logger = utils.logger.get_logger("bot.commands")
+        logger = self.bot.get_logger("bot.commands")
         logger.warning(
             f"Command triggered an Error: %{ctx.invoked_with} (invoked by {str(ctx.author)}) - Error message: {error}"
         )
@@ -230,7 +231,7 @@ class Events(commands.Cog):
 
     @commands.Cog.listener()
     async def on_command_completion(self, ctx):
-        logger = utils.logger.get_logger("bot.commands")
+        logger = self.bot.get_logger("bot.commands")
         logger.info(
             f"Command successfully ran: %{ctx.invoked_with} (invoked by {str(ctx.author)})"
         )
@@ -246,17 +247,17 @@ class Events(commands.Cog):
     # these just log when the bot loses/regains connection
     @commands.Cog.listener()
     async def on_connect(self):
-        logger = utils.logger.get_logger("bot.connection")
+        logger = self.bot.get_logger("bot.connection")
         logger.info("Connected to discord.")
 
     @commands.Cog.listener()
     async def on_disconnect(self):
-        logger = utils.logger.get_logger("bot.connection")
+        logger = self.bot.get_logger("bot.connection")
         logger.error("Lost connection to discord.")
 
     @commands.Cog.listener()
     async def on_resumed(self):
-        logger = utils.logger.get_logger("bot.connection")
+        logger = self.bot.get_logger("bot.connection")
         logger.info("Resumed connection to discord.")
 
     # the times of the tournaments (or well 1 hour & 5 mins before it)

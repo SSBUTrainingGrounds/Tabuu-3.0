@@ -4,7 +4,6 @@ import json
 from .matchmaking import Matchmaking
 from .ranking import Ranking
 from utils.ids import TGArenaChannelIDs
-import utils.logger
 import utils.check
 
 
@@ -162,7 +161,7 @@ class Matchmakingpings(commands.Cog):
         """
         Clears every Matchmaking Ping in the Singles, Doubles, Funnies and Ranked Files.
         """
-        logger = utils.logger.get_logger("bot.mm")
+        logger = self.bot.get_logger("bot.mm")
         logger.info("Starting to delete pings in the matchmaking files...")
 
         # deleting singles file

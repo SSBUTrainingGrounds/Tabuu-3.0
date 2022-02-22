@@ -3,7 +3,6 @@ from discord.ext import commands, tasks
 from mee6_py_api import API
 from math import ceil
 from utils.ids import GuildNames, GuildIDs, TGLevelRoleIDs
-import utils.logger
 
 # this is purposefully not made into GuildIDs.TRAINING_GROUNDS.
 # even in testing i want the TG leaderboard, not the leaderboard of my testing server. change it if you want to.
@@ -152,7 +151,7 @@ class Mee6api(commands.Cog):
         We'll see how this scales in the future.
         """
 
-        logger = utils.logger.get_logger("bot.level")
+        logger = self.bot.get_logger("bot.level")
         logger.info("Starting to update level roles...")
 
         guild = self.bot.get_guild(GuildIDs.TRAINING_GROUNDS)

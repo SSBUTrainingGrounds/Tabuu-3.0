@@ -4,7 +4,6 @@ import asyncio
 import aiosqlite
 import json
 from utils.ids import GuildNames, GuildIDs, TGArenaChannelIDs, TGMatchmakingRoleIDs
-import utils.logger
 import utils.check
 
 
@@ -242,7 +241,7 @@ class Ranking(commands.Cog):
         try:
             del rankedusers[f"{ctx.message.author.id}"]
         except KeyError:
-            logger = utils.logger.get_logger("bot.mm")
+            logger = self.bot.get_logger("bot.mm")
             logger.warning(
                 f"Tried to delete a ranked ping by {str(ctx.message.author)} but the ping was already deleted."
             )

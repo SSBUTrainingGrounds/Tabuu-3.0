@@ -6,7 +6,6 @@ import time
 from datetime import datetime
 from .mute import Mute
 from utils.ids import TGChannelIDs, AdminVars
-import utils.logger
 import utils.check
 
 
@@ -85,7 +84,7 @@ class Warn(commands.Cog):
                     f"You have been automatically banned from the {guild.name} Server for reaching warning #***{warns}***.\nPlease contact {AdminVars.GROUNDS_KEEPER} for an appeal.\n{AdminVars.BAN_RECORDS}"
                 )
             except Exception as exc:
-                logger = utils.logger.get_logger("bot.warn")
+                logger = self.bot.get_logger("bot.warn")
                 logger.warning(
                     f"Tried to message automatic ban reason to {str(member)}, but it failed: {exc}"
                 )
@@ -100,7 +99,7 @@ class Warn(commands.Cog):
                     f"You have been automatically kicked from the {guild.name} Server for reaching warning #***{warns}***. \nIf you would like to discuss your punishment, please contact {AdminVars.GROUNDS_GENERALS}."
                 )
             except Exception as exc:
-                logger = utils.logger.get_logger("bot.warn")
+                logger = self.bot.get_logger("bot.warn")
                 logger.warning(
                     f"Tried to message automatic kick reason to {str(member)}, but it failed: {exc}"
                 )
@@ -120,7 +119,7 @@ class Warn(commands.Cog):
                     f"You have been automatically muted in the {guild.name} Server for reaching warning #***{warns}***. \nIf you would like to discuss your punishment, please contact {AdminVars.GROUNDS_GENERALS}."
                 )
             except Exception as exc:
-                logger = utils.logger.get_logger("bot.warn")
+                logger = self.bot.get_logger("bot.warn")
                 logger.warning(
                     f"Tried to message automatic mute reason to {str(member)}, but it failed: {exc}"
                 )
@@ -144,7 +143,7 @@ class Warn(commands.Cog):
                 f"You have been warned in the {ctx.guild.name} Server for the following reason: \n```{reason}```\nIf you would like to discuss your punishment, please contact {AdminVars.GROUNDS_GENERALS}."
             )
         except Exception as exc:
-            logger = utils.logger.get_logger("bot.warn")
+            logger = self.bot.get_logger("bot.warn")
             logger.warning(
                 f"Tried to message warn reason to {str(member)}, but it failed: {exc}"
             )
@@ -321,7 +320,7 @@ class Warn(commands.Cog):
         This here checks if a warning is older than 30 days and has expired,
         if that is the case, deletes the expired warnings.
         """
-        logger = utils.logger.get_logger("bot.warn")
+        logger = self.bot.get_logger("bot.warn")
 
         async with aiosqlite.connect("./db/database.db") as db:
             every_warning = await db.execute_fetchall("""SELECT * FROM warnings""")

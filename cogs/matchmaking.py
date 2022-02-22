@@ -3,7 +3,6 @@ from discord.ext import commands
 import json
 import asyncio
 from utils.ids import TGArenaChannelIDs, TGMatchmakingRoleIDs
-import utils.logger
 
 
 class Matchmaking(commands.Cog):
@@ -37,7 +36,7 @@ class Matchmaking(commands.Cog):
         try:
             del user_pings[f"{ctx.message.author.id}"]
         except KeyError:
-            logger = utils.logger.get_logger("bot.mm")
+            logger = self.bot.get_logger("bot.mm")
             logger.warning(
                 f"Tried to delete a {mm_type} ping by {str(ctx.message.author)} but the ping was already deleted."
             )
