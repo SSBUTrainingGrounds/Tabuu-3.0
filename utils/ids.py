@@ -210,6 +210,8 @@ class BGRoleIDs:
     Contains the Role IDs used throughout the code, specific to the Battlegrounds Server.
     """
 
+    # mod role
+    MOD_ROLE = 915402610926825553
     # the muted role
     MUTED_ROLE = 928985750505140264
     # the default role you get when you join bg

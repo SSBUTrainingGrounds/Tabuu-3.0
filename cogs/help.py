@@ -172,35 +172,22 @@ class Responses(discord.ui.Select):
 
     async def callback(self, interaction: discord.Interaction):
         if self.values[0] == "Moderation Commands":
-            if interaction.permissions.administrator is True:
-                mod_embed = discord.Embed(
-                    title="🕵️Moderation Commands🕵️",
-                    color=0xFF0000,
-                    description=self.moderation_desc,
-                )
-                await interaction.response.send_message(embed=mod_embed, ephemeral=True)
-            else:
-                await interaction.response.send_message(
-                    "Sorry, you are not an administrator on this server!",
-                    ephemeral=True,
-                )
+            mod_embed = discord.Embed(
+                title="🕵️Moderation Commands🕵️",
+                color=0xFF0000,
+                description=self.moderation_desc,
+            )
+            await interaction.response.send_message(embed=mod_embed, ephemeral=True)
 
         elif self.values[0] == "Admin Utility Commands":
-            if interaction.permissions.administrator is True:
-                admin_util_embed = discord.Embed(
-                    title="🧰Admin Utility Commands🧰",
-                    colour=0x540707,
-                    description=self.admin_util_desc,
-                )
-
-                await interaction.response.send_message(
-                    embed=admin_util_embed, ephemeral=True
-                )
-            else:
-                await interaction.response.send_message(
-                    "Sorry, you are not an administrator on this server!",
-                    ephemeral=True,
-                )
+            admin_util_embed = discord.Embed(
+                title="🧰Admin Utility Commands🧰",
+                colour=0x540707,
+                description=self.admin_util_desc,
+            )
+            await interaction.response.send_message(
+                embed=admin_util_embed, ephemeral=True
+            )
 
         elif self.values[0] == "Info Commands":
             info_embed = discord.Embed(

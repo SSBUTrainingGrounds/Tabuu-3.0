@@ -5,6 +5,7 @@ from .matchmaking import Matchmaking
 from .ranking import Ranking
 from utils.ids import TGArenaChannelIDs
 import utils.logger
+import utils.check
 
 
 class Pings(discord.ui.Select):
@@ -142,7 +143,7 @@ class Matchmakingpings(commands.Cog):
         await ctx.send("Here are all available ping types:", view=DropdownPings())
 
     @commands.command(aliases=["clearmmrequests", "clearmm", "clearmatchmaking"])
-    @commands.has_permissions(administrator=True)
+    @utils.check.is_moderator()
     async def clearmmpings(self, ctx):
         """
         Clears the Matchmaking Pings manually, just in case.

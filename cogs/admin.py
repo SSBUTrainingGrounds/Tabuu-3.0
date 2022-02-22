@@ -5,6 +5,7 @@ import os
 from utils.ids import GuildNames, GuildIDs, AdminVars
 from utils.role import search_role
 import utils.logger
+import utils.check
 
 
 class Admin(commands.Cog):
@@ -16,7 +17,7 @@ class Admin(commands.Cog):
         self.bot = bot
 
     @commands.command()
-    @commands.has_permissions(administrator=True)
+    @utils.check.is_moderator()
     async def clear(self, ctx, amount=1):
         """
         Clears the last X messages from the channel the command is used in.
@@ -32,7 +33,7 @@ class Admin(commands.Cog):
         )
 
     @commands.command()
-    @commands.has_permissions(administrator=True)
+    @utils.check.is_moderator()
     async def delete(self, ctx, *messages: discord.Message):
         """
         Deletes one or more messages via Message ID.
@@ -43,7 +44,7 @@ class Admin(commands.Cog):
         await ctx.message.delete()
 
     @commands.command()
-    @commands.has_permissions(administrator=True)
+    @utils.check.is_moderator()
     async def ban(self, ctx, user: discord.User, *, reason):
         """
         Bans a user from the current server with the specified reason, also tries to DM the user.
@@ -99,7 +100,7 @@ class Admin(commands.Cog):
                 return
 
     @commands.command()
-    @commands.has_permissions(administrator=True)
+    @utils.check.is_moderator()
     async def unban(self, ctx, user: discord.User):
         """
         Unbans a user from the current server.
@@ -108,7 +109,7 @@ class Admin(commands.Cog):
         await ctx.send(f"{user.mention} has been unbanned!")
 
     @commands.command(aliases=["syncbans"])
-    @commands.has_permissions(administrator=True)
+    @utils.check.is_moderator()
     async def syncbanlist(self, ctx):
         """
         Only available on the Battlegrounds Server.
@@ -143,7 +144,7 @@ class Admin(commands.Cog):
         await ctx.send(f"Ban list was successfully synced. Banned {i} users.")
 
     @commands.command()
-    @commands.has_permissions(administrator=True)
+    @utils.check.is_moderator()
     async def kick(self, ctx, member: discord.Member, *, reason):
         """
         Kicks a user from the current server with the specified reason, also tries to DM the user.
@@ -198,7 +199,7 @@ class Admin(commands.Cog):
                 return
 
     @commands.command()
-    @commands.has_permissions(administrator=True)
+    @utils.check.is_moderator()
     async def addrole(self, ctx, member: discord.Member, *, input_role):
         """
         Adds the specified role to the specified member.
@@ -209,7 +210,7 @@ class Admin(commands.Cog):
         await ctx.send(f"{member.mention} was given the {role} role.")
 
     @commands.command()
-    @commands.has_permissions(administrator=True)
+    @utils.check.is_moderator()
     async def removerole(self, ctx, member: discord.Member, *, input_role):
         """
         Removes the specified role from the specified member.
@@ -220,7 +221,7 @@ class Admin(commands.Cog):
         await ctx.send(f"{member.mention} no longer has the {role} role.")
 
     @commands.command()
-    @commands.has_permissions(administrator=True)
+    @utils.check.is_moderator()
     async def records(self, ctx):
         """
         Links our ban records google doc.
@@ -228,7 +229,7 @@ class Admin(commands.Cog):
         await ctx.send(f"Link to our ban records:\n{AdminVars.BAN_RECORDS}")
 
     @commands.command()
-    @commands.has_permissions(administrator=True)
+    @utils.check.is_moderator()
     async def rename(self, ctx, member: discord.Member, *, name=None):
         """
         Renames the specified member to the specified name.

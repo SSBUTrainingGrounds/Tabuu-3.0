@@ -1,6 +1,7 @@
 import discord
 from discord.ext import commands
 import aiosqlite
+import utils.check
 
 
 class Macros(commands.Cog):
@@ -35,7 +36,7 @@ class Macros(commands.Cog):
                     self.bot.commands_ran += 1
 
     @commands.command()
-    @commands.has_permissions(administrator=True)
+    @utils.check.is_moderator()
     async def createmacro(self, ctx, name, *, payload):
         """
         Creates a new macro with the desired name and payload and saves it in the database.
@@ -86,7 +87,7 @@ class Macros(commands.Cog):
         await ctx.send(f"New macro `{name}` was created. \nOutput: `{payload}`")
 
     @commands.command()
-    @commands.has_permissions(administrator=True)
+    @utils.check.is_moderator()
     async def deletemacro(self, ctx, name):
         """
         Deletes a macro with the specified name from the database.

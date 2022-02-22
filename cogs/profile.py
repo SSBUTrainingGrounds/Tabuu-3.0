@@ -2,6 +2,7 @@ import discord
 from discord.ext import commands
 import aiosqlite
 import json
+import utils.check
 
 
 class Profile(commands.Cog):
@@ -155,7 +156,7 @@ class Profile(commands.Cog):
         await ctx.send(f"Successfully deleted your profile, {ctx.author.mention}.")
 
     @commands.command()
-    @commands.has_permissions(administrator=True)
+    @utils.check.is_moderator()
     async def forcedeleteprofile(self, ctx, user: discord.User):
         """
         Deletes the profile of another user, just in case.

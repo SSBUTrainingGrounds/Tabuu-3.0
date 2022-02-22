@@ -1,6 +1,7 @@
 import discord
 from discord.ext import commands
 import aiosqlite
+import utils.check
 
 
 class Rolemenu(commands.Cog):
@@ -13,7 +14,7 @@ class Rolemenu(commands.Cog):
         self.bot = bot
 
     @commands.command()
-    @commands.has_permissions(administrator=True)
+    @utils.check.is_moderator()
     async def newrolemenu(self, ctx, message: int, emoji, role: discord.Role):
         """
         Creates a brand new role menu.
@@ -63,7 +64,7 @@ class Rolemenu(commands.Cog):
         )
 
     @commands.command()
-    @commands.has_permissions(administrator=True)
+    @utils.check.is_moderator()
     async def modifyrolemenu(
         self,
         ctx,
@@ -119,7 +120,7 @@ class Rolemenu(commands.Cog):
         )
 
     @commands.command()
-    @commands.has_permissions(administrator=True)
+    @utils.check.is_moderator()
     async def deleterolemenu(self, ctx, message: int):
         """
         Completely deletes a role menu entry from the database.
@@ -145,7 +146,7 @@ class Rolemenu(commands.Cog):
         await ctx.send(f"Deleted every entry for Message ID #{message}.")
 
     @commands.command()
-    @commands.has_permissions(administrator=True)
+    @utils.check.is_moderator()
     async def geteveryrolemenu(self, ctx):
         """
         Lists every currently active role menu.

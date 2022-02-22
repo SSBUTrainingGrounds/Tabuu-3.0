@@ -4,6 +4,7 @@ import aiosqlite
 import json
 from datetime import datetime, timezone
 from utils.ids import TGChannelIDs
+import utils.check
 
 
 class Starboard(commands.Cog):
@@ -19,7 +20,7 @@ class Starboard(commands.Cog):
     listening_channels = TGChannelIDs.STARBOARD_LISTENING_CHANNELS
 
     @commands.command()
-    @commands.has_permissions(administrator=True)
+    @utils.check.is_moderator()
     async def starboardemoji(self, ctx, emoji):
         """
         Sets the Starboard Emoji.
@@ -42,7 +43,7 @@ class Starboard(commands.Cog):
         await ctx.send(f"Changed the emoji to: `{str(emoji)}`")
 
     @commands.command()
-    @commands.has_permissions(administrator=True)
+    @utils.check.is_moderator()
     async def starboardthreshold(self, ctx, i: int):
         """
         Changes the threshold of reactions needed for the bot to post the message to the starboard channel.

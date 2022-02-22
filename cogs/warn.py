@@ -7,6 +7,7 @@ from datetime import datetime
 from .mute import Mute
 from utils.ids import TGChannelIDs, AdminVars
 import utils.logger
+import utils.check
 
 
 class Warn(commands.Cog):
@@ -125,7 +126,7 @@ class Warn(commands.Cog):
                 )
 
     @commands.command()
-    @commands.has_permissions(administrator=True)
+    @utils.check.is_moderator()
     async def warn(self, ctx, member: discord.Member, *, reason):
         """
         Warns a user.
@@ -175,7 +176,7 @@ class Warn(commands.Cog):
             await ctx.send(f"{member.mention} has {warns} warning(s).")
 
     @commands.command()
-    @commands.has_permissions(administrator=True)
+    @utils.check.is_moderator()
     async def clearwarns(self, ctx, member: discord.Member):
         """
         Deletes all warnings of a user from the database.
@@ -190,7 +191,7 @@ class Warn(commands.Cog):
         await ctx.send(f"Cleared all warnings for {member.mention}.")
 
     @commands.command()
-    @commands.has_permissions(administrator=True)
+    @utils.check.is_moderator()
     async def warndetails(self, ctx, member: discord.Member):
         """
         Gets you the details of a Users warnings.
@@ -238,7 +239,7 @@ class Warn(commands.Cog):
             )
 
     @commands.command()
-    @commands.has_permissions(administrator=True)
+    @utils.check.is_moderator()
     async def deletewarn(self, ctx, member: discord.Member, warn_id):
         """
         Deletes a specific warning of a user, by the randomly generated warning ID.

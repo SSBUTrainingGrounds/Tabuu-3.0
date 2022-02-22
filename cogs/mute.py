@@ -5,6 +5,7 @@ import asyncio
 from utils.ids import GuildNames, GuildIDs, TGRoleIDs, BGRoleIDs, AdminVars
 from utils.time import convert_time
 import utils.logger
+import utils.check
 
 
 class Mute(commands.Cog):
@@ -98,7 +99,7 @@ class Mute(commands.Cog):
             )
 
     @commands.command()
-    @commands.has_permissions(administrator=True)
+    @utils.check.is_moderator()
     async def mute(self, ctx, member: discord.Member, *, reason):
         """
         Mutes a member in both servers indefinitely and DMs them the reason for it.
@@ -128,7 +129,7 @@ class Mute(commands.Cog):
             await ctx.send("This user was already muted!")
 
     @commands.command()
-    @commands.has_permissions(administrator=True)
+    @utils.check.is_moderator()
     async def unmute(self, ctx, member: discord.Member):
         """
         Unmutes a member in both servers and notifies them via DM.
@@ -155,7 +156,7 @@ class Mute(commands.Cog):
             await ctx.send("This user was not muted!")
 
     @commands.command()
-    @commands.has_permissions(administrator=True)
+    @utils.check.is_moderator()
     async def tempmute(self, ctx, member: discord.Member, mute_time, *, reason):
         """
         Mutes a member in both servers, waits the specified time and unmutes them again.

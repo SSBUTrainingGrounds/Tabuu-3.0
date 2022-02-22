@@ -5,6 +5,7 @@ import aiosqlite
 import json
 from utils.ids import GuildNames, GuildIDs, TGArenaChannelIDs, TGMatchmakingRoleIDs
 import utils.logger
+import utils.check
 
 
 class Ranking(commands.Cog):
@@ -400,7 +401,7 @@ class Ranking(commands.Cog):
         )
 
     @commands.command(aliases=["forcereportgame"], cooldown_after_parsing=True)
-    @commands.has_permissions(administrator=True)
+    @utils.check.is_moderator()
     @commands.cooldown(1, 41, commands.BucketType.user)
     async def forcereportmatch(self, ctx, user1: discord.Member, user2: discord.Member):
         """
@@ -518,7 +519,7 @@ class Ranking(commands.Cog):
                     pass
 
     @commands.command()
-    @commands.has_permissions(administrator=True)
+    @utils.check.is_moderator()
     @commands.guild_only()
     async def leaderboard(self, ctx):
         """
