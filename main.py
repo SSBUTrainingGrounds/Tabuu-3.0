@@ -1,7 +1,7 @@
 # Tabuu 3.0
 # by Phxenix for SSBU Training Grounds
-# Version: 8.2.0
-# Last Changes: 22 February 2022
+# Version: 8.3.0
+# Last Changes: 23 February 2022
 # Contact me on Discord: Phxenix#1104
 
 
@@ -21,7 +21,6 @@ class Tabuu3(commands.Bot):
         super().__init__(
             command_prefix="%",
             intents=discord.Intents.all(),
-            help_command=None,
             status=discord.Status.online,
         )
 
@@ -31,7 +30,7 @@ class Tabuu3(commands.Bot):
                 self.load_extension(f"cogs.{filename[:-3]}")
 
         # to be used in %stats
-        self.version_number = "8.2.0"
+        self.version_number = "8.3.0"
         self.commands_ran = 0
         self.events_listened_to = 0
 

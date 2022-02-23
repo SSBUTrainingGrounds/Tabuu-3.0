@@ -109,8 +109,8 @@ I will try to keep this up-to-date, no promises.
 **%geteveryrolemenu**  
     Info: **Admin only.** Gets you every role menu entry currently saved.  
   
-**%help**  
-    Info: The help command is broken into a dropdown cause there were too many commands to list. Available dropdowns are: Moderation, Admin Utility, Info, Matchmaking, Profile, Utility, Miscellaneous, and Fun. The Moderation and Admin Utility dropdowns are only available for admins.  
+**%help** `<command: Optional>`  
+    Info: Shows you Info about a specified command. If you do not specify a command you will get the help menu, which is broken into a dropdown cause there were too many commands to list. Available dropdowns are: Moderation, Admin Utility, Info, Matchmaking, Profile, Utility, Miscellaneous, and Fun. The Moderation and Admin Utility dropdowns are only available for admins.  
   
 **%hypemeup**  
     Info: Hypes you up with a randomly chosen response before that next game of smash.  

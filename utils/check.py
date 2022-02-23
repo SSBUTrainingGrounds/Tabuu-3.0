@@ -16,7 +16,7 @@ def is_moderator():
     def predicate(ctx: commands.Context):
         # if the command is invoked in dm's we return the error immediately.
         if ctx.guild is None:
-            raise commands.MissingPermissions("Administrator")
+            raise commands.MissingPermissions(["Moderator"])
 
         # first we check if the author is the guild owner.
         if ctx.guild.owner.id == ctx.author.id:
@@ -34,6 +34,6 @@ def is_moderator():
             return True
 
         # and if not we raise the error again.
-        raise commands.MissingPermissions("Administrator")
+        raise commands.MissingPermissions(["Moderator"])
 
     return commands.check(predicate)

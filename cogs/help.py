@@ -1,3 +1,4 @@
+from re import U
 import discord
 from discord.ext import commands
 
@@ -100,6 +101,7 @@ class Responses(discord.ui.Select):
     """
 
     info_desc = """
+```%help <command>``` - Help menu, or specific help with a command.
 ```%listmacros``` - Lists every macro command registered.
 ```%roleinfo <role>``` - Displays Role info.
 ```%listrole <role>``` - Displays all the members with a certain Role.
@@ -250,16 +252,53 @@ class DropdownHelp(discord.ui.View):
         self.add_item(Responses())
 
 
+class CustomHelp(commands.HelpCommand):
+    async def send_bot_help(self, mapping):
+        """
+        Sends you the dropdown with every command and explanation on how to use it.
+        We override this with our own because the default implementation is pretty ugly, imo.
+        """
+        channel = self.get_destination()
+        await channel.send("Here are the available subcommands:", view=DropdownHelp())
+
+    async def send_command_help(self, command):
+        """
+        Sends you specific help information about a command.
+        """
+        embed = discord.Embed(
+            title=self.get_command_signature(command), colour=0x007377
+        )
+        # the command.help is just the docstring inside every command.
+        embed.add_field(name="Help:", value=command.help, inline=False)
+        embed.set_thumbnail(url=self.context.bot.user.display_avatar.url)
+        if command.aliases:
+            embed.add_field(
+                name="Names:",
+                value=f"{command.name}, {', '.join(command.aliases)}",
+                inline=False,
+            )
+        else:
+            embed.add_field(name="Names", value=command.name, inline=False)
+
+        # this checks if the command could be used right now.
+        # it throws an error if not, this is why the except is needed.
+        try:
+            await command.can_run(self.context)
+            embed.add_field(name="Usable by you:", value="Yes", inline=False)
+        except Exception as exc:
+            embed.add_field(name="Usable by you:", value=f"No:\n{exc}", inline=False)
+
+        channel = self.get_destination()
+        await channel.send(embed=embed)
+
+
 class Help(commands.Cog):
     def __init__(self, bot):
         self.bot = bot
 
-    @commands.command()
-    async def help(self, ctx):
-        """
-        Sends you the dropdown with every command and explanation on how to use it.
-        """
-        await ctx.send("Here are the available subcommands:", view=DropdownHelp())
+        help_command = CustomHelp()
+        help_command.cog = self
+        bot.help_command = help_command
 
 
 def setup(bot):
