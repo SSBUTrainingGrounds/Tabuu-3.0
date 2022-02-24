@@ -255,10 +255,24 @@ class CustomHelp(commands.HelpCommand):
     async def send_bot_help(self, mapping):
         """
         Sends you the dropdown with every command and explanation on how to use it.
-        We override this with our own because the default implementation is pretty ugly, imo.
+        The user can choose which dropdown they wanna see,
+        it is intentionally grouped different than in our cogs.
+        It looks a lot nicer this way, in my opinion, than the default option.
+        We just have to remember to add new commands to the embeds up above.
         """
         channel = self.get_destination()
         await channel.send("Here are the available subcommands:", view=DropdownHelp())
+
+    async def send_cog_help(self, cog):
+        """
+        We dont really want to send out anything here,
+        since we grouped the commands above a lot differently than the cogs would.
+        So instead we just send out the command not found error,
+        if the user happens to specify a cog as an argument.
+        Otherwise the bot would not respond at all, which is obviously suboptimal.
+        We would need to do the same thing for command groups, but we dont have any.
+        """
+        await self.send_error_message(self.command_not_found(cog.qualified_name))
 
     async def send_command_help(self, command):
         """
@@ -280,7 +294,7 @@ class CustomHelp(commands.HelpCommand):
             embed.add_field(name="Names", value=command.name, inline=False)
 
         # this checks if the command could be used right now.
-        # it throws an error if not, this is why the except is needed.
+        # it throws the error directly if the command cant be used and tells you why.
         try:
             await command.can_run(self.context)
             embed.add_field(name="Usable by you:", value="Yes", inline=False)
