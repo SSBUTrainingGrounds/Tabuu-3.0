@@ -1,7 +1,7 @@
 # Full list of commands:
 
 This here contains every command with a detailed explanation on how to use them. They are ordered alphabetically, search them with Ctrl+F.  
-Last updated: 19 February 2022  
+Last updated: 24 February 2022  
 I will try to keep this up-to-date, no promises.  
 
 **%8ball** `<question>`  
@@ -110,7 +110,7 @@ I will try to keep this up-to-date, no promises.
     Info: **Admin only.** Gets you every role menu entry currently saved.  
   
 **%help** `<command: Optional>`  
-    Info: Shows you Info about a specified command. If you do not specify a command you will get the help menu, which is broken into a dropdown cause there were too many commands to list. Available dropdowns are: Moderation, Admin Utility, Info, Matchmaking, Profile, Utility, Miscellaneous, and Fun. The Moderation and Admin Utility dropdowns are only available for admins.  
+    Info: Shows you Info about a specified command. If you do not specify a command you will get the help menu, which is broken into a dropdown cause there were too many commands to list. Available dropdowns are: Moderation, Admin Utility, Info, Matchmaking, Profile, Utility, Miscellaneous, and Fun.  
   
 **%hypemeup**  
     Info: Hypes you up with a randomly chosen response before that next game of smash.  
