@@ -32,8 +32,11 @@ class ModmailButton(discord.ui.View):
                 auto_archive_duration=1440,
                 message=None,
             )
+
+            await thread.add_user(interaction.user)
+
             await thread.send(
-                f"**✉️New Modmail <@&{TGRoleIDs.MOD_ROLE}>!✉️**\nHey there, {user_name}! Thanks for reaching out to the Moderator Team. They will be with you shortly.\nPlease use this thread for communication."
+                f"**✉️New Modmail <@&{TGRoleIDs.MOD_ROLE}>!✉️**\nHey there, {interaction.user.mention}! Thanks for reaching out to the Moderator Team. They will be with you shortly.\nPlease use this thread for communication."
             )
         # private threads can only be created if you have a subscripion level of 2.
         # we won't create a thread, cause public modmail isnt really that great.
