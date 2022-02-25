@@ -2,7 +2,6 @@ import discord
 from discord.ext import commands
 import random
 import asyncio
-from utils.ids import GuildIDs, TGChannelIDs, TGRoleIDs
 import utils.conversion
 
 
@@ -13,51 +12,6 @@ class Usercommands(commands.Cog):
 
     def __init__(self, bot):
         self.bot = bot
-
-    @commands.command()
-    async def modmail(self, ctx, *, args):
-        """
-        Very basic one-way modmail system.
-        Only works in the Bots DMs.
-        """
-        if str(ctx.channel.type) == "private":
-            guild = self.bot.get_guild(GuildIDs.TRAINING_GROUNDS)
-            modmail_channel = self.bot.get_channel(TGChannelIDs.MODMAIL_CHANNEL)
-            mod_role = discord.utils.get(guild.roles, id=TGRoleIDs.MOD_ROLE)
-
-            atm = ""
-            if ctx.message.attachments:
-                atm = " , ".join([i.url for i in ctx.message.attachments])
-
-            complete_message = f"**✉️ New Modmail {mod_role.mention}! ✉️**\nFrom: {ctx.author} \nMessage:\n{args} \n{atm}"
-
-            # with the message attachments combined with the normal message lengths, the message can reach over 4k characters, but we can only send 2k at a time.
-            if len(complete_message[4000:]) > 0:
-                await modmail_channel.send(complete_message[:2000])
-                await modmail_channel.send(complete_message[2000:4000])
-                await modmail_channel.send(complete_message[4000:])
-                await ctx.send(
-                    "Your message has been sent to the Moderator Team. They will get back to you shortly."
-                )
-
-            elif len(complete_message[2000:]) > 0:
-                await modmail_channel.send(complete_message[:2000])
-                await modmail_channel.send(complete_message[2000:])
-                await ctx.send(
-                    "Your message has been sent to the Moderator Team. They will get back to you shortly."
-                )
-
-            else:
-                await modmail_channel.send(complete_message)
-                await ctx.send(
-                    "Your message has been sent to the Moderator Team. They will get back to you shortly."
-                )
-
-        else:
-            await ctx.message.delete()
-            await ctx.send(
-                "For the sake of privacy, please only use this command in my DM's. They are always open for you."
-            )
 
     @commands.command()
     async def ping(self, ctx):
@@ -318,15 +272,6 @@ class Usercommands(commands.Cog):
         if isinstance(error, commands.MissingRequiredArgument):
             await ctx.send(
                 "You need to specify a question, and then at least 2 options!"
-            )
-        else:
-            raise error
-
-    @modmail.error
-    async def modmail_error(self, ctx, error):
-        if isinstance(error, commands.MissingRequiredArgument):
-            await ctx.send(
-                "Please provide a message to the moderators. It should look something like:\n```%modmail (your message here)```"
             )
         else:
             raise error

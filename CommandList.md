@@ -259,6 +259,9 @@ I will try to keep this up-to-date, no promises.
     Info: Gets you some information about the server, does not work in DMs for obvious reasons.  
     Aliases: serverinfo  
   
+**%setupmodmailbutton**  
+    Info: **Admin only.** Sets up a new button to listen to, for creating modmail threads. Should really only be used once.  
+  
 **%singles**  
     Info: Pings the singles role and stores your ping for 30 Minutes. Also creates a thread and invites the user to it. Has a 10 minute cooldown and can only be used in our arena channels.  
     Aliases: matchmaking, matchmakingsingles, mmsingles, Singles  

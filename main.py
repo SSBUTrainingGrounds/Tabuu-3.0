@@ -1,7 +1,7 @@
 # Tabuu 3.0
 # by Phxenix for SSBU Training Grounds
-# Version: 8.3.0
-# Last Changes: 23 February 2022
+# Version: 8.4.0
+# Last Changes: 25 February 2022
 # Contact me on Discord: Phxenix#1104
 
 
@@ -10,6 +10,7 @@ from discord.ext import commands
 import os
 import utils.logger
 import utils.sqlite
+from cogs.modmail import ModmailButton
 
 
 class Tabuu3(commands.Bot):
@@ -30,9 +31,12 @@ class Tabuu3(commands.Bot):
                 self.load_extension(f"cogs.{filename[:-3]}")
 
         # to be used in %stats
-        self.version_number = "8.3.0"
+        self.version_number = "8.4.0"
         self.commands_ran = 0
         self.events_listened_to = 0
+
+        # check to make sure the buttons do not get added twice.
+        self.persistent_views_added = None
 
     async def start(self, *args, **kwargs):
         # we override the start method to do set up the database and logging.
@@ -56,6 +60,12 @@ class Tabuu3(commands.Bot):
         await super().close()
 
     async def on_ready(self):
+        # adds the modmail button if it hasnt already.
+        # on_ready gets called multiple times, so the check is needed.
+        if not self.persistent_views_added:
+            self.add_view(ModmailButton())
+            self.persistent_views_added = True
+
         print(
             f"Lookin' good, connected as: {str(bot.user)}, at: {discord.utils.utcnow().strftime('%d-%m-%Y %H:%M:%S')} UTC"
         )

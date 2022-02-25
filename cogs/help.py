@@ -97,6 +97,7 @@ class Responses(discord.ui.Select):
 ```%starboardthreshold <number>``` - Changes the threshold used for the starboard.
 ```%forcedeleteprofile <user>``` - Deletes the profile of a user.
 ```%syncbanlist``` - Syncs the ban list from main server to secondary server.
+```%setupmodmailbutton``` - Sets up a new modmail button for the bot to listen to.
     """
 
     info_desc = """
