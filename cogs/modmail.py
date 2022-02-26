@@ -41,7 +41,7 @@ class ModmailButton(discord.ui.View):
         # private threads can only be created if you have a subscripion level of 2.
         # we won't create a thread, cause public modmail isnt really that great.
         # just need to use the "classic" modmail then and tell the user exactly that.
-        except discord.errors.HTTPException as exc:
+        except Exception as exc:
             await interaction.response.send_message(
                 f"Looks like something went wrong:\n```{exc}```\nPlease either use `%modmail` in my DMs or contact one of the moderators directly.",
                 ephemeral=True,
@@ -55,6 +55,14 @@ class Modmail(commands.Cog):
 
     def __init__(self, bot):
         self.bot = bot
+
+    @commands.Cog.listener()
+    async def on_ready(self):
+        # adds the modmail button if it hasnt already.
+        # on_ready gets called multiple times, so the check is needed.
+        if not self.bot.modmail_button_added:
+            self.bot.add_view(ModmailButton())
+            self.bot.modmail_button_added = True
 
     @commands.command()
     @utils.check.is_moderator()
