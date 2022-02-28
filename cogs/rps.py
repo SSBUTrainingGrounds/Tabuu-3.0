@@ -104,7 +104,7 @@ class Rpsgame(commands.Cog):
 
         view = RpsButtons(ctx, member)
         init_message = await ctx.send(
-            f"Rock, Paper, Scissors: \n{ctx.author.name} vs {member.name}\nChoose wisely:",
+            f"Rock, Paper, Scissors: \n{ctx.author.mention} vs {member.mention}\nChoose wisely:",
             view=view,
         )
 
@@ -128,18 +128,23 @@ class Rpsgame(commands.Cog):
         member_winner_message = f"{ctx.author.mention} chose {view.authorchoice}!\n{member.mention} chose {view.memberchoice}!\n**The winner is: {member.mention}!**"
 
         # since draws are already ruled out the rest of the logic isnt too bad, still a whole lot of elif statements though
-        if view.authorchoice == "Rock" and view.memberchoice == "Paper":
-            await init_message.reply(member_winner_message)
-        elif view.authorchoice == "Rock" and view.memberchoice == "Scissors":
-            await init_message.reply(author_winner_message)
-        elif view.authorchoice == "Paper" and view.memberchoice == "Rock":
-            await init_message.reply(author_winner_message)
-        elif view.authorchoice == "Paper" and view.memberchoice == "Scissors":
-            await init_message.reply(member_winner_message)
-        elif view.authorchoice == "Scissors" and view.memberchoice == "Rock":
-            await init_message.reply(member_winner_message)
-        elif view.authorchoice == "Scissors" and view.memberchoice == "Paper":
-            await init_message.reply(author_winner_message)
+        if view.authorchoice == "Rock":
+            if view.memberchoice == "Paper":
+                await init_message.reply(member_winner_message)
+            elif view.memberchoice == "Scissors":
+                await init_message.reply(author_winner_message)
+
+        elif view.authorchoice == "Paper":
+            if view.memberchoice == "Scissors":
+                await init_message.reply(member_winner_message)
+            elif view.memberchoice == "Rock":
+                await init_message.reply(author_winner_message)
+
+        elif view.authorchoice == "Scissors":
+            if view.memberchoice == "Rock":
+                await init_message.reply(member_winner_message)
+            elif view.memberchoice == "Paper":
+                await init_message.reply(author_winner_message)
 
         # if the match didnt go through as planned:
         elif view.authorchoice is None and view.memberchoice is None:
