@@ -5,21 +5,21 @@ A discord bot specifically made for the SSBU Training Grounds discord server, jo
 Made by Phxenix#1104. If you have any questions feel free to contact me on Discord.
 
 ## Features include:
-- Custom matchmaking system for Smash Ultimate, ranked and unranked
-- General purpose moderation commands
-- Custom warning and muting system
-- Badword and invite link filtering
-- Basic modmail system
-- Reaction-based role menus
-- Logging system
-- Autorole system
-- Custom macro commands
-- Custom user profiles for Smash Ultimate
-- Basic starboard
-- Reminder system
-- Bypasses the need for Mee6 Premium, assigns Roles based on Level
-- Lots of useful general user commands
-- Lots of not so useful general user commands
+- Custom Smash Ultimate Matchmaking, with Ranked and Unranked Modes
+- General Purpose Moderation Commands
+- Custom Cross-Server Warning and Muting System
+- Bad Word and Invite Link filtering
+- Modmail, with DMs and Threads
+- Reaction-based Role Menus
+- Autorole System
+- Level Roles based on Mee6 Levels
+- Logs Message and User Updates
+- Custom Macro Commands
+- Player Profiles for Smash Ultimate
+- Starboard
+- Persistent Reminders
+- Lots of other useful General User Commands
+- Lots of other not-so-useful gGeneral User Commands
 
 The full list of commands with an explanation on how to use them can be found within the [CommandList.md](CommandList.md) file.
 
