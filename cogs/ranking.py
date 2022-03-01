@@ -279,7 +279,7 @@ class Ranking(commands.Cog):
         with open(r"./json/rankedpings.json", "w") as fp:
             json.dump(rankedusers, fp, indent=4)
 
-    async def get_recent_ranked_pings(self, timestamp: float):
+    def get_recent_ranked_pings(self, timestamp: float):
         """
         Gets a list with all the recent ranked pings.
         We need a different approach than unranked here because we also store the rank role here.
@@ -334,7 +334,7 @@ class Ranking(commands.Cog):
         self.store_ranked_ping(ctx, elo_role, timestamp)
 
         # gets all of the other active pings
-        searches = await self.get_recent_ranked_pings(timestamp)
+        searches = self.get_recent_ranked_pings(timestamp)
 
         # gathers all the roles we are gonna ping
         pingroles = self.get_adjacent_roles(ctx.guild, elo_role)
@@ -648,7 +648,7 @@ class Ranking(commands.Cog):
 
             timestamp = discord.utils.utcnow().timestamp()
 
-            searches = await self.get_recent_ranked_pings(timestamp)
+            searches = self.get_recent_ranked_pings(timestamp)
 
             embed = discord.Embed(
                 title="Ranked pings in the last 30 Minutes:",
