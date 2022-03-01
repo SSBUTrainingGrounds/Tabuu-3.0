@@ -61,9 +61,9 @@ class Ranking(commands.Cog):
 
         return pingrole
 
-    async def remove_ranked_roles(self, member: discord.Member, guild: discord.Guild):
+    def get_all_ranked_roles(self, guild: discord.Guild):
         """
-        Removes every ranked role a user has.
+        Gets you every ranked role.
         """
         elo800role = discord.utils.get(
             guild.roles, id=TGMatchmakingRoleIDs.ELO_800_ROLE
@@ -91,6 +91,36 @@ class Ranking(commands.Cog):
             elo1300role,
             elomaxrole,
         ]
+        return elo_roles
+
+    def get_adjacent_roles(self, guild: discord.Guild, role: discord.Role):
+        """
+        Gets you your ranked role, as well as the ones above and below yours.
+        """
+        elo_roles = self.get_all_ranked_roles(guild)
+        adjacent_roles = []
+
+        index = elo_roles.index(role)
+
+        try:
+            adjacent_roles.append(elo_roles[index - 1])
+        except IndexError:
+            pass
+
+        adjacent_roles.append(elo_roles[index])
+
+        try:
+            adjacent_roles.append(elo_roles[index + 1])
+        except IndexError:
+            pass
+
+        return adjacent_roles
+
+    async def remove_ranked_roles(self, member: discord.Member, guild: discord.Guild):
+        """
+        Removes every ranked role a user has.
+        """
+        elo_roles = self.get_all_ranked_roles(guild)
         for role in elo_roles:
             if role in member.roles:
                 await member.remove_roles(role)
@@ -287,7 +317,8 @@ class Ranking(commands.Cog):
     async def ranked(self, ctx):
         """
         Used for 1v1 ranked matchmaking.
-        Pings your ranked role.
+        Pings your ranked role and adjacent roles.
+        Stores your ping for 30 minutes and has a 2 minute cooldown.
         """
         if ctx.channel.id not in TGArenaChannelIDs.RANKED_ARENAS:
             await ctx.send(
@@ -298,12 +329,20 @@ class Ranking(commands.Cog):
 
         timestamp = discord.utils.utcnow().timestamp()
 
-        pingrole = await self.get_ranked_role(ctx.author, ctx.guild)
+        elo_role = await self.get_ranked_role(ctx.author, ctx.guild)
 
-        self.store_ranked_ping(ctx, pingrole, timestamp)
+        self.store_ranked_ping(ctx, elo_role, timestamp)
 
         # gets all of the other active pings
         searches = await self.get_recent_ranked_pings(timestamp)
+
+        # gathers all the roles we are gonna ping
+        pingroles = self.get_adjacent_roles(ctx.guild, elo_role)
+
+        pings = ""
+
+        for pingrole in pingroles:
+            pings = pings + f" {pingrole.mention}"
 
         embed = discord.Embed(
             title="Ranked pings in the last 30 Minutes:",
@@ -312,7 +351,7 @@ class Ranking(commands.Cog):
         )
 
         mm_message = await ctx.send(
-            f"{ctx.author.mention} is looking for ranked matchmaking games! {pingrole.mention}",
+            f"{ctx.author.mention} is looking for ranked matchmaking games! {pings}",
             embed=embed,
         )
         mm_thread = await mm_message.create_thread(
