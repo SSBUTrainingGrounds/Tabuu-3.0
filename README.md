@@ -11,7 +11,7 @@ Made by Phxenix#1104. If you have any questions feel free to contact me on Disco
 - Bad Word and Invite Link filtering
 - Modmail, with DMs and Threads
 - Reaction-based Role Menus
-- Autorole System
+- Auto-role System
 - Level Roles based on Mee6 Levels
 - Logs Message and User Updates
 - Custom Macro Commands
@@ -19,7 +19,7 @@ Made by Phxenix#1104. If you have any questions feel free to contact me on Disco
 - Starboard
 - Persistent Reminders
 - Lots of other useful General User Commands
-- Lots of other not-so-useful gGeneral User Commands
+- Lots of other not-so-useful General User Commands
 
 The full list of commands with an explanation on how to use them can be found within the [CommandList.md](CommandList.md) file.
 
