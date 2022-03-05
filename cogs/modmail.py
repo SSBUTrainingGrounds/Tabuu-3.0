@@ -4,6 +4,45 @@ from utils.ids import TGRoleIDs, GuildIDs, TGChannelIDs
 import utils.check
 
 
+class ConfirmationButtons(discord.ui.View):
+    """
+    The buttons for confirming/cancelling the request.
+    """
+
+    def __init__(self, member: discord.Member = None):
+        super().__init__()
+
+        self.confirm = None
+        self.member = member
+        self.timeout = 60
+
+    @discord.ui.button(label="Confirm", style=discord.ButtonStyle.green, emoji="✔️")
+    async def confirm_button(
+        self, button: discord.ui.Button, interaction: discord.Interaction
+    ):
+        self.confirm = True
+        self.clear_items()
+        await interaction.response.edit_message(content="Creating Thread...", view=self)
+        self.stop()
+
+    @discord.ui.button(label="Cancel", style=discord.ButtonStyle.red, emoji="❌")
+    async def cancel_button(
+        self, button: discord.ui.Button, interaction: discord.Interaction
+    ):
+        self.confirm = False
+        self.clear_items()
+        await interaction.response.edit_message(content="Request Cancelled.", view=self)
+        self.stop()
+
+    async def interaction_check(self, interaction: discord.Interaction):
+        # we make sure its the right member thats pressing the button.
+        # not really needed since the message is ephemeral anyways
+        if interaction.user == self.member:
+            return True
+        else:
+            return False
+
+
 class ModmailButton(discord.ui.View):
     """
     The persistent modmail button.
@@ -23,6 +62,31 @@ class ModmailButton(discord.ui.View):
     async def modmail_button(
         self, button: discord.ui.Button, interaction: discord.Interaction
     ):
+
+        view = ConfirmationButtons(interaction.user)
+
+        await interaction.response.send_message(
+            "Are you sure you want to create a private thread with the moderators and notify them?\nThis message times out in 60 seconds.",
+            view=view,
+            ephemeral=True,
+        )
+
+        await view.wait()
+
+        # only proceeds if the confirm button is pressed
+        if view.confirm == None:
+            # on_timeout to edit the original message doesnt work here, because
+            # interaction.response.send_message does not return a message object to store in a variable.
+            # and we dont have access to the interaction in on_timeout.
+            # so we have to do it like this.
+            await interaction.followup.send(
+                "Your request timed out. Please try again.", ephemeral=True
+            )
+            return
+        if view.confirm == False:
+            # for that case, the button class above handles it.
+            return
+
         try:
             user_name = discord.utils.escape_markdown(interaction.user.name)
 
@@ -42,7 +106,8 @@ class ModmailButton(discord.ui.View):
         # we won't create a thread, cause public modmail isnt really that great.
         # just need to use the "classic" modmail then and tell the user exactly that.
         except Exception as exc:
-            await interaction.response.send_message(
+            # we have to use the followup here since you cant respond to an interaction twice?
+            await interaction.followup.send(
                 f"Looks like something went wrong:\n```{exc}```\nPlease either use `%modmail` in my DMs or contact one of the moderators directly.",
                 ephemeral=True,
             )
