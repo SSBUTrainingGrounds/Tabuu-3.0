@@ -150,6 +150,8 @@ class TGRoleIDs:
     VOICE_ROLE = 824258210101198889
     # role server boosters get automatically
     BOOSTER_ROLE = 739344833738571868
+    # the role for premium members
+    PREMIUM_ROLE = 943261906238603264
     # the colour roles, reserved for server boosters
     COLOUR_ROLES = (
         774290821842862120,

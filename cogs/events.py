@@ -156,18 +156,27 @@ class Events(commands.Cog):
 
     @commands.Cog.listener()
     async def on_member_update(self, before, after):
-        # this here announces whenever someone new boosts the server
-        channel = self.bot.get_channel(TGChannelIDs.ANNOUNCEMENTS_CHANNEL)
+        # for announcing boosts/premium memberships
         if len(before.roles) < len(after.roles):
-            newRole = next(role for role in after.roles if role not in before.roles)
+            channel = self.bot.get_channel(TGChannelIDs.ANNOUNCEMENTS_CHANNEL)
 
-            if newRole.id == TGRoleIDs.BOOSTER_ROLE:
-                await channel.send(f"{after.mention} has boosted the server!🥳🎉")
+            new_role = next(role for role in after.roles if role not in before.roles)
 
+            # for a new boost
+            if new_role.id == TGRoleIDs.BOOSTER_ROLE:
+                await channel.send(f"{after.mention} has boosted the server! 🥳🎉")
+
+            # for when someone new subs to the premium thing
+            if new_role.id == TGRoleIDs.PREMIUM_ROLE:
+                await channel.send(
+                    f"{after.mention} is now a Premium Member of the server! 🥳🎉"
+                )
+
+        # we take away the colour roles if you stop boosting
         if len(before.roles) > len(after.roles):
-            oldRole = next(role for role in before.roles if role not in after.roles)
+            old_role = next(role for role in before.roles if role not in after.roles)
 
-            if oldRole.id == TGRoleIDs.BOOSTER_ROLE:
+            if old_role.id == TGRoleIDs.BOOSTER_ROLE:
                 for role in TGRoleIDs.COLOUR_ROLES:
                     try:
                         removerole = discord.utils.get(after.guild.roles, id=role)
