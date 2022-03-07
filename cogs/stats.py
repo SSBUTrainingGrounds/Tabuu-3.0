@@ -244,7 +244,7 @@ Events parsed: {self.bot.events_listened_to}
         embed = discord.Embed(
             title="Tabuu 3.0 Stats",
             color=0x007377,
-            url="https://github.com/phxenix-w/Tabuu-3.0-Bot",
+            url="https://github.com/atomflunder/Tabuu-3.0-Bot",
         )
         embed.add_field(name="Bot", value=bot_description, inline=False)
         embed.add_field(
