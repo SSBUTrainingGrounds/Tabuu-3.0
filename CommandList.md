@@ -1,7 +1,7 @@
 # Full list of commands:
 
 This here contains every command with a detailed explanation on how to use them. They are ordered alphabetically, search them with Ctrl+F.  
-Last updated: 24 February 2022  
+Last updated: 8 March 2022  
 I will try to keep this up-to-date, no promises.  
 
 **%8ball** `<question>`  
@@ -228,7 +228,7 @@ I will try to keep this up-to-date, no promises.
     Example: `%removerole @Phxenix first class`  
   
 **%removetimeout** `<@user>`  
-    Info: **Admin only** Removes a timeout from a User. Mention the User or use User ID.  
+    Info: **Admin only.** Removes a timeout from a User. Mention the User or use User ID.  
     Example: `%removetimeout @Phxenix`  
     Aliases: untimeout  
   
@@ -316,7 +316,7 @@ I will try to keep this up-to-date, no promises.
     Aliases: currenttime  
   
 **%timeout** `<@user> <time> <reason>`  
-    Info: **Admin only.** Times out a user for the specified time and tries to DM them the reason. Maximum time is 28 days - 1 second. Uses the same time converter as tempmute and reminders, in a shortened format with any number and d/h/m/s.  
+    Info: **Admin only.** Times out a user for the specified time and tries to DM them the reason. Maximum time is 28 days - 1 second. Mention the user or use User ID. The reason will get DM'd to the muted person, if the bot can DM the user. Uses the same time converter as tempmute and reminders, in a shortened format with any number and d/h/m/s.  
     Example: `%timeout @Phxenix 12h30m what an idiot`  
   
 **%unban** `<@user>`  
