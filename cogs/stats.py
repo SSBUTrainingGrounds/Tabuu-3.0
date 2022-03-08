@@ -19,7 +19,7 @@ class Stats(commands.Cog):
     def __init__(self, bot):
         self.bot = bot
 
-    @commands.command()
+    @commands.command(aliases=["role"])
     async def roleinfo(self, ctx, *, input_role):
         """
         Basic information about a given role.
@@ -38,6 +38,18 @@ class Stats(commands.Cog):
         embed.add_field(name="Mentionable:", value=role.mentionable, inline=True)
         embed.add_field(name="Displayed Seperately:", value=role.hoist, inline=True)
         embed.add_field(name="Color:", value=role.color, inline=True)
+
+        if role.display_icon:
+            # the display_icon could be an asset or a default emoji with the str type, so we have to check
+            # if its an asset, we display it in the thumbnail
+            if type(role.display_icon) == discord.asset.Asset:
+                embed.set_thumbnail(url=role.display_icon.url)
+            # if its an emoji we add it as the 2nd field
+            elif type(role.display_icon) == str:
+                embed.insert_field_at(
+                    1, name="Role Emoji:", value=role.display_icon, inline=True
+                )
+
         await ctx.send(embed=embed)
 
     @commands.command(aliases=["listroles"])

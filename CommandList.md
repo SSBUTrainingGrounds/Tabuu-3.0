@@ -244,6 +244,7 @@ I will try to keep this up-to-date, no promises.
 **%roleinfo** `<role>`  
     Info: Gets you information about a role. The bot first tries to use the Role ID or Role mention, after that it searches for the closest match for the role name.  
     Example: `%roleinfo first class`  
+    Aliases: role  
   
 **%roll** `<NdN>`  
     Info: Rolls a dice. N are two numbers, first the number of dice then the amount of sides for the dice.  
