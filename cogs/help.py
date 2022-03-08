@@ -72,6 +72,8 @@ class Responses(discord.ui.Select):
 ```%mute <@user> <reason>``` - Mutes a user in the server.
 ```%unmute <@user>``` - Unmutes a user in the server.
 ```%tempmute <@user> <time> <reason>``` - Temporarily mutes a user.
+```%timeout <@user> <time> <reason>``` - Times out a user until the time specified.
+```%removetimeout <@user>``` - Removes a timeout from a user.
 ```%addrole <@user> <role>``` - Adds a role to a user.
 ```%removerole <@user> <role>``` - Removes a role from a user.
 ```%warn <@user> <reason>``` - Warns a user.

@@ -2,6 +2,7 @@ import discord
 from discord.ext import commands
 import aiosqlite
 import asyncio
+from datetime import timedelta
 from utils.ids import GuildNames, GuildIDs, TGRoleIDs, BGRoleIDs, AdminVars
 from utils.time import convert_time
 import utils.check
@@ -221,6 +222,79 @@ class Mute(commands.Cog):
                     f"Tried to message temp unmute message to {str(member)}, but it failed: {exc}"
                 )
 
+    @commands.command()
+    @utils.check.is_moderator()
+    async def timeout(self, ctx, member: discord.Member, mute_time, *, reason):
+        """
+        Times out a member with the built in timeout function.
+        Specify a time and a reason.
+        The reason will get DM'd to the member.
+        """
+        # converts the time again, we dont need the read_time string though
+        seconds, _ = convert_time(mute_time)
+        if seconds > 2419199:
+            await ctx.send(
+                "The maximum allowed time for a timeout is just under 28 days."
+            )
+            return
+
+        # gets the time for the timeout, needs to be a dt object
+        timeout_dt = discord.utils.utcnow() + timedelta(seconds=seconds)
+        # timezone aware dt object for sending out
+        aware_dt = discord.utils.format_dt(timeout_dt, style="f")
+
+        if member.is_timed_out():
+            # if the member is already on timeout, we modify the message sent
+            if member.timed_out_until < timeout_dt:
+                message = (
+                    f"The timeout of {member.mention} got prolonged until {aware_dt}."
+                )
+            else:
+                message = (
+                    f"The timeout of {member.mention} got shortened until {aware_dt}."
+                )
+        else:
+            message = f"{member.mention} is on timeout until {aware_dt}."
+
+        try:
+            await member.send(
+                f"You are on timeout in the {ctx.guild.name} Server until {aware_dt} for the following reason: \n```{reason}```\nIf you would like to discuss your punishment, please contact {AdminVars.GROUNDS_GENERALS}."
+            )
+        except Exception as exc:
+            logger = self.bot.get_logger("bot.mute")
+            logger.warning(
+                f"Tried to message timeout message to {str(member)}, but it failed: {exc}"
+            )
+
+        await member.edit(timed_out_until=timeout_dt)
+        await ctx.send(message)
+
+    @commands.command(aliases=["untimeout"])
+    @utils.check.is_moderator()
+    async def removetimeout(self, ctx, member: discord.Member):
+        """
+        Removes a timeout from a member and notifies the member.
+        """
+        # we check first if the member is on timeout
+        if not member.is_timed_out():
+            await ctx.send(f"{member.mention} is not on timeout!")
+            return
+
+        # setting it to None will remove the timeout
+        await member.edit(timed_out_until=None)
+
+        try:
+            await member.send(
+                f"Your timeout has been manually removed in the {ctx.guild.name} Server! Don't break the rules again"
+            )
+        except Exception as exc:
+            logger = self.bot.get_logger("bot.mute")
+            logger.warning(
+                f"Tried to message remove timeout message to {str(member)}, but it failed: {exc}"
+            )
+
+        await ctx.send(f"Removed the timeout of {member.mention}")
+
     # error handling for the mute commands
     @mute.error
     async def mute_error(self, ctx, error):
@@ -258,6 +332,32 @@ class Mute(commands.Cog):
             await ctx.send(
                 "Invalid time format! Please use a number followed by d/h/m/s for days/hours/minutes/seconds."
             )
+        else:
+            raise error
+
+    @timeout.error
+    async def timeout_error(self, ctx, error):
+        if isinstance(error, commands.MissingPermissions):
+            await ctx.send("Nice try, but you don't have the permissions to do that!")
+        elif isinstance(error, commands.MissingRequiredArgument):
+            await ctx.send("Please specify a member, a timeout length and a reason!")
+        elif isinstance(error, commands.MemberNotFound):
+            await ctx.send("You need to mention a member!")
+        elif isinstance(error, commands.CommandInvokeError):
+            await ctx.send(
+                "Something went wrong! Either you used an invalid time format or I don't have the required permissons! Try using a number followed by d/h/m/s for days/hours/minutes/seconds."
+            )
+        else:
+            raise error
+
+    @removetimeout.error
+    async def removetimeout_error(self, ctx, error):
+        if isinstance(error, commands.MissingPermissions):
+            await ctx.send("Nice try, but you don't have the permissions to do that!")
+        elif isinstance(error, commands.MissingRequiredArgument):
+            await ctx.send("You need to mention a member!")
+        elif isinstance(error, commands.MemberNotFound):
+            await ctx.send("You need to mention a member!")
         else:
             raise error
 

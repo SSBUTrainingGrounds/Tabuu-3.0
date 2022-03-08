@@ -227,6 +227,11 @@ I will try to keep this up-to-date, no promises.
     Info: **Admin only.** Removes a role from a User. Mention the User or use User ID, for the Role the bot first tries to use the Role ID or Role mention, after that it searches for the closest match for the role name.  
     Example: `%removerole @Phxenix first class`  
   
+**%removetimeout** `<@user>`  
+    Info: **Admin only** Removes a timeout from a User. Mention the User or use User ID.  
+    Example: `%removetimeout @Phxenix`  
+    Aliases: untimeout  
+  
 **%rename** `<@user> <name: Optional>`  
     Info: **Admin only.** Renames the user to the given nickname. Removes the nickname if you do not pass in a new one.  
     Example: `%rename @Phxenix Example Name`  
@@ -309,6 +314,10 @@ I will try to keep this up-to-date, no promises.
 **%time**  
     Info: Shows the current time as a timezone aware object.  
     Aliases: currenttime  
+  
+**%timeout** `<@user> <time> <reason>`  
+    Info: **Admin only.** Times out a user for the specified time and tries to DM them the reason. Maximum time is 28 days - 1 second. Uses the same time converter as tempmute and reminders, in a shortened format with any number and d/h/m/s.  
+    Example: `%timeout @Phxenix 12h30m what an idiot`  
   
 **%unban** `<@user>`  
     Info: **Admin only.** Unbans a user. Mention the User or use User ID.  
