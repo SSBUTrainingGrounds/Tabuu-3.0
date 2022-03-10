@@ -53,7 +53,7 @@ class Events(commands.Cog):
             "Join the Battlegrounds!",
             "Gambling... 🎰",
             "1% Evil, 99% Hot Gas.",
-            "⬆️⬆️⬇️⬇️⬅️➡️⬅️➡️🅱️🅰️",
+            "↑ ↑ ↓ ↓ ← → ← → B A Start",
             "{members} Members",
             "Version {version}",
         ]

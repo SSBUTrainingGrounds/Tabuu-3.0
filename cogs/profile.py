@@ -186,6 +186,8 @@ class Profile(commands.Cog):
     async def mains(self, ctx, *, input=None):
         """
         Sets your mains on your smash profile.
+        Separates the input by commas, and then matches with names, nicknames and fighter numbers.
+        Echoes have an *e* behind their fighter number.
         """
         # only getting the first 7 chars, think thats a very generous cutoff
         chars = " ".join(self.match_character(input)[:7])
@@ -211,6 +213,8 @@ class Profile(commands.Cog):
     async def secondaries(self, ctx, *, input=None):
         """
         Sets your secondaries on your smash profile.
+        Separates the input by commas, and then matches with names, nicknames and fighter numbers.
+        Echoes have an *e* behind their fighter number.
         """
         chars = " ".join(self.match_character(input)[:7])
 
@@ -235,6 +239,8 @@ class Profile(commands.Cog):
     async def pockets(self, ctx, *, input=None):
         """
         Sets your pockets on your smash profile.
+        Separates the input by commas, and then matches with names, nicknames and fighter numbers.
+        Echoes have an *e* behind their fighter number.
         """
         # since you can have some more pockets, i put it at 10 max. there could be a max of around 25 per embed field however
         chars = " ".join(self.match_character(input)[:7])
@@ -258,6 +264,7 @@ class Profile(commands.Cog):
     async def tag(self, ctx, *, input=None):
         """
         Sets your tag on your smash profile.
+        Up to 30 characters long.
         """
         # the default tag is just your discord tag
         if input is None:
@@ -284,6 +291,8 @@ class Profile(commands.Cog):
     async def region(self, ctx, *, input=None):
         """
         Sets your region on your smash profile.
+        Matches to commonly used regions, which are:
+        North America, NA East, NA West, NA South, South America, Europe, Asia, Africa, Oceania.
         """
         if input is None:
             input = ""
@@ -370,6 +379,7 @@ class Profile(commands.Cog):
     async def note(self, ctx, *, input=None):
         """
         Sets your note on your smash profile.
+        Up to 150 characters long.
         """
         if input is None:
             input = ""
@@ -398,7 +408,7 @@ class Profile(commands.Cog):
     async def colour(self, ctx, input):
         """
         Sets your embed colour on your smash profile.
-        Uses a hex colour code.
+        Use a hex colour code with a leading #.
         """
         # hex colour codes are 7 digits long and start with #
         if not input.startswith("#") or not len(input) == 7:
