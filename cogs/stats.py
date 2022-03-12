@@ -211,6 +211,13 @@ class Stats(commands.Cog):
         async with aiosqlite.connect("./db/database.db") as db:
             macro_list = await db.execute_fetchall("""SELECT name FROM macros""")
 
+        # adds all type of app commands together
+        all_app_commands = (
+            self.bot.tree.get_commands(type=discord.AppCommandType(1))
+            + self.bot.tree.get_commands(type=discord.AppCommandType(2))
+            + self.bot.tree.get_commands(type=discord.AppCommandType(3)),
+        )
+
         # we use codeblocks with yml syntax highlighting
         # just cause it looks nice, in my opinion.
         # well at least on desktop.
@@ -241,7 +248,8 @@ RAM Usage: {ram_used}GB/{ram_total}GB ({ram_percent}%)
 
         listeners_description = f"""
 ```yml
-Number of Commands: {(len(self.bot.commands) + len(macro_list))}
+Number of Message Commands: {(len(self.bot.commands) + len(macro_list))}
+Number of Application Commands: {len(all_app_commands)}
 Number of Events: {len(self.bot.extra_events)}
 ```
         """
