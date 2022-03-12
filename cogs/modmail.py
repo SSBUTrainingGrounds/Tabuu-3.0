@@ -1,5 +1,6 @@
 import discord
 from discord.ext import commands
+from discord import app_commands
 from utils.ids import TGRoleIDs, GuildIDs, TGChannelIDs
 import utils.check
 
@@ -113,6 +114,76 @@ class ModmailButton(discord.ui.View):
             )
 
 
+@app_commands.context_menu(name="Report This Message")
+async def report_message(interaction: discord.Interaction, message: discord.Message):
+    """
+    Context menu command for reporting a message to the moderator team.
+    Context menu commands unfortunately cannot be inside of a Cog, so we define it here.
+    """
+    guild = interaction.client.get_guild(GuildIDs.TRAINING_GROUNDS)
+    modmail_channel = guild.get_channel(TGChannelIDs.MODMAIL_CHANNEL)
+    mod_role = discord.utils.get(guild.roles, id=TGRoleIDs.MOD_ROLE)
+
+    # the code below is more or less copied from logging deleted messages
+    if not message.content:
+        message.content = "No content."
+
+    embed = discord.Embed(
+        title=f"Reported Message!",
+        description=f"**Message Content:**\n{message.content}",
+        colour=discord.Colour.dark_red(),
+    )
+    # some basic info about the message
+    embed.add_field(name="Message Author:", value=message.author.mention, inline=True)
+    embed.add_field(name="Message Channel:", value=message.channel.mention, inline=True)
+    embed.add_field(name="Message ID:", value=message.id, inline=True)
+    embed.add_field(name="Message Link:", value=message.jump_url, inline=False)
+
+    embed.set_author(
+        name=f"{str(message.author)} ({message.author.id})",
+        icon_url=message.author.display_avatar.url,
+    )
+    if message.attachments:
+        if len(message.attachments) == 1:
+            if message.attachments[0].url.endswith((".jpg", ".png", ".jpeg", ".gif")):
+                new_url = message.attachments[0].url.replace(
+                    "cdn.discordapp.com", "media.discordapp.net"
+                )
+                embed.set_image(url=new_url)
+                embed.add_field(name="Attachment:", value="See below.", inline=False)
+            else:
+                embed.add_field(
+                    name="Attachment:",
+                    value=message.attachments[0].url,
+                    inline=False,
+                )
+        else:
+            i = 1
+            for x in message.attachments:
+                embed.add_field(
+                    name=f"Attachment ({i}/{len(message.attachments)}):",
+                    value=x.url,
+                    inline=False,
+                )
+                i += 1
+    if message.stickers:
+        if not message.attachments:
+            embed.set_image(url=message.stickers[0].url)
+            embed.add_field(name="Sticker:", value="See below.", inline=False)
+        else:
+            embed.add_field(name="Sticker:", value=f"{message.stickers[0].url}")
+
+    await modmail_channel.send(
+        f"**✉️ New Message Report {mod_role.mention}! ✉️**\nReport Received From: {interaction.user.mention}",
+        embed=embed,
+    )
+
+    await interaction.response.send_message(
+        "Thank you for your report. The moderator team will get back to you shortly.",
+        ephemeral=True,
+    )
+
+
 class Modmail(commands.Cog):
     """
     Contains the "new", modmail thread setup and also the "old" modmail command.
@@ -120,6 +191,11 @@ class Modmail(commands.Cog):
 
     def __init__(self, bot):
         self.bot = bot
+
+        # we have to add the context command manually
+        self.bot.tree.add_command(
+            report_message, guilds=GuildIDs.ALL_GUILDS, override=True
+        )
 
     @commands.Cog.listener()
     async def on_ready(self):

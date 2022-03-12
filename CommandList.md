@@ -217,6 +217,7 @@ I will try to keep this up-to-date, no promises.
   
 **%reloadcogs** `<cogs: Optional>`  
     Info: **Owner only.** Tries to reload the specified cogs separated by commas. If you do not specify any cogs, it reloads all of them, so you don't have to restart it for every little change.  
+    Example: `%reloadcogs admin`  
   
 **%reminder** `<time> <message>`  
     Info: Reminds you about something. Time is in a shortened format with any number and d/h/m/s. Minimum duration is 30 seconds, maximum is 90 days.  
@@ -298,6 +299,11 @@ I will try to keep this up-to-date, no promises.
 **%syncbanlist**  
     Info: **Admin only.** applies the bans from the SSBUTG server to the SSBUBG server. Can only be used in the SSBUBG server.  
     Aliases: syncbans  
+  
+**%synccommands** `<guild: Optional>`  
+    Info: **Owner only.** Syncs the local Application Commands to the Discord Client in the specified guild, or in all guilds, if you do not specify a guild.  
+    Example: `%synccommands 739299507795132486`  
+    Aliases: sync, syncommands  
   
 **%tabuwu**  
     Info: For the silly people.  

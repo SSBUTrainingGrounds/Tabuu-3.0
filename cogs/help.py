@@ -84,6 +84,7 @@ class Responses(discord.ui.Select):
 
     admin_util_desc = """
 ```%reloadcogs <cogs>``` - Owner only, reloads some or all of the modules of this bot.
+```%synccommands <guild>``` - Owner only, syncs application commands to one or all guilds.
 ```%clearmmpings``` - Clears all matchmaking pings.
 ```%records``` - Shows ban records.
 ```%forcereportmatch <@winner> <@loser>``` - If someone abandons a ranked match.

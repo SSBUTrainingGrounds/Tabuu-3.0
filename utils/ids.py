@@ -1,6 +1,7 @@
 # this is the place where the unique IDs are stored.
 # change the values as you wish, but please keep the names of the constants.
 # also, if you plan on only having one channel in a tuple, you need to add a comma after the only value so it gets recognised properly.
+import discord
 
 
 class GuildNames:
@@ -25,6 +26,9 @@ class GuildIDs:
     # the guild id's of the servers
     TRAINING_GROUNDS = 739299507795132486
     BATTLEGROUNDS = 915395890775216188
+    # this is done for application commands
+    # we need a list of guild objects
+    ALL_GUILDS = [discord.Object(id=TRAINING_GROUNDS), discord.Object(id=BATTLEGROUNDS)]
 
 
 class AdminVars:
