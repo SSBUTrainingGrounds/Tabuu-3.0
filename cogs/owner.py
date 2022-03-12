@@ -23,15 +23,17 @@ class Owner(commands.Cog):
 
         if target_guild is None:
             guilds = 0
+            commands = 0
             for guild in GuildIDs.ALL_GUILDS:
                 try:
                     cmds = await self.bot.tree.sync(guild=guild)
+                    commands += len(cmds)
                     guilds += 1
                 except discord.errors.Forbidden:
                     pass
 
             await initial_message.edit(
-                content=f"Successfully synced {len(cmds)} Application Command(s) to {len(GuildIDs.ALL_GUILDS)} Server(s)."
+                content=f"Successfully synced {commands} total Application Command(s) to {guilds} Server(s)."
             )
         else:
             try:
