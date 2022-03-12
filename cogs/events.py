@@ -250,6 +250,14 @@ class Events(commands.Cog):
         self.bot.commands_ran += 1
 
     @commands.Cog.listener()
+    async def on_interaction(self, interaction):
+        logger = self.bot.get_logger("bot.app_commands")
+        logger.info(
+            f"Application Command successfully ran: {interaction.data['name']} (invoked by {str(interaction.user)})"
+        )
+        self.bot.commands_ran += 1
+
+    @commands.Cog.listener()
     async def on_socket_event_type(self, event_type):
         self.bot.events_listened_to += 1
 
