@@ -1,12 +1,17 @@
 # Full list of commands:
 
 This here contains every command with a detailed explanation on how to use them. They are ordered alphabetically, search them with Ctrl+F.  
-Last updated: 8 March 2022  
+Last updated: 15 March 2022  
 I will try to keep this up-to-date, no promises.  
 
 **%8ball** `<question>`  
     Info: Ask a question and you get a random response from the magic 8-ball.  
     Example: `%8ball Is Tabuu 3.0 the best bot out there?`  
+  
+**%addbadges** `<@user> <emojis>`  
+    Info: **Admin only.** Adds one or multiple Badges to a User. Mention the User or use User ID, for the badges they all need to be valid emojis that the bot can use.  
+    Example: `%addbadges @Phxenix :Example1: :Example2:`  
+    Aliases: addbadge  
   
 **%addrole** `<@user> <role>`  
     Info: **Admin only.** Adds a Role to a User. Mention the User or use User ID, for the Role the bot first tries to use the Role ID or Role mention, after that it searches for the closest match for the role name.  
@@ -30,6 +35,10 @@ I will try to keep this up-to-date, no promises.
 **%clear** `<amount: Optional>`  
     Info: **Admin only.** Deletes the last X+1 messages in the current channel. Defaults to 1 if you do not specify an amount.  
     Example: `%clear 10`  
+  
+**%clearbadges** `<@user>`  
+    Info: **Admin only.** Clears all Badges from a User. Mention the User or use User ID.  
+    Example: `%clearbadges @Phxenix`  
   
 **%clearmmpings**  
     Info: **Admin only.** Clears all matchmaking pings.  
@@ -223,6 +232,11 @@ I will try to keep this up-to-date, no promises.
     Info: Reminds you about something. Time is in a shortened format with any number and d/h/m/s. Minimum duration is 30 seconds, maximum is 90 days.  
     Example: `%reminder 10h20m get that thing done you wanted to get done`  
     Aliases: remindme, newreminder, newremindme  
+  
+**%removebadge** `<@user> <emoji>`  
+    Info: **Admin only.** Removes one Badge from a User. Mention the User or use User ID. Will check before if the User actually has the Badge in question.  
+    Example: `%removebadge @Phxenix :Example1:`  
+    Aliases: removebadges  
   
 **%removerole** `<@user> <role>`  
     Info: **Admin only.** Removes a role from a User. Mention the User or use User ID, for the Role the bot first tries to use the Role ID or Role mention, after that it searches for the closest match for the role name.  
