@@ -157,6 +157,6 @@ class Macros(commands.Cog):
             raise error
 
 
-def setup(bot):
-    bot.add_cog(Macros(bot))
+async def setup(bot):
+    await bot.add_cog(Macros(bot))
     print("Macros cog loaded")

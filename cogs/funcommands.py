@@ -214,6 +214,6 @@ class Funcommands(commands.Cog):
             await ctx.send(discord.utils.escape_markdown(str(user)))
 
 
-def setup(bot):
-    bot.add_cog(Funcommands(bot))
+async def setup(bot):
+    await bot.add_cog(Funcommands(bot))
     print("Funcommands cog loaded")

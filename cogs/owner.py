@@ -64,8 +64,8 @@ class Owner(commands.Cog):
             for filename in os.listdir(r"./cogs"):
                 if filename.endswith(".py"):
                     try:
-                        self.bot.unload_extension(f"cogs.{filename[:-3]}")
-                        self.bot.load_extension(f"cogs.{filename[:-3]}")
+                        await self.bot.unload_extension(f"cogs.{filename[:-3]}")
+                        await self.bot.load_extension(f"cogs.{filename[:-3]}")
                         embed.add_field(
                             name=f"✅ Successfully reloaded {filename[:-3]} ✅",
                             value="Ready to go.",
@@ -86,8 +86,8 @@ class Owner(commands.Cog):
             for cog in cogs.split(","):
                 cog = cog.strip()
                 try:
-                    self.bot.unload_extension(f"cogs.{cog}")
-                    self.bot.load_extension(f"cogs.{cog}")
+                    await self.bot.unload_extension(f"cogs.{cog}")
+                    await self.bot.load_extension(f"cogs.{cog}")
                     embed.add_field(
                         name=f"✅ Successfully reloaded {cog} ✅",
                         value="Ready to go.",
@@ -117,6 +117,6 @@ class Owner(commands.Cog):
             raise error
 
 
-def setup(bot):
-    bot.add_cog(Owner(bot))
+async def setup(bot):
+    await bot.add_cog(Owner(bot))
     print("Owner cog loaded")

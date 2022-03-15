@@ -247,6 +247,6 @@ class Starboard(commands.Cog):
             raise error
 
 
-def setup(bot):
-    bot.add_cog(Starboard(bot))
+async def setup(bot):
+    await bot.add_cog(Starboard(bot))
     print("Starboard cog loaded")

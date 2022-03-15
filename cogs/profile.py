@@ -472,6 +472,6 @@ class Profile(commands.Cog):
             raise error
 
 
-def setup(bot):
-    bot.add_cog(Profile(bot))
+async def setup(bot):
+    await bot.add_cog(Profile(bot))
     print("Profile cog loaded")

@@ -347,6 +347,6 @@ class Logging(commands.Cog):
             await logs.send(embed=embed)
 
 
-def setup(bot):
-    bot.add_cog(Logging(bot))
+async def setup(bot):
+    await bot.add_cog(Logging(bot))
     print("Logging cog loaded")

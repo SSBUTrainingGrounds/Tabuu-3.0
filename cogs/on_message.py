@@ -112,6 +112,6 @@ class On_message(commands.Cog):
                 break
 
 
-def setup(bot):
-    bot.add_cog(On_message(bot))
+async def setup(bot):
+    await bot.add_cog(On_message(bot))
     print("On_message cog loaded")

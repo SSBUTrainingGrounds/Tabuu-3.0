@@ -344,6 +344,6 @@ class Rolemenu(commands.Cog):
             raise error
 
 
-def setup(bot):
-    bot.add_cog(Rolemenu(bot))
+async def setup(bot):
+    await bot.add_cog(Rolemenu(bot))
     print("Rolemenu cog loaded")

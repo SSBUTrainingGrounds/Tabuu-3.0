@@ -318,6 +318,6 @@ class Help(commands.Cog):
         bot.help_command = help_command
 
 
-def setup(bot):
-    bot.add_cog(Help(bot))
+async def setup(bot):
+    await bot.add_cog(Help(bot))
     print("Help cog loaded")

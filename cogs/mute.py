@@ -362,6 +362,6 @@ class Mute(commands.Cog):
             raise error
 
 
-def setup(bot):
-    bot.add_cog(Mute(bot))
+async def setup(bot):
+    await bot.add_cog(Mute(bot))
     print("Mute cog loaded")

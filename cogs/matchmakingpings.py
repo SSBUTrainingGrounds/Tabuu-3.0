@@ -237,6 +237,6 @@ class Matchmakingpings(commands.Cog):
         logger.info("Ranked file cleared!")
 
 
-def setup(bot):
-    bot.add_cog(Matchmakingpings(bot))
+async def setup(bot):
+    await bot.add_cog(Matchmakingpings(bot))
     print("Matchmakingpings cog loaded")

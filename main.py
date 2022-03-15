@@ -1,7 +1,7 @@
 # Tabuu 3.0
 # by Phxenix for SSBU Training Grounds
-# Version: 8.6.0
-# Last Changes: 12 March 2022
+# Version: 9.0.0
+# Last Changes: 15 March 2022
 # Contact me on Discord: Phxenix#1104
 
 
@@ -24,13 +24,8 @@ class Tabuu3(commands.Bot):
             status=discord.Status.online,
         )
 
-        # loads all of our cogs
-        for filename in os.listdir(r"./cogs"):
-            if filename.endswith(".py"):
-                self.load_extension(f"cogs.{filename[:-3]}")
-
         # to be used in %stats
-        self.version_number = "8.6.0"
+        self.version_number = "9.0.0"
         self.commands_ran = 0
         self.events_listened_to = 0
 
@@ -38,16 +33,22 @@ class Tabuu3(commands.Bot):
         self.modmail_button_added = None
 
     async def start(self, *args, **kwargs):
-        # we override the start method to do set up the database and logging.
-        utils.logger.create_logger()
-
-        await utils.sqlite.setup_db()
-
         # getting the bot token
         with open(r"./files/token.txt") as f:
             token = f.readline()
 
         await super().start(token=token, *args, **kwargs)
+
+    async def setup_hook(self):
+        # we need to set up some stuff at startup
+        utils.logger.create_logger()
+
+        await utils.sqlite.setup_db()
+
+        # loads all of our cogs
+        for filename in os.listdir(r"./cogs"):
+            if filename.endswith(".py"):
+                await self.load_extension(f"cogs.{filename[:-3]}")
 
     def get_logger(self, name: str):
         # we just attach it to the bot so we dont have to import it everywhere.

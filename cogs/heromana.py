@@ -131,6 +131,6 @@ class Heromana(commands.Cog):
         await ctx.send("The MP cost for *Kaswoosh* is 18 MP.")
 
 
-def setup(bot):
-    bot.add_cog(Heromana(bot))
+async def setup(bot):
+    await bot.add_cog(Heromana(bot))
     print("Heromana cog loaded")

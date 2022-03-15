@@ -242,6 +242,6 @@ class Reminder(commands.Cog):
             raise error
 
 
-def setup(bot):
-    bot.add_cog(Reminder(bot))
+async def setup(bot):
+    await bot.add_cog(Reminder(bot))
     print("Reminder cog loaded")

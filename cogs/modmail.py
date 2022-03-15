@@ -279,6 +279,6 @@ class Modmail(commands.Cog):
             raise error
 
 
-def setup(bot):
-    bot.add_cog(Modmail(bot))
+async def setup(bot):
+    await bot.add_cog(Modmail(bot))
     print("Modmail cog loaded")

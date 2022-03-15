@@ -327,6 +327,6 @@ class Usercommands(commands.Cog):
             raise error
 
 
-def setup(bot):
-    bot.add_cog(Usercommands(bot))
+async def setup(bot):
+    await bot.add_cog(Usercommands(bot))
     print("Usercommands cog loaded")

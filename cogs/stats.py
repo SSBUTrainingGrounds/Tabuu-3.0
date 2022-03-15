@@ -317,6 +317,6 @@ Events parsed: {self.bot.events_listened_to}
             raise error
 
 
-def setup(bot):
-    bot.add_cog(Stats(bot))
+async def setup(bot):
+    await bot.add_cog(Stats(bot))
     print("Stats cog loaded")

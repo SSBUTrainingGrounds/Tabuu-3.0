@@ -341,6 +341,6 @@ class Matchmaking(commands.Cog):
             raise error
 
 
-def setup(bot):
-    bot.add_cog(Matchmaking(bot))
+async def setup(bot):
+    await bot.add_cog(Matchmaking(bot))
     print("Matchmaking cog loaded")

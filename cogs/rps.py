@@ -175,6 +175,6 @@ class Rpsgame(commands.Cog):
             raise error
 
 
-def setup(bot):
-    bot.add_cog(Rpsgame(bot))
+async def setup(bot):
+    await bot.add_cog(Rpsgame(bot))
     print("Rpsgame cog loaded")
