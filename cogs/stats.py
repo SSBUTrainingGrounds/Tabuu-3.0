@@ -47,9 +47,6 @@ class Stats(commands.Cog):
         Adds multiple emoji badges to a user.
         Emojis must be a default emoji or a custom emoji the bot can use.
         """
-        if not user:
-            user = ctx.author
-
         if not badge_list:
             await ctx.send("Please specify the badge(s) you want to add.")
             return
@@ -88,9 +85,7 @@ class Stats(commands.Cog):
 
             await db.commit()
 
-        await ctx.send(
-            f"Added badge(s) {' '.join(added_badges)} to {ctx.author.mention}."
-        )
+        await ctx.send(f"Added badge(s) {' '.join(added_badges)} to {user.mention}.")
 
     @commands.command(aliases=["removebadges"])
     @utils.check.is_moderator()
@@ -98,9 +93,6 @@ class Stats(commands.Cog):
         """
         Removes a badge from a user.
         """
-        if not user:
-            user = ctx.author
-
         # no emoji check here, since the bot could lose access in the meantime
 
         async with aiosqlite.connect("./db/database.db") as db:
@@ -135,7 +127,7 @@ class Stats(commands.Cog):
 
             await db.commit()
 
-        await ctx.send(f"Removed badge {badge} from {ctx.author.mention}.")
+        await ctx.send(f"Removed badge {badge} from {user.mention}.")
 
     @commands.command()
     @utils.check.is_moderator()
@@ -160,7 +152,7 @@ class Stats(commands.Cog):
 
             await db.commit()
 
-        await ctx.send(f"Cleared all badges from {ctx.author.mention}.")
+        await ctx.send(f"Cleared all badges from {user.mention}.")
 
     @commands.command(aliases=["user", "user-info", "info"])
     async def userinfo(self, ctx, member: discord.Member = None):
