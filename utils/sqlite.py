@@ -75,6 +75,12 @@ async def setup_db(filepath: str = "./db/database.db"):
                 payload TEXT)"""
         )
 
+        await db.execute(
+            """CREATE TABLE IF NOT EXISTS userbadges(
+            user_id INTEGER,
+            badges TEXT)"""
+        )
+
         await db.commit()
 
         logger = utils.logger.get_logger("bot.db")

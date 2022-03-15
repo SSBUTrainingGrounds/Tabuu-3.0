@@ -99,6 +99,9 @@ class Responses(discord.ui.Select):
 ```%starboardemoji <emoji>``` - Changes the emoji used for the starboard.
 ```%starboardthreshold <number>``` - Changes the threshold used for the starboard.
 ```%forcedeleteprofile <user>``` - Deletes the profile of a user.
+```%addbadges <user> <emojis>``` - Adds badges to a user.
+```%removebadge <user> <emoji>``` - Removes one badge from a user.
+```%clearbadge <user>``` - Clears every badge from a user.
 ```%syncbanlist``` - Syncs the ban list from main server to secondary server.
 ```%setupmodmailbutton``` - Sets up a new modmail button for the bot to listen to.
     """

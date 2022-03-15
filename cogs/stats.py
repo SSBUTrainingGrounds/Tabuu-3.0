@@ -6,6 +6,7 @@ import time
 import datetime
 import os
 import aiosqlite
+import utils.check
 from utils.ids import GuildIDs, TGRoleIDs
 from utils.role import search_role
 
@@ -18,6 +19,213 @@ class Stats(commands.Cog):
 
     def __init__(self, bot):
         self.bot = bot
+
+    async def new_profile(self, user: discord.User):
+        """
+        Creates a new userbadges profile entry, if the user is not found in the database.
+        """
+        async with aiosqlite.connect("./db/database.db") as db:
+            matching_users = await db.execute_fetchall(
+                """SELECT * FROM userbadges WHERE :user_id = user_id""",
+                {"user_id": user.id},
+            )
+
+            if len(matching_users) != 0:
+                return
+
+            await db.execute(
+                """INSERT INTO userbadges VALUES (:user_id, :badges)""",
+                {"user_id": user.id, "badges": ""},
+            )
+
+            await db.commit()
+
+    @commands.command(aliases=["addbadge"])
+    @utils.check.is_moderator()
+    async def addbadges(self, ctx, user: discord.User, *badge_list):
+        """
+        Adds multiple emoji badges to a user.
+        Emojis must be a default emoji or a custom emoji the bot can use.
+        """
+        if not user:
+            user = ctx.author
+
+        if not badge_list:
+            await ctx.send("Please specify the badge(s) you want to add.")
+            return
+
+        for badge in badge_list:
+            try:
+                await ctx.message.add_reaction(badge)
+            except discord.errors.HTTPException:
+                await ctx.send("Please use only valid emojis as badges!")
+                return
+
+        await self.new_profile(user)
+
+        added_badges = []
+
+        async with aiosqlite.connect("./db/database.db") as db:
+            badges = await db.execute_fetchall(
+                """SELECT badges FROM userbadges WHERE :user_id = user_id""",
+                {"user_id": user.id},
+            )
+
+            badges = badges[0][0].split(" ")
+
+            for badge in badge_list:
+                if badge not in badges:
+                    added_badges.append(badge)
+
+            badges = badges + added_badges
+
+            badges = " ".join(badges)
+
+            await db.execute(
+                """UPDATE userbadges SET badges = :badges WHERE user_id = :user_id""",
+                {"badges": badges, "user_id": user.id},
+            )
+
+            await db.commit()
+
+        await ctx.send(
+            f"Added badge(s) {' '.join(added_badges)} to {ctx.author.mention}."
+        )
+
+    @commands.command(aliases=["removebadges"])
+    @utils.check.is_moderator()
+    async def removebadge(self, ctx, user: discord.User, badge):
+        """
+        Removes a badge from a user.
+        """
+        if not user:
+            user = ctx.author
+
+        # no emoji check here, since the bot could lose access in the meantime
+
+        async with aiosqlite.connect("./db/database.db") as db:
+            matching_users = await db.execute_fetchall(
+                """SELECT * FROM userbadges WHERE :user_id = user_id""",
+                {"user_id": user.id},
+            )
+
+            if len(matching_users) == 0:
+                await ctx.send("This user did not have any badges.")
+                return
+
+            badges = await db.execute_fetchall(
+                """SELECT badges FROM userbadges WHERE :user_id = user_id""",
+                {"user_id": user.id},
+            )
+
+            badges = badges[0][0].split(" ")
+
+            if badge not in badges:
+                await ctx.send("This user did not have this badge.")
+                return
+
+            badges.remove(badge)
+
+            badges = " ".join(badges)
+
+            await db.execute(
+                """UPDATE userbadges SET badges = :badges WHERE user_id = :user_id""",
+                {"badges": badges, "user_id": user.id},
+            )
+
+            await db.commit()
+
+        await ctx.send(f"Removed badge {badge} from {ctx.author.mention}.")
+
+    @commands.command()
+    @utils.check.is_moderator()
+    async def clearbadges(self, ctx, user: discord.User):
+        """
+        Removes all badges from a user.
+        """
+        async with aiosqlite.connect("./db/database.db") as db:
+            matching_users = await db.execute_fetchall(
+                """SELECT * FROM userbadges WHERE :user_id = user_id""",
+                {"user_id": user.id},
+            )
+
+            if len(matching_users) == 0:
+                await ctx.send("This user did not have any badges.")
+                return
+
+            await db.execute(
+                """DELETE FROM userbadges WHERE :user_id = user_id""",
+                {"user_id": user.id},
+            )
+
+            await db.commit()
+
+        await ctx.send(f"Cleared all badges from {ctx.author.mention}.")
+
+    @commands.command(aliases=["user", "user-info", "info"])
+    async def userinfo(self, ctx, member: discord.Member = None):
+        """
+        Some information about a given user, or yourself.
+        """
+        if member is None:
+            member = ctx.author
+
+        try:
+            activity = member.activity.name
+        except:
+            activity = "None"
+
+        if not ctx.guild:
+            await ctx.send("This command is only available on servers.")
+            return
+
+        sorted_members = sorted(ctx.guild.members, key=lambda x: x.joined_at)
+        index = sorted_members.index(member)
+
+        async with aiosqlite.connect("./db/database.db") as db:
+            badges = await db.execute_fetchall(
+                """SELECT badges FROM userbadges WHERE :user_id = user_id""",
+                {"user_id": member.id},
+            )
+
+        if len(badges) == 0 or badges[0][0] == "":
+            badges = "None"
+        else:
+            badges = badges[0][0]
+
+        embed = discord.Embed(
+            title=f"Userinfo of {member.name}#{member.discriminator} ({member.id})",
+            color=member.top_role.color,
+        )
+        embed.add_field(name="Name:", value=member.mention, inline=True)
+        embed.add_field(name="Top Role:", value=member.top_role.mention, inline=True)
+        embed.add_field(
+            # gives the number of roles to prevent listing like 35 roles, -1 for the @everyone role
+            name="Number of Roles:",
+            value=f"{(len(member.roles)-1)}",
+            inline=True,
+        )
+        embed.add_field(
+            # timezone aware datetime object, F is long formatting
+            name="Joined Server on:",
+            value=discord.utils.format_dt(member.joined_at, style="F"),
+            inline=True,
+        )
+        embed.add_field(
+            name="Join Rank:",
+            value=f"{(index+1)}/{len(ctx.guild.members)}",
+            inline=True,
+        )
+        embed.add_field(
+            name="Joined Discord on:",
+            value=discord.utils.format_dt(member.created_at, style="F"),
+            inline=True,
+        )
+        embed.add_field(name="Online Status:", value=member.status, inline=True)
+        embed.add_field(name="Activity Status:", value=activity, inline=True)
+        embed.add_field(name="Badges:", value=badges)
+        embed.set_thumbnail(url=member.display_avatar.url)
+        await ctx.send(embed=embed)
 
     @commands.command(aliases=["role"])
     async def roleinfo(self, ctx, *, input_role):
@@ -142,59 +350,6 @@ class Stats(commands.Cog):
         embed.set_thumbnail(url=ctx.guild.icon.url)
         await ctx.send(embed=embed)
 
-    @commands.command(aliases=["user"])
-    async def userinfo(self, ctx, member: discord.Member = None):
-        """
-        Some information about a given user, or yourself.
-        """
-        if member is None:
-            member = ctx.author
-
-        try:
-            activity = member.activity.name
-        except:
-            activity = "None"
-
-        if not ctx.guild:
-            await ctx.send("This command is only available on servers.")
-            return
-
-        sorted_members = sorted(ctx.guild.members, key=lambda x: x.joined_at)
-        index = sorted_members.index(member)
-
-        embed = discord.Embed(
-            title=f"Userinfo of {member.name}#{member.discriminator} ({member.id})",
-            color=member.top_role.color,
-        )
-        embed.add_field(name="Name:", value=member.mention, inline=True)
-        embed.add_field(name="Top Role:", value=member.top_role.mention, inline=True)
-        embed.add_field(
-            # gives the number of roles to prevent listing like 35 roles, -1 for the @everyone role
-            name="Number of Roles:",
-            value=f"{(len(member.roles)-1)}",
-            inline=True,
-        )
-        embed.add_field(
-            # timezone aware datetime object, F is long formatting
-            name="Joined Server on:",
-            value=discord.utils.format_dt(member.joined_at, style="F"),
-            inline=True,
-        )
-        embed.add_field(
-            name="Join Rank:",
-            value=f"{(index+1)}/{len(ctx.guild.members)}",
-            inline=True,
-        )
-        embed.add_field(
-            name="Joined Discord on:",
-            value=discord.utils.format_dt(member.created_at, style="F"),
-            inline=True,
-        )
-        embed.add_field(name="Online Status:", value=member.status, inline=True)
-        embed.add_field(name="Activity Status:", value=activity, inline=True)
-        embed.set_thumbnail(url=member.display_avatar.url)
-        await ctx.send(embed=embed)
-
     @commands.command(aliases=["botstats"])
     async def stats(self, ctx):
         """
@@ -283,6 +438,46 @@ Events parsed: {self.bot.events_listened_to}
         await ctx.send(embed=embed)
 
     # error handling
+    @addbadges.error
+    async def addbadges_error(self, ctx, error):
+        if isinstance(error, commands.MissingPermissions):
+            await ctx.send("Nice try, but you don't have the permissions to do that!")
+        elif isinstance(error, commands.MissingRequiredArgument):
+            await ctx.send("Please specifiy the user and badge to add!")
+        elif isinstance(error, commands.UserNotFound):
+            await ctx.send("Please mention a valid user!")
+        else:
+            raise error
+
+    @removebadge.error
+    async def removebadge_error(self, ctx, error):
+        if isinstance(error, commands.MissingPermissions):
+            await ctx.send("Nice try, but you don't have the permissions to do that!")
+        elif isinstance(error, commands.MissingRequiredArgument):
+            await ctx.send("Please specifiy the user and badge to remove!")
+        elif isinstance(error, commands.UserNotFound):
+            await ctx.send("Please mention a valid user!")
+        else:
+            raise error
+
+    @clearbadges.error
+    async def clearbadges_error(self, ctx, error):
+        if isinstance(error, commands.MissingPermissions):
+            await ctx.send("Nice try, but you don't have the permissions to do that!")
+        elif isinstance(error, commands.MissingRequiredArgument):
+            await ctx.send("Please mention a valid user!")
+        elif isinstance(error, commands.UserNotFound):
+            await ctx.send("Please mention a valid user!")
+        else:
+            raise error
+
+    @userinfo.error
+    async def userinfo_error(self, ctx, error):
+        if isinstance(error, commands.MemberNotFound):
+            await ctx.send("You need to mention a member, or just leave it blank.")
+        else:
+            raise error
+
     @listrole.error
     async def listrole_error(self, ctx, error):
         if isinstance(error, commands.RoleNotFound):
@@ -306,13 +501,6 @@ Events parsed: {self.bot.events_listened_to}
             await ctx.send(
                 "I didn't find a good match for the role you provided. Please be more specific, or mention the role, or use the Role ID."
             )
-        else:
-            raise error
-
-    @userinfo.error
-    async def userinfo_error(self, ctx, error):
-        if isinstance(error, commands.MemberNotFound):
-            await ctx.send("You need to mention a member, or just leave it blank.")
         else:
             raise error
 
