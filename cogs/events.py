@@ -253,7 +253,7 @@ class Events(commands.Cog):
     async def on_interaction(self, interaction):
         logger = self.bot.get_logger("bot.app_commands")
         logger.info(
-            f"Application Command successfully ran: {interaction.data['name']} (invoked by {str(interaction.user)})"
+            f"Application Command successfully ran: {interaction.id} (invoked by {str(interaction.user)})"
         )
         self.bot.commands_ran += 1
 

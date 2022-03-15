@@ -37,7 +37,10 @@ class Logging(commands.Cog):
             # we send the embed in every server that we have in common with the user
             for server in after.mutual_guilds:
                 logs = self.bot.get_channel(self.get_logchannel(server.id))
-                await logs.send(embed=embed)
+                # if the bot is in another server without log channels,
+                # this would throw an error so we check.
+                if logs:
+                    await logs.send(embed=embed)
 
         # discriminator change
         if before.discriminator != after.discriminator:
@@ -52,7 +55,8 @@ class Logging(commands.Cog):
             embed.timestamp = discord.utils.utcnow()
             for server in after.mutual_guilds:
                 logs = self.bot.get_channel(self.get_logchannel(server.id))
-                await logs.send(embed=embed)
+                if logs:
+                    await logs.send(embed=embed)
 
         # avatar change
         if before.display_avatar.url != after.display_avatar.url:
@@ -69,7 +73,8 @@ class Logging(commands.Cog):
             embed.timestamp = discord.utils.utcnow()
             for server in after.mutual_guilds:
                 logs = self.bot.get_channel(self.get_logchannel(server.id))
-                await logs.send(embed=embed)
+                if logs:
+                    await logs.send(embed=embed)
 
     @commands.Cog.listener()
     async def on_member_update(self, before, after):
@@ -85,7 +90,8 @@ class Logging(commands.Cog):
             )
             embed.timestamp = discord.utils.utcnow()
             logs = self.bot.get_channel(self.get_logchannel(before.guild.id))
-            await logs.send(embed=embed)
+            if logs:
+                await logs.send(embed=embed)
 
         # roles change
         if before.roles != after.roles:
@@ -104,7 +110,8 @@ class Logging(commands.Cog):
                 )
                 embed.timestamp = discord.utils.utcnow()
                 logs = self.bot.get_channel(self.get_logchannel(before.guild.id))
-                await logs.send(embed=embed)
+                if logs:
+                    await logs.send(embed=embed)
 
             # user loses a role
             if len(before.roles) > len(after.roles):
@@ -121,7 +128,8 @@ class Logging(commands.Cog):
                 )
                 embed.timestamp = discord.utils.utcnow()
                 logs = self.bot.get_channel(self.get_logchannel(before.guild.id))
-                await logs.send(embed=embed)
+                if logs:
+                    await logs.send(embed=embed)
 
     @commands.Cog.listener()
     async def on_member_join(self, member):
@@ -135,7 +143,8 @@ class Logging(commands.Cog):
         )
         embed.timestamp = discord.utils.utcnow()
         logs = self.bot.get_channel(self.get_logchannel(member.guild.id))
-        await logs.send(embed=embed)
+        if logs:
+            await logs.send(embed=embed)
 
     @commands.Cog.listener()
     async def on_member_remove(self, member):
@@ -155,7 +164,8 @@ class Logging(commands.Cog):
         )
         embed.timestamp = discord.utils.utcnow()
         logs = self.bot.get_channel(self.get_logchannel(member.guild.id))
-        await logs.send(embed=embed)
+        if logs:
+            await logs.send(embed=embed)
 
     @commands.Cog.listener()
     async def on_message_edit(self, before, after):
@@ -205,7 +215,8 @@ class Logging(commands.Cog):
         embed.add_field(name="Message ID:", value=f"{after.id}\n{after.jump_url}")
         embed.timestamp = discord.utils.utcnow()
         logs = self.bot.get_channel(self.get_logchannel(before.guild.id))
-        await logs.send(embed=embed)
+        if logs:
+            await logs.send(embed=embed)
 
     @commands.Cog.listener()
     async def on_message_delete(self, message):
@@ -269,7 +280,8 @@ class Logging(commands.Cog):
         logs = self.bot.get_channel(self.get_logchannel(message.guild.id))
         # as far as i can tell, the maximum message possible with 4k chars + 10 attachments + 1 sticker just barely fits in one embed
         # the limit for embeds are 6k chars total. so we might wanna keep watching this in case of errors.
-        await logs.send(embed=embed)
+        if logs:
+            await logs.send(embed=embed)
 
     @commands.Cog.listener()
     async def on_bulk_message_delete(self, messages):
@@ -298,10 +310,11 @@ class Logging(commands.Cog):
 
         # the file could theoratically be too large to send, the limit is 8MB.
         # realistically we will never, ever hit this
-        try:
-            await logs.send(embed=embed, file=f)
-        except:
-            await logs.send(embed=embed)
+        if logs:
+            try:
+                await logs.send(embed=embed, file=f)
+            except:
+                await logs.send(embed=embed)
 
     @commands.Cog.listener()
     async def on_member_ban(self, guild, user):
@@ -315,7 +328,8 @@ class Logging(commands.Cog):
         )
         embed.timestamp = discord.utils.utcnow()
         logs = self.bot.get_channel(self.get_logchannel(guild.id))
-        await logs.send(embed=embed)
+        if logs:
+            await logs.send(embed=embed)
 
     @commands.Cog.listener()
     async def on_member_unban(self, guild, user):
@@ -329,7 +343,8 @@ class Logging(commands.Cog):
         )
         embed.timestamp = discord.utils.utcnow()
         logs = self.bot.get_channel(self.get_logchannel(guild.id))
-        await logs.send(embed=embed)
+        if logs:
+            await logs.send(embed=embed)
 
 
 def setup(bot):
