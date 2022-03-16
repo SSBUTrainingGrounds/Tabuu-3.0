@@ -2,7 +2,7 @@ import discord
 from discord.ext import commands
 import aiosqlite
 import asyncio
-from datetime import timedelta
+from datetime import datetime, timedelta
 from utils.ids import GuildNames, GuildIDs, TGRoleIDs, BGRoleIDs, AdminVars
 from utils.time import convert_time
 import utils.check
@@ -96,6 +96,55 @@ class Mute(commands.Cog):
             logger = self.bot.get_logger("bot.mute")
             logger.warning(
                 f"Tried to remove muted role in {GuildNames.BG} server but it failed: {exc}"
+            )
+
+    async def add_timeout(self, member: discord.Member, time: datetime):
+        """
+        Tries to add the timeout on both servers.
+        """
+        try:
+            tg_guild = self.bot.get_guild(GuildIDs.TRAINING_GROUNDS)
+            tg_member = tg_guild.get_member(member.id)
+            await tg_member.edit(timed_out_until=time)
+        except Exception as exc:
+            logger = self.bot.get_logger("bot.mute")
+            logger.warning(
+                f"Tried to add timeout in {GuildNames.TG} server but it failed: {exc}"
+            )
+
+        try:
+            bg_guild = self.bot.get_guild(GuildIDs.BATTLEGROUNDS)
+            bg_member = bg_guild.get_member(member.id)
+            await bg_member.edit(timed_out_until=time)
+        except Exception as exc:
+            logger = self.bot.get_logger("bot.mute")
+            logger.warning(
+                f"Tried to add timeout in {GuildNames.BG} server but it failed: {exc}"
+            )
+
+    async def remove_timeout(self, member: discord.Member):
+        """
+        Tries to remove the timeout on both servers.
+        """
+        try:
+            tg_guild = self.bot.get_guild(GuildIDs.TRAINING_GROUNDS)
+            tg_member = tg_guild.get_member(member.id)
+            # setting it to None will remove the timeout
+            await tg_member.edit(timed_out_until=None)
+        except Exception as exc:
+            logger = self.bot.get_logger("bot.mute")
+            logger.warning(
+                f"Tried to remove timeout in {GuildNames.TG} server but it failed: {exc}"
+            )
+
+        try:
+            bg_guild = self.bot.get_guild(GuildIDs.BATTLEGROUNDS)
+            bg_member = bg_guild.get_member(member.id)
+            await bg_member.edit(timed_out_until=None)
+        except Exception as exc:
+            logger = self.bot.get_logger("bot.mute")
+            logger.warning(
+                f"Tried to remove timeout in {GuildNames.BG} server but it failed: {exc}"
             )
 
     @commands.command()
@@ -256,6 +305,8 @@ class Mute(commands.Cog):
         else:
             message = f"{member.mention} is on timeout until {aware_dt}."
 
+        await self.add_timeout(member, timeout_dt)
+
         try:
             await member.send(
                 f"You are on timeout in the {ctx.guild.name} Server until {aware_dt} for the following reason: \n```{reason}```\nIf you would like to discuss your punishment, please contact {AdminVars.GROUNDS_GENERALS}."
@@ -266,7 +317,6 @@ class Mute(commands.Cog):
                 f"Tried to message timeout message to {str(member)}, but it failed: {exc}"
             )
 
-        await member.edit(timed_out_until=timeout_dt)
         await ctx.send(message)
 
     @commands.command(aliases=["untimeout"])
@@ -280,8 +330,7 @@ class Mute(commands.Cog):
             await ctx.send(f"{member.mention} is not on timeout!")
             return
 
-        # setting it to None will remove the timeout
-        await member.edit(timed_out_until=None)
+        await self.remove_timeout(member)
 
         try:
             await member.send(

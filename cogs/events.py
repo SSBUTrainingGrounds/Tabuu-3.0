@@ -42,7 +42,6 @@ class Events(commands.Cog):
         [
             "type %help",
             "Always watching 👀",
-            "%modmail in my DM's to contact the mod team privately",
             "What is love?",
             "Executing Plan Z.",
             "...with your heart.",
