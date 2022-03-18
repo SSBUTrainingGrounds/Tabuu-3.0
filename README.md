@@ -5,29 +5,31 @@ A discord bot specifically made for the SSBU Training Grounds discord server, jo
 Made by Phxenix#1104. If you have any questions feel free to contact me on Discord.
 
 ## Features include:
-- Custom Smash Ultimate Matchmaking, with Ranked and Unranked Modes
+- Custom Smash Ultimate Matchmaking
+- Ranking System based on Elo
 - General Purpose Moderation Commands
 - Custom Cross-Server Warning and Muting System
 - Bad Word and Invite Link filtering
-- Modmail, with DMs and Threads
+- Modmail, via DMs, Threads or Context Menus
 - Reaction-based Role Menus
 - Auto-role System
+- Starboard
 - Level Roles based on Mee6 Levels
 - Logs Message and User Updates
 - Custom Macro Commands
 - Player Profiles for Smash Ultimate
-- Starboard
+- Special User Badges
 - Persistent Reminders
 - Lots of other useful General User Commands
 - Lots of other not-so-useful General User Commands
 
-The full list of commands with an explanation on how to use them can be found within the [CommandList.md](CommandList.md) file.
+**The full list of commands with an explanation on how to use them can be found within the [CommandList.md](CommandList.md) file.**
 
 ##  Running the bot
-Since this bot is only intended to be used on the SSBU Training Grounds Server, this means that you cannot just invite a running instance of the bot to your own server.  
+Since this bot is only intended to be used on the SSBU Training Grounds Server, this means that **you cannot just invite a running instance of the bot to your own server.**  
 What you can do instead is run your own instance of this bot. Please keep in mind however that this bot is highly tailored to the SSBU Training Grounds Server. If you are looking for an easy-to-setup, highly customisable discord bot, you should probably look elsewhere.  
 
-**With all that said, here's how to run the bot yourself:**  
+### With all that said, here's how to run the bot yourself:  
 1) Clone this repository.  
 2) Install at least Python 3.9 or newer and the latest version of the [discord.py](https://github.com/Rapptz/discord.py) alpha, as well as the other packages needed with `pip install -r requirements.txt`.  
 3) [Create and host your own Discord Application](https://discord.com/developers/applications).  

@@ -1,17 +1,17 @@
-# Command List:
+# Command List
 
 This here contains every command with a detailed explanation on how to use them. They are ordered alphabetically, search them with Ctrl+F.  
 
-### Quick explanation of this document:
-Arguments that are optional all have the `:Optional` suffix. Every other argument is required.  
-`Admin only` in the Command Info means that you either have to be the Server Owner, have Administrator Rights or the Moderator Role in order to use this Command.  
-`Owner only` in the Command Info means that only the Bot's Owner can use this Command.  
-The `Aliases` section shows you other names the Command is available from. The usage is exactly the same, if you use the default name or one of the listed aliases.  
-Everything else should be fairly self-explanatory.  
-  
-Last updated: 15 March 2022  
+Last updated: 18 March 2022  
 
-### Full list of commands:
+## Quick explanation of this document  
+Arguments that are optional all have the `: Optional` suffix. Every other argument is required.  
+**Admin only** means that you have to be the Server Owner, have Administrator Rights or the Moderator Role to use this Command.  
+**Owner only** means that only the Bot's Owner can use this Command.  
+**Aliases** show you other names the Command is available under. The usage is exactly the same if you use the default name or one of the listed aliases.  
+Everything else should be fairly self-explanatory.  
+
+## Full list of commands
   
 - **%8ball** `<question>`  
     - Info: Ask a question and you get a random response from the magic 8-ball.  
