@@ -1,7 +1,7 @@
 git+https://github.com/Rapptz/discord.py
 aiosqlite==0.17.0
 black==22.1.0
-discord==1.0.1
+discord==1.7.3
 fuzzywuzzy==0.18.0
 mee6_py_api==0.0.1
 psutil==5.8.0
