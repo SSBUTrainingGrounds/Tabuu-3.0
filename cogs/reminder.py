@@ -227,17 +227,12 @@ class Reminder(commands.Cog):
 
     @deletereminder.error
     async def deletereminder_error(self, ctx, error):
-        if isinstance(error, commands.CommandInvokeError):
-            await ctx.send("You have no active reminders to delete.")
-        else:
-            raise error
-
-    @deletereminder.error
-    async def deletereminder_error(self, ctx, error):
         if isinstance(error, commands.MissingRequiredArgument):
             await ctx.send(
                 "You need to specify which reminder to delete. View all of your active reminders with `%viewreminders`"
             )
+        elif isinstance(error, commands.CommandInvokeError):
+            await ctx.send("You have no active reminders to delete.")
         else:
             raise error
 
