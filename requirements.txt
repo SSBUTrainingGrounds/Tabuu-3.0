@@ -3,5 +3,5 @@ aiosqlite==0.17.0
 black==22.1.0
 fuzzywuzzy==0.18.0
 mee6_py_api==0.0.1
-psutil==5.8.0
+psutil==5.9.0
 tzdata==2021.5
