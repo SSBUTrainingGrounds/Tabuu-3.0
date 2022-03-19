@@ -65,6 +65,10 @@ def convert_input(input: str):
         "fl. ounces",
         "fl. oz.",
         "fluid oz.",
+        "floz",
+        "floz.",
+        "fl.oz.",
+        "fl.oz",
     ]
     liter_list = ["l", "liter", "liters", "litre", "litres"]
     ml_list = ["ml", "milliliter", "milliliters", "millilitre", "millilitres"]
@@ -74,85 +78,85 @@ def convert_input(input: str):
         # fmt: off
         if word in miles_list:
             return (
-                f"`{number} miles` is equal to `{Conversion.miles_to_km(number)} km`."
+                f"`{number} miles` is equal to `{Conversion().miles_to_km(number)} km`."
             )
         elif word in feet_list:
             return (
-                f"`{number} feet` is equal to `{Conversion.feet_to_meter(number)} m`."
+                f"`{number} feet` is equal to `{Conversion().feet_to_meter(number)} m`."
             )
         elif word in inches_list:
             return (
-                f"`{number} inches` is equal to `{Conversion.inches_to_cm(number)} cm`."
+                f"`{number} inches` is equal to `{Conversion().inches_to_cm(number)} cm`."
             )
 
         elif word in km_list:
             return (
-                f"`{number} km` is equal to `{Conversion.km_to_miles(number)} miles`."
+                f"`{number} km` is equal to `{Conversion().km_to_miles(number)} miles`."
             )
         elif word in meter_list:
             return (
-                f"`{number} m` is equal to `{Conversion.meter_to_feet(number)} feet`."
+                f"`{number} m` is equal to `{Conversion().meter_to_feet(number)} feet`."
             )
         elif word in cm_list:
             return (
-                f"`{number} cm` is equal to `{Conversion.cm_to_inches(number)} inches`."
+                f"`{number} cm` is equal to `{Conversion().cm_to_inches(number)} inches`."
             )
 
         elif word in kmh_list:
             return (
-                f"`{number} km/h` is equal to `{Conversion.km_to_miles(number)} mph`."
+                f"`{number} km/h` is equal to `{Conversion().km_to_miles(number)} mph`."
             )
 
         elif word in ms_list:
             return (
-                f"`{number} m/s` is equal to `{Conversion.ms_to_mph(number)} mph`."
+                f"`{number} m/s` is equal to `{Conversion().ms_to_mph(number)} mph`."
             )
         elif word in mph_list:
             return (
-                f"`{number} mph` is equal to `{Conversion.miles_to_km(number)} km/h ({Conversion.mph_to_ms(number)} m/s)`."
+                f"`{number} mph` is equal to `{Conversion().miles_to_km(number)} km/h ({Conversion().mph_to_ms(number)} m/s)`."
             )
 
         elif word in fahrenheit_list:
             return (
-                f"`{number}°F` is equal to `{Conversion.f_to_c(number)}°C`."
+                f"`{number}°F` is equal to `{Conversion().f_to_c(number)}°C`."
             )
         elif word in celsius_list:
             return (
-                f"`{number}°C` is equal to `{Conversion.c_to_f(number)}°F`."
+                f"`{number}°C` is equal to `{Conversion().c_to_f(number)}°F`."
             )
 
         elif word in pounds_list:
             return (
-                f"`{number} lbs` is equal to `{Conversion.lbs_to_kg(number)} kg`."
+                f"`{number} lbs` is equal to `{Conversion().lbs_to_kg(number)} kg`."
             )
         elif word in ounces_list:
             return (
-                f"`{number} oz` is equal to `{Conversion.oz_to_g(number)} g`."
+                f"`{number} oz` is equal to `{Conversion().oz_to_g(number)} g`."
             )
         elif word in kg_list:
             return (
-                f"`{number} kg` is equal to `{Conversion.kg_to_lbs(number)} lbs`."
+                f"`{number} kg` is equal to `{Conversion().kg_to_lbs(number)} lbs`."
             )
         elif word in grams_list:
             return (
-                f"`{number} g` is equal to `{Conversion.g_to_oz(number)} oz`."
+                f"`{number} g` is equal to `{Conversion().g_to_oz(number)} oz`."
             )
 
         elif word in gallons_list:
             return (
-                f"`{number} gal` is equal to `{Conversion.gal_to_l(number)} l`."
+                f"`{number} gal` is equal to `{Conversion().gal_to_l(number)} l`."
             )
         elif word in fluid_ounces_list:
             return (
-                f"`{number} fl oz` is equal to `{Conversion.floz_to_ml(number)} ml`."
+                f"`{number} fl oz` is equal to `{Conversion().floz_to_ml(number)} ml`."
             )
         elif word in liter_list:
             return (
-                f"`{number} l` is equal to `{Conversion.l_to_gal(number)} gal`."
+                f"`{number} l` is equal to `{Conversion().l_to_gal(number)} gal`."
             )
         elif word in ml_list:
             return (
-                f"`{number} ml` is equal to `{Conversion.ml_to_floz(number)} fl oz`."
+                f"`{number} ml` is equal to `{Conversion().ml_to_floz(number)} fl oz`."
             )
         # fmt: on
 
@@ -164,56 +168,56 @@ class Conversion:
     The conversion functions, shamelessly copied.
     """
 
-    def km_to_miles(km: float):
+    def km_to_miles(self, km: float):
         return round((km * 0.6214), 2)
 
-    def miles_to_km(miles: float):
+    def miles_to_km(self, miles: float):
         return round((miles * 1.609344), 2)
 
-    def ms_to_mph(ms: float):
+    def ms_to_mph(self, ms: float):
         return round((ms * 2.237), 2)
 
-    def mph_to_ms(mph: float):
+    def mph_to_ms(self, mph: float):
         return round((mph * 0.44704), 2)
 
-    def cm_to_inches(cm: float):
+    def cm_to_inches(self, cm: float):
         return round((cm * 0.3937), 2)
 
-    def inches_to_cm(inches: float):
+    def inches_to_cm(self, inches: float):
         return round((inches * 2.54), 2)
 
-    def meter_to_feet(meter: float):
+    def meter_to_feet(self, meter: float):
         return round((meter * 3.28084), 2)
 
-    def feet_to_meter(feet: float):
+    def feet_to_meter(self, feet: float):
         return round((feet * 0.3048), 2)
 
-    def c_to_f(c: float):
+    def c_to_f(self, c: float):
         return round(((c * 9 / 5) + 32), 2)
 
-    def f_to_c(f: float):
+    def f_to_c(self, f: float):
         return round(((f - 32) * 5 / 9), 2)
 
-    def lbs_to_kg(lbs: float):
+    def lbs_to_kg(self, lbs: float):
         return round((lbs * 0.454), 2)
 
-    def kg_to_lbs(kg: float):
+    def kg_to_lbs(self, kg: float):
         return round((kg * 2.2046), 2)
 
-    def oz_to_g(oz: float):
+    def oz_to_g(self, oz: float):
         return round((oz * 28.349523), 2)
 
-    def g_to_oz(g: float):
+    def g_to_oz(self, g: float):
         return round((g * 0.035274), 2)
 
-    def gal_to_l(gal: float):
+    def gal_to_l(self, gal: float):
         return round((gal * 3.785412), 2)
 
-    def l_to_gal(l: float):
+    def l_to_gal(self, l: float):
         return round((l * 0.264172), 2)
 
-    def floz_to_ml(floz: float):
+    def floz_to_ml(self, floz: float):
         return round((floz * 29.574), 2)
 
-    def ml_to_floz(ml: float):
+    def ml_to_floz(self, ml: float):
         return round((ml * 0.033814), 2)
