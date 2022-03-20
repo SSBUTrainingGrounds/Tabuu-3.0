@@ -17,20 +17,20 @@ class Matchmaking(commands.Cog):
         """
         Saves a Matchmaking Ping of any unranked type in the according file.
         """
-        with open(r"./json/{filename}.json".format(filename=mm_type), "r") as f:
+        with open(rf"./json/{mm_type}.json", "r", encoding="utf-8") as f:
             user_pings = json.load(f)
 
         user_pings[f"{ctx.author.id}"] = {}
         user_pings[f"{ctx.author.id}"] = {"channel": ctx.channel.id, "time": timestamp}
 
-        with open(r"./json/{filename}.json".format(filename=mm_type), "w") as f:
+        with open(rf"./json/{mm_type}.json", "w", encoding="utf-8") as f:
             json.dump(user_pings, f, indent=4)
 
     async def delete_ping(self, ctx, mm_type: str):
         """
         Deletes a Matchmaking Ping of any unranked type from the according file.
         """
-        with open(r"./json/{filename}.json".format(filename=mm_type), "r") as f:
+        with open(rf"./json/{mm_type}.json", "r", encoding="utf-8") as f:
             user_pings = json.load(f)
 
         try:
@@ -41,7 +41,7 @@ class Matchmaking(commands.Cog):
                 f"Tried to delete a {mm_type} ping by {str(ctx.message.author)} but the ping was already deleted."
             )
 
-        with open(r"./json/{filename}.json".format(filename=mm_type), "w") as f:
+        with open(rf"./json/{mm_type}.json", "w", encoding="utf-8") as f:
             json.dump(user_pings, f, indent=4)
 
     async def get_recent_pings(self, mm_type: str, timestamp: float):
@@ -49,7 +49,7 @@ class Matchmaking(commands.Cog):
         Gets a list with every Ping saved.
         As long as the ping is not older than 30 Minutes.
         """
-        with open(r"./json/{filename}.json".format(filename=mm_type), "r") as f:
+        with open(rf"./json/{mm_type}.json", "r", encoding="utf-8") as f:
             user_pings = json.load(f)
 
         list_of_searches = []

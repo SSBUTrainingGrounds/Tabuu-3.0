@@ -1,8 +1,8 @@
 import discord
 from discord.ext import commands
 import json
-from .matchmaking import Matchmaking
-from .ranking import Ranking
+from cogs.matchmaking import Matchmaking
+from cogs.ranking import Ranking
 from utils.ids import TGArenaChannelIDs
 import utils.check
 
@@ -166,7 +166,7 @@ class Matchmakingpings(commands.Cog):
 
         # deleting singles file
 
-        with open(r"./json/singles.json", "r") as f:
+        with open(r"./json/singles.json", "r", encoding="utf-8") as f:
             singles = json.load(f)
 
         singles_requests = []
@@ -177,14 +177,14 @@ class Matchmakingpings(commands.Cog):
         for user in singles_requests:
             del singles[user]
 
-        with open(r"./json/singles.json", "w") as f:
+        with open(r"./json/singles.json", "w", encoding="utf-8") as f:
             json.dump(singles, f, indent=4)
 
         logger.info("Singles file cleared!")
 
         # deleting doubles file
 
-        with open(r"./json/doubles.json", "r") as f:
+        with open(r"./json/doubles.json", "r", encoding="utf-8") as f:
             doubles = json.load(f)
 
         doubles_requests = []
@@ -195,14 +195,14 @@ class Matchmakingpings(commands.Cog):
         for user in doubles_requests:
             del doubles[user]
 
-        with open(r"./json/doubles.json", "w") as f:
+        with open(r"./json/doubles.json", "w", encoding="utf-8") as f:
             json.dump(doubles, f, indent=4)
 
         logger.info("Doubles file cleared!")
 
         # deleting funnies file
 
-        with open(r"./json/funnies.json", "r") as f:
+        with open(r"./json/funnies.json", "r", encoding="utf-8") as f:
             funnies = json.load(f)
 
         funnies_requests = []
@@ -213,14 +213,14 @@ class Matchmakingpings(commands.Cog):
         for user in funnies_requests:
             del funnies[user]
 
-        with open(r"./json/funnies.json", "w") as f:
+        with open(r"./json/funnies.json", "w", encoding="utf-8") as f:
             json.dump(funnies, f, indent=4)
 
         logger.info("Funnies file cleared!")
 
         # deleting ranked file
 
-        with open(r"./json/rankedpings.json", "r") as f:
+        with open(r"./json/rankedpings.json", "r", encoding="utf-8") as f:
             ranked = json.load(f)
 
         ranked_requests = []
@@ -231,7 +231,7 @@ class Matchmakingpings(commands.Cog):
         for user in ranked_requests:
             del ranked[user]
 
-        with open(r"./json/rankedpings.json", "w") as f:
+        with open(r"./json/rankedpings.json", "w", encoding="utf-8") as f:
             json.dump(ranked, f, indent=4)
 
         logger.info("Ranked file cleared!")

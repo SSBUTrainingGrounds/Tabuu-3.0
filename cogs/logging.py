@@ -18,8 +18,11 @@ class Logging(commands.Cog):
         """
         if guild_id == GuildIDs.TRAINING_GROUNDS:
             return TGChannelIDs.LOGCHANNEL
-        elif guild_id == GuildIDs.BATTLEGROUNDS:
+
+        if guild_id == GuildIDs.BATTLEGROUNDS:
             return BGChannelIDs.LOGCHANNEL
+
+        return None
 
     @commands.Cog.listener()
     async def on_user_update(self, before, after):
@@ -61,8 +64,8 @@ class Logging(commands.Cog):
         # avatar change
         if before.display_avatar.url != after.display_avatar.url:
             embed = discord.Embed(
-                title=f"**📷 Avatar changed 📷**",
-                description=f"New avatar below:",
+                title="**📷 Avatar changed 📷**",
+                description="New avatar below:",
                 colour=discord.Colour.dark_gray(),
             )
             embed.set_thumbnail(url=before.display_avatar.url)
@@ -155,7 +158,7 @@ class Logging(commands.Cog):
         role_description = f"{' '.join(roles)}" if len(roles) != 0 else "No roles"
 
         embed = discord.Embed(
-            title=f"** 🚶 Member left the server 🚶**",
+            title="** 🚶 Member left the server 🚶**",
             description=f"{member.mention} has left the server. \n**Lost roles:** \n{role_description}",
             colour=discord.Colour.dark_red(),
         )
@@ -204,7 +207,7 @@ class Logging(commands.Cog):
             icon_url=after.author.display_avatar.url,
         )
         embed.add_field(
-            name=f"**Old Content:**", value=f"{before.content[:1000]}", inline=False
+            name="**Old Content:**", value=f"{before.content[:1000]}", inline=False
         )
         # if a message is too long, it gets split into two embed fields
         # 1000 chars is the limit for embed values
@@ -313,7 +316,7 @@ class Logging(commands.Cog):
         if logs:
             try:
                 await logs.send(embed=embed, file=f)
-            except:
+            except discord.HTTPException:
                 await logs.send(embed=embed)
 
     @commands.Cog.listener()
