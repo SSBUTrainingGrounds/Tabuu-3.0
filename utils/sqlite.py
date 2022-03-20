@@ -10,16 +10,16 @@ async def setup_db(filepath: str = "./db/database.db"):
     async with aiosqlite.connect(filepath) as db:
         await db.execute(
             """CREATE TABLE IF NOT EXISTS warnings(
-                user_id INTEGER, 
-                warn_id INTEGER, 
-                mod_id INTEGER, 
-                reason TEXT, 
+                user_id INTEGER,
+                warn_id INTEGER,
+                mod_id INTEGER,
+                reason TEXT,
                 timestamp TEXT)"""
         )
 
         await db.execute(
             """CREATE TABLE IF NOT EXISTS starboardmessages(
-                original_id INTEGER, 
+                original_id INTEGER,
                 starboard_id INTEGER)"""
         )
 

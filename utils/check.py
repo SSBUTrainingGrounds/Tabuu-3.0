@@ -23,7 +23,7 @@ def is_moderator():
             return True
 
         # then we check for admin privileges, which i guess the owner also has
-        if ctx.author.guild_permissions.administrator == True:
+        if ctx.author.guild_permissions.administrator is True:
             return True
 
         # and lastly we check if the author has any of the two moderator roles

@@ -1,7 +1,7 @@
 # Tabuu 3.0
 # by Phxenix for SSBU Training Grounds
-# Version: 9.1.0
-# Last Changes: 15 March 2022
+# Version: 9.1.1
+# Last Changes: 20 March 2022
 # Contact me on Discord: Phxenix#1104
 
 
@@ -25,7 +25,7 @@ class Tabuu3(commands.Bot):
         )
 
         # to be used in %stats
-        self.version_number = "9.1.0"
+        self.version_number = "9.1.1"
         self.commands_ran = 0
         self.events_listened_to = 0
 
@@ -34,7 +34,7 @@ class Tabuu3(commands.Bot):
 
     async def start(self, *args, **kwargs):
         # getting the bot token
-        with open(r"./files/token.txt") as f:
+        with open(r"./files/token.txt", encoding="utf-8") as f:
             token = f.readline()
 
         await super().start(token=token, *args, **kwargs)

@@ -20,7 +20,7 @@ def search_role(guild: discord.Guild, input_role):
 
     try:
         role = discord.utils.get(guild.roles, id=int(input_role))
-    except:
+    except ValueError:
         match = process.extractOne(input_role, all_roles, score_cutoff=30)[0]
         role = discord.utils.get(guild.roles, name=match)
 

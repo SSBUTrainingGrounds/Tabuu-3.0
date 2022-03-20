@@ -1,7 +1,7 @@
 import re
 
 
-def convert_input(input: str):
+def convert_input(conversion_input: str):
     """
     Converts your input between metric and imperial, and the other way around.
     Works for most commonly used measurements for distance, speed, temperatures, weight and so on.
@@ -9,16 +9,18 @@ def convert_input(input: str):
     """
     # this block somehow gets the first floating point number or normal int found. no clue, i dont understand regex
     rx = re.compile(
-        "[-+]? (?: (?: \d* \. \d+ ) | (?: \d+ \.? ) )(?: [Ee] [+-]? \d+ ) ?",
+        r"[-+]? (?: (?: \d* \. \d+ ) | (?: \d+ \.? ) )(?: [Ee] [+-]? \d+ ) ?",
         re.VERBOSE,
     )
-    nums = rx.findall(input)
+    nums = rx.findall(conversion_input)
     number = float(nums[0])
 
     # this block here gets you all the words in the input in a list, to compare those to the lists below
-    input = input.lower()
-    input = "".join([i for i in input if not i.isdigit() and i not in ("+", "-", ".")])
-    input = input.split()
+    conversion_input = conversion_input.lower()
+    conversion_input = "".join(
+        [i for i in conversion_input if not i.isdigit() and i not in ("+", "-", ".")]
+    )
+    conversion_input = conversion_input.split()
 
     miles_list = ["miles", "mi", "mile"]
     feet_list = ["foot", "feet", "ft", "'"]
@@ -73,7 +75,7 @@ def convert_input(input: str):
     liter_list = ["l", "liter", "liters", "litre", "litres"]
     ml_list = ["ml", "milliliter", "milliliters", "millilitre", "millilitres"]
 
-    for word in input:
+    for word in conversion_input:
         # i dont know why but black is formatting very inconsistent here, thats why we need the fmt off
         # fmt: off
         if word in miles_list:
