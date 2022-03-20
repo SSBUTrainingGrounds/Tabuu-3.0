@@ -41,31 +41,15 @@ class Mee6api(commands.Cog):
 
         levelroles = [defaultrole, level10, level25, level50, level75, level100]
 
-        if level > 9 and level < 25:
-            if level10 not in member.roles:
+        if level >= 100:
+            if level100 not in member.roles:
                 for role in levelroles:
                     if role in member.roles:
                         await member.remove_roles(role)
-                await member.add_roles(level10)
-                rolegiven = level10
+                await member.add_roles(level100)
+                rolegiven = level100
 
-        elif level > 24 and level < 50:
-            if level25 not in member.roles:
-                for role in levelroles:
-                    if role in member.roles:
-                        await member.remove_roles(role)
-                await member.add_roles(level25)
-                rolegiven = level25
-
-        elif level > 49 and level < 75:
-            if level50 not in member.roles:
-                for role in levelroles:
-                    if role in member.roles:
-                        await member.remove_roles(role)
-                await member.add_roles(level50)
-                rolegiven = level50
-
-        elif level > 74 and level < 100:
+        elif level >= 75:
             if level75 not in member.roles:
                 for role in levelroles:
                     if role in member.roles:
@@ -73,13 +57,29 @@ class Mee6api(commands.Cog):
                 await member.add_roles(level75)
                 rolegiven = level75
 
-        elif level > 99:
-            if level100 not in member.roles:
+        elif level >= 50:
+            if level50 not in member.roles:
                 for role in levelroles:
                     if role in member.roles:
                         await member.remove_roles(role)
-                await member.add_roles(level100)
-                rolegiven = level100
+                await member.add_roles(level50)
+                rolegiven = level50
+
+        elif level >= 25:
+            if level25 not in member.roles:
+                for role in levelroles:
+                    if role in member.roles:
+                        await member.remove_roles(role)
+                await member.add_roles(level25)
+                rolegiven = level25
+
+        elif level >= 10:
+            if level10 not in member.roles:
+                for role in levelroles:
+                    if role in member.roles:
+                        await member.remove_roles(role)
+                await member.add_roles(level10)
+                rolegiven = level10
 
         return rolegiven
 
@@ -169,7 +169,7 @@ class Mee6api(commands.Cog):
                     # need to fetch the member, since get_member is unreliable.
                     # we only do this for members above level 10 though,
                     # otherwise this would take ages.
-                    if user["level"] > 9:
+                    if user["level"] >= 10:
                         member = await guild.fetch_member(user["id"])
                         await self.update_level_role(member, user["level"], guild)
 
