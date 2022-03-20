@@ -34,29 +34,29 @@ class Ranking(commands.Cog):
         else:
             elo = matching_player[0][0]
 
-            if elo < 800:
+            if elo >= 1300:
                 pingrole = discord.utils.get(
-                    guild.roles, id=TGMatchmakingRoleIDs.ELO_800_ROLE
+                    guild.roles, id=TGMatchmakingRoleIDs.ELO_MAX_ROLE
                 )
-            if elo < 950 and elo > 799:
-                pingrole = discord.utils.get(
-                    guild.roles, id=TGMatchmakingRoleIDs.ELO_950_ROLE
-                )
-            if elo < 1050 and elo > 949:
-                pingrole = discord.utils.get(
-                    guild.roles, id=TGMatchmakingRoleIDs.ELO_1050_ROLE
-                )
-            if elo < 1200 and elo > 1049:
-                pingrole = discord.utils.get(
-                    guild.roles, id=TGMatchmakingRoleIDs.ELO_1200_ROLE
-                )
-            if elo < 1300 and elo > 1199:
+            elif elo >= 1200:
                 pingrole = discord.utils.get(
                     guild.roles, id=TGMatchmakingRoleIDs.ELO_1300_ROLE
                 )
-            if elo > 1299:
+            elif elo >= 1050:
                 pingrole = discord.utils.get(
-                    guild.roles, id=TGMatchmakingRoleIDs.ELO_MAX_ROLE
+                    guild.roles, id=TGMatchmakingRoleIDs.ELO_1200_ROLE
+                )
+            elif elo >= 950:
+                pingrole = discord.utils.get(
+                    guild.roles, id=TGMatchmakingRoleIDs.ELO_1050_ROLE
+                )
+            elif elo >= 800:
+                pingrole = discord.utils.get(
+                    guild.roles, id=TGMatchmakingRoleIDs.ELO_950_ROLE
+                )
+            else:
+                pingrole = discord.utils.get(
+                    guild.roles, id=TGMatchmakingRoleIDs.ELO_800_ROLE
                 )
 
         return pingrole
@@ -225,18 +225,18 @@ class Ranking(commands.Cog):
         """
         async with aiosqlite.connect("./db/database.db") as db:
             await db.execute(
-                """UPDATE ranking SET 
-                wins = wins + 1, 
-                matches = matches || "W", 
-                elo = :winnerelo 
+                """UPDATE ranking SET
+                wins = wins + 1,
+                matches = matches || "W",
+                elo = :winnerelo
                 WHERE user_id = :winner_id""",
                 {"winnerelo": winnerelo, "winner_id": winner.id},
             )
             await db.execute(
-                """UPDATE ranking SET 
-                losses = losses + 1, 
-                matches = matches || "L", 
-                elo = :loserelo 
+                """UPDATE ranking SET
+                losses = losses + 1,
+                matches = matches || "L",
+                elo = :loserelo
                 WHERE user_id = :loser_id""",
                 {"loserelo": loserelo, "loser_id": loser.id},
             )
@@ -247,8 +247,8 @@ class Ranking(commands.Cog):
         """
         Stores your ranked ping.
         """
-        with open(r"./json/rankedpings.json", "r") as fp:
-            rankedusers = json.load(fp)
+        with open(r"./json/rankedpings.json", "r", encoding="utf-8") as f:
+            rankedusers = json.load(f)
 
         # stores your ping
         rankedusers[f"{ctx.author.id}"] = {}
@@ -258,15 +258,15 @@ class Ranking(commands.Cog):
             "time": timestamp,
         }
 
-        with open(r"./json/rankedpings.json", "w") as fp:
-            json.dump(rankedusers, fp, indent=4)
+        with open(r"./json/rankedpings.json", "w", encoding="utf-8") as f:
+            json.dump(rankedusers, f, indent=4)
 
     def delete_ranked_ping(self, ctx):
         """
         Deletes your ranked ping.
         """
-        with open(r"./json/rankedpings.json", "r") as fp:
-            rankedusers = json.load(fp)
+        with open(r"./json/rankedpings.json", "r", encoding="utf-8") as f:
+            rankedusers = json.load(f)
 
         try:
             del rankedusers[f"{ctx.message.author.id}"]
@@ -276,16 +276,16 @@ class Ranking(commands.Cog):
                 f"Tried to delete a ranked ping by {str(ctx.message.author)} but the ping was already deleted."
             )
 
-        with open(r"./json/rankedpings.json", "w") as fp:
-            json.dump(rankedusers, fp, indent=4)
+        with open(r"./json/rankedpings.json", "w", encoding="utf-8") as f:
+            json.dump(rankedusers, f, indent=4)
 
-    def get_recent_ranked_pings(self, timestamp: float):
+    async def get_recent_ranked_pings(self, timestamp: float):
         """
         Gets a list with all the recent ranked pings.
         We need a different approach than unranked here because we also store the rank role here.
         This is its own function because we need to export it.
         """
-        with open(r"./json/rankedpings.json", "r") as f:
+        with open(r"./json/rankedpings.json", "r", encoding="utf-8") as f:
             user_pings = json.load(f)
 
         list_of_searches = []
@@ -334,7 +334,7 @@ class Ranking(commands.Cog):
         self.store_ranked_ping(ctx, elo_role, timestamp)
 
         # gets all of the other active pings
-        searches = self.get_recent_ranked_pings(timestamp)
+        searches = await self.get_recent_ranked_pings(timestamp)
 
         # gathers all the roles we are gonna ping
         pingroles = self.get_adjacent_roles(ctx.guild, elo_role)
@@ -648,7 +648,7 @@ class Ranking(commands.Cog):
 
             timestamp = discord.utils.utcnow().timestamp()
 
-            searches = self.get_recent_ranked_pings(timestamp)
+            searches = await self.get_recent_ranked_pings(timestamp)
 
             embed = discord.Embed(
                 title="Ranked pings in the last 30 Minutes:",
