@@ -2,10 +2,10 @@ import discord
 from discord.ext import commands
 import re
 import string
-from .warn import Warn
+from cogs.warn import Warn
 from utils.ids import GuildIDs, TGRoleIDs, TGChannelIDs, AdminVars
 
-with open(r"./files/badwords.txt") as file:
+with open(r"./files/badwords.txt", encoding="utf-8") as file:
     file = file.read().split()
 
 
@@ -88,7 +88,7 @@ class On_message(commands.Cog):
 
                 try:
                     await message.delete()
-                except Exception as exc:
+                except discord.HTTPException as exc:
                     logger = self.bot.get_logger("bot.autowarn")
                     logger.warning(
                         f"Tried to delete a message for containing a blacklisted word, but it failed: {exc}"
@@ -98,7 +98,7 @@ class On_message(commands.Cog):
                     await message.author.send(
                         f"You have been automatically warned in the {message.guild.name} Server for sending a message containing a blacklisted word.\nIf you would like to discuss your punishment, please contact {AdminVars.GROUNDS_GENERALS}."
                     )
-                except Exception as exc:
+                except discord.HTTPException as exc:
                     logger = self.bot.get_logger("bot.autowarn")
                     logger.warning(
                         f"Tried to message automatic warn reason to {str(message.author)}, but it failed: {exc}"

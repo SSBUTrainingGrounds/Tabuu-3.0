@@ -38,10 +38,7 @@ class ConfirmationButtons(discord.ui.View):
     async def interaction_check(self, interaction: discord.Interaction):
         # we make sure its the right member thats pressing the button.
         # not really needed since the message is ephemeral anyways
-        if interaction.user == self.member:
-            return True
-        else:
-            return False
+        return interaction.user == self.member
 
 
 class ModmailButton(discord.ui.View):
@@ -75,7 +72,7 @@ class ModmailButton(discord.ui.View):
         await view.wait()
 
         # only proceeds if the confirm button is pressed
-        if view.confirm == None:
+        if view.confirm is None:
             # on_timeout to edit the original message doesnt work here, because
             # interaction.response.send_message does not return a message object to store in a variable.
             # and we dont have access to the interaction in on_timeout.
@@ -84,7 +81,7 @@ class ModmailButton(discord.ui.View):
                 "Your request timed out. Please try again.", ephemeral=True
             )
             return
-        if view.confirm == False:
+        if view.confirm is False:
             # for that case, the button class above handles it.
             return
 
@@ -106,7 +103,7 @@ class ModmailButton(discord.ui.View):
         # private threads can only be created if you have a subscripion level of 2.
         # we won't create a thread, cause public modmail isnt really that great.
         # just need to use the "classic" modmail then and tell the user exactly that.
-        except Exception as exc:
+        except discord.HTTPException as exc:
             # we have to use the followup here since you cant respond to an interaction twice?
             await interaction.followup.send(
                 f"Looks like something went wrong:\n```{exc}```\nPlease either use `%modmail` in my DMs or contact one of the moderators directly.",
@@ -129,7 +126,7 @@ async def report_message(interaction: discord.Interaction, message: discord.Mess
         message.content = "No content."
 
     embed = discord.Embed(
-        title=f"Reported Message!",
+        title="Reported Message!",
         description=f"**Message Content:**\n{message.content}",
         colour=discord.Colour.dark_red(),
     )

@@ -13,7 +13,7 @@ class Profile(commands.Cog):
     def __init__(self, bot):
         self.bot = bot
 
-    def match_character(self, input):
+    def match_character(self, profile_input: str):
         """
         Matches the input to one or multiple characters and returns the corresponding emoji.
         Separates the input by commas.
@@ -26,16 +26,16 @@ class Profile(commands.Cog):
                 <:DarkSamus:929068123020202004>,
             ]
         """
-        with open(r"./files/characters.json", "r") as f:
+        with open(r"./files/characters.json", "r", encoding="utf-8") as f:
             characters = json.load(f)
 
         output_characters = []
 
-        if input is None:
+        if profile_input is None:
             return output_characters
 
-        input = input.lower()
-        input_characters = input.split(",")
+        profile_input = profile_input.lower()
+        input_characters = profile_input.split(",")
 
         for i_char in input_characters:
             # this strips leading and trailing whitespaces
@@ -183,14 +183,14 @@ class Profile(commands.Cog):
         )
 
     @commands.command(aliases=["main", "setmain", "spmains", "profilemains"])
-    async def mains(self, ctx, *, input=None):
+    async def mains(self, ctx, *, profile_input=None):
         """
         Sets your mains on your smash profile.
         Separates the input by commas, and then matches with names, nicknames and fighter numbers.
         Echoes have an *e* behind their fighter number.
         """
         # only getting the first 7 chars, think thats a very generous cutoff
-        chars = " ".join(self.match_character(input)[:7])
+        chars = " ".join(self.match_character(profile_input)[:7])
 
         await self.make_new_profile(ctx.author)
 
@@ -202,7 +202,7 @@ class Profile(commands.Cog):
 
             await db.commit()
 
-        if input is None:
+        if profile_input is None:
             await ctx.send(f"{ctx.author.mention}, I have deleted your mains.")
         else:
             await ctx.send(f"{ctx.author.mention}, I have set your mains to: {chars}")
@@ -210,13 +210,13 @@ class Profile(commands.Cog):
     @commands.command(
         aliases=["secondary", "setsecondary", "spsecondaries", "profilesecondaries"]
     )
-    async def secondaries(self, ctx, *, input=None):
+    async def secondaries(self, ctx, *, profile_input=None):
         """
         Sets your secondaries on your smash profile.
         Separates the input by commas, and then matches with names, nicknames and fighter numbers.
         Echoes have an *e* behind their fighter number.
         """
-        chars = " ".join(self.match_character(input)[:7])
+        chars = " ".join(self.match_character(profile_input)[:7])
 
         await self.make_new_profile(ctx.author)
 
@@ -228,7 +228,7 @@ class Profile(commands.Cog):
 
             await db.commit()
 
-        if input is None:
+        if profile_input is None:
             await ctx.send(f"{ctx.author.mention}, I have deleted your secondaries.")
         else:
             await ctx.send(
@@ -236,14 +236,14 @@ class Profile(commands.Cog):
             )
 
     @commands.command(aliases=["pocket", "setpocket", "sppockets", "profilepockets"])
-    async def pockets(self, ctx, *, input=None):
+    async def pockets(self, ctx, *, profile_input=None):
         """
         Sets your pockets on your smash profile.
         Separates the input by commas, and then matches with names, nicknames and fighter numbers.
         Echoes have an *e* behind their fighter number.
         """
         # since you can have some more pockets, i put it at 10 max. there could be a max of around 25 per embed field however
-        chars = " ".join(self.match_character(input)[:7])
+        chars = " ".join(self.match_character(profile_input)[:7])
 
         await self.make_new_profile(ctx.author)
 
@@ -255,50 +255,50 @@ class Profile(commands.Cog):
 
             await db.commit()
 
-        if input is None:
+        if profile_input is None:
             await ctx.send(f"{ctx.author.mention}, I have deleted your pockets.")
         else:
             await ctx.send(f"{ctx.author.mention}, I have set your pockets to: {chars}")
 
     @commands.command(aliases=["smashtag", "sptag", "settag"])
-    async def tag(self, ctx, *, input=None):
+    async def tag(self, ctx, *, profile_input=None):
         """
         Sets your tag on your smash profile.
         Up to 30 characters long.
         """
         # the default tag is just your discord tag
-        if input is None:
-            input = str(ctx.author)
+        if profile_input is None:
+            profile_input = str(ctx.author)
 
         # think 30 chars for a tag is fair
-        input = input[:30]
+        profile_input = profile_input[:30]
 
         await self.make_new_profile(ctx.author)
 
         async with aiosqlite.connect("./db/database.db") as db:
             await db.execute(
                 """UPDATE profile SET tag = :tag WHERE user_id = :user_id""",
-                {"tag": input, "user_id": ctx.author.id},
+                {"tag": profile_input, "user_id": ctx.author.id},
             )
 
             await db.commit()
 
         await ctx.send(
-            f"{ctx.author.mention}, I have set your tag to: `{discord.utils.remove_markdown(input)}`"
+            f"{ctx.author.mention}, I have set your tag to: `{discord.utils.remove_markdown(profile_input)}`"
         )
 
     @commands.command(aliases=["setregion", "spregion", "country"])
-    async def region(self, ctx, *, input=None):
+    async def region(self, ctx, *, profile_input=None):
         """
         Sets your region on your smash profile.
         Matches to commonly used regions, which are:
         North America, NA East, NA West, NA South, South America, Europe, Asia, Africa, Oceania.
         """
-        if input is None:
-            input = ""
+        if profile_input is None:
+            profile_input = ""
 
         # tried to be as broad as possible here, hope thats enough
-        if input.lower() in (
+        if profile_input.lower() in (
             "na",
             "north america",
             "usa",
@@ -308,8 +308,8 @@ class Profile(commands.Cog):
             "america",
             "united states",
         ):
-            input = "North America"
-        elif input.lower() in (
+            profile_input = "North America"
+        elif profile_input.lower() in (
             "east coast",
             "us east",
             "east",
@@ -317,16 +317,16 @@ class Profile(commands.Cog):
             "na east",
             "canada east",
         ):
-            input = "NA East"
-        elif input.lower() in (
+            profile_input = "NA East"
+        elif profile_input.lower() in (
             "west coast",
             "us west",
             "west",
             "na west",
             "canada west",
         ):
-            input = "NA West"
-        elif input.lower() in (
+            profile_input = "NA West"
+        elif profile_input.lower() in (
             "mexico",
             "south",
             "us south",
@@ -334,8 +334,8 @@ class Profile(commands.Cog):
             "texas",
             "southern",
         ):
-            input = "NA South"
-        elif input.lower() in (
+            profile_input = "NA South"
+        elif profile_input.lower() in (
             "sa",
             "brazil",
             "argentina",
@@ -343,16 +343,36 @@ class Profile(commands.Cog):
             "chile",
             "peru",
         ):
-            input = "South America"
-        elif input.lower() in ("eu", "europe", "uk", "england", "france", "germany"):
-            input = "Europe"
-        elif input.lower() in ("asia", "sea", "china", "japan", "india", "middle east"):
-            input = "Asia"
-        elif input.lower() in ("africa", "south africa", "egypt"):
-            input = "Africa"
-        elif input.lower() in ("australia", "new zealand", "nz", "au", "oceania"):
-            input = "Oceania"
-        elif input == "":
+            profile_input = "South America"
+        elif profile_input.lower() in (
+            "eu",
+            "europe",
+            "uk",
+            "england",
+            "france",
+            "germany",
+        ):
+            profile_input = "Europe"
+        elif profile_input.lower() in (
+            "asia",
+            "sea",
+            "china",
+            "japan",
+            "india",
+            "middle east",
+        ):
+            profile_input = "Asia"
+        elif profile_input.lower() in ("africa", "south africa", "egypt"):
+            profile_input = "Africa"
+        elif profile_input.lower() in (
+            "australia",
+            "new zealand",
+            "nz",
+            "au",
+            "oceania",
+        ):
+            profile_input = "Oceania"
+        elif profile_input == "":
             pass
         else:
             await ctx.send("Please choose a valid region. Example: `%region Europe`")
@@ -363,64 +383,64 @@ class Profile(commands.Cog):
         async with aiosqlite.connect("./db/database.db") as db:
             await db.execute(
                 """UPDATE profile SET region = :region WHERE user_id = :user_id""",
-                {"region": input, "user_id": ctx.author.id},
+                {"region": profile_input, "user_id": ctx.author.id},
             )
 
             await db.commit()
 
-        if input == "":
+        if profile_input == "":
             await ctx.send(f"{ctx.author.mention}, I have deleted your region.")
         else:
             await ctx.send(
-                f"{ctx.author.mention}, I have set your region to: `{input}`"
+                f"{ctx.author.mention}, I have set your region to: `{profile_input}`"
             )
 
     @commands.command(aliases=["setnote", "spnote"])
-    async def note(self, ctx, *, input=None):
+    async def note(self, ctx, *, profile_input=None):
         """
         Sets your note on your smash profile.
         Up to 150 characters long.
         """
-        if input is None:
-            input = ""
+        if profile_input is None:
+            profile_input = ""
 
         # for a note, 150 chars seem enough to me
-        input = input[:150]
+        profile_input = profile_input[:150]
 
         await self.make_new_profile(ctx.author)
 
         async with aiosqlite.connect("./db/database.db") as db:
             await db.execute(
                 """UPDATE profile SET note = :note WHERE user_id = :user_id""",
-                {"note": input, "user_id": ctx.author.id},
+                {"note": profile_input, "user_id": ctx.author.id},
             )
 
             await db.commit()
 
-        if input == "":
+        if profile_input == "":
             await ctx.send(f"{ctx.author.mention}, I have deleted your note.")
         else:
             await ctx.send(
-                f"{ctx.author.mention}, I have set your note to: `{discord.utils.remove_markdown(input)}`"
+                f"{ctx.author.mention}, I have set your note to: `{discord.utils.remove_markdown(profile_input)}`"
             )
 
     @commands.command(aliases=["color", "spcolour", "spcolor", "setcolour", "setcolor"])
-    async def colour(self, ctx, input):
+    async def colour(self, ctx, profile_input):
         """
         Sets your embed colour on your smash profile.
         Use a hex colour code with a leading #.
         """
         # hex colour codes are 7 digits long and start with #
-        if not input.startswith("#") or not len(input) == 7:
+        if not profile_input.startswith("#") or not len(profile_input) == 7:
             await ctx.send(
                 "Please choose a valid hex colour code. Example: `%colour #8a0f84`"
             )
             return
 
-        input = input.replace("#", "0x")
+        profile_input = profile_input.replace("#", "0x")
 
         try:
-            colour = int(input, 16)
+            colour = int(profile_input, 16)
         except ValueError:
             await ctx.send(
                 "Please choose a valid hex colour code. Example: `%colour #8a0f84`"
@@ -437,7 +457,9 @@ class Profile(commands.Cog):
 
             await db.commit()
 
-        await ctx.send(f"{ctx.author.mention}, I have set your colour to: `{input}`")
+        await ctx.send(
+            f"{ctx.author.mention}, I have set your colour to: `{profile_input}`"
+        )
 
     # some basic error handling for the above
     @profile.error

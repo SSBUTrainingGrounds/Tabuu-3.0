@@ -44,7 +44,7 @@ class Mute(commands.Cog):
             tg_role = discord.utils.get(tg_guild.roles, id=TGRoleIDs.MUTED_ROLE)
             tg_member = tg_guild.get_member(member.id)
             await tg_member.add_roles(tg_role)
-        except Exception as exc:
+        except discord.HTTPException as exc:
             logger = self.bot.get_logger("bot.mute")
             logger.warning(
                 f"Tried to add muted role in {GuildNames.TG} server but it failed: {exc}"
@@ -56,7 +56,7 @@ class Mute(commands.Cog):
             bg_role = discord.utils.get(bg_guild.roles, id=BGRoleIDs.MUTED_ROLE)
             bg_member = bg_guild.get_member(member.id)
             await bg_member.add_roles(bg_role)
-        except Exception as exc:
+        except discord.HTTPException as exc:
             logger = self.bot.get_logger("bot.mute")
             logger.warning(
                 f"Tried to add muted role in {GuildNames.BG} server but it failed: {exc}"
@@ -81,7 +81,7 @@ class Mute(commands.Cog):
             tg_role = discord.utils.get(tg_guild.roles, id=TGRoleIDs.MUTED_ROLE)
             tg_member = tg_guild.get_member(member.id)
             await tg_member.remove_roles(tg_role)
-        except Exception as exc:
+        except discord.HTTPException as exc:
             logger = self.bot.get_logger("bot.mute")
             logger.warning(
                 f"Tried to remove muted role in {GuildNames.TG} server but it failed: {exc}"
@@ -92,7 +92,7 @@ class Mute(commands.Cog):
             bg_role = discord.utils.get(bg_guild.roles, id=BGRoleIDs.MUTED_ROLE)
             bg_member = bg_guild.get_member(member.id)
             await bg_member.remove_roles(bg_role)
-        except Exception as exc:
+        except discord.HTTPException as exc:
             logger = self.bot.get_logger("bot.mute")
             logger.warning(
                 f"Tried to remove muted role in {GuildNames.BG} server but it failed: {exc}"
@@ -106,7 +106,7 @@ class Mute(commands.Cog):
             tg_guild = self.bot.get_guild(GuildIDs.TRAINING_GROUNDS)
             tg_member = tg_guild.get_member(member.id)
             await tg_member.edit(timed_out_until=time)
-        except Exception as exc:
+        except discord.HTTPException as exc:
             logger = self.bot.get_logger("bot.mute")
             logger.warning(
                 f"Tried to add timeout in {GuildNames.TG} server but it failed: {exc}"
@@ -116,7 +116,7 @@ class Mute(commands.Cog):
             bg_guild = self.bot.get_guild(GuildIDs.BATTLEGROUNDS)
             bg_member = bg_guild.get_member(member.id)
             await bg_member.edit(timed_out_until=time)
-        except Exception as exc:
+        except discord.HTTPException as exc:
             logger = self.bot.get_logger("bot.mute")
             logger.warning(
                 f"Tried to add timeout in {GuildNames.BG} server but it failed: {exc}"
@@ -131,7 +131,7 @@ class Mute(commands.Cog):
             tg_member = tg_guild.get_member(member.id)
             # setting it to None will remove the timeout
             await tg_member.edit(timed_out_until=None)
-        except Exception as exc:
+        except discord.HTTPException as exc:
             logger = self.bot.get_logger("bot.mute")
             logger.warning(
                 f"Tried to remove timeout in {GuildNames.TG} server but it failed: {exc}"
@@ -141,7 +141,7 @@ class Mute(commands.Cog):
             bg_guild = self.bot.get_guild(GuildIDs.BATTLEGROUNDS)
             bg_member = bg_guild.get_member(member.id)
             await bg_member.edit(timed_out_until=None)
-        except Exception as exc:
+        except discord.HTTPException as exc:
             logger = self.bot.get_logger("bot.mute")
             logger.warning(
                 f"Tried to remove timeout in {GuildNames.BG} server but it failed: {exc}"
@@ -168,7 +168,7 @@ class Mute(commands.Cog):
                 await member.send(
                     f"You have been muted in the {ctx.guild.name} Server for the following reason: \n```{reason}```\nIf you would like to discuss your punishment, please contact {AdminVars.GROUNDS_GENERALS}."
                 )
-            except Exception as exc:
+            except discord.HTTPException as exc:
                 logger = self.bot.get_logger("bot.mute")
                 logger.warning(
                     f"Tried to message mute reason to {str(member)}, but it failed: {exc}"
@@ -196,7 +196,7 @@ class Mute(commands.Cog):
                 await member.send(
                     f"You have been unmuted in the {ctx.guild.name} Server! Don't break the rules again"
                 )
-            except Exception as exc:
+            except discord.HTTPException as exc:
                 logger = self.bot.get_logger("bot.mute")
                 logger.warning(
                     f"Tried to message unmute message to {str(member)}, but it failed: {exc}"
@@ -237,7 +237,7 @@ class Mute(commands.Cog):
                 await member.send(
                     f"You have been muted in the {ctx.guild.name} Server for ***{time_muted}*** for the following reason: \n```{reason}```\nIf you would like to discuss your punishment, please contact {AdminVars.GROUNDS_GENERALS}."
                 )
-            except Exception as exc:
+            except discord.HTTPException as exc:
                 logger = self.bot.get_logger("bot.mute")
                 logger.warning(
                     f"Tried to message temp mute reason to {str(member)}, but it failed: {exc}"
@@ -265,7 +265,7 @@ class Mute(commands.Cog):
                 await member.send(
                     f"You have been automatically unmuted in the {ctx.guild.name} Server! Don't break the rules again"
                 )
-            except Exception as exc:
+            except discord.HTTPException as exc:
                 logger = self.bot.get_logger("bot.mute")
                 logger.warning(
                     f"Tried to message temp unmute message to {str(member)}, but it failed: {exc}"
@@ -311,7 +311,7 @@ class Mute(commands.Cog):
             await member.send(
                 f"You are on timeout in the {ctx.guild.name} Server until {aware_dt} for the following reason: \n```{reason}```\nIf you would like to discuss your punishment, please contact {AdminVars.GROUNDS_GENERALS}."
             )
-        except Exception as exc:
+        except discord.HTTPException as exc:
             logger = self.bot.get_logger("bot.mute")
             logger.warning(
                 f"Tried to message timeout message to {str(member)}, but it failed: {exc}"
@@ -336,7 +336,7 @@ class Mute(commands.Cog):
             await member.send(
                 f"Your timeout has been manually removed in the {ctx.guild.name} Server! Don't break the rules again"
             )
-        except Exception as exc:
+        except discord.HTTPException as exc:
             logger = self.bot.get_logger("bot.mute")
             logger.warning(
                 f"Tried to message remove timeout message to {str(member)}, but it failed: {exc}"
