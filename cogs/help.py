@@ -305,7 +305,7 @@ class CustomHelp(commands.HelpCommand):
         try:
             await command.can_run(self.context)
             embed.add_field(name="Usable by you:", value="Yes", inline=False)
-        except Exception as exc:
+        except commands.CommandError as exc:
             embed.add_field(name="Usable by you:", value=f"No:\n{exc}", inline=False)
 
         channel = self.get_destination()

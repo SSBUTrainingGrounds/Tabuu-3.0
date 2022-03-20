@@ -18,4 +18,4 @@ jobs:
           pip install pylint
       - name: Run pylint
         run: |
-          pylint $(git ls-files '*.py') --exit-zero --disable=missing-module-docstring,missing-function-docstring,missing-class-docstring,line-too-long,import-error,no-self-use,invalid-name,wrong-import-order,unused-argument,no-member
+          pylint $(git ls-files '*.py') --exit-zero --disable=missing-module-docstring,missing-function-docstring,missing-class-docstring,line-too-long,import-error,no-self-use,invalid-name,wrong-import-order,unused-argument,no-member,too-few-public-methods,too-many-public-methods,invalid-overridden-method

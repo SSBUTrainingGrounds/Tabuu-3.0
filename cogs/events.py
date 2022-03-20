@@ -143,14 +143,14 @@ class Events(commands.Cog):
             if after.channel is not None and after.channel.id == voice_channel:
                 try:
                     await member.add_roles(vc_role)
-                except:
+                except discord.HTTPException:
                     pass
 
         if after.channel is None or after.channel.id != voice_channel:
             if before.channel is not None and before.channel.id == voice_channel:
                 try:
                     await member.remove_roles(vc_role)
-                except:
+                except discord.HTTPException:
                     pass
 
     @commands.Cog.listener()
@@ -181,21 +181,21 @@ class Events(commands.Cog):
                         removerole = discord.utils.get(after.guild.roles, id=role)
                         if removerole in after.roles:
                             await after.remove_roles(removerole)
-                    except:
+                    except discord.HTTPException:
                         pass
 
         # this here gives out the recruit role on a successful member screening, on join was terrible because of shitty android app
         try:
             if before.bot or after.bot:
                 return
-            else:
-                if before.pending == True:
-                    if after.pending == False:
-                        if before.guild.id == GuildIDs.TRAINING_GROUNDS:
-                            cadetrole = discord.utils.get(
-                                before.guild.roles, id=TGLevelRoleIDs.RECRUIT_ROLE
-                            )
-                            await after.add_roles(cadetrole)
+
+            if before.pending:
+                if not after.pending:
+                    if before.guild.id == GuildIDs.TRAINING_GROUNDS:
+                        cadetrole = discord.utils.get(
+                            before.guild.roles, id=TGLevelRoleIDs.RECRUIT_ROLE
+                        )
+                        await after.add_roles(cadetrole)
         except AttributeError:
             pass
 
@@ -231,7 +231,7 @@ class Events(commands.Cog):
                 )
             except TypeError:
                 await ctx.send(
-                    f"I could not find this command.\nType `%help` for all available commands."
+                    "I could not find this command.\nType `%help` for all available commands."
                 )
         else:
             if ctx.command.has_error_handler() is False:
