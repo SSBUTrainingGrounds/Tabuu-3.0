@@ -164,7 +164,7 @@ class Stats(commands.Cog):
 
         try:
             activity = member.activity.name
-        except:
+        except AttributeError:
             activity = "None"
 
         if not ctx.guild:
@@ -242,10 +242,10 @@ class Stats(commands.Cog):
         if role.display_icon:
             # the display_icon could be an asset or a default emoji with the str type, so we have to check
             # if its an asset, we display it in the thumbnail
-            if type(role.display_icon) == discord.asset.Asset:
+            if isinstance(role.display_icon, discord.asset.Asset):
                 embed.set_thumbnail(url=role.display_icon.url)
             # if its an emoji we add it as the 2nd field
-            elif type(role.display_icon) == str:
+            elif isinstance(role.display_icon, str):
                 embed.insert_field_at(
                     1, name="Role Emoji:", value=role.display_icon, inline=True
                 )
@@ -271,15 +271,17 @@ class Stats(commands.Cog):
         if len(members) == 0:
             await ctx.send(f"No user currently has the {role} role!")
             return
-        else:
-            for member in members:
-                memberlist.append(
-                    f"{discord.utils.escape_markdown(member.name)}#{member.discriminator}"
-                )
-            all_members = ", ".join(memberlist)
-            await ctx.send(
-                f"Users with the {role} role ({len(role.members)}):\n{all_members}"
+
+        for member in members:
+            memberlist.append(
+                f"{discord.utils.escape_markdown(member.name)}#{member.discriminator}"
             )
+
+        all_members = ", ".join(memberlist)
+
+        await ctx.send(
+            f"Users with the {role} role ({len(role.members)}):\n{all_members}"
+        )
 
     @commands.command(aliases=["serverinfo"])
     async def server(self, ctx):
@@ -373,7 +375,7 @@ class Stats(commands.Cog):
 Servers: {len(self.bot.guilds)}
 Total Users: {len(set(self.bot.get_all_members()))}
 Latency: {round(self.bot.latency * 1000)}ms
-Uptime: {str(datetime.timedelta(seconds=uptime_seconds)).split(".")[0]}
+Uptime: {str(datetime.timedelta(seconds=uptime_seconds)).split('.', maxsplit=1)[0]}
 ```
         """
 

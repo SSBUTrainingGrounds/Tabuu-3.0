@@ -46,9 +46,10 @@ class Usercommands(commands.Cog):
         """
         try:
             amount, sides = map(int, dice.split("d"))
-        except:
+        except ValueError:
             await ctx.send("Wrong format!\nTry something like: %roll 1d100")
             return
+
         results = []
         if amount > 100:
             await ctx.send("Too many dice!")
@@ -115,9 +116,9 @@ class Usercommands(commands.Cog):
         # we have to fetch the user first for whatever reason
         user = await self.bot.fetch_user(member.id)
         # if the user does not have a banner, we get an error referencing it
-        try:
+        if user.banner:
             await ctx.send(user.banner.url)
-        except:
+        else:
             await ctx.send("This user does not have a banner.")
 
     @commands.command()
@@ -134,7 +135,7 @@ class Usercommands(commands.Cog):
             return
         try:
             await ctx.message.delete()
-        except:
+        except discord.HTTPException:
             pass
 
         reactions = [
@@ -244,13 +245,13 @@ class Usercommands(commands.Cog):
         )
 
     @commands.command(aliases=["conversion"])
-    async def convert(self, ctx, *, input):
+    async def convert(self, ctx, *, conversion_input):
         """
         Converts your input between metric and imperial
         and the other way around.
         Works with most commonly used measurements.
         """
-        await ctx.send(utils.conversion.convert_input(input))
+        await ctx.send(utils.conversion.convert_input(conversion_input))
 
     # error handling for the above
     @avatar.error

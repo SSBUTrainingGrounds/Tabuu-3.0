@@ -4,7 +4,7 @@ import aiosqlite
 import random
 import time
 from datetime import datetime
-from .mute import Mute
+from cogs.mute import Mute
 from utils.ids import TGChannelIDs, AdminVars
 import utils.check
 
@@ -83,7 +83,7 @@ class Warn(commands.Cog):
                 await member.send(
                     f"You have been automatically banned from the {guild.name} Server for reaching warning #***{warns}***.\nPlease contact {AdminVars.GROUNDS_KEEPER} for an appeal.\n{AdminVars.BAN_RECORDS}"
                 )
-            except Exception as exc:
+            except discord.HTTPException as exc:
                 logger = self.bot.get_logger("bot.warn")
                 logger.warning(
                     f"Tried to message automatic ban reason to {str(member)}, but it failed: {exc}"
@@ -98,7 +98,7 @@ class Warn(commands.Cog):
                 await member.send(
                     f"You have been automatically kicked from the {guild.name} Server for reaching warning #***{warns}***. \nIf you would like to discuss your punishment, please contact {AdminVars.GROUNDS_GENERALS}."
                 )
-            except Exception as exc:
+            except discord.HTTPException as exc:
                 logger = self.bot.get_logger("bot.warn")
                 logger.warning(
                     f"Tried to message automatic kick reason to {str(member)}, but it failed: {exc}"
@@ -118,7 +118,7 @@ class Warn(commands.Cog):
                 await member.send(
                     f"You have been automatically muted in the {guild.name} Server for reaching warning #***{warns}***. \nIf you would like to discuss your punishment, please contact {AdminVars.GROUNDS_GENERALS}."
                 )
-            except Exception as exc:
+            except discord.HTTPException as exc:
                 logger = self.bot.get_logger("bot.warn")
                 logger.warning(
                     f"Tried to message automatic mute reason to {str(member)}, but it failed: {exc}"
@@ -142,7 +142,7 @@ class Warn(commands.Cog):
             await member.send(
                 f"You have been warned in the {ctx.guild.name} Server for the following reason: \n```{reason}```\nIf you would like to discuss your punishment, please contact {AdminVars.GROUNDS_GENERALS}."
             )
-        except Exception as exc:
+        except discord.HTTPException as exc:
             logger = self.bot.get_logger("bot.warn")
             logger.warning(
                 f"Tried to message warn reason to {str(member)}, but it failed: {exc}"
@@ -232,7 +232,7 @@ class Warn(commands.Cog):
                 f"Active warnings for {member.mention}: {len(user_warnings)}",
                 embeds=embed_list,
             )
-        except:
+        except discord.HTTPException:
             await ctx.send(
                 f"Active warnings for {member.mention}: {len(user_warnings)}\nCannot list warnings for this user!"
             )
