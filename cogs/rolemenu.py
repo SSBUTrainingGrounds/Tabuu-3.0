@@ -24,7 +24,7 @@ class Rolemenu(commands.Cog):
             reactionmessage = await ctx.fetch_message(message)
             await reactionmessage.add_reaction(emoji)
 
-        except:
+        except discord.HTTPException:
             await ctx.send(
                 "Either the message ID is invalid or I don't have access to this emoji. Also make sure the message is in the same channel as this one."
             )
@@ -200,7 +200,7 @@ class Rolemenu(commands.Cog):
                 colour=discord.Colour.dark_blue(),
             )
             await ctx.send(embed=embed)
-        except:
+        except discord.HTTPException:
             await ctx.send("Error! Too many entries to list!")
 
     @commands.Cog.listener()

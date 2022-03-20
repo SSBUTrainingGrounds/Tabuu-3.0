@@ -67,10 +67,8 @@ class RpsButtons(discord.ui.View):
 
     async def interaction_check(self, interaction: discord.Interaction):
         # basically ignores every other member except the author and mentioned member
-        if interaction.user == self.member or interaction.user == self.ctx.author:
-            return True
-        else:
-            return False
+        print(interaction.user in (self.member, self.ctx.author))
+        return interaction.user in (self.member, self.ctx.author)
 
 
 class Rpsgame(commands.Cog):
@@ -149,7 +147,7 @@ class Rpsgame(commands.Cog):
         # if the match didnt go through as planned:
         elif view.authorchoice is None and view.memberchoice is None:
             await init_message.reply(
-                f"Match timed out! Both parties took too long to pick a choice!"
+                "Match timed out! Both parties took too long to pick a choice!"
             )
         elif view.authorchoice is None:
             await init_message.reply(
@@ -162,7 +160,7 @@ class Rpsgame(commands.Cog):
 
         # and the fallback
         else:
-            await init_message.reply(f"Something went wrong! Please try again.")
+            await init_message.reply("Something went wrong! Please try again.")
 
     # basic error handling
     @rps.error

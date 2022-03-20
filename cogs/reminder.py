@@ -107,7 +107,9 @@ class Reminder(commands.Cog):
             (_, reminder_id, _, date, _, message) = reminder
 
             dt_now = discord.utils.utcnow().timestamp()
-            timediff = str(datetime.timedelta(seconds=(date - dt_now))).split(".")[0]
+            timediff = str(datetime.timedelta(seconds=date - dt_now)).split(
+                ".", maxsplit=1
+            )[0]
             # in a unfortunate case of timing, a user could view their reminder when it already "expired" but the loop has not checked yet. this here prevents a dumb number displaying
             if (date - dt_now) <= 30:
                 timediff = "Less than a minute..."
@@ -181,14 +183,14 @@ class Reminder(commands.Cog):
                         f"<@!{user_id}>, you wanted me to remind you of `{message}`, {read_time} ago."
                     )
                     # the channel could get deleted in the meantime, or something else can prevent us having access
-                except Exception as exc:
+                except discord.HTTPException as exc:
                     # unfortunately we need a second try/except block because people can block your bot and this would throw an error otherwise, and we dont wanna interrupt the loop
                     try:
                         member = await self.bot.fetch_user(user_id)
                         await member.send(
                             f"<@!{user_id}>, you wanted me to remind you of `{message}`, {read_time} ago, in a deleted channel."
                         )
-                    except:
+                    except discord.HTTPException as exc:
                         logger.info(f"Could not notify user due to: {exc}")
 
                 async with aiosqlite.connect("./db/database.db") as db:
@@ -198,7 +200,7 @@ class Reminder(commands.Cog):
                     )
                     await db.commit()
 
-                logger.info(f"Deleted reminder successfully.")
+                logger.info("Deleted reminder successfully.")
 
     @reminder_loop.before_loop
     async def before_reminder_loop(self):
