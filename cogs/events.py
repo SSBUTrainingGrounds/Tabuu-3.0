@@ -137,11 +137,11 @@ class Events(commands.Cog):
     async def on_voice_state_update(self, member, before, after):
         # adds/removes a VC role when you join/leave a VC channel
         voice_channel = TGChannelIDs.GENERAL_VOICE_CHAT
-        guild = self.bot.get_guild(GuildIDs.TRAINING_GROUNDS)
-        vc_role = discord.utils.get(guild.roles, id=TGRoleIDs.VOICE_ROLE)
         if before.channel is None or before.channel.id != voice_channel:
             if after.channel is not None and after.channel.id == voice_channel:
                 try:
+                    guild = self.bot.get_guild(GuildIDs.TRAINING_GROUNDS)
+                    vc_role = discord.utils.get(guild.roles, id=TGRoleIDs.VOICE_ROLE)
                     await member.add_roles(vc_role)
                 except discord.HTTPException:
                     pass
@@ -149,6 +149,8 @@ class Events(commands.Cog):
         if after.channel is None or after.channel.id != voice_channel:
             if before.channel is not None and before.channel.id == voice_channel:
                 try:
+                    guild = self.bot.get_guild(GuildIDs.TRAINING_GROUNDS)
+                    vc_role = discord.utils.get(guild.roles, id=TGRoleIDs.VOICE_ROLE)
                     await member.remove_roles(vc_role)
                 except discord.HTTPException:
                     pass
