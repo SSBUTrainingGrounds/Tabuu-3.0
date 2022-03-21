@@ -109,7 +109,7 @@ class Warn(commands.Cog):
             )
             await member.kick(reason=f"Automatic kick for reaching {warns} warnings")
         elif warns > 2:
-            await Mute.add_mute(self, guild, member)
+            await Mute.add_mute(self, member)
             await channel.send(
                 f"{member.mention} has reached warning #{warns}. They have been automatically muted."
             )

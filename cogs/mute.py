@@ -16,7 +16,7 @@ class Mute(commands.Cog):
     def __init__(self, bot):
         self.bot = bot
 
-    async def add_mute(self, guild: discord.Guild, member: discord.Member):
+    async def add_mute(self, member: discord.Member):
         """
         Adds the mute entry in the database,
         and tries to add the role in both servers.
@@ -62,7 +62,7 @@ class Mute(commands.Cog):
                 f"Tried to add muted role in {GuildNames.BG} server but it failed: {exc}"
             )
 
-    async def remove_mute(self, guild: discord.Guild, member: discord.Member):
+    async def remove_mute(self, member: discord.Member):
         """
         Basically reverses the add_mute function.
         Removes the muted entry from the database
@@ -162,7 +162,7 @@ class Mute(commands.Cog):
         # we check again if the user is muted here because i dont want the user to get dm'd again if he already is muted
         # didn't wanna put a separate dm function as well because the dm's change depending on what command calls it
         if len(matching_user) == 0:
-            await self.add_mute(ctx.guild, member)
+            await self.add_mute(member)
             await ctx.send(f"{member.mention} was muted!")
             try:
                 await member.send(
@@ -190,7 +190,7 @@ class Mute(commands.Cog):
             )
 
         if len(matching_user) != 0:
-            await self.remove_mute(ctx.guild, member)
+            await self.remove_mute(member)
             await ctx.send(f"{member.mention} was unmuted!")
             try:
                 await member.send(
@@ -231,7 +231,7 @@ class Mute(commands.Cog):
 
         # the mute block from %mute, with the inclusion of time_muted
         if len(matching_user) == 0:
-            await self.add_mute(ctx.guild, member)
+            await self.add_mute(member)
             await ctx.send(f"{member.mention} was muted for *{time_muted}*!")
             try:
                 await member.send(
@@ -259,7 +259,7 @@ class Mute(commands.Cog):
 
         # the unmute block from %unmute, no need for another unmute confirmation if the user was unmuted before manually
         if len(matching_user) != 0:
-            await self.remove_mute(ctx.guild, member)
+            await self.remove_mute(member)
             await ctx.send(f"{member.mention} was automatically unmuted!")
             try:
                 await member.send(
