@@ -49,7 +49,7 @@ class Pings(discord.ui.Select):
         if self.values[0] == "Singles":
             timestamp = discord.utils.utcnow().timestamp()
 
-            searches = await Matchmaking.get_recent_pings(self, "singles", timestamp)
+            searches = Matchmaking.get_recent_pings(self, "singles", timestamp)
 
             singles_embed = discord.Embed(
                 title="Singles pings in the last 30 Minutes:",
@@ -62,7 +62,7 @@ class Pings(discord.ui.Select):
         elif self.values[0] == "Doubles":
             timestamp = discord.utils.utcnow().timestamp()
 
-            searches = await Matchmaking.get_recent_pings(self, "doubles", timestamp)
+            searches = Matchmaking.get_recent_pings(self, "doubles", timestamp)
 
             doubles_embed = discord.Embed(
                 title="Doubles pings in the last 30 Minutes:",
@@ -75,7 +75,7 @@ class Pings(discord.ui.Select):
         elif self.values[0] == "Funnies":
             timestamp = discord.utils.utcnow().timestamp()
 
-            searches = await Matchmaking.get_recent_pings(self, "funnies", timestamp)
+            searches = Matchmaking.get_recent_pings(self, "funnies", timestamp)
 
             funnies_embed = discord.Embed(
                 title="Funnies pings in the last 30 Minutes:",
@@ -88,7 +88,7 @@ class Pings(discord.ui.Select):
         elif self.values[0] == "Ranked":
             timestamp = discord.utils.utcnow().timestamp()
 
-            searches = await Ranking.get_recent_ranked_pings(self, timestamp)
+            searches = Ranking.get_recent_ranked_pings(self, timestamp)
 
             ranked_embed = discord.Embed(
                 title="Ranked pings in the last 30 Minutes:",

@@ -13,7 +13,7 @@ class Matchmaking(commands.Cog):
     def __init__(self, bot):
         self.bot = bot
 
-    async def store_ping(self, ctx, mm_type: str, timestamp: float):
+    def store_ping(self, ctx, mm_type: str, timestamp: float):
         """
         Saves a Matchmaking Ping of any unranked type in the according file.
         """
@@ -26,7 +26,7 @@ class Matchmaking(commands.Cog):
         with open(rf"./json/{mm_type}.json", "w", encoding="utf-8") as f:
             json.dump(user_pings, f, indent=4)
 
-    async def delete_ping(self, ctx, mm_type: str):
+    def delete_ping(self, ctx, mm_type: str):
         """
         Deletes a Matchmaking Ping of any unranked type from the according file.
         """
@@ -44,7 +44,7 @@ class Matchmaking(commands.Cog):
         with open(rf"./json/{mm_type}.json", "w", encoding="utf-8") as f:
             json.dump(user_pings, f, indent=4)
 
-    async def get_recent_pings(self, mm_type: str, timestamp: float):
+    def get_recent_pings(self, mm_type: str, timestamp: float):
         """
         Gets a list with every Ping saved.
         As long as the ping is not older than 30 Minutes.
@@ -89,9 +89,9 @@ class Matchmaking(commands.Cog):
         )
 
         if ctx.message.channel.id in TGArenaChannelIDs.PUBLIC_ARENAS:
-            await self.store_ping(ctx, "singles", timestamp)
+            self.store_ping(ctx, "singles", timestamp)
 
-            searches = await self.get_recent_pings("singles", timestamp)
+            searches = self.get_recent_pings("singles", timestamp)
 
             embed = discord.Embed(
                 title="Singles pings in the last 30 Minutes:",
@@ -114,10 +114,10 @@ class Matchmaking(commands.Cog):
 
             await asyncio.sleep(1800)
 
-            await self.delete_ping(ctx, "singles")
+            self.delete_ping(ctx, "singles")
 
         elif ctx.message.channel.id in TGArenaChannelIDs.PRIVATE_ARENAS:
-            searches = await self.get_recent_pings("singles", timestamp)
+            searches = self.get_recent_pings("singles", timestamp)
 
             embed = discord.Embed(
                 title="Singles pings in the last 30 Minutes:",
@@ -144,7 +144,7 @@ class Matchmaking(commands.Cog):
                 ctx.message.channel.id in TGArenaChannelIDs.PUBLIC_ARENAS
                 or ctx.message.channel.id in TGArenaChannelIDs.PRIVATE_ARENAS
             ):
-                searches = await self.get_recent_pings("singles", timestamp)
+                searches = self.get_recent_pings("singles", timestamp)
 
                 embed = discord.Embed(
                     title="Singles pings in the last 30 Minutes:",
@@ -173,9 +173,9 @@ class Matchmaking(commands.Cog):
         )
 
         if ctx.message.channel.id in TGArenaChannelIDs.PUBLIC_ARENAS:
-            await self.store_ping(ctx, "doubles", timestamp)
+            self.store_ping(ctx, "doubles", timestamp)
 
-            searches = await self.get_recent_pings("doubles", timestamp)
+            searches = self.get_recent_pings("doubles", timestamp)
 
             embed = discord.Embed(
                 title="Doubles pings in the last 30 Minutes:",
@@ -198,10 +198,10 @@ class Matchmaking(commands.Cog):
 
             await asyncio.sleep(1800)
 
-            await self.delete_ping(ctx, "doubles")
+            self.delete_ping(ctx, "doubles")
 
         elif ctx.message.channel.id in TGArenaChannelIDs.PRIVATE_ARENAS:
-            searches = await self.get_recent_pings("doubles", timestamp)
+            searches = self.get_recent_pings("doubles", timestamp)
 
             embed = discord.Embed(
                 title="Doubles pings in the last 30 Minutes:",
@@ -226,7 +226,7 @@ class Matchmaking(commands.Cog):
                 ctx.message.channel.id in TGArenaChannelIDs.PUBLIC_ARENAS
                 or ctx.message.channel.id in TGArenaChannelIDs.PRIVATE_ARENAS
             ):
-                searches = await self.get_recent_pings("doubles", timestamp)
+                searches = self.get_recent_pings("doubles", timestamp)
 
                 embed = discord.Embed(
                     title="Doubles pings in the last 30 Minutes:",
@@ -258,9 +258,9 @@ class Matchmaking(commands.Cog):
             msg = discord.utils.remove_markdown(msg[:100])
 
         if ctx.message.channel.id in TGArenaChannelIDs.PUBLIC_ARENAS:
-            await self.store_ping(ctx, "funnies", timestamp)
+            self.store_ping(ctx, "funnies", timestamp)
 
-            searches = await self.get_recent_pings("funnies", timestamp)
+            searches = self.get_recent_pings("funnies", timestamp)
 
             embed = discord.Embed(
                 title="Funnies pings in the last 30 Minutes:",
@@ -289,10 +289,10 @@ class Matchmaking(commands.Cog):
 
             await asyncio.sleep(1800)
 
-            await self.delete_ping(ctx, "funnies")
+            self.delete_ping(ctx, "funnies")
 
         elif ctx.message.channel.id in TGArenaChannelIDs.PRIVATE_ARENAS:
-            searches = await self.get_recent_pings("funnies", timestamp)
+            searches = self.get_recent_pings("funnies", timestamp)
 
             embed = discord.Embed(
                 title="Funnies pings in the last 30 Minutes:",
@@ -323,7 +323,7 @@ class Matchmaking(commands.Cog):
                 ctx.message.channel.id in TGArenaChannelIDs.PUBLIC_ARENAS
                 or ctx.message.channel.id in TGArenaChannelIDs.PRIVATE_ARENAS
             ):
-                searches = await self.get_recent_pings("funnies", timestamp)
+                searches = self.get_recent_pings("funnies", timestamp)
 
                 embed = discord.Embed(
                     title="Funnies pings in the last 30 Minutes:",
