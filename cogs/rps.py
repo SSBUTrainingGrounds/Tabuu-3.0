@@ -67,7 +67,6 @@ class RpsButtons(discord.ui.View):
 
     async def interaction_check(self, interaction: discord.Interaction):
         # basically ignores every other member except the author and mentioned member
-        print(interaction.user in (self.member, self.ctx.author))
         return interaction.user in (self.member, self.ctx.author)
 
 
