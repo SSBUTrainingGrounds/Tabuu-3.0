@@ -6,6 +6,7 @@ Last updated: 18 March 2022
 
 ## Quick explanation of this document  
 Arguments that are optional all have the `: Optional` suffix. Every other argument is required.  
+**User** refers to any Discord User, **Member** refers to a Server Member.   
 **Admin only** means that you have to be the Server Owner, have Administrator Rights or the Moderator Role to use this Command.  
 **Owner only** means that only the Bot's Owner can use this Command.  
 **Aliases** show you other names the Command is available under. The usage is exactly the same if you use the default name or one of the listed aliases.  
@@ -22,20 +23,20 @@ Everything else should be fairly self-explanatory.
     - Example: `%addbadges @Phxenix :Example1: :Example2:`  
     - Aliases: addbadge  
   
-- **%addrole** `<@user> <role>`  
-    - Info: **Admin only.** Adds a Role to a User. Mention the User or use User ID, for the Role the bot first tries to use the Role ID or Role mention, after that it searches for the closest match for the role name.  
+- **%addrole** `<@member> <role>`  
+    - Info: **Admin only.** Adds a Role to a Member. Mention the Member or use Member ID, for the Role the bot first tries to use the Role ID or Role mention, after that it searches for the closest match for the role name.  
     - Example: `%addrole @Phxenix first class` 
   
-- **%avatar** `<@user: Optional>`  
-    - Info: Gets you the avatar of a User. User argument is optional, if there is none, this gets your own avatar. Otherwise mention the User or use User ID.  
+- **%avatar** `<@member: Optional>`  
+    - Info: Gets you the avatar of a Member. Member argument is optional, if there is none, this gets your own avatar. Otherwise mention the Member or use Member ID.  
     - Example: `%avatar @Phxenix` 
   
 - **%ban** `<@user> <reason>`  
-    - Info: **Admin only.** Bans a User. Mention the User or use User ID. You will be asked for confirmation before the user gets banned. The reason will get logged in Audit logs and also DM'd to the user, if the bot can DM the user.  
+    - Info: **Admin only.** Bans a User. Mention the User or use User ID. You will be asked for confirmation before the User gets banned. The reason will get logged in Audit logs and also DM'd to the User, if the bot can DM the User.  
     - Example: `%ban @Phxenix what an idiot`  
   
-- **%banner** `<@user: Optional>`  
-    - Info: Gets you the banner of a User. User argument is optional, if there is none, this gets your own avatar. Otherwise mention the User or use User ID.  
+- **%banner** `<@member: Optional>`  
+    - Info: Gets you the banner of a Member. Member argument is optional, if there is none, this gets your own avatar. Otherwise mention the Member or use Member ID.  
     - Example: `%banner @Phxenix`
   
 - **%boo**  
@@ -53,8 +54,8 @@ Everything else should be fairly self-explanatory.
     - Info: **Admin only.** Clears all matchmaking pings.  
     - Aliases: clearmmrequests, clearmm, clearmatchmaking  
   
-- **%clearwarns** `<@user>`  
-    - Info: **Admin only.** Clears all warnings of a User. Mention the User or use User ID.  
+- **%clearwarns** `<@member>`  
+    - Info: **Admin only.** Clears all warnings of a Member. Mention the Member or use Member ID.  
     - Example: `%clearwarns @Phxenix`  
   
 - **%coin**  
@@ -98,8 +99,8 @@ Everything else should be fairly self-explanatory.
     - Info: **Admin only.** Deletes a Role menu completely.  
     - Example: `%deleterolemenu 858117781375418389`  
   
-- **%deletewarn** `<@user> <warn_id>`  
-    - Info: **Admin only.** Deletes a warning by the warning ID. View the warnings of a user with `%warndetails`. Mention the User or use User ID.  
+- **%deletewarn** `<@member> <warn_id>`  
+    - Info: **Admin only.** Deletes a warning by the warning ID. View the warnings of a member with `%warndetails`. Mention the Member or use Member ID.  
     - Example: `%deletewarn @Phxenix 123456`  
   
 - **%doubles**  
@@ -112,11 +113,11 @@ Everything else should be fairly self-explanatory.
     - Aliases: emoji  
   
 - **%forcedeleteprofile** `<@user>`  
-    - Info: **Admin only.** deletes the profile of the mentioned user.  
+    - Info: **Admin only.** deletes the profile of the mentioned User.  
     - Example: `%forcedeleteprofile @Phxenix`  
   
 - **%forcereportmatch** `<@winner> <@loser>`  
-    - Info: **Admin only.** If a user abandons their ranked match an admin will use this to report the match anyways. Mention the users or use User IDs. Has a 41 second cooldown. Only works in the Training Grounds Server.  
+    - Info: **Admin only.** If someone abandons their ranked match an admin will use this to report the match anyways. Mention the Members or use Member IDs. Has a 41 second cooldown. Only works in the Training Grounds Server.  
     - Example: `%forcereportmatch @Tabuu 3.0 @Phxenix`  
     - Aliases: forcereportgame  
   
@@ -140,8 +141,8 @@ Everything else should be fairly self-explanatory.
     - Info: Returns a random joke, funniness may vary.  
     - Aliases: tabuujoke  
   
-- **%kick** `<@user> <reason>`  
-    - Info: **Admin only.** Kicks a user from the server. Mention the User or use User ID. You will be asked for confirmation before the user gets kicked. The reason will get logged in Audit logs and also DM'd to the user, if the bot can DM the user.  
+- **%kick** `<@member> <reason>`  
+    - Info: **Admin only.** Kicks a member from the server. Mention the Member or use Member ID. You will be asked for confirmation before the Member gets kicked. The reason will get logged in Audit logs and also DM'd to the Member, if the bot can DM the Member.  
     - Example: `%kick @Phxenix what an idiot`  
   
 - **%leaderboard**  
@@ -152,7 +153,7 @@ Everything else should be fairly self-explanatory.
     - Aliases: listmacro, macros, macro  
   
 - **%listrole** `<role>`  
-    - Info: Lists out every User with a certain role. The bot first tries to use the Role ID or Role mention, after that it searches for the closest match for the role name.  
+    - Info: Lists out every Member with a certain role. The bot first tries to use the Role ID or Role mention, after that it searches for the closest match for the role name.  
     - Example: `%listrole first class`  
     - Aliases: listroles  
   
@@ -166,19 +167,19 @@ Everything else should be fairly self-explanatory.
     - Aliases: main, setmain, spmains, profilemains  
   
 - **%modifyrolemenu** `<message ID> <exclusive: Optional> <Role(s): Optional>`  
-    - Info: **Admin only.** Modifies a role menu with special properties. Exclusive is a boolean(True/False) value which specifies if a User is able to get 1 role (True) or all roles (False) from this role menu. The role(s) set a requirement so that a User needs one of these roles to get any role of this role menu. Mention the role or use role ID. Both arguments are optional, if left out both default to False/None.  
+    - Info: **Admin only.** Modifies a role menu with special properties. Exclusive is a boolean(True/False) value which specifies if a Member is able to get 1 role (True) or all roles (False) from this role menu. The role(s) set a requirement so that a Member needs one of these roles to get any role of this role menu. Mention the role or use role ID. Both arguments are optional, if left out both default to False/None.  
     - Example: `%modifyrolemenu 858117781375418389 True @Singles Winner`  
   
 - **%modmail** `<your message>`  
-    - Info: Privately contact the moderator team of this server. Only works in the DM channel of Tabuu 3.0. Use this for reporting rule violations or feedback/suggestions for the Mod Team. You can attach any attachments to the message. Your username will be visible to prevent abuse.  
+    - Info: Privately contact the moderator team of this server. Only works in the DM channel of Tabuu 3.0. Use this for reporting rule violations or feedback/suggestions for the Mod Team. You can attach any attachments to the message. Your Username will be visible to prevent abuse.  
     - Example: `%modmail Hello, I think the moderator team has been doing an awful job lately.`  
   
 - **%mp4`<move>`**  
     - Info: Gives you the mana cost of any of Hero's moves.  
     - Example: `%mp4woosh`  
   
-- **%mute** `<@user> <reason>`  
-    - Info: **Admin only.** Mutes a user in both servers. The reason will get DM'd to the user, if the bot can DM the user.  
+- **%mute** `<@member> <reason>`  
+    - Info: **Admin only.** Mutes a Member in both servers. The reason will get DM'd to the Member, if the bot can DM the Member.  
     - Example: `%mute @Phxenix what an idiot`  
   
 - **%newrolemenu** `<message ID> <emoji> <role>`  
@@ -202,11 +203,11 @@ Everything else should be fairly self-explanatory.
     - Aliases: pocket, setpocket, sppockets, profilepockets  
   
 - **%poll** `<"question"> <"option 1"> <"option 2">`  
-    - Info: Creates a poll for users to vote on with reactions. Takes 2-10 Options. If the question or the options have more than 1 word in them, make sure to surround them with quotes.  
+    - Info: Creates a poll for Users to vote on with reactions. Takes 2-10 Options. If the question or the options have more than 1 word in them, make sure to surround them with quotes.  
     - Example: `%poll "What is your favourite Ice cream?" Chocolate Strawberry "None of the above"`  
   
 - **%profile** `<@user: Optional>`  
-    - Info: Gets you the profile of the mentioned user, if you dont specify a user, this will get your own.  
+    - Info: Gets you the profile of the mentioned User, if you dont specify a User, this will get your own.  
     - Example: `%profile @Phxenix`  
     - Aliases: smashprofile, profileinfo  
   
@@ -218,7 +219,7 @@ Everything else should be fairly self-explanatory.
     - Aliases: rankedmm, rankedmatchmaking, rankedsingles  
   
 - **%rankedstats** `<@user: Optional>`  
-    - Info: Gets you the ranked stats of any optional user. If you dont specify a user, this will get your own stats where you can also choose to remove or add your Elo role.
+    - Info: Gets you the ranked stats of any optional User. If you dont specify a User, this will get your own stats where you can also choose to remove or add your Elo role.
     - Example: `%rankedstats @Phxenix`  
     - Aliases: rankstats  
   
@@ -247,21 +248,21 @@ Everything else should be fairly self-explanatory.
     - Example: `%removebadge @Phxenix :Example1:`  
     - Aliases: removebadges  
   
-- **%removerole** `<@user> <role>`  
-    - Info: **Admin only.** Removes a role from a User. Mention the User or use User ID, for the Role the bot first tries to use the Role ID or Role mention, after that it searches for the closest match for the role name.  
+- **%removerole** `<@member> <role>`  
+    - Info: **Admin only.** Removes a role from a Member. Mention the Member or use Member ID, for the Role the bot first tries to use the Role ID or Role mention, after that it searches for the closest match for the role name.  
     - Example: `%removerole @Phxenix first class`  
   
-- **%removetimeout** `<@user>`  
-    - Info: **Admin only.** Removes a timeout from a User. Mention the User or use User ID.  
+- **%removetimeout** `<@member>`  
+    - Info: **Admin only.** Removes a timeout from a Member. Mention the Member or use Member ID.  
     - Example: `%removetimeout @Phxenix`  
     - Aliases: untimeout  
   
-- **%rename** `<@user> <name: Optional>`  
-    - Info: **Admin only.** Renames the user to the given nickname. Removes the nickname if you do not pass in a new one.  
+- **%rename** `<@member> <name: Optional>`  
+    - Info: **Admin only.** Renames the Member to the given nickname. Removes the nickname if you do not pass in a new one.  
     - Example: `%rename @Phxenix Example Name`  
   
-- **%reportmatch** `<@user>`  
-    - Info: The winner uses this command after a ranked match to report the result of the match, @user being the person who lost the ranked match. Mention the User or use User ID. Has a 41 second cooldown. Only works in ranked arenas or the threads within.  
+- **%reportmatch** `<@member>`  
+    - Info: The winner uses this command after a ranked match to report the result of the match, @member being the person who lost the ranked match. Mention the Member or use Member ID. Has a 41 second cooldown. Only works in ranked arenas or the threads within.  
     - Example: `%reportmatch @Phxenix`  
     - Aliases: reportgame  
   
@@ -275,8 +276,8 @@ Everything else should be fairly self-explanatory.
     - Example: `%roll 2d6`  
     - Aliases: r  
   
-- **%rps** `<@user: Optional>`  
-    - Info: Plays a game of Rock, Paper, Scissors with the mentioned user. If you don't mention a user, you will play against Tabuu 3.0 himself.  
+- **%rps** `<@member: Optional>`  
+    - Info: Plays a game of Rock, Paper, Scissors with the mentioned Member. If you don't mention a Member, you will play against Tabuu 3.0 himself.  
     - Example: `%rps @Phxenix`  
     - Aliases: rockpaperscissors, rochambeau, roshambo  
   
@@ -293,11 +294,11 @@ Everything else should be fairly self-explanatory.
     - Info: **Admin only.** Sets up a new button to listen to, for creating modmail threads. Should really only be used once.  
   
 - **%singles**  
-    - Info: Pings the singles role and stores your ping for 30 Minutes. Also creates a thread and invites the user to it. Has a 10 minute cooldown and can only be used in our arena channels.  
+    - Info: Pings the singles role and stores your ping for 30 Minutes. Also creates a thread and invites the User to it. Has a 10 minute cooldown and can only be used in our arena channels.  
     - Aliases: matchmaking, matchmakingsingles, mmsingles, Singles  
   
-- **%spotify** `<@user: Optional>`  
-    - Info: Posts the song you are currently listening to on Spotify. You need to enable the setting that displays your Spotify Session as your Discord Status for this to work. Does not work in DMs. User is optional, if not set this will return your own. Mention the User or use User ID.  
+- **%spotify** `<@member: Optional>`  
+    - Info: Posts the song you are currently listening to on Spotify. You need to enable the setting that displays your Spotify Session as your Discord Status for this to work. Does not work in DMs. Member is optional, if not set this will return your own. Mention the Member or use Member ID.  
     - Example: `%spotify @Phxenix`  
   
 - **%stagelist**  
@@ -316,7 +317,7 @@ Everything else should be fairly self-explanatory.
     - Aliases: botstats  
   
 - **%sticker** `<sticker>`  
-    - Info: Gets you basic information about a sticker. Note that stickers do not work like emojis but rather like images, so this command gets you the info of the first sticker you attach to your message. Unfortunately, since you currently cannot send a sticker together with a message on discord mobile, this only works in the desktop app.  
+    - Info: Gets you basic information about a sticker. Note that stickers do not work like emojis but rather like images, so this command gets you the info of the first sticker you attach to your message. Unfortunately, since you currently cannot send a sticker together with a message on Discord Mobile, this only works in the desktop app.  
     - Example: `%sticker Attach Random Sticker Here`  
   
 - **%syncbanlist**  
@@ -333,36 +334,36 @@ Everything else should be fairly self-explanatory.
     - Aliases: uwu  
   
 - **%tag** `<tag: Optional>`  
-    - Info: Updates your tag on your profile, up to 30 characters long. Leave the field blank to reset the tag to your discord username.  
+    - Info: Updates your tag on your profile, up to 30 characters long. Leave the field blank to reset the tag to your Discord Username.  
     - Example: `%tag test tag`  
     - Aliases: smashtag, sptag, settag  
   
-- **%tempmute** `<@user> <time> <reason>`  
-    - Info: **Admin only.** Mutes a user in both servers for the specified time, which is in a shortened format with any number and d/h/m/s. Minimum time is 30 seconds, maximum is 1 day. Mention the user or use User ID. The reason will get DM'd to the muted person, if the bot can DM the user.  
+- **%tempmute** `<@member> <time> <reason>`  
+    - Info: **Admin only.** Mutes a Member in both servers for the specified time, which is in a shortened format with any number and d/h/m/s. Minimum time is 30 seconds, maximum is 1 day. Mention the Member or use Member ID. The reason will get DM'd to the muted person, if the bot can DM the Member.  
     - Example: `%tempmute @Phxenix 12h30m what an idiot`  
   
 - **%time**  
     - Info: Shows the current time as a timezone aware object.  
     - Aliases: currenttime  
   
-- **%timeout** `<@user> <time> <reason>`  
-    - Info: **Admin only.** Times out a user for the specified time and tries to DM them the reason. Maximum time is 28 days - 1 second. Mention the user or use User ID. The reason will get DM'd to the muted person, if the bot can DM the user. Uses the same time converter as tempmute and reminders, in a shortened format with any number and d/h/m/s.  
+- **%timeout** `<@member> <time> <reason>`  
+    - Info: **Admin only.** Times out a Member for the specified time and tries to DM them the reason. Maximum time is 28 days - 1 second. Mention the Member or use Member ID. The reason will get DM'd to the muted person, if the bot can DM the Member. Uses the same time converter as tempmute and reminders, in a shortened format with any number and d/h/m/s.  
     - Example: `%timeout @Phxenix 12h30m what an idiot`  
   
 - **%unban** `<@user>`  
     - Info: **Admin only.** Unbans a user. Mention the User or use User ID.  
     - Example: `%unban @Phxenix`  
   
-- **%unmute** `<@user>`  
-    - Info: **Admin only.** Unmutes a user in both servers. Please use this in all cases to unmute someone. Mention the User or use User ID.  
+- **%unmute** `<@member>`  
+    - Info: **Admin only.** Unmutes a Member in both servers. Please use this in all cases to unmute someone. Mention the Member or use Member ID.  
     - Example: `%unmute @Phxenix`  
   
-- **%updatelevel** `<@user: Optional>`  
-    - Info: Updates your level role or the one of the mentioned user according to your MEE6 level manually. Has a 5 minute cooldown. Note that this gets done anyways every 23 hours for everyone in the server. Only works in the Training Grounds server.  
+- **%updatelevel** `<@member: Optional>`  
+    - Info: Updates your level role or the one of the mentioned Member according to your MEE6 level manually. Has a 5 minute cooldown. Note that this gets done anyways every 23 hours for everyone in the server. Only works in the Training Grounds server.  
     - Example: `%updatelevel @Phxenix`  
   
-- **%userinfo** `<@user: Optional>`  
-    - Info: Gets you various information about a user. If you haven't specified a user, this will get your own info. Mention the User or use User ID. Does not work in DMs.  
+- **%userinfo** `<@member: Optional>`  
+    - Info: Gets you various information about a Member. If you haven't specified a Member, this will get your own info. Mention the Member or use Member ID. Does not work in DMs.  
     - Example: `%userinfo @Phxenix`  
     - Aliases: user, user-info, info  
   
@@ -370,21 +371,21 @@ Everything else should be fairly self-explanatory.
     - Info: Lists out your active reminders. If you have too many it will only display the first 6.  
     - Aliases: reminders, myreminders, viewreminder, listreminders  
   
-- **%warn** `<@user> <reason>`  
-    - Info: **Admin only.** Use this to warn a user. The reason will get DM'd to the person warned, if the bot can DM the user. Mention the User or use User ID. Warning expire after 30 days. If a user reaches 3 warnings within 30 days the user will get muted, 5 within 30 days equal a kick and 7 within 30 days will get the user banned.  
+- **%warn** `<@member> <reason>`  
+    - Info: **Admin only.** Use this to warn a Member. The reason will get DM'd to the person warned, if the bot can DM the Member. Mention the Member or use Member ID. Warning expire after 30 days. If a Member reaches 3 warnings within 30 days the Member will get muted, 5 within 30 days equal a kick and 7 within 30 days will get the Member banned.  
     - Example: `%warn @Phxenix what an idiot`  
   
-- **%warndetails** `<@user>`  
-    - Info: **Admin only.** This will give detailed information about a users active warnings. Mention a User or use User ID.  
+- **%warndetails** `<@member>`  
+    - Info: **Admin only.** This will give detailed information about a Members active warnings. Mention a Member or use Member ID.  
     - Example: `%warndetails @Phxenix`  
   
-- **%warns** `<@user: Optional>`  
-    - Info: This will return the number of active warnings a user has. If you haven't specified a User, this will get your own warning count. Mention the User or use User ID.  
+- **%warns** `<@member: Optional>`  
+    - Info: This will return the number of active warnings a Member has. If you haven't specified a Member, this will get your own warning count. Mention the Member or use Member ID.  
     - Example: `%warns @Phxenix`  
     - Aliases: warnings, infractions  
   
 - **%who** `<question>`  
-    - Info: Ask a question and you get a random user that is currently online as a response. Does not work in DMs.  
+    - Info: Ask a question and you get a random Member that is currently online as a response. Does not work in DMs.  
     - Example: `%who is the most beautiful user?`  
   
 - **%wisdom**  

@@ -98,10 +98,10 @@ class Responses(discord.ui.Select):
 ```%deletemacro <name>``` - Deletes a macro.
 ```%starboardemoji <emoji>``` - Changes the emoji used for the starboard.
 ```%starboardthreshold <number>``` - Changes the threshold used for the starboard.
-```%forcedeleteprofile <user>``` - Deletes the profile of a user.
-```%addbadges <user> <emojis>``` - Adds badges to a user.
-```%removebadge <user> <emoji>``` - Removes one badge from a user.
-```%clearbadge <user>``` - Clears every badge from a user.
+```%forcedeleteprofile <@user>``` - Deletes the profile of a user.
+```%addbadges <@user> <emojis>``` - Adds badges to a user.
+```%removebadge <@user> <emoji>``` - Removes one badge from a user.
+```%clearbadge <@user>``` - Clears every badge from a user.
 ```%syncbanlist``` - Syncs the ban list from main server to secondary server.
 ```%setupmodmailbutton``` - Sets up a new modmail button for the bot to listen to.
     """
@@ -130,7 +130,7 @@ class Responses(discord.ui.Select):
     """
 
     profile_desc = """
-```%profile <user>``` - View a profile of a user.
+```%profile <@user>``` - View a profile of a user.
 ```%mains <main1, main2,...>``` - Set your mains, separated by commas.
 ```%secondaries <sec1, sec2,...>``` - Set your secondaries, separated by commas.
 ```%pockets <pocket1, pocket2,...>``` - Set your pockets, separated by commas.
