@@ -3,6 +3,7 @@ from discord.ext import commands
 import aiosqlite
 import json
 import utils.check
+from utils.ids import GuildIDs, Emojis
 
 
 class Profile(commands.Cog):
@@ -52,6 +53,27 @@ class Profile(commands.Cog):
                         output_characters.append(match_char["emoji"])
 
         return output_characters
+
+    def get_badges(self, user: discord.User):
+
+        """
+        Gets you all of the badges of a member.
+        """
+        badges = []
+
+        guild = self.bot.get_guild(GuildIDs.TRAINING_GROUNDS)
+        member = guild.get_member(user.id)
+
+        # user could not be on the server
+        if member:
+            # getting all of the role ids in a list
+            role_ids = [role.id for role in member.roles]
+            # and then checking with the dict
+            for badge, role in Emojis.PROFILE_BADGES.items():
+                if role in role_ids:
+                    badges.append(badge)
+
+        return badges
 
     async def make_new_profile(self, user: discord.User):
         """
@@ -110,24 +132,28 @@ class Profile(commands.Cog):
         else:
             elo = matching_user_elo[0][0]
 
+        badges = " ".join(self.get_badges(user))
+
         embed = discord.Embed(title=f"Smash profile of {str(user)}", colour=colour)
         embed.set_thumbnail(url=user.display_avatar.url)
 
-        embed.add_field(name="Tag", value=tag, inline=True)
+        embed.add_field(name="Tag:", value=tag, inline=True)
 
-        if region != "":
-            embed.add_field(name="Region", value=region, inline=True)
+        if region:
+            embed.add_field(name="Region:", value=region, inline=True)
 
-        embed.add_field(name="Elo score", value=elo, inline=True)
+        embed.add_field(name="Elo score:", value=elo, inline=True)
 
-        if mains != "":
-            embed.add_field(name="Mains", value=mains, inline=True)
-        if secondaries != "":
-            embed.add_field(name="Secondaries", value=secondaries, inline=True)
-        if pockets != "":
-            embed.add_field(name="Pockets", value=pockets, inline=True)
-        if note != "":
-            embed.add_field(name="Note", value=note, inline=True)
+        if mains:
+            embed.add_field(name="Mains:", value=mains, inline=True)
+        if secondaries:
+            embed.add_field(name="Secondaries:", value=secondaries, inline=True)
+        if pockets:
+            embed.add_field(name="Pockets:", value=pockets, inline=True)
+        if note:
+            embed.add_field(name="Note:", value=note, inline=True)
+        if badges:
+            embed.add_field(name="Emblems:", value=badges, inline=True)
 
         await ctx.send(embed=embed)
 

@@ -222,3 +222,18 @@ class BGRoleIDs:
     MUTED_ROLE = 928985750505140264
     # the default role you get when you join bg
     TRAVELLER_ROLE = 915403426811244585
+
+
+class Emojis:
+    """
+    Contains some Custom Emojis.
+    """
+
+    # a dictionary of emoji/role pairs for profile badges
+    PROFILE_BADGES = {
+        "<a:tg_Singles_Winner:955967054878478367>": 739299507816366102,
+        "<a:tg_Doubles_Winner:955968025570447460>": 739299507816366101,
+        "<a:tg_Casual_Winner:955969250676334632>": 739299507816366100,
+        "<a:tg_Crew_Winner:955969969751990362>": 753049385457287268,
+        "<a:tg_MVP:955970583869411368>": 753048972947488880,
+    }
