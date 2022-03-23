@@ -10,9 +10,9 @@ class RpsButtons(discord.ui.View):
     which does take over quite some space.
     """
 
-    def __init__(self, ctx, member):
+    def __init__(self, author, member):
         super().__init__()
-        self.ctx = ctx
+        self.author = author
         self.member = member
         self.authorchoice = None
         self.memberchoice = None
@@ -28,7 +28,7 @@ class RpsButtons(discord.ui.View):
         it does on Discord.
         """
         await interaction.response.send_message("You chose Rock!", ephemeral=True)
-        if interaction.user.id == self.ctx.author.id:
+        if interaction.user.id == self.author.id:
             self.authorchoice = "Rock"
         if interaction.user.id == self.member.id:
             self.memberchoice = "Rock"
@@ -42,7 +42,7 @@ class RpsButtons(discord.ui.View):
         Stops if both parties made a choice.
         """
         await interaction.response.send_message("You chose Paper!", ephemeral=True)
-        if interaction.user.id == self.ctx.author.id:
+        if interaction.user.id == self.author.id:
             self.authorchoice = "Paper"
         if interaction.user.id == self.member.id:
             self.memberchoice = "Paper"
@@ -58,7 +58,7 @@ class RpsButtons(discord.ui.View):
         Stops if both parties made a choice.
         """
         await interaction.response.send_message("You chose Scissors!", ephemeral=True)
-        if interaction.user.id == self.ctx.author.id:
+        if interaction.user.id == self.author.id:
             self.authorchoice = "Scissors"
         if interaction.user.id == self.member.id:
             self.memberchoice = "Scissors"
@@ -67,7 +67,7 @@ class RpsButtons(discord.ui.View):
 
     async def interaction_check(self, interaction: discord.Interaction):
         # basically ignores every other member except the author and mentioned member
-        return interaction.user in (self.member, self.ctx.author)
+        return interaction.user in (self.member, self.author)
 
 
 class Rpsgame(commands.Cog):
@@ -99,7 +99,7 @@ class Rpsgame(commands.Cog):
             )
             return
 
-        view = RpsButtons(ctx, member)
+        view = RpsButtons(ctx.author, member)
         init_message = await ctx.send(
             f"Rock, Paper, Scissors: \n{ctx.author.mention} vs {member.mention}\nChoose wisely:",
             view=view,
