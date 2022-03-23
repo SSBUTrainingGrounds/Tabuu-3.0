@@ -61,6 +61,10 @@ class Profile(commands.Cog):
         """
         badges = []
 
+        # quick check for ourselves
+        if user == self.bot.user:
+            return badges
+
         # the badge roles are not in only one server
         for guild in user.mutual_guilds:
             member = guild.get_member(user.id)
