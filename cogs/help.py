@@ -144,6 +144,7 @@ class Responses(discord.ui.Select):
     util_desc = """
 ```%coin``` - Throws a coin.
 ```%rps <@user>``` - Plays a match of Rock, Paper, Scissors with the mentioned user.
+```%tictactoe <@user>``` - Plays a match of Tic Tac Toe with the mentioned user.
 ```%roll <NdN>``` - Rolling dice, format %roll 1d100.
 ```%countdown <number>``` - Counts down from number.
 ```%time``` - Current time as a timezone aware object.

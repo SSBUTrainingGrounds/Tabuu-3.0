@@ -2,7 +2,7 @@
 
 This here contains every command with a detailed explanation on how to use them. They are ordered alphabetically, search them with Ctrl+F.  
 
-Last updated: 18 March 2022  
+Last updated: 23 March 2022  
 
 ## Quick explanation of this document  
 Arguments that are optional all have the `: Optional` suffix. Every other argument is required.  
@@ -341,6 +341,11 @@ Everything else should be fairly self-explanatory.
 - **%tempmute** `<@member> <time> <reason>`  
     - Info: **Admin only.** Mutes a Member in both servers for the specified time, which is in a shortened format with any number and d/h/m/s. Minimum time is 30 seconds, maximum is 1 day. Mention the Member or use Member ID. The reason will get DM'd to the muted person, if the bot can DM the Member.  
     - Example: `%tempmute @Phxenix 12h30m what an idiot`  
+  
+- **%tictactoe** `<@member>`  
+    - Info: Plays a game of Tic Tac Toe with the mentioned Member.  
+    - Example: `%tictactoe @Phxenix`  
+    - Aliases: ttt  
   
 - **%time**  
     - Info: Shows the current time as a timezone aware object.  
