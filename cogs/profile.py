@@ -61,17 +61,17 @@ class Profile(commands.Cog):
         """
         badges = []
 
-        guild = self.bot.get_guild(GuildIDs.TRAINING_GROUNDS)
-        member = guild.get_member(user.id)
+        # the badge roles are not in only one server
+        for guild in user.mutual_guilds:
+            member = guild.get_member(user.id)
 
-        # user could not be on the server
-        if member:
-            # getting all of the role ids in a list
-            role_ids = [role.id for role in member.roles]
-            # and then checking with the dict
-            for badge, role in Emojis.PROFILE_BADGES.items():
-                if role in role_ids:
-                    badges.append(badge)
+            if member:
+                # getting all of the role ids in a list
+                role_ids = [role.id for role in member.roles]
+                # and then checking with the dict
+                for badge, role in Emojis.PROFILE_BADGES.items():
+                    if role in role_ids:
+                        badges.append(badge)
 
         return badges
 
