@@ -78,6 +78,7 @@ class TicTacToeButtons(discord.ui.View):
         self.author = author
         self.member = member
         self.turn = author
+        self.message = None
         # the timeout refreshes every time someone presses a button,
         # so 1 minute is more than enough.
         self.timeout = 60
