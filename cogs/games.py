@@ -82,9 +82,8 @@ class TicTacToeButtons(discord.ui.View):
         # the timeout refreshes every time someone presses a button,
         # so 1 minute is more than enough.
         self.timeout = 60
-
-    # initialises the board
-    board = [0, 0, 0, 0, 0, 0, 0, 0, 0]
+        # initialises the board
+        self.board = [0, 0, 0, 0, 0, 0, 0, 0, 0]
 
     def check_for_winner(self, board):
         """
