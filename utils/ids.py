@@ -238,6 +238,7 @@ class Emojis:
         "<a:tg_MVP:955970583869411368>": 753048972947488880,
     }
 
-    # placeholders for now
-    WIN_EMOJI = "W"
-    LOSE_EMOJI = "L"
+    # win/lose emojis for rankstats
+    # if you dont want any, just do W & L
+    WIN_EMOJI = "<:rs_W:956192092454023198>"
+    LOSE_EMOJI = "<:rs_L:956193883098853507>"
