@@ -237,3 +237,7 @@ class Emojis:
         "<a:tg_Crew_Winner:955969969751990362>": 753049385457287268,
         "<a:tg_MVP:955970583869411368>": 753048972947488880,
     }
+
+    # placeholders for now
+    WIN_EMOJI = "W"
+    LOSE_EMOJI = "L"

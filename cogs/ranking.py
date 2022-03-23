@@ -3,7 +3,13 @@ from discord.ext import commands
 import asyncio
 import aiosqlite
 import json
-from utils.ids import GuildNames, GuildIDs, TGArenaChannelIDs, TGMatchmakingRoleIDs
+from utils.ids import (
+    GuildNames,
+    GuildIDs,
+    TGArenaChannelIDs,
+    TGMatchmakingRoleIDs,
+    Emojis,
+)
 import utils.check
 
 
@@ -507,6 +513,10 @@ class Ranking(commands.Cog):
         # gets the last 5 games played and reverses that string
         last5games = matches[-5:]
         gamelist = last5games[::-1]
+
+        # subs in the emojis
+        gamelist = gamelist.replace("W", Emojis.WIN_EMOJI)
+        gamelist = gamelist.replace("L", Emojis.LOSE_EMOJI)
 
         embed = discord.Embed(title=f"Ranked stats of {str(member)}", colour=0x3498DB)
         embed.set_thumbnail(url=member.display_avatar.url)
