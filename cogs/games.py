@@ -1,5 +1,6 @@
 import discord
 from discord.ext import commands
+from math import ceil
 import random
 
 
@@ -82,9 +83,26 @@ class RpsButtons(discord.ui.View):
             )
 
 
-class TicTacToeButtons(discord.ui.View):
+class TicTacToeButtons(discord.ui.Button["TicTacToeGame"]):
     """
-    Contains the TicTacToe Buttons and Game Logic.
+    Contains the TicTacToe Buttons.
+    """
+
+    def __init__(self, button_pos: int):
+        super().__init__(
+            style=discord.ButtonStyle.gray,
+            label="\u200b",
+            row=ceil((button_pos + 1) / 3),
+        )
+        self.button_pos = button_pos
+
+    async def callback(self, interaction: discord.Interaction):
+        await self.view.handle_turn(self, self.button_pos, interaction)
+
+
+class TicTacToeGame(discord.ui.View):
+    """
+    Contains the TicTacToe Game Logic.
     """
 
     def __init__(self, author, member):
@@ -95,6 +113,9 @@ class TicTacToeButtons(discord.ui.View):
         self.message = None
         # initialises the board
         self.board = [0, 0, 0, 0, 0, 0, 0, 0, 0]
+        # adds all of the buttons
+        for i in range(0, 9):
+            self.add_item(TicTacToeButtons(i))
 
     def check_for_winner(self, board):
         """
@@ -173,61 +194,6 @@ class TicTacToeButtons(discord.ui.View):
             content=f"{self.author.mention}: ❌\n{self.member.mention}: ⭕\n\n{self.turn.mention}'s Turn:",
             view=self,
         )
-
-    # the buttons, very repetitive
-    @discord.ui.button(label="\u200b", style=discord.ButtonStyle.gray, row=1)
-    async def button_one(
-        self, button: discord.ui.Button, interaction: discord.Interaction
-    ):
-        await self.handle_turn(button, 0, interaction)
-
-    @discord.ui.button(label="\u200b", style=discord.ButtonStyle.gray, row=1)
-    async def button_two(
-        self, button: discord.ui.Button, interaction: discord.Interaction
-    ):
-        await self.handle_turn(button, 1, interaction)
-
-    @discord.ui.button(label="\u200b", style=discord.ButtonStyle.gray, row=1)
-    async def button_three(
-        self, button: discord.ui.Button, interaction: discord.Interaction
-    ):
-        await self.handle_turn(button, 2, interaction)
-
-    @discord.ui.button(label="\u200b", style=discord.ButtonStyle.gray, row=2)
-    async def button_four(
-        self, button: discord.ui.Button, interaction: discord.Interaction
-    ):
-        await self.handle_turn(button, 3, interaction)
-
-    @discord.ui.button(label="\u200b", style=discord.ButtonStyle.gray, row=2)
-    async def button_five(
-        self, button: discord.ui.Button, interaction: discord.Interaction
-    ):
-        await self.handle_turn(button, 4, interaction)
-
-    @discord.ui.button(label="\u200b", style=discord.ButtonStyle.gray, row=2)
-    async def button_six(
-        self, button: discord.ui.Button, interaction: discord.Interaction
-    ):
-        await self.handle_turn(button, 5, interaction)
-
-    @discord.ui.button(label="\u200b", style=discord.ButtonStyle.gray, row=3)
-    async def button_seven(
-        self, button: discord.ui.Button, interaction: discord.Interaction
-    ):
-        await self.handle_turn(button, 6, interaction)
-
-    @discord.ui.button(label="\u200b", style=discord.ButtonStyle.gray, row=3)
-    async def button_eight(
-        self, button: discord.ui.Button, interaction: discord.Interaction
-    ):
-        await self.handle_turn(button, 7, interaction)
-
-    @discord.ui.button(label="\u200b", style=discord.ButtonStyle.gray, row=3)
-    async def button_nine(
-        self, button: discord.ui.Button, interaction: discord.Interaction
-    ):
-        await self.handle_turn(button, 8, interaction)
 
     async def interaction_check(self, interaction: discord.Interaction):
         # checks if the user is in the game
@@ -335,7 +301,7 @@ class Games(commands.Cog):
             await ctx.send("Please do not play matches with bots!")
             return
 
-        view = TicTacToeButtons(ctx.author, member)
+        view = TicTacToeGame(ctx.author, member)
         # we reply to that message in the timeout event
         view.message = await ctx.send(
             f"{ctx.author.mention}: ❌\n{member.mention}: ⭕\n\n{ctx.author.mention}'s Turn:",
