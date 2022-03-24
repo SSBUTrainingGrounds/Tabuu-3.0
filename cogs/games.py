@@ -456,12 +456,17 @@ class Games(commands.Cog):
         )
 
     @commands.command(aliases=["21", "vingtetun", "vingtun"])
-    async def blackjack(self, ctx, member: discord.Member = None):
+    async def blackjack(self, ctx, member: discord.Member):
         """
         Starts a game of Blackjack vs another User.
         """
-        if member is None:
-            member = self.bot.user
+        if member == ctx.author:
+            await ctx.send("Please don't play matches with yourself.")
+            return
+
+        if member.bot:
+            await ctx.send("Please do not play matches with bots!")
+            return
 
         view = BlackJackButtons(ctx.author, member)
 
