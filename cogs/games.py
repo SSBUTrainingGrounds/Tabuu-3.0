@@ -14,6 +14,7 @@ class RpsButtons(discord.ui.View):
         self.member = member
         self.authorchoice = None
         self.memberchoice = None
+        self.message = None
 
     @discord.ui.button(label="Rock", emoji="🪨", style=discord.ButtonStyle.gray)
     async def rock(self, button: discord.ui.Button, interaction: discord.Interaction):
@@ -64,6 +65,21 @@ class RpsButtons(discord.ui.View):
     async def interaction_check(self, interaction: discord.Interaction):
         # basically ignores every other member except the author and mentioned member
         return interaction.user in (self.member, self.author)
+
+    async def on_timeout(self):
+        # if the match didnt go through as planned
+        if self.authorchoice is None and self.memberchoice is None:
+            await self.message.reply(
+                "Match timed out! Both parties took too long to pick a choice!"
+            )
+        elif self.authorchoice is None:
+            await self.message.reply(
+                f"Match timed out! {self.author.mention} took too long to pick a choice!"
+            )
+        elif self.memberchoice is None:
+            await self.message.reply(
+                f"Match timed out! {self.member.mention} took too long to pick a choice!"
+            )
 
 
 class TicTacToeButtons(discord.ui.View):
@@ -262,7 +278,7 @@ class Games(commands.Cog):
             return
 
         view = RpsButtons(ctx.author, member)
-        init_message = await ctx.send(
+        view.message = await ctx.send(
             f"Rock, Paper, Scissors: \n{ctx.author.mention} vs {member.mention}\nChoose wisely:",
             view=view,
         )
@@ -278,7 +294,7 @@ class Games(commands.Cog):
         # if its the same we can just call it off here,
         # need a check if one of the responses is not none for the error message below
         if view.authorchoice == view.memberchoice and view.authorchoice is not None:
-            await init_message.reply(
+            await view.message.reply(
                 f"{ctx.author.mention} chose {view.authorchoice}!\n{member.mention} chose {view.memberchoice}!\n**It's a draw!**"
             )
             return
@@ -289,39 +305,21 @@ class Games(commands.Cog):
         # since draws are already ruled out the rest of the logic isnt too bad, still a whole lot of elif statements though
         if view.authorchoice == "Rock":
             if view.memberchoice == "Paper":
-                await init_message.reply(member_winner_message)
+                await view.message.reply(member_winner_message)
             elif view.memberchoice == "Scissors":
-                await init_message.reply(author_winner_message)
+                await view.message.reply(author_winner_message)
 
         elif view.authorchoice == "Paper":
             if view.memberchoice == "Scissors":
-                await init_message.reply(member_winner_message)
+                await view.message.reply(member_winner_message)
             elif view.memberchoice == "Rock":
-                await init_message.reply(author_winner_message)
+                await view.message.reply(author_winner_message)
 
         elif view.authorchoice == "Scissors":
             if view.memberchoice == "Rock":
-                await init_message.reply(member_winner_message)
+                await view.message.reply(member_winner_message)
             elif view.memberchoice == "Paper":
-                await init_message.reply(author_winner_message)
-
-        # if the match didnt go through as planned:
-        elif view.authorchoice is None and view.memberchoice is None:
-            await init_message.reply(
-                "Match timed out! Both parties took too long to pick a choice!"
-            )
-        elif view.authorchoice is None:
-            await init_message.reply(
-                f"Match timed out! {ctx.author.mention} took too long to pick a choice!"
-            )
-        elif view.memberchoice is None:
-            await init_message.reply(
-                f"Match timed out! {member.mention} took too long to pick a choice!"
-            )
-
-        # and the fallback
-        else:
-            await init_message.reply("Something went wrong! Please try again.")
+                await view.message.reply(author_winner_message)
 
     @commands.command(aliases=["ttt"])
     async def tictactoe(self, ctx, member: discord.Member):
