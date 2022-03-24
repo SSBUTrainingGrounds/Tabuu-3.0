@@ -214,6 +214,153 @@ class TicTacToeGame(discord.ui.View):
         )
 
 
+class BlackJackButtons(discord.ui.View):
+    def __init__(self, author, member):
+        super().__init__(timeout=60)
+        self.author = author
+        self.member = member
+        self.author_hand = [[], 0]
+        self.member_hand = [[], 0]
+        self.folded = []
+        self.turn = author
+        self.message = None
+
+    # all of the possible cards
+    card_faces = [
+        "Ace",
+        "2",
+        "3",
+        "4",
+        "5",
+        "6",
+        "7",
+        "8",
+        "9",
+        "10",
+        "Jack",
+        "Queen",
+        "King",
+    ]
+    card_suites = ["♠️", "♦️", "♣️", "♥️"]
+
+    def draw_card(self):
+        card_deck = []
+        for i, f in enumerate(self.card_faces):
+            for s in self.card_suites:
+                if i in (10, 11, 12):
+                    i = 9
+                card_deck.append([f"{f} of {s}", i + 1])
+
+        card = random.choice(card_deck)
+
+        if card[0] in (self.author_hand[0] or self.member_hand[0]):
+            try:
+                self.draw_card()
+            except RecursionError:
+                return
+
+        if self.turn == self.author:
+            if card[1] == 1:
+                if self.author_hand[1] + 11 <= 21:
+                    card[1] = 11
+            self.author_hand[0].append(card[0])
+            self.author_hand[1] += card[1]
+        else:
+            if card[1] == 1:
+                if self.member_hand[1] + 11 <= 21:
+                    card[1] = 11
+            self.member_hand[0].append(card[0])
+            self.member_hand[1] += card[1]
+
+    def get_winner(self):
+        if self.author_hand[1] > 21 >= self.member_hand[1]:
+            return self.member
+
+        if self.member_hand[1] > 21 >= self.author_hand[1]:
+            return self.author
+
+        if self.member_hand[1] == self.author_hand[1] or (
+            self.author_hand[1] > 21 and self.member_hand[1] > 21
+        ):
+            return None
+
+        if self.author_hand[1] > self.member_hand[1]:
+            return self.author
+
+        return self.member
+
+    async def end_game(self):
+        self.stop()
+
+        if self.get_winner():
+            await self.message.reply(f"The winner is {self.get_winner().mention}!")
+        else:
+            await self.message.reply("The game is tied!")
+
+    @discord.ui.button(
+        label="Draw a Card", emoji="🃏", style=discord.ButtonStyle.blurple
+    )
+    async def draw(self, button: discord.ui.Button, interaction: discord.Interaction):
+        """
+        Draws another card and checks if the players turn is over.
+        """
+        self.draw_card()
+
+        if self.turn == self.author:
+            if self.author_hand[1] > 20:
+                await self.end_game()
+            if self.member not in self.folded:
+                self.turn = self.member
+        else:
+            if self.member_hand[1] > 20:
+                await self.end_game()
+            if self.author not in self.folded:
+                self.turn = self.author
+
+        await interaction.response.edit_message(
+            content=f"{self.author.mention}'s Hand: {', '.join(self.author_hand[0])} ({self.author_hand[1]})\n"
+            f"{self.member.mention}'s Hand: {', '.join(self.member_hand[0])} ({self.member_hand[1]})\n\n"
+            f"It is {self.turn.mention}'s Turn.",
+            view=self,
+        )
+
+    @discord.ui.button(label="Fold", emoji="❌", style=discord.ButtonStyle.red)
+    async def fold(self, button: discord.ui.Button, interaction: discord.Interaction):
+        """
+        Folds and switches the turn, or exits the game.
+        """
+        if self.turn == self.author:
+            self.folded.append(self.author)
+            self.turn = self.member
+        else:
+            self.folded.append(self.member)
+            self.turn = self.author
+
+        if all(x in self.folded for x in [self.member, self.author]):
+            await self.end_game()
+
+        await interaction.response.edit_message(
+            content=f"{self.author.mention}'s Hand: {', '.join(self.author_hand[0])} ({self.author_hand[1]})\n"
+            f"{self.member.mention}'s Hand: {', '.join(self.member_hand[0])} ({self.member_hand[1]})\n\n"
+            f"It is {self.turn.mention}'s Turn.",
+            view=self,
+        )
+
+    async def interaction_check(self, interaction: discord.Interaction):
+        if not interaction.user in (self.author, self.member):
+            return False
+        if interaction.user == self.author and self.turn == self.author:
+            return True
+        if interaction.user == self.member and self.turn == self.member:
+            return True
+        return False
+
+    async def on_timeout(self):
+        await self.message.reply(
+            f"The match timed out! {self.turn.mention} took too long to pick a choice!"
+        )
+
+
 class Games(commands.Cog):
     """
     Contains the commands to execute the Games.
@@ -308,6 +455,21 @@ class Games(commands.Cog):
             view=view,
         )
 
+    @commands.command(aliases=["21", "vingtetun", "vingtun"])
+    async def blackjack(self, ctx, member: discord.Member = None):
+        """
+        Starts a game of Blackjack vs another User.
+        """
+        if member is None:
+            member = self.bot.user
+
+        view = BlackJackButtons(ctx.author, member)
+
+        view.message = await ctx.send(
+            f"{ctx.author.mention}'s Hand: Empty (0)\n{member.mention}'s Hand: Empty (0)\n\nIt is {view.turn.mention}'s Turn.",
+            view=view,
+        )
+
     # basic error handling
     @rps.error
     async def rps_error(self, ctx, error):
@@ -320,6 +482,15 @@ class Games(commands.Cog):
 
     @tictactoe.error
     async def tictactoe_error(self, ctx, error):
+        if isinstance(error, commands.MissingRequiredArgument):
+            await ctx.send("You need to mention a valid member.")
+        elif isinstance(error, commands.MemberNotFound):
+            await ctx.send("You need to mention a valid member.")
+        else:
+            raise error
+
+    @blackjack.error
+    async def blackjack_error(self, ctx, error):
         if isinstance(error, commands.MissingRequiredArgument):
             await ctx.send("You need to mention a valid member.")
         elif isinstance(error, commands.MemberNotFound):

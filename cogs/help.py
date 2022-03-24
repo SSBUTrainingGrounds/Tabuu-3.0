@@ -43,6 +43,11 @@ class Responses(discord.ui.Select):
                 emoji="🔧",
             ),
             discord.SelectOption(
+                label="Game Commands",
+                description="Challenge your foes.",
+                emoji="🎮",
+            ),
+            discord.SelectOption(
                 label="Miscellaneous Commands",
                 description="Everything that did not fit into the other categories.",
                 emoji="📋",
@@ -143,8 +148,6 @@ class Responses(discord.ui.Select):
 
     util_desc = """
 ```%coin``` - Throws a coin.
-```%rps <@user>``` - Plays a match of Rock, Paper, Scissors with the mentioned user.
-```%tictactoe <@user>``` - Plays a match of Tic Tac Toe with the mentioned user.
 ```%roll <NdN>``` - Rolling dice, format %roll 1d100.
 ```%countdown <number>``` - Counts down from number.
 ```%time``` - Current time as a timezone aware object.
@@ -153,6 +156,12 @@ class Responses(discord.ui.Select):
 ```%reminder <time> <message>``` - Reminds you about something.
 ```%viewreminders``` - Lists your active reminders.
 ```%deletereminder <ID>```Deletes one of your reminders by its ID.
+    """
+
+    game_desc = """
+```%rps <@user>``` - Plays a match of Rock, Paper, Scissors with the mentioned user.
+```%tictactoe <@user>``` - Plays a match of Tic Tac Toe with the mentioned user.
+```%blackjack <@user>``` - Plays a match of Blackjack with the mentioned user.
     """
 
     misc_desc = """
@@ -225,6 +234,12 @@ class Responses(discord.ui.Select):
                 title="🔧Utility Commands🔧", color=0x424242, description=self.util_desc
             )
             await interaction.response.send_message(embed=utility_embed, ephemeral=True)
+
+        elif self.values[0] == "Game Commands":
+            game_embed = discord.Embed(
+                title="🎮Game Commands🎮", colour=0x333333, description=self.game_desc
+            )
+            await interaction.response.send_message(embed=game_embed, ephemeral=True)
 
         elif self.values[0] == "Miscellaneous Commands":
             miscellaneous_embed = discord.Embed(

@@ -37,7 +37,12 @@ Everything else should be fairly self-explanatory.
   
 - **%banner** `<@member: Optional>`  
     - Info: Gets you the banner of a Member. Member argument is optional, if there is none, this gets your own avatar. Otherwise mention the Member or use Member ID.  
-    - Example: `%banner @Phxenix`
+    - Example: `%banner @Phxenix`  
+  
+- **%blackjack** `<@member>`  
+    - Info: Starts a game of Blackjack with the mentioned Member.  
+    - Example: `%blackjack @Phxenix`  
+    - Aliases: 21, vingtetun, vigntun  
   
 - **%boo**  
     - Info: Comes up with some scary stuff.  
