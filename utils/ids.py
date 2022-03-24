@@ -79,6 +79,8 @@ class TGChannelIDs:
     GENERAL_CHANNEL = 739299507937738849
     # rules and info
     RULES_CHANNEL = 739299507937738843
+    # help chat
+    HELP_CHANNEL = 739299507937738847
     # the general voice chat
     GENERAL_VOICE_CHAT = 765625841861394442
     # the announcements channel

@@ -2,6 +2,7 @@ import discord
 from discord.ext import commands
 import aiosqlite
 import utils.check
+from utils.ids import TGChannelIDs
 
 
 class Rolemenu(commands.Cog):
@@ -242,7 +243,22 @@ class Rolemenu(commands.Cog):
                 )
 
             if not any(role in payload.member.roles for role in roles_required):
-                return
+                # checks for the matching role
+                for entry in matching_entries:
+                    (_, _, _, emoji, role) = entry
+                    # we only send a message if the entry matches
+                    if str(payload.emoji) == emoji:
+                        wanted_role = discord.utils.get(
+                            self.bot.get_guild(payload.guild_id).roles, id=role
+                        )
+
+                        # sends a message telling them what roles they need
+                        await payload.member.send(
+                            f"The role {wanted_role.name} was not added to you due to not having one or more of the following roles:"
+                            f"{', '.join([missing_role.name for missing_role in roles_required])}.\n\n"
+                            f"Check <#{TGChannelIDs.RULES_CHANNEL}> for information or inquire in <#{TGChannelIDs.HELP_CHANNEL}> if you cannot find the details on the required roles.",
+                        )
+                        return
 
         if exclusive == 1:
             for entry in matching_entries:
