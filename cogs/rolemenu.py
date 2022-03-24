@@ -258,7 +258,7 @@ class Rolemenu(commands.Cog):
                             f"{', '.join([missing_role.name for missing_role in roles_required])}.\n\n"
                             f"Check <#{TGChannelIDs.RULES_CHANNEL}> for information or inquire in <#{TGChannelIDs.HELP_CHANNEL}> if you cannot find the details on the required roles.",
                         )
-                        return
+                return
 
         if exclusive == 1:
             for entry in matching_entries:
