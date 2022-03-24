@@ -9,13 +9,11 @@ class RpsButtons(discord.ui.View):
     """
 
     def __init__(self, author, member):
-        super().__init__()
+        super().__init__(timeout=60)
         self.author = author
         self.member = member
         self.authorchoice = None
         self.memberchoice = None
-        # set it to 1 min, default one was 3 mins thought that was a bit too long
-        self.timeout = 60
 
     @discord.ui.button(label="Rock", emoji="🪨", style=discord.ButtonStyle.gray)
     async def rock(self, button: discord.ui.Button, interaction: discord.Interaction):
@@ -74,14 +72,11 @@ class TicTacToeButtons(discord.ui.View):
     """
 
     def __init__(self, author, member):
-        super().__init__()
+        super().__init__(timeout=60)
         self.author = author
         self.member = member
         self.turn = author
         self.message = None
-        # the timeout refreshes every time someone presses a button,
-        # so 1 minute is more than enough.
-        self.timeout = 60
         # initialises the board
         self.board = [0, 0, 0, 0, 0, 0, 0, 0, 0]
 
