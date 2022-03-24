@@ -3,8 +3,9 @@ from discord.ext import commands
 import aiosqlite
 import json
 from datetime import datetime, timezone
-from utils.ids import TGChannelIDs
+import utils.embed
 import utils.check
+from utils.ids import TGChannelIDs
 
 
 class Starboard(commands.Cog):
@@ -147,12 +148,7 @@ class Starboard(commands.Cog):
                     embed.set_footer(text=f"{message.id}")
                     embed.timestamp = discord.utils.utcnow()
 
-                    # wanna be able to see some pics
-                    if message.attachments:
-                        if message.attachments[0].url.endswith(
-                            (".jpg", ".png", ".jpeg", ".gif")
-                        ):
-                            embed.set_image(url=message.attachments[0].url)
+                    embed = utils.embed.add_attachments_to_embed(embed, message)
 
                     star_message = await star_channel.send(embed=embed)
 

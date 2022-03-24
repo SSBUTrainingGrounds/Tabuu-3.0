@@ -1,6 +1,7 @@
 import discord
 from discord.ext import commands
 from io import StringIO
+import utils.embed
 from utils.ids import GuildIDs, TGChannelIDs, BGChannelIDs
 
 
@@ -238,46 +239,8 @@ class Logging(commands.Cog):
             name=f"{str(message.author)} ({message.author.id})",
             icon_url=message.author.display_avatar.url,
         )
-        # if a message has attachments to it, they also get logged. i dont really care for that on the on message edit though
-        if message.attachments:
-            # for one attachment, this is enough
-            if len(message.attachments) == 1:
-                # we dont use the attachment.content_type here since it could return None, we just check the url
-                if message.attachments[0].url.endswith(
-                    (".jpg", ".png", ".jpeg", ".gif")
-                ):
-                    # we want the cached proxy url to see some images after they're deleted
-                    embed.set_image(url=message.attachments[0].proxy_url)
-                    embed.add_field(
-                        name="Attachment:", value="See below.", inline=False
-                    )
-                else:
-                    embed.add_field(
-                        name="Attachment:",
-                        value=message.attachments[0].url,
-                        inline=False,
-                    )
-            # for multiple, putting it all into one embed value might result in too many characters, so this is needed
-            else:
-                for i, x in enumerate(message.attachments, start=1):
-                    if not embed.image:
-                        if x.url.endswith((".jpg", ".png", ".jpeg", ".gif")):
-                            embed.set_image(url=x.proxy_url)
 
-                    embed.add_field(
-                        name=f"Attachment ({i}/{len(message.attachments)}):",
-                        value=x.url,
-                        inline=False,
-                    )
-
-        if message.stickers:
-            # so as far as i know, you can only have 1 sticker attached to a message
-            # but you can have 1 sticker and some other attachments
-            if not embed.image:
-                embed.set_image(url=message.stickers[0].url)
-                embed.add_field(name="Sticker:", value="See below.", inline=False)
-            else:
-                embed.add_field(name="Sticker:", value=f"{message.stickers[0].url}")
+        embed = utils.embed.add_attachments_to_embed(embed, message)
 
         embed.add_field(name="Message ID:", value=message.id)
         embed.timestamp = discord.utils.utcnow()

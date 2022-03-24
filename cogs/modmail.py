@@ -1,8 +1,9 @@
 import discord
 from discord.ext import commands
 from discord import app_commands
-from utils.ids import TGRoleIDs, GuildIDs, TGChannelIDs
+import utils.embed
 import utils.check
+from utils.ids import TGRoleIDs, GuildIDs, TGChannelIDs
 
 
 class ConfirmationButtons(discord.ui.View):
@@ -140,35 +141,8 @@ async def report_message(interaction: discord.Interaction, message: discord.Mess
         name=f"{str(message.author)} ({message.author.id})",
         icon_url=message.author.display_avatar.url,
     )
-    if message.attachments:
-        if len(message.attachments) == 1:
-            if message.attachments[0].url.endswith((".jpg", ".png", ".jpeg", ".gif")):
-                embed.set_image(url=message.attachments[0].proxy_url)
-                embed.add_field(name="Attachment:", value="See below.", inline=False)
-            else:
-                embed.add_field(
-                    name="Attachment:",
-                    value=message.attachments[0].url,
-                    inline=False,
-                )
-        else:
-            for i, x in enumerate(message.attachments, start=1):
-                if not embed.image:
-                    if x.url.endswith((".jpg", ".png", ".jpeg", ".gif")):
-                        embed.set_image(url=x.proxy_url)
 
-                embed.add_field(
-                    name=f"Attachment ({i}/{len(message.attachments)}):",
-                    value=x.url,
-                    inline=False,
-                )
-
-    if message.stickers:
-        if not embed.image:
-            embed.set_image(url=message.stickers[0].url)
-            embed.add_field(name="Sticker:", value="See below.", inline=False)
-        else:
-            embed.add_field(name="Sticker:", value=f"{message.stickers[0].url}")
+    embed = utils.embed.add_attachments_to_embed(embed, message)
 
     await modmail_channel.send(
         f"**✉️ New Message Report {mod_role.mention}! ✉️**\nReport Received From: {interaction.user.mention}",
