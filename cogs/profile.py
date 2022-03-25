@@ -272,7 +272,8 @@ class Profile(commands.Cog):
         Separates the input by commas, and then matches with names, nicknames and fighter numbers.
         Echoes have an *e* behind their fighter number.
         """
-        # since you can have some more pockets, i put it at 10 max. there could be a max of around 25 per embed field however
+        # since you can have some more pockets, i put it at 10 max.
+        # there could be a max of around 25 per embed field however
         chars = " ".join(self.match_character(profile_input)[:7])
 
         await self.make_new_profile(ctx.author)

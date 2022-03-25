@@ -42,9 +42,9 @@ class Owner(commands.Cog):
                 await initial_message.edit(
                     content=f"Successfully synced {len(cmds)} Application Command(s) to the {target_guild.name} Server."
                 )
-            except discord.errors.Forbidden:
+            except discord.errors.Forbidden as exc:
                 await initial_message.edit(
-                    content=f"Could not sync Application Command(s) on the {target_guild.name} Server, due to Missing Permissions."
+                    content=f"Could not sync Application Command(s) on the {target_guild.name} Server: {exc}"
                 )
 
     @commands.command(aliases=["reloadcog"])

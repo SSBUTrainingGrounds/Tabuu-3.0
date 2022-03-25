@@ -39,20 +39,23 @@ class Reminder(commands.Cog):
             )
             return
 
-        # i think 200 chars is enough for a reminder message, have to keep discord max message length in mind for viewreminders
+        # i think 200 chars is enough for a reminder message,
+        # have to keep discord max message length in mind for viewreminders
         if len(reminder_message[200:]) > 0:
             reminder_message = reminder_message[:200]
 
         reminder_message = discord.utils.remove_markdown(reminder_message)
 
-        # if the duration is fairly short, i wont bother writing it to the file, a sleep statement will do
+        # if the duration is fairly short, i wont bother writing it to the file,
+        # a sleep statement will do
         if seconds < 299:
             message_dt = datetime.datetime.fromtimestamp(
                 discord.utils.utcnow().timestamp() + seconds
             )
 
             await ctx.send(
-                f"{ctx.author.mention}, I will remind you about `{reminder_message}` in {reminder_time}! ({discord.utils.format_dt(message_dt, style='f')})"
+                f"{ctx.author.mention}, I will remind you about `{reminder_message}` in {reminder_time}! "
+                f"({discord.utils.format_dt(message_dt, style='f')})"
             )
 
             await asyncio.sleep(seconds)
@@ -84,7 +87,9 @@ class Reminder(commands.Cog):
             )
 
             await ctx.send(
-                f"{ctx.author.mention}, I will remind you about `{reminder_message}` in {reminder_time}! ({discord.utils.format_dt(message_dt, style='f')})\nView all of your active reminders with `%viewreminders`"
+                f"{ctx.author.mention}, I will remind you about `{reminder_message}` in {reminder_time}! "
+                f"({discord.utils.format_dt(message_dt, style='f')})\n"
+                "View all of your active reminders with `%viewreminders`"
             )
 
     @commands.command(
@@ -110,7 +115,9 @@ class Reminder(commands.Cog):
             timediff = str(datetime.timedelta(seconds=date - dt_now)).split(
                 ".", maxsplit=1
             )[0]
-            # in a unfortunate case of timing, a user could view their reminder when it already "expired" but the loop has not checked yet. this here prevents a dumb number displaying
+            # in an unfortunate case of timing, a user could view their reminder
+            # when it already "expired" but the loop has not checked yet.
+            # this here prevents a dumb number displaying
             if (date - dt_now) <= 30:
                 timediff = "Less than a minute..."
             reminder_list.append(
@@ -124,10 +131,12 @@ class Reminder(commands.Cog):
             await ctx.send(f"Here are your active reminders:\n{''.join(reminder_list)}")
         # if the message is too long, this error gets triggered
         except discord.errors.HTTPException:
-            # should be max ~300 chars per reminder so we can fit in 6 in the worst case. discord message char limit being at 2000
+            # should be max ~300 chars per reminder so we can fit in 6 in the worst case.
+            # discord message char limit being at 2000
             shortened_reminder_list = reminder_list[:6]
             await ctx.send(
-                f"Your reminders are too long to list in a single message. Here are your first 6 reminders:\n{''.join(shortened_reminder_list)}"
+                f"Your reminders are too long to list in a single message. "
+                f"Here are your first 6 reminders:\n{''.join(shortened_reminder_list)}"
             )
 
     @commands.command(
@@ -182,13 +191,17 @@ class Reminder(commands.Cog):
                     await channel.send(
                         f"<@!{user_id}>, you wanted me to remind you of `{message}`, {read_time} ago."
                     )
-                    # the channel could get deleted in the meantime, or something else can prevent us having access
-                except discord.HTTPException as exc:
-                    # unfortunately we need a second try/except block because people can block your bot and this would throw an error otherwise, and we dont wanna interrupt the loop
+                    # the channel could get deleted in the meantime,
+                    # or something else can prevent us having access
+                except discord.HTTPException:
+                    # unfortunately we need a second try/except block because
+                    # people can block your bot and this would throw an error otherwise,
+                    # and we dont wanna interrupt the loop
                     try:
                         member = await self.bot.fetch_user(user_id)
                         await member.send(
-                            f"<@!{user_id}>, you wanted me to remind you of `{message}`, {read_time} ago, in a deleted channel."
+                            f"<@!{user_id}>, you wanted me to remind you of `{message}`, "
+                            f"{read_time} ago, in a deleted channel."
                         )
                     except discord.HTTPException as exc:
                         logger.info(f"Could not notify user due to: {exc}")
@@ -215,7 +228,8 @@ class Reminder(commands.Cog):
             )
         elif isinstance(error, commands.CommandInvokeError):
             await ctx.send(
-                "Invalid time format! Please use a number followed by d/h/m/s for days/hours/minutes/seconds.\nExample: `%reminder 1h20m your message here`"
+                "Invalid time format! Please use a number followed by d/h/m/s for days/hours/minutes/seconds.\n"
+                "Example: `%reminder 1h20m your message here`"
             )
         else:
             raise error

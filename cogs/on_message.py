@@ -53,7 +53,8 @@ class On_message(commands.Cog):
                     )
 
         # searches for bad words using regex
-        # string.digits+string.whitespace+string.punctuation, add all these for very strict ruling, might end up with false positives
+        # string.digits+string.whitespace+string.punctuation,
+        # add all these for very strict ruling, might end up with false positives
         separators = ()
         # add/remove these depending on strictness, do +'/'+'-' and so on for urls in the future maybe
         excluded = string.ascii_letters + string.digits
@@ -96,7 +97,9 @@ class On_message(commands.Cog):
 
                 try:
                     await message.author.send(
-                        f"You have been automatically warned in the {message.guild.name} Server for sending a message containing a blacklisted word.\nIf you would like to discuss your punishment, please contact {AdminVars.GROUNDS_GENERALS}."
+                        f"You have been automatically warned in the {message.guild.name} Server "
+                        "for sending a message containing a blacklisted word.\n"
+                        f"If you would like to discuss your punishment, please contact {AdminVars.GROUNDS_GENERALS}."
                     )
                 except discord.HTTPException as exc:
                     logger = self.bot.get_logger("bot.autowarn")
@@ -104,7 +107,8 @@ class On_message(commands.Cog):
                         f"Tried to message automatic warn reason to {str(message.author)}, but it failed: {exc}"
                     )
 
-                # this function here checks the warn count on each user and if it reaches a threshold it will mute/kick/ban the user
+                # this function here checks the warn count on each user
+                # and if it reaches a threshold it will mute/kick/ban the user
                 await Warn.check_warn_count(
                     self, message.guild, message.channel, message.author
                 )

@@ -365,7 +365,8 @@ class Ranking(commands.Cog):
         )
         await mm_thread.add_user(ctx.author)
         await mm_thread.send(
-            f"Hi there, {ctx.author.mention}! Please use this thread for communicating with your opponent and for reporting matches."
+            f"Hi there, {ctx.author.mention}! "
+            "Please use this thread for communicating with your opponent and for reporting matches."
         )
 
         # waits 30 mins and deletes the ping afterwards
@@ -418,7 +419,8 @@ class Ranking(commands.Cog):
             )
 
         await ctx.send(
-            f"The winner of the match {ctx.author.mention} vs. {user.mention} is: {ctx.author.mention}! \n{user.mention} do you agree with the results? **Type y to verify.**"
+            f"The winner of the match {ctx.author.mention} vs. {user.mention} is: {ctx.author.mention}! \n"
+            f"{user.mention} do you agree with the results? **Type y to verify.**"
         )
         try:
             await self.bot.wait_for("message", timeout=40.0, check=check)
@@ -441,7 +443,9 @@ class Ranking(commands.Cog):
         await self.update_ranked_role(user, ctx.guild, 5)
 
         await ctx.send(
-            f"Game successfully reported!\n{ctx.author.mention} won!\nUpdated Elo score: {ctx.author.mention} = {winnerupdate} (+{difference}) | {user.mention} = {loserupdate} (-{difference})"
+            f"Game successfully reported!\n{ctx.author.mention} won!\n"
+            f"Updated Elo score: {ctx.author.mention} = {winnerupdate} (+{difference}) | "
+            f"{user.mention} = {loserupdate} (-{difference})"
         )
 
     @commands.command(aliases=["forcereportgame"], cooldown_after_parsing=True)
@@ -467,7 +471,8 @@ class Ranking(commands.Cog):
             )
 
         await ctx.send(
-            f"The winner of the match {user1.mention} vs. {user2.mention} is: {user1.mention}! \n{ctx.author.mention}, is that result correct? **Type y to verify.**"
+            f"The winner of the match {user1.mention} vs. {user2.mention} is: {user1.mention}! \n"
+            f"{ctx.author.mention}, is that result correct? **Type y to verify.**"
         )
         try:
             await self.bot.wait_for("message", timeout=40.0, check=check)
@@ -488,7 +493,10 @@ class Ranking(commands.Cog):
         await self.update_ranked_role(user2, ctx.guild, 5)
 
         await ctx.send(
-            f"Game successfully reported!\n{user1.mention} won!\nUpdated Elo score: {user1.mention} = {winnerupdate} (+{difference}) | {user2.mention} = {loserupdate} (-{difference})\nGame was forcefully reported by: {ctx.author.mention}"
+            f"Game successfully reported!\n{user1.mention} won!\n"
+            f"Updated Elo score: {user1.mention} = {winnerupdate} (+{difference}) | "
+            f"{user2.mention} = {loserupdate} (-{difference})\n"
+            f"Game was forcefully reported by: {ctx.author.mention}"
         )
 
     @commands.command(aliases=["rankedstats"])
@@ -623,11 +631,13 @@ class Ranking(commands.Cog):
             await ctx.send("Nice try, but you don't have the permissions to do that!")
         elif isinstance(error, commands.MissingRequiredArgument):
             await ctx.send(
-                "Please mention the 2 members that have played in this match. First mention the winner, second mention the loser."
+                "Please mention the 2 members that have played in this match. "
+                "First mention the winner, second mention the loser."
             )
         elif isinstance(error, commands.MemberNotFound):
             await ctx.send(
-                "Please mention the 2 members that have played in this match. First mention the winner, second mention the loser."
+                "Please mention the 2 members that have played in this match. "
+                "First mention the winner, second mention the loser."
             )
         elif isinstance(error, commands.CommandOnCooldown):
             await ctx.send(
@@ -667,7 +677,8 @@ class Ranking(commands.Cog):
             )
 
             await ctx.send(
-                f"{ctx.author.mention}, you are on cooldown for another {round((error.retry_after)/60)} minutes to use this command. \nIn the meantime, here are the most recent ranked pings:",
+                f"{ctx.author.mention}, you are on cooldown for another {round((error.retry_after)/60)} minutes to use this command. \n"
+                "In the meantime, here are the most recent ranked pings:",
                 embed=embed,
             )
         else:
