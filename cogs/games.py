@@ -253,13 +253,18 @@ class BlackJackButtons(discord.ui.View):
 
         card = random.choice(card_deck)
 
-        if card[0] in (self.author_hand[0] or self.member_hand[0]):
+        # checks if the card is already present in one hand, if so repeats the process
+        # i read that in real life blackjack is played with like 8 decks at once
+        # so this really isnt even needed
+        if card[0] in self.author_hand[0] or card[0] in self.member_hand[0]:
             try:
                 self.draw_card()
+                return
             except RecursionError:
                 return
 
         if self.turn == self.author:
+            # if the card is an ace, checks if it should be worth 11 or 1
             if card[1] == 1:
                 if self.author_hand[1] + 11 <= 21:
                     card[1] = 11
@@ -273,12 +278,14 @@ class BlackJackButtons(discord.ui.View):
             self.member_hand[1] += card[1]
 
     def get_winner(self):
+        # checks for values greater than 21
         if self.author_hand[1] > 21 >= self.member_hand[1]:
             return self.member
 
         if self.member_hand[1] > 21 >= self.author_hand[1]:
             return self.author
 
+        # checks for draws
         if self.member_hand[1] == self.author_hand[1] or (
             self.author_hand[1] > 21 and self.member_hand[1] > 21
         ):
