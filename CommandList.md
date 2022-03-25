@@ -2,7 +2,7 @@
 
 This here contains every command with a detailed explanation on how to use them. They are ordered alphabetically, search them with Ctrl+F.  
 
-Last updated: 23 March 2022  
+Last updated: 25 March 2022  
 
 ## Quick explanation of this document  
 Arguments that are optional all have the `: Optional` suffix. Every other argument is required.  
@@ -20,28 +20,28 @@ Everything else should be fairly self-explanatory.
   
 - **%addbadges** `<@user> <emojis>`  
     - Info: **Admin only.** Adds one or multiple Badges to a User. Mention the User or use User ID, for the badges they all need to be valid emojis that the bot can use.  
-    - Example: `%addbadges @Phxenix :Example1: :Example2:`  
+    - Example: `%addbadges @ExampleUser :Example1: :Example2:`  
     - Aliases: addbadge  
   
 - **%addrole** `<@member> <role>`  
     - Info: **Admin only.** Adds a Role to a Member. Mention the Member or use Member ID, for the Role the bot first tries to use the Role ID or Role mention, after that it searches for the closest match for the role name.  
-    - Example: `%addrole @Phxenix first class` 
+    - Example: `%addrole @ExampleUser first class` 
   
 - **%avatar** `<@member: Optional>`  
     - Info: Gets you the avatar of a Member. Member argument is optional, if there is none, this gets your own avatar. Otherwise mention the Member or use Member ID.  
-    - Example: `%avatar @Phxenix` 
+    - Example: `%avatar @ExampleUser` 
   
 - **%ban** `<@user> <reason>`  
     - Info: **Admin only.** Bans a User. Mention the User or use User ID. You will be asked for confirmation before the User gets banned. The reason will get logged in Audit logs and also DM'd to the User, if the bot can DM the User.  
-    - Example: `%ban @Phxenix what an idiot`  
+    - Example: `%ban @ExampleUser what an idiot`  
   
 - **%banner** `<@member: Optional>`  
     - Info: Gets you the banner of a Member. Member argument is optional, if there is none, this gets your own avatar. Otherwise mention the Member or use Member ID.  
-    - Example: `%banner @Phxenix`  
+    - Example: `%banner @ExampleUser`  
   
 - **%blackjack** `<@member>`  
     - Info: Starts a game of Blackjack with the mentioned Member.  
-    - Example: `%blackjack @Phxenix`  
+    - Example: `%blackjack @ExampleUser`  
     - Aliases: 21, vingtetun, vigntun  
   
 - **%boo**  
@@ -53,7 +53,7 @@ Everything else should be fairly self-explanatory.
   
 - **%clearbadges** `<@user>`  
     - Info: **Admin only.** Clears all Badges from a User. Mention the User or use User ID.  
-    - Example: `%clearbadges @Phxenix`  
+    - Example: `%clearbadges @ExampleUser`  
   
 - **%clearmmpings**  
     - Info: **Admin only.** Clears all matchmaking pings.  
@@ -61,7 +61,7 @@ Everything else should be fairly self-explanatory.
   
 - **%clearwarns** `<@member>`  
     - Info: **Admin only.** Clears all warnings of a Member. Mention the Member or use Member ID.  
-    - Example: `%clearwarns @Phxenix`  
+    - Example: `%clearwarns @ExampleUser`  
   
 - **%coin**  
     - Info: Flips a coin and gives you the result. Heads or Tails.  
@@ -106,7 +106,7 @@ Everything else should be fairly self-explanatory.
   
 - **%deletewarn** `<@member> <warn_id>`  
     - Info: **Admin only.** Deletes a warning by the warning ID. View the warnings of a member with `%warndetails`. Mention the Member or use Member ID.  
-    - Example: `%deletewarn @Phxenix 123456`  
+    - Example: `%deletewarn @ExampleUser 123456`  
   
 - **%doubles**  
     - Info: Pings the doubles role and stores your ping for 30 Minutes. Also creates a thread and invites the user to it. Has a 10 minute cooldown and can only be used in our arena channels.  
@@ -119,11 +119,11 @@ Everything else should be fairly self-explanatory.
   
 - **%forcedeleteprofile** `<@user>`  
     - Info: **Admin only.** deletes the profile of the mentioned User.  
-    - Example: `%forcedeleteprofile @Phxenix`  
+    - Example: `%forcedeleteprofile @ExampleUser`  
   
 - **%forcereportmatch** `<@winner> <@loser>`  
     - Info: **Admin only.** If someone abandons their ranked match an admin will use this to report the match anyways. Mention the Members or use Member IDs. Has a 41 second cooldown. Only works in the Training Grounds Server.  
-    - Example: `%forcereportmatch @Tabuu 3.0 @Phxenix`  
+    - Example: `%forcereportmatch @Tabuu 3.0 @ExampleUser`  
     - Aliases: forcereportgame  
   
 - **%funnies** `<message: Optional>`  
@@ -148,7 +148,7 @@ Everything else should be fairly self-explanatory.
   
 - **%kick** `<@member> <reason>`  
     - Info: **Admin only.** Kicks a member from the server. Mention the Member or use Member ID. You will be asked for confirmation before the Member gets kicked. The reason will get logged in Audit logs and also DM'd to the Member, if the bot can DM the Member.  
-    - Example: `%kick @Phxenix what an idiot`  
+    - Example: `%kick @ExampleUser what an idiot`  
   
 - **%leaderboard**  
     - Info: **Admin only.** Gets you the Top 10 rated players of our ranked matchmaking system.  
@@ -185,7 +185,7 @@ Everything else should be fairly self-explanatory.
   
 - **%mute** `<@member> <reason>`  
     - Info: **Admin only.** Mutes a Member in both servers. The reason will get DM'd to the Member, if the bot can DM the Member.  
-    - Example: `%mute @Phxenix what an idiot`  
+    - Example: `%mute @ExampleUser what an idiot`  
   
 - **%newrolemenu** `<message ID> <emoji> <role>`  
     - Info: **Admin only.** Creates a new entry for a role menu. Mention the Role or use Role ID and make sure the Bot has access to this emoji.  
@@ -213,7 +213,7 @@ Everything else should be fairly self-explanatory.
   
 - **%profile** `<@user: Optional>`  
     - Info: Gets you the profile of the mentioned User, if you dont specify a User, this will get your own.  
-    - Example: `%profile @Phxenix`  
+    - Example: `%profile @ExampleUser`  
     - Aliases: smashprofile, profileinfo  
   
 - **%randomquote**  
@@ -225,7 +225,7 @@ Everything else should be fairly self-explanatory.
   
 - **%rankedstats** `<@user: Optional>`  
     - Info: Gets you the ranked stats of any optional User. If you dont specify a User, this will get your own stats where you can also choose to remove or add your Elo role.
-    - Example: `%rankedstats @Phxenix`  
+    - Example: `%rankedstats @ExampleUser`  
     - Aliases: rankstats  
   
 - **%recentpings**  
@@ -250,25 +250,25 @@ Everything else should be fairly self-explanatory.
   
 - **%removebadge** `<@user> <emoji>`  
     - Info: **Admin only.** Removes one Badge from a User. Mention the User or use User ID. Will check before if the User actually has the Badge in question.  
-    - Example: `%removebadge @Phxenix :Example1:`  
+    - Example: `%removebadge @ExampleUser :Example1:`  
     - Aliases: removebadges  
   
 - **%removerole** `<@member> <role>`  
     - Info: **Admin only.** Removes a role from a Member. Mention the Member or use Member ID, for the Role the bot first tries to use the Role ID or Role mention, after that it searches for the closest match for the role name.  
-    - Example: `%removerole @Phxenix first class`  
+    - Example: `%removerole @ExampleUser first class`  
   
 - **%removetimeout** `<@member>`  
     - Info: **Admin only.** Removes a timeout from a Member. Mention the Member or use Member ID.  
-    - Example: `%removetimeout @Phxenix`  
+    - Example: `%removetimeout @ExampleUser`  
     - Aliases: untimeout  
   
 - **%rename** `<@member> <name: Optional>`  
     - Info: **Admin only.** Renames the Member to the given nickname. Removes the nickname if you do not pass in a new one.  
-    - Example: `%rename @Phxenix Example Name`  
+    - Example: `%rename @ExampleUser Example Name`  
   
 - **%reportmatch** `<@member>`  
     - Info: The winner uses this command after a ranked match to report the result of the match, @member being the person who lost the ranked match. Mention the Member or use Member ID. Has a 41 second cooldown. Only works in ranked arenas or the threads within.  
-    - Example: `%reportmatch @Phxenix`  
+    - Example: `%reportmatch @ExampleUser`  
     - Aliases: reportgame  
   
 - **%roleinfo** `<role>`  
@@ -283,7 +283,7 @@ Everything else should be fairly self-explanatory.
   
 - **%rps** `<@member: Optional>`  
     - Info: Plays a game of Rock, Paper, Scissors with the mentioned Member. If you don't mention a Member, you will play against Tabuu 3.0 himself.  
-    - Example: `%rps @Phxenix`  
+    - Example: `%rps @ExampleUser`  
     - Aliases: rockpaperscissors, rochambeau, roshambo  
   
 - **%secondaries** `<secondary1, secondary2,..: Optional>`  
@@ -304,7 +304,7 @@ Everything else should be fairly self-explanatory.
   
 - **%spotify** `<@member: Optional>`  
     - Info: Posts the song you are currently listening to on Spotify. You need to enable the setting that displays your Spotify Session as your Discord Status for this to work. Does not work in DMs. Member is optional, if not set this will return your own. Mention the Member or use Member ID.  
-    - Example: `%spotify @Phxenix`  
+    - Example: `%spotify @ExampleUser`  
   
 - **%stagelist**  
     - Info: Posts our version of the legal stages.  
@@ -345,11 +345,11 @@ Everything else should be fairly self-explanatory.
   
 - **%tempmute** `<@member> <time> <reason>`  
     - Info: **Admin only.** Mutes a Member in both servers for the specified time, which is in a shortened format with any number and d/h/m/s. Minimum time is 30 seconds, maximum is 1 day. Mention the Member or use Member ID. The reason will get DM'd to the muted person, if the bot can DM the Member.  
-    - Example: `%tempmute @Phxenix 12h30m what an idiot`  
+    - Example: `%tempmute @ExampleUser 12h30m what an idiot`  
   
 - **%tictactoe** `<@member>`  
     - Info: Plays a game of Tic Tac Toe with the mentioned Member.  
-    - Example: `%tictactoe @Phxenix`  
+    - Example: `%tictactoe @ExampleUser`  
     - Aliases: ttt  
   
 - **%time**  
@@ -358,23 +358,23 @@ Everything else should be fairly self-explanatory.
   
 - **%timeout** `<@member> <time> <reason>`  
     - Info: **Admin only.** Times out a Member for the specified time and tries to DM them the reason. Maximum time is 28 days - 1 second. Mention the Member or use Member ID. The reason will get DM'd to the muted person, if the bot can DM the Member. Uses the same time converter as tempmute and reminders, in a shortened format with any number and d/h/m/s.  
-    - Example: `%timeout @Phxenix 12h30m what an idiot`  
+    - Example: `%timeout @ExampleUser 12h30m what an idiot`  
   
 - **%unban** `<@user>`  
     - Info: **Admin only.** Unbans a user. Mention the User or use User ID.  
-    - Example: `%unban @Phxenix`  
+    - Example: `%unban @ExampleUser`  
   
 - **%unmute** `<@member>`  
     - Info: **Admin only.** Unmutes a Member in both servers. Please use this in all cases to unmute someone. Mention the Member or use Member ID.  
-    - Example: `%unmute @Phxenix`  
+    - Example: `%unmute @ExampleUser`  
   
 - **%updatelevel** `<@member: Optional>`  
     - Info: Updates your level role or the one of the mentioned Member according to your MEE6 level manually. Has a 5 minute cooldown. Note that this gets done anyways every 23 hours for everyone in the server. Only works in the Training Grounds server.  
-    - Example: `%updatelevel @Phxenix`  
+    - Example: `%updatelevel @ExampleUser`  
   
 - **%userinfo** `<@member: Optional>`  
     - Info: Gets you various information about a Member. If you haven't specified a Member, this will get your own info. Mention the Member or use Member ID. Does not work in DMs.  
-    - Example: `%userinfo @Phxenix`  
+    - Example: `%userinfo @ExampleUser`  
     - Aliases: user, user-info, info  
   
 - **%viewreminders**  
@@ -383,15 +383,15 @@ Everything else should be fairly self-explanatory.
   
 - **%warn** `<@member> <reason>`  
     - Info: **Admin only.** Use this to warn a Member. The reason will get DM'd to the person warned, if the bot can DM the Member. Mention the Member or use Member ID. Warning expire after 30 days. If a Member reaches 3 warnings within 30 days the Member will get muted, 5 within 30 days equal a kick and 7 within 30 days will get the Member banned.  
-    - Example: `%warn @Phxenix what an idiot`  
+    - Example: `%warn @ExampleUser what an idiot`  
   
 - **%warndetails** `<@member>`  
     - Info: **Admin only.** This will give detailed information about a Members active warnings. Mention a Member or use Member ID.  
-    - Example: `%warndetails @Phxenix`  
+    - Example: `%warndetails @ExampleUser`  
   
 - **%warns** `<@member: Optional>`  
     - Info: This will return the number of active warnings a Member has. If you haven't specified a Member, this will get your own warning count. Mention the Member or use Member ID.  
-    - Example: `%warns @Phxenix`  
+    - Example: `%warns @ExampleUser`  
     - Aliases: warnings, infractions  
   
 - **%who** `<question>`  
