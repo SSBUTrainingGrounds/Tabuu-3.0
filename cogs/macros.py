@@ -54,7 +54,8 @@ class Macros(commands.Cog):
             # basic checks for invalid stuff
             if len(matching_macro) != 0:
                 await ctx.send(
-                    "This name was already taken. If you want to update this macro please delete it first and then create it again."
+                    "This name was already taken. "
+                    "If you want to update this macro please delete it first and then create it again."
                 )
                 return
 

@@ -166,7 +166,9 @@ class Mute(commands.Cog):
             await ctx.send(f"{member.mention} was muted!")
             try:
                 await member.send(
-                    f"You have been muted in the {ctx.guild.name} Server for the following reason: \n```{reason}```\nIf you would like to discuss your punishment, please contact {AdminVars.GROUNDS_GENERALS}."
+                    f"You have been muted in the {ctx.guild.name} Server for the following reason: \n"
+                    f"```{reason}```\n"
+                    f"If you would like to discuss your punishment, please contact {AdminVars.GROUNDS_GENERALS}."
                 )
             except discord.HTTPException as exc:
                 logger = self.bot.get_logger("bot.mute")
@@ -210,7 +212,7 @@ class Mute(commands.Cog):
         """
         Mutes a member in both servers, waits the specified time and unmutes them again.
         """
-        # this here uses the convert_time function from my reminder to convert the input into the seconds, and also a human-readable-string
+        # converts the input into the seconds, and also a human-readable-string
         seconds, time_muted = convert_time(mute_time)
 
         # just checking the duration is not at a crazy high/low value
@@ -235,7 +237,9 @@ class Mute(commands.Cog):
             await ctx.send(f"{member.mention} was muted for *{time_muted}*!")
             try:
                 await member.send(
-                    f"You have been muted in the {ctx.guild.name} Server for ***{time_muted}*** for the following reason: \n```{reason}```\nIf you would like to discuss your punishment, please contact {AdminVars.GROUNDS_GENERALS}."
+                    f"You have been muted in the {ctx.guild.name} Server for ***{time_muted}*** for the following reason: \n"
+                    f"```{reason}```\n"
+                    f"If you would like to discuss your punishment, please contact {AdminVars.GROUNDS_GENERALS}."
                 )
             except discord.HTTPException as exc:
                 logger = self.bot.get_logger("bot.mute")
@@ -257,7 +261,8 @@ class Mute(commands.Cog):
                 {"user_id": member.id},
             )
 
-        # the unmute block from %unmute, no need for another unmute confirmation if the user was unmuted before manually
+        # the unmute block from %unmute,
+        # no need for another unmute confirmation if the user was unmuted before manually
         if len(matching_user) != 0:
             await self.remove_mute(member)
             await ctx.send(f"{member.mention} was automatically unmuted!")
@@ -309,7 +314,9 @@ class Mute(commands.Cog):
 
         try:
             await member.send(
-                f"You are on timeout in the {ctx.guild.name} Server until {aware_dt} for the following reason: \n```{reason}```\nIf you would like to discuss your punishment, please contact {AdminVars.GROUNDS_GENERALS}."
+                f"You are on timeout in the {ctx.guild.name} Server until {aware_dt} for the following reason: \n"
+                f"```{reason}```\n"
+                f"If you would like to discuss your punishment, please contact {AdminVars.GROUNDS_GENERALS}."
             )
         except discord.HTTPException as exc:
             logger = self.bot.get_logger("bot.mute")
@@ -394,7 +401,8 @@ class Mute(commands.Cog):
             await ctx.send("You need to mention a member!")
         elif isinstance(error, commands.CommandInvokeError):
             await ctx.send(
-                "Something went wrong! Either you used an invalid time format or I don't have the required permissons! Try using a number followed by d/h/m/s for days/hours/minutes/seconds."
+                "Something went wrong! Either you used an invalid time format or I don't have the required permissons! "
+                "Try using a number followed by d/h/m/s for days/hours/minutes/seconds."
             )
         else:
             raise error

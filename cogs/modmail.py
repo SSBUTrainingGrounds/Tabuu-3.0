@@ -65,7 +65,8 @@ class ModmailButton(discord.ui.View):
         view = ConfirmationButtons(interaction.user)
 
         await interaction.response.send_message(
-            "Are you sure you want to create a private thread with the moderators and notify them?\nThis message times out in 60 seconds.",
+            "Are you sure you want to create a private thread with the moderators and notify them?\n"
+            "This message times out in 60 seconds.",
             view=view,
             ephemeral=True,
         )
@@ -99,7 +100,9 @@ class ModmailButton(discord.ui.View):
             await thread.add_user(interaction.user)
 
             await thread.send(
-                f"**✉️New Modmail <@&{TGRoleIDs.MOD_ROLE}>!✉️**\nHey there, {interaction.user.mention}! Thanks for reaching out to the Moderator Team. They will be with you shortly.\nPlease use this thread for communication."
+                f"**✉️New Modmail <@&{TGRoleIDs.MOD_ROLE}>!✉️**\nHey there, {interaction.user.mention}! "
+                "Thanks for reaching out to the Moderator Team. They will be with you shortly.\n"
+                "Please use this thread for communication."
             )
         # private threads can only be created if you have a subscripion level of 2.
         # we won't create a thread, cause public modmail isnt really that great.
@@ -107,7 +110,8 @@ class ModmailButton(discord.ui.View):
         except discord.HTTPException as exc:
             # we have to use the followup here since you cant respond to an interaction twice?
             await interaction.followup.send(
-                f"Looks like something went wrong:\n```{exc}```\nPlease either use `%modmail` in my DMs or contact one of the moderators directly.",
+                f"Looks like something went wrong:\n```{exc}```\n"
+                "Please either use `%modmail` in my DMs or contact one of the moderators directly.",
                 ephemeral=True,
             )
 
@@ -205,7 +209,8 @@ class Modmail(commands.Cog):
 
             complete_message = f"**✉️ New Modmail {mod_role.mention}! ✉️**\nFrom: {ctx.author} \nMessage:\n{args} \n{atm}"
 
-            # with the message attachments combined with the normal message lengths, the message can reach over 4k characters, but we can only send 2k at a time.
+            # with the message attachments combined with the normal message lengths,
+            # the message can reach over 4k characters, but we can only send 2k at a time.
             if len(complete_message[4000:]) > 0:
                 await modmail_channel.send(complete_message[:2000])
                 await modmail_channel.send(complete_message[2000:4000])
@@ -244,7 +249,8 @@ class Modmail(commands.Cog):
     async def modmail_error(self, ctx, error):
         if isinstance(error, commands.MissingRequiredArgument):
             await ctx.send(
-                "Please provide a message to the moderators. It should look something like:\n```%modmail (your message here)```"
+                "Please provide a message to the moderators. It should look something like:\n"
+                "```%modmail (your message here)```"
             )
         else:
             raise error

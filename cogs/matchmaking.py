@@ -126,7 +126,8 @@ class Matchmaking(commands.Cog):
             )
 
             await ctx.send(
-                f"{ctx.author.mention} is looking for {singles_role.mention} games!\nHere are the most recent Singles pings in our open arenas:",
+                f"{ctx.author.mention} is looking for {singles_role.mention} games!\n"
+                "Here are the most recent Singles pings in our open arenas:",
                 embed=embed,
             )
 
@@ -153,7 +154,8 @@ class Matchmaking(commands.Cog):
                 )
 
                 await ctx.send(
-                    f"{ctx.author.mention}, you are on cooldown for another {round((error.retry_after)/60)} minutes to use this command. \nIn the meantime, here are the most recent Singles pings in our open arenas:",
+                    f"{ctx.author.mention}, you are on cooldown for another {round((error.retry_after)/60)} minutes to use this command. \n"
+                    "In the meantime, here are the most recent Singles pings in our open arenas:",
                     embed=embed,
                 )
             else:
@@ -210,7 +212,8 @@ class Matchmaking(commands.Cog):
             )
 
             await ctx.send(
-                f"{ctx.author.mention} is looking for {doubles_role.mention} games!\nHere are the most recent Doubles pings in our open arenas:",
+                f"{ctx.author.mention} is looking for {doubles_role.mention} games!\n"
+                "Here are the most recent Doubles pings in our open arenas:",
                 embed=embed,
             )
 
@@ -235,7 +238,8 @@ class Matchmaking(commands.Cog):
                 )
 
                 await ctx.send(
-                    f"{ctx.author.mention}, you are on cooldown for another {round((error.retry_after)/60)} minutes to use this command. \nIn the meantime, here are the most recent Doubles pings in our open arenas:",
+                    f"{ctx.author.mention}, you are on cooldown for another {round((error.retry_after)/60)} minutes to use this command. \n"
+                    "In the meantime, here are the most recent Doubles pings in our open arenas:",
                     embed=embed,
                 )
             else:
@@ -302,12 +306,14 @@ class Matchmaking(commands.Cog):
 
             if not msg:
                 await ctx.send(
-                    f"{ctx.author.mention} is looking for {funnies_role.mention} games!\nHere are the most recent Funnies pings in our open arenas:",
+                    f"{ctx.author.mention} is looking for {funnies_role.mention} games!\n"
+                    "Here are the most recent Funnies pings in our open arenas:",
                     embed=embed,
                 )
             else:
                 await ctx.send(
-                    f"{ctx.author.mention} is looking for {funnies_role.mention} games: `{msg}`\nHere are the most recent Funnies pings in our open arenas:",
+                    f"{ctx.author.mention} is looking for {funnies_role.mention} games: `{msg}`\n"
+                    "Here are the most recent Funnies pings in our open arenas:",
                     embed=embed,
                 )
 
@@ -332,7 +338,8 @@ class Matchmaking(commands.Cog):
                 )
 
                 await ctx.send(
-                    f"{ctx.author.mention}, you are on cooldown for another {round((error.retry_after)/60)} minutes to use this command. \nIn the meantime, here are the most recent Funnies pings in our open arenas:",
+                    f"{ctx.author.mention}, you are on cooldown for another {round((error.retry_after)/60)} minutes to use this command. \n"
+                    "In the meantime, here are the most recent Funnies pings in our open arenas:",
                     embed=embed,
                 )
             else:

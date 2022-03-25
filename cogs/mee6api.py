@@ -119,7 +119,8 @@ class Mee6api(commands.Cog):
             )
         else:
             await botmessage.edit(
-                content=f"{member.mention}, you are Level {userlevel}, and thus I have given you the {rolegiven} role."
+                content=f"{member.mention}, you are Level {userlevel}, "
+                f"and thus I have given you the {rolegiven} role."
             )
 
     # generic error message
@@ -127,7 +128,8 @@ class Mee6api(commands.Cog):
     async def updatelevel_error(self, ctx, error):
         if isinstance(error, commands.CommandOnCooldown):
             await ctx.send(
-                f"{ctx.author.mention}, you are on cooldown for another {round((error.retry_after)/60)} minutes to use this command."
+                f"{ctx.author.mention}, you are on cooldown for another "
+                f"{round((error.retry_after)/60)} minutes to use this command."
             )
         elif isinstance(error, commands.NoPrivateMessage):
             await ctx.send(
@@ -137,7 +139,8 @@ class Mee6api(commands.Cog):
             await ctx.send("Please mention a valid member, or leave it blank.")
         elif isinstance(error, commands.CommandInvokeError):
             await ctx.send(
-                "Something went wrong! Either the API is down or the user was not in the leaderboard yet. Please try again later."
+                "Something went wrong! Either the API is down or the user was not in the leaderboard yet. "
+                "Please try again later."
             )
         else:
             raise error
