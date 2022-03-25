@@ -81,7 +81,8 @@ class Warn(commands.Cog):
         if warns > 6:
             try:
                 await member.send(
-                    f"You have been automatically banned from the {guild.name} Server for reaching warning #***{warns}***.\nPlease contact {AdminVars.GROUNDS_KEEPER} for an appeal.\n{AdminVars.BAN_RECORDS}"
+                    f"You have been automatically banned from the {guild.name} Server for reaching warning #***{warns}***.\n"
+                    f"Please contact {AdminVars.GROUNDS_KEEPER} for an appeal.\n{AdminVars.BAN_RECORDS}"
                 )
             except discord.HTTPException as exc:
                 logger = self.bot.get_logger("bot.warn")
@@ -96,7 +97,8 @@ class Warn(commands.Cog):
         elif warns > 4:
             try:
                 await member.send(
-                    f"You have been automatically kicked from the {guild.name} Server for reaching warning #***{warns}***. \nIf you would like to discuss your punishment, please contact {AdminVars.GROUNDS_GENERALS}."
+                    f"You have been automatically kicked from the {guild.name} Server for reaching warning #***{warns}***.\n"
+                    f"If you would like to discuss your punishment, please contact {AdminVars.GROUNDS_GENERALS}."
                 )
             except discord.HTTPException as exc:
                 logger = self.bot.get_logger("bot.warn")
@@ -116,7 +118,8 @@ class Warn(commands.Cog):
 
             try:
                 await member.send(
-                    f"You have been automatically muted in the {guild.name} Server for reaching warning #***{warns}***. \nIf you would like to discuss your punishment, please contact {AdminVars.GROUNDS_GENERALS}."
+                    f"You have been automatically muted in the {guild.name} Server for reaching warning #***{warns}***.\n"
+                    f"If you would like to discuss your punishment, please contact {AdminVars.GROUNDS_GENERALS}."
                 )
             except discord.HTTPException as exc:
                 logger = self.bot.get_logger("bot.warn")
@@ -140,7 +143,9 @@ class Warn(commands.Cog):
         # tries to dm user
         try:
             await member.send(
-                f"You have been warned in the {ctx.guild.name} Server for the following reason: \n```{reason}```\nIf you would like to discuss your punishment, please contact {AdminVars.GROUNDS_GENERALS}."
+                f"You have been warned in the {ctx.guild.name} Server for the following reason: \n"
+                f"```{reason}```\n"
+                f"If you would like to discuss your punishment, please contact {AdminVars.GROUNDS_GENERALS}."
             )
         except discord.HTTPException as exc:
             logger = self.bot.get_logger("bot.warn")
@@ -226,7 +231,8 @@ class Warn(commands.Cog):
 
             i += 1
 
-        # the maximum amount of embeds you can send is 10, we do ban people at 7 warnings but you never know what might happen
+        # the maximum amount of embeds you can send is 10,
+        # we do ban people at 7 warnings but you never know what might happen
         try:
             await ctx.send(
                 f"Active warnings for {member.mention}: {len(user_warnings)}",

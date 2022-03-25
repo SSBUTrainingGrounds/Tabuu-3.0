@@ -104,14 +104,16 @@ class Starboard(commands.Cog):
                             star_channel = await self.bot.fetch_channel(
                                 self.starboard_channel
                             )
-                            # gets the sent starboard message, in a try except block cause it could be deleted already
+                            # gets the sent starboard message,
+                            # in a try except block cause it could be deleted already
                             try:
                                 edit_message = await star_channel.fetch_message(x[1])
                                 new_embed = edit_message.embeds[0]
                                 new_value = (
                                     f"**{reaction.count} {str(reaction.emoji)}**"
                                 )
-                                # updates the embed with the new count, except if the values are the exact same anyways, which can happen
+                                # updates the embed with the new count,
+                                # except if the values are the exact same anyways, which could happen
                                 if new_embed.fields[0].value == new_value:
                                     return
                                 new_embed.set_field_at(
@@ -125,7 +127,8 @@ class Starboard(commands.Cog):
                     # if it doesnt already exist, it creates a new message
                     star_channel = await self.bot.fetch_channel(self.starboard_channel)
 
-                    # again dont want error messages, so if the content is invalid it gets replaced by a whitespace character
+                    # again dont want error messages,
+                    # so if the content is invalid it gets replaced by a whitespace character
                     if len(message.content) == 0 or len(message.content[2000:]) > 0:
                         message.content = "\u200b"
 
@@ -206,7 +209,8 @@ class Starboard(commands.Cog):
                             edit_message = await star_channel.fetch_message(x[1])
                             new_embed = edit_message.embeds[0]
                             new_value = f"**{reaction.count} {str(reaction.emoji)}**"
-                            # updates the embed with the new count, except if the values are the exact same anyways, which can happen
+                            # updates the embed with the new count,
+                            # except if the values are the exact same anyways, which could happen
                             if new_embed.fields[0].value == new_value:
                                 return
                             new_embed.set_field_at(0, name="\u200b", value=new_value)

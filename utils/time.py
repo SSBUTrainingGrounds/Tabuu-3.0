@@ -112,7 +112,8 @@ def convert_time(input_time: str):
         else:
             current_position += 1
 
-    # if the last char in the string is not either d/h/m/s we will just throw an error. eg: good input: 1h49m, bad input: 1h20
+    # if the last char in the string is not either d/h/m/s we will just throw an error.
+    # eg: good input: 1h49m, bad input: 1h20
     if current_position != 0:
         raise commands.CommandInvokeError
 

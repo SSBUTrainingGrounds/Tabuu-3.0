@@ -27,7 +27,8 @@ class Rolemenu(commands.Cog):
 
         except discord.HTTPException:
             await ctx.send(
-                "Either the message ID is invalid or I don't have access to this emoji. Also make sure the message is in the same channel as this one."
+                "Either the message ID is invalid or I don't have access to this emoji. "
+                "Also make sure the message is in the same channel as this one."
             )
             return
 
@@ -117,7 +118,8 @@ class Rolemenu(commands.Cog):
             await db.commit()
 
         await ctx.send(
-            f"I have set the Role requirement to {rolereq_name_store} and the Exclusive requirement to {exclusive} for the Role menu message ID {message}."
+            f"I have set the Role requirement to {rolereq_name_store} "
+            f"and the Exclusive requirement to {exclusive} for the Role menu message ID {message}."
         )
 
     @commands.command()
@@ -254,9 +256,11 @@ class Rolemenu(commands.Cog):
 
                         # sends a message telling them what roles they need
                         await payload.member.send(
-                            f"The role {wanted_role.name} was not added to you due to not having one or more of the following roles:"
+                            f"The role {wanted_role.name} was not added to you "
+                            "due to not having one or more of the following roles:"
                             f"{', '.join([missing_role.name for missing_role in roles_required])}.\n\n"
-                            f"Check <#{TGChannelIDs.RULES_CHANNEL}> for information or inquire in <#{TGChannelIDs.HELP_CHANNEL}> if you cannot find the details on the required roles.",
+                            f"Check <#{TGChannelIDs.RULES_CHANNEL}> for information "
+                            f"or inquire in <#{TGChannelIDs.HELP_CHANNEL}> if you cannot find the details on the required roles.",
                         )
                 return
 
@@ -312,11 +316,13 @@ class Rolemenu(commands.Cog):
             await ctx.send("Nice try, but you don't have the permissions to do that!")
         elif isinstance(error, commands.BadArgument):
             await ctx.send(
-                "Something was not recognized properly. The syntax for this command is: \n`%newrolemenu <message_id> <emoji> <role>`"
+                "Something was not recognized properly. The syntax for this command is: \n"
+                "`%newrolemenu <message_id> <emoji> <role>`"
             )
         elif isinstance(error, commands.MissingRequiredArgument):
             await ctx.send(
-                "Something was not recognized properly. The syntax for this command is: \n`%newrolemenu <message_id> <emoji> <role>`"
+                "Something was not recognized properly. The syntax for this command is: \n"
+                "`%newrolemenu <message_id> <emoji> <role>`"
             )
         else:
             raise error

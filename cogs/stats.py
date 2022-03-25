@@ -480,7 +480,8 @@ Events parsed: {self.bot.events_listened_to}
             await ctx.send("Nice try, but you don't have the permissions to do that!")
         elif isinstance(error, commands.CommandInvokeError):
             await ctx.send(
-                "I didn't find a good match for the role you provided. Please be more specific, or mention the role, or use the Role ID."
+                "I didn't find a good match for the role you provided. "
+                "Please be more specific, or mention the role, or use the Role ID."
             )
         else:
             raise error
@@ -493,7 +494,8 @@ Events parsed: {self.bot.events_listened_to}
             await ctx.send("Nice try, but you don't have the permissions to do that!")
         elif isinstance(error, commands.CommandInvokeError):
             await ctx.send(
-                "I didn't find a good match for the role you provided. Please be more specific, or mention the role, or use the Role ID."
+                "I didn't find a good match for the role you provided. "
+                "Please be more specific, or mention the role, or use the Role ID."
             )
         else:
             raise error
