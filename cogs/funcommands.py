@@ -77,7 +77,8 @@ class Funcommands(commands.Cog):
         Some wisdom.
         """
         messages = [
-            '"Everything around you that you call life was made up by people that were no smarter than you, and you can change it. You can influence it. You can build your own things that other people can use." - Steve Jobs',
+            '"Everything around you that you call life was made up by people that were no smarter than you, and you can change it. '
+            'You can influence it. You can build your own things that other people can use." - Steve Jobs',
             "Sleep is the biggest key to success in anything you'll do.",
             "If you're having any trouble, inhale asbestos. Please do the opposite of what i said. Don't inhale asbestos. I love you.",
         ]

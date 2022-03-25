@@ -69,7 +69,8 @@ class Admin(commands.Cog):
         embed.timestamp = discord.utils.utcnow()
 
         await ctx.send(
-            f"{ctx.author.mention}, are you sure you want to ban this user? **Type y to verify** or **Type n to cancel**.",
+            f"{ctx.author.mention}, are you sure you want to ban this user? "
+            "**Type y to verify** or **Type n to cancel**.",
             embed=embed,
         )
 
@@ -80,10 +81,13 @@ class Admin(commands.Cog):
             return
         else:
             if msg.content.lower() == "y":
-                # tries to dm them first, need a try/except block cause you can ban ppl not on your server, or ppl can block your bot
+                # tries to dm them first, need a try/except block
+                # cause you can ban ppl not on your server, or ppl can block your bot
                 try:
                     await user.send(
-                        f"You have been banned from the {ctx.guild.name} Server for the following reason: \n```{reason}```\nPlease contact {AdminVars.GROUNDS_KEEPER} for an appeal.\n{AdminVars.BAN_RECORDS}"
+                        f"You have been banned from the {ctx.guild.name} Server for the following reason: \n"
+                        f"```{reason}```\n"
+                        f"Please contact {AdminVars.GROUNDS_KEEPER} for an appeal.\n{AdminVars.BAN_RECORDS}"
                     )
                 except discord.HTTPException as exc:
                     logger = self.bot.get_logger("bot.admin")
@@ -169,7 +173,8 @@ class Admin(commands.Cog):
         embed.timestamp = discord.utils.utcnow()
 
         await ctx.send(
-            f"{ctx.author.mention}, are you sure you want to kick this user? **Type y to verify** or **Type n to cancel**.",
+            f"{ctx.author.mention}, are you sure you want to kick this user? "
+            "**Type y to verify** or **Type n to cancel**.",
             embed=embed,
         )
 
@@ -182,7 +187,9 @@ class Admin(commands.Cog):
             if msg.content.lower() == "y":
                 try:
                     await member.send(
-                        f"You have been kicked from the {ctx.guild.name} Server for the following reason: \n```{reason}```\nIf you would like to discuss your punishment, please contact {AdminVars.GROUNDS_GENERALS}."
+                        f"You have been kicked from the {ctx.guild.name} Server for the following reason: \n"
+                        f"```{reason}```\n"
+                        f"If you would like to discuss your punishment, please contact {AdminVars.GROUNDS_GENERALS}."
                     )
                 except discord.HTTPException as exc:
                     logger = self.bot.get_logger("bot.admin")
@@ -299,7 +306,8 @@ class Admin(commands.Cog):
             await ctx.send("Nice try, but you don't have the permissions to do that!")
         elif isinstance(error, commands.CommandInvokeError):
             await ctx.send(
-                "I didn't find a good match for the role you provided. Please be more specific, or mention the role, or use the Role ID."
+                "I didn't find a good match for the role you provided. "
+                "Please be more specific, or mention the role, or use the Role ID."
             )
         else:
             raise error
@@ -316,7 +324,8 @@ class Admin(commands.Cog):
             await ctx.send("Nice try, but you don't have the permissions to do that!")
         elif isinstance(error, commands.CommandInvokeError):
             await ctx.send(
-                "I didn't find a good match for the role you provided. Please be more specific, or mention the role, or use the Role ID."
+                "I didn't find a good match for the role you provided. "
+                "Please be more specific, or mention the role, or use the Role ID."
             )
         else:
             raise error
@@ -329,7 +338,8 @@ class Admin(commands.Cog):
             await ctx.send("Please input a valid number!")
         elif isinstance(error, commands.CommandInvokeError):
             await ctx.send(
-                "I could not delete one or more of these messages! Make sure they were not send too long ago or try a different amount."
+                "I could not delete one or more of these messages! "
+                "Make sure they were not send too long ago or try a different amount."
             )
         else:
             raise error
@@ -340,7 +350,8 @@ class Admin(commands.Cog):
             await ctx.send("Nice try, but you don't have the permissions to do that!")
         elif isinstance(error, commands.MessageNotFound):
             await ctx.send(
-                "Could not find a message with that ID! Make sure you are in the same channel as the message(s) you want to delete."
+                "Could not find a message with that ID! "
+                "Make sure you are in the same channel as the message(s) you want to delete."
             )
         elif isinstance(error, commands.MissingRequiredArgument):
             await ctx.send("Please supply one or more valid message IDs")

@@ -408,12 +408,23 @@ class Games(commands.Cog):
         # need a check if one of the responses is not none for the error message below
         if view.authorchoice == view.memberchoice and view.authorchoice is not None:
             await view.message.reply(
-                f"{ctx.author.mention} chose {view.authorchoice}!\n{member.mention} chose {view.memberchoice}!\n**It's a draw!**"
+                f"{ctx.author.mention} chose {view.authorchoice}!\n"
+                f"{member.mention} chose {view.memberchoice}!\n"
+                "**It's a draw!**"
             )
             return
 
-        author_winner_message = f"{ctx.author.mention} chose {view.authorchoice}!\n{member.mention} chose {view.memberchoice}!\n**The winner is: {ctx.author.mention}!**"
-        member_winner_message = f"{ctx.author.mention} chose {view.authorchoice}!\n{member.mention} chose {view.memberchoice}!\n**The winner is: {member.mention}!**"
+        author_winner_message = (
+            f"{ctx.author.mention} chose {view.authorchoice}!\n"
+            f"{member.mention} chose {view.memberchoice}!\n"
+            f"**The winner is: {ctx.author.mention}!**"
+        )
+
+        member_winner_message = (
+            f"{ctx.author.mention} chose {view.authorchoice}!\n"
+            f"{member.mention} chose {view.memberchoice}!\n"
+            f"**The winner is: {member.mention}!**"
+        )
 
         # since draws are already ruled out the rest of the logic isnt too bad, still a whole lot of elif statements though
         if view.authorchoice == "Rock":

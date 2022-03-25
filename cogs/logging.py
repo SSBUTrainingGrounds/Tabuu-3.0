@@ -139,7 +139,8 @@ class Logging(commands.Cog):
     async def on_member_join(self, member):
         embed = discord.Embed(
             title="**🎆 New member joined 🎆**",
-            description=f"{member.mention} has joined the server!\n\n**Account created:**\n{discord.utils.format_dt(member.created_at, style='R')}",
+            description=f"{member.mention} has joined the server!\n\n"
+            f"**Account created:**\n{discord.utils.format_dt(member.created_at, style='R')}",
             colour=discord.Colour.green(),
         )
         embed.set_author(
@@ -245,8 +246,9 @@ class Logging(commands.Cog):
         embed.add_field(name="Message ID:", value=message.id)
         embed.timestamp = discord.utils.utcnow()
         logs = self.bot.get_channel(self.get_logchannel(message.guild.id))
-        # as far as i can tell, the maximum message possible with 4k chars + 10 attachments + 1 sticker just barely fits in one embed
-        # the limit for embeds are 6k chars total. so we might wanna keep watching this in case of errors.
+        # as far as i can tell, the maximum message possible with 4k chars + 10 attachments + 1 sticker
+        # just barely fits in one embed, the limit for embeds are 6k chars total.
+        # so we might wanna keep watching this in case of errors.
         if logs:
             await logs.send(embed=embed)
 

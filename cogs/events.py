@@ -90,7 +90,8 @@ class Events(commands.Cog):
 
             # checking if the user is muted when he joins
             if len(matching_user) != 0:
-                # getting both the cadet role and the muted role since you dont really have to accept the rules if you come back muted
+                # getting both the cadet role and the muted role
+                # since you dont really have to accept the rules if you come back muted
                 muted_role = discord.utils.get(
                     member.guild.roles, id=TGRoleIDs.MUTED_ROLE
                 )
@@ -107,7 +108,8 @@ class Events(commands.Cog):
 
             # if not this is the normal greeting
             await channel.send(
-                f"{member.mention} has joined the ranks! What's shaking?\nPlease take a look at the {rules.mention} channel for information about server events/functions!"
+                f"{member.mention} has joined the ranks! What's shaking?\n"
+                f"Please take a look at the {rules.mention} channel for information about server events/functions!"
             )
 
         elif member.guild.id == GuildIDs.BATTLEGROUNDS:
@@ -130,7 +132,9 @@ class Events(commands.Cog):
 
             await member.add_roles(traveller)
             await channel.send(
-                f"{member.mention} has entered the battlegrounds. ⚔️\nIf you are interested on getting in on some crew battle action, head to {rules_channel.mention} to get familiar with how the server works!"
+                f"{member.mention} has entered the battlegrounds. ⚔️\n"
+                "If you are interested on getting in on some crew battle action, "
+                f"head to {rules_channel.mention} to get familiar with how the server works!"
             )
 
     @commands.Cog.listener()
@@ -186,7 +190,8 @@ class Events(commands.Cog):
                     except discord.HTTPException:
                         pass
 
-        # this here gives out the recruit role on a successful member screening, on join was terrible because of shitty android app
+        # this here gives out the recruit role on a successful member screening,
+        # on join was terrible because of shitty android app
         try:
             if before.bot or after.bot:
                 return
@@ -313,7 +318,8 @@ class Events(commands.Cog):
             == TournamentReminders.SMASH_OVERSEAS_DAY
         ):
             # stops this task from running the hour after the desired time in that timezone.
-            # have to do this because otherwise it would run again if i were to restart the bot after the task has already been run
+            # have to do this because otherwise it would run again
+            # if i were to restart the bot after the task has already been run
             if (
                 datetime.datetime.now(ZoneInfo(TournamentReminders.TIMEZONE)).hour
                 <= TournamentReminders.SMASH_OVERSEAS_HOUR
@@ -391,7 +397,8 @@ class Events(commands.Cog):
                 )
 
                 await design_channel.send(
-                    f"{design_role.mention} Reminder that it is time to get to work on SO/ToS graphics! Who is able to take one or both?\n(Assuming alts have already been collected.)"
+                    f"{design_role.mention} Reminder that it is time to get to work on SO/ToS graphics! "
+                    "Who is able to take one or both?\n(Assuming alts have already been collected.)"
                 )
 
     @so_ping.before_loop
