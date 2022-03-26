@@ -22,39 +22,39 @@ def convert_input(conversion_input: str):
     )
     conversion_input = conversion_input.split()
 
-    # massive dictionary of converting the aliases to the correct input
-    unit_dict = {
-        "miles": ["miles", "mi", "mile"],
-        "feet": ["foot", "feet", "ft", "'"],
-        "inches": ["inch", "in", '"', "inches"],
-        "km": [
+    # massive dictionary of converting the input to the equivalent
+    conversion_dict = {
+        ("miles", "mi", "mile"): Conversion().miles_to_km,
+        ("foot", "feet", "ft", "'"): Conversion().feet_to_meter,
+        ("inch", "in", '"', "inches"): Conversion().inches_to_cm,
+        (
             "km",
             "kilometer",
             "kilometre",
             "kilometers",
             "kilometres",
             "kms",
-        ],
-        "m": ["m", "meter", "metre", "meters", "meters"],
-        "cm": [
+        ): Conversion().km_to_miles,
+        ("m", "meter", "metre", "meters", "meters"): Conversion().meter_to_feet,
+        (
             "cm",
             "centimeter",
             "centimetre",
             "centimeters",
             "centimetres",
             "cms",
-        ],
-        "kmh": ["kmh", "kph", "km/h"],
-        "ms": ["ms", "m/s", "mps"],
-        "mph": ["mph", "mi/h"],
-        "f": ["f", "°f", "fahrenheit"],
-        "c": ["c", "°c", "celsius"],
-        "lbs": ["lbs", "pounds", "pound"],
-        "oz": ["oz", "ounces", "ounce"],
-        "kg": ["kg", "kilogram", "kilograms", "kilogrammes"],
-        "g": ["g", "gram", "grams", "grammes"],
-        "gal": ["gallon", "gal", "gallons", "gl"],
-        "fl oz": [
+        ): Conversion().cm_to_inches,
+        ("kmh", "kph", "km/h"): Conversion().kmh_to_mph,
+        ("ms", "m/s", "mps"): Conversion().ms_to_mph,
+        ("mph", "mi/h"): Conversion().mph_to_ms_kmh,
+        ("f", "°f", "fahrenheit"): Conversion().f_to_c,
+        ("c", "°c", "celsius"): Conversion().c_to_f,
+        ("lbs", "pounds", "pound"): Conversion().lbs_to_kg,
+        ("oz", "ounces", "ounce"): Conversion().oz_to_g,
+        ("kg", "kilogram", "kilograms", "kilogrammes"): Conversion().kg_to_lbs,
+        ("g", "gram", "grams", "grammes"): Conversion().g_to_oz,
+        ("gallon", "gal", "gallons", "gl"): Conversion().gal_to_l,
+        (
             "fluid ounce",
             "fluid ounces",
             "fl ounce",
@@ -69,44 +69,21 @@ def convert_input(conversion_input: str):
             "floz.",
             "fl.oz.",
             "fl.oz",
-        ],
-        "l": ["l", "liter", "liters", "litre", "litres"],
-        "ml": [
+        ): Conversion().floz_to_ml,
+        ("l", "liter", "liters", "litre", "litres"): Conversion().l_to_gal,
+        (
             "ml",
             "milliliter",
             "milliliters",
             "millilitre",
             "millilitres",
-        ],
-    }
-
-    # massive dictionary of converting the input to the equivalent
-    conversion_dict = {
-        "miles": Conversion().miles_to_km,
-        "feet": Conversion().feet_to_meter,
-        "inches": Conversion().inches_to_cm,
-        "km": Conversion().km_to_miles,
-        "m": Conversion().meter_to_feet,
-        "cm": Conversion().cm_to_inches,
-        "kmh": Conversion().kmh_to_mph,
-        "ms": Conversion().ms_to_mph,
-        "mph": Conversion().mph_to_ms_kmh,
-        "f": Conversion().f_to_c,
-        "c": Conversion().c_to_f,
-        "lbs": Conversion().lbs_to_kg,
-        "oz": Conversion().oz_to_g,
-        "kg": Conversion().kg_to_lbs,
-        "g": Conversion().g_to_oz,
-        "gal": Conversion().gal_to_l,
-        "fl oz": Conversion().floz_to_ml,
-        "l": Conversion().l_to_gal,
-        "ml": Conversion().ml_to_floz,
+        ): Conversion().ml_to_floz,
     }
 
     for word in conversion_input:
-        for item in unit_dict.items():
-            if word in item[1]:
-                return conversion_dict[item[0]](number)
+        for units in conversion_dict.keys():
+            if word in units:
+                return conversion_dict[units](number)
 
     return "Invalid input! Please specify a valid measurement."
 
