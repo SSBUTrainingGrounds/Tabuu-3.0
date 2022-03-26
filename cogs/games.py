@@ -147,7 +147,7 @@ class TicTacToeGame(discord.ui.View):
                 return self.member
 
         # if theres a tie we return false
-        if not 0 in board:
+        if 0 not in board:
             return False
 
         return None
@@ -198,7 +198,7 @@ class TicTacToeGame(discord.ui.View):
 
     async def interaction_check(self, interaction: discord.Interaction):
         # checks if the user is in the game
-        if not interaction.user in (self.member, self.author):
+        if interaction.user not in (self.member, self.author):
             return False
         # checks if its your turn
         if interaction.user == self.author and self.turn == self.author:
@@ -355,7 +355,7 @@ class BlackJackButtons(discord.ui.View):
         )
 
     async def interaction_check(self, interaction: discord.Interaction):
-        if not interaction.user in (self.author, self.member):
+        if interaction.user not in (self.author, self.member):
             return False
         if interaction.user == self.author and self.turn == self.author:
             return True

@@ -76,10 +76,10 @@ class Starboard(commands.Cog):
             data = json.load(f)
 
         # these prevent error messages in my console if the setup wasnt done yet.
-        if not "emoji" in data:
+        if "emoji" not in data:
             data["emoji"] = "placeholder"
 
-        if not "threshold" in data:
+        if "threshold" not in data:
             data["threshold"] = 100
 
         if str(payload.emoji) != data["emoji"]:
@@ -178,10 +178,10 @@ class Starboard(commands.Cog):
             data = json.load(f)
 
         # these prevent error messages in my console if the setup wasnt done yet.
-        if not "emoji" in data:
+        if "emoji" not in data:
             data["emoji"] = "placeholder"
 
-        if not "threshold" in data:
+        if "threshold" not in data:
             data["threshold"] = 100
 
         if str(payload.emoji) != data["emoji"]:
