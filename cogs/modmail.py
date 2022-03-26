@@ -1,8 +1,9 @@
 import discord
-from discord.ext import commands
 from discord import app_commands
-import utils.embed
+from discord.ext import commands
+
 import utils.check
+import utils.embed
 from utils.ids import TGRoleIDs, GuildIDs, TGChannelIDs
 
 

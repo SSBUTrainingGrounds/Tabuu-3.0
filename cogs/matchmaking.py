@@ -1,7 +1,9 @@
+import asyncio
+import json
+
 import discord
 from discord.ext import commands
-import json
-import asyncio
+
 from utils.ids import TGArenaChannelIDs, TGMatchmakingRoleIDs
 
 

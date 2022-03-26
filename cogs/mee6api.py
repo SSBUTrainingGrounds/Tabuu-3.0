@@ -1,7 +1,9 @@
+from math import ceil
+
 import discord
 from discord.ext import commands, tasks
 from mee6_py_api import API
-from math import ceil
+
 from utils.ids import GuildNames, GuildIDs, TGLevelRoleIDs
 
 # this is purposefully not made into GuildIDs.TRAINING_GROUNDS.

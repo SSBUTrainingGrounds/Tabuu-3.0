@@ -1,6 +1,8 @@
+from io import StringIO
+
 import discord
 from discord.ext import commands
-from io import StringIO
+
 import utils.embed
 from utils.ids import GuildIDs, TGChannelIDs, BGChannelIDs
 

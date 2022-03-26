@@ -1,5 +1,6 @@
-from discord.ext import commands
 import aiosqlite
+from discord.ext import commands
+
 import utils.check
 
 

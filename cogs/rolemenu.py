@@ -1,6 +1,8 @@
+import aiosqlite
+
 import discord
 from discord.ext import commands
-import aiosqlite
+
 import utils.check
 from utils.ids import TGChannelIDs
 

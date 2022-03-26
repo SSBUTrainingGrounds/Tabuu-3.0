@@ -106,8 +106,7 @@ def convert_input(conversion_input: str):
     for word in conversion_input:
         for item in unit_dict.items():
             if word in item[1]:
-                word = item[0]
-                return conversion_dict[word](number)
+                return conversion_dict[item[0]](number)
 
     return "Invalid input! Please specify a valid measurement."
 

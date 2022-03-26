@@ -1,8 +1,11 @@
+import asyncio
+import json
+
+import aiosqlite
 import discord
 from discord.ext import commands
-import asyncio
-import aiosqlite
-import json
+
+import utils.check
 from utils.ids import (
     GuildNames,
     GuildIDs,
@@ -10,7 +13,6 @@ from utils.ids import (
     TGMatchmakingRoleIDs,
     Emojis,
 )
-import utils.check
 
 
 class Ranking(commands.Cog):

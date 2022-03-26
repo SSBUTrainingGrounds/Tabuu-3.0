@@ -1,10 +1,12 @@
+import json
+
 import discord
 from discord.ext import commands
-import json
+
 from cogs.matchmaking import Matchmaking
 from cogs.ranking import Ranking
-from utils.ids import TGArenaChannelIDs
 import utils.check
+from utils.ids import TGArenaChannelIDs
 
 
 class Pings(discord.ui.Select):

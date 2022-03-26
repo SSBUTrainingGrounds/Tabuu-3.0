@@ -1,6 +1,8 @@
+import os
+
 import discord
 from discord.ext import commands
-import os
+
 from utils.ids import GuildIDs
 
 

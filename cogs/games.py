@@ -1,7 +1,8 @@
-import discord
-from discord.ext import commands
 from math import ceil
 import random
+
+import discord
+from discord.ext import commands
 
 
 class RpsButtons(discord.ui.View):
