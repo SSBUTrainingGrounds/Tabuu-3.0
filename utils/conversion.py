@@ -81,9 +81,9 @@ def convert_input(conversion_input: str):
     }
 
     for word in conversion_input:
-        for units in conversion_dict.keys():
+        for units, func in conversion_dict.items():
             if word in units:
-                return conversion_dict[units](number)
+                return func(number)
 
     return "Invalid input! Please specify a valid measurement."
 
