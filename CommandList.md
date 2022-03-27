@@ -244,8 +244,8 @@ Everything else should be fairly self-explanatory.
     - Example: `%reloadcogs admin`  
   
 - **%reminder** `<time> <message>`  
-    - Info: Reminds you about something. Time is in a shortened format with any number and d/h/m/s. Minimum duration is 30 seconds, maximum is 90 days.  
-    - Example: `%reminder 10h20m get that thing done you wanted to get done`  
+    - Info: Reminds you about something. Time is in a format with a number and the duration, do not use spaces inbetween multiple times. Minimum duration is 30 seconds, maximum is 90 days.  
+    - Example: `%reminder 12h30mins get that thing done you wanted to get done`  
     - Aliases: remindme, newreminder, newremindme  
   
 - **%removebadge** `<@user> <emoji>`  
@@ -344,8 +344,8 @@ Everything else should be fairly self-explanatory.
     - Aliases: smashtag, sptag, settag  
   
 - **%tempmute** `<@member> <time> <reason>`  
-    - Info: **Admin only.** Mutes a Member in both servers for the specified time, which is in a shortened format with any number and d/h/m/s. Minimum time is 30 seconds, maximum is 1 day. Mention the Member or use Member ID. The reason will get DM'd to the muted person, if the bot can DM the Member.  
-    - Example: `%tempmute @ExampleUser 12h30m what an idiot`  
+    - Info: **Admin only.** Mutes a Member in both servers for the specified time, in a format with a number and the duration. Do not use spaces inbetween multiple times. Minimum time is 30 seconds, maximum is 1 day. Mention the Member or use Member ID. The reason will get DM'd to the muted person, if the bot can DM the Member.  
+    - Example: `%tempmute @ExampleUser 12h30mins what an idiot`  
   
 - **%tictactoe** `<@member>`  
     - Info: Plays a game of Tic Tac Toe with the mentioned Member.  
@@ -357,8 +357,8 @@ Everything else should be fairly self-explanatory.
     - Aliases: currenttime  
   
 - **%timeout** `<@member> <time> <reason>`  
-    - Info: **Admin only.** Times out a Member for the specified time and tries to DM them the reason. Maximum time is 28 days - 1 second. Mention the Member or use Member ID. The reason will get DM'd to the muted person, if the bot can DM the Member. Uses the same time converter as tempmute and reminders, in a shortened format with any number and d/h/m/s.  
-    - Example: `%timeout @ExampleUser 12h30m what an idiot`  
+    - Info: **Admin only.** Times out a Member for the specified time and tries to DM them the reason. Maximum time is 28 days - 1 second. Mention the Member or use Member ID. The reason will get DM'd to the muted person, if the bot can DM the Member. Uses the same time converter as tempmute and reminders, in a format with a number and the duration. Do not use spaces inbetween multiple times.  
+    - Example: `%timeout @ExampleUser 12h30mins what an idiot`  
   
 - **%unban** `<@user>`  
     - Info: **Admin only.** Unbans a user. Mention the User or use User ID.  
