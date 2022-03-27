@@ -14,6 +14,9 @@ class TestTime(unittest.TestCase):
             convert_time("0d20h5m1s"), (72301, "20 hours, 5 minutes, 1 second")
         )
         self.assertEqual(convert_time("3days0hrs30sec"), (259230, "3 days, 30 seconds"))
+        self.assertEqual(
+            convert_time("3days 0 hrs, 30sec"), (259230, "3 days, 30 seconds")
+        )
 
         # some error checking
         with self.assertRaises(ValueError):
