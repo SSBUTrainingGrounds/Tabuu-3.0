@@ -46,10 +46,10 @@ def convert_time(input_time: str):
 
     # matching the input into the appropriate group
     compiled = re.compile(
-        "(?:(?P<days>[0-9]{1,5})(?:days?|d))?"
-        "(?:(?P<hours>[0-9]{1,5})(?:hours?|h|hrs?))?"
-        "(?:(?P<minutes>[0-9]{1,5})(?:minutes?|m|mins?))?"
-        "(?:(?P<seconds>[0-9]{1,5})(?:seconds?|s|secs?))?",
+        "(?:(?P<days>[0-9]{1,5})(\s?)(?:days?|d))?(\s?,?)"
+        "(?:(?P<hours>[0-9]{1,5})(\s?)(?:hours?|h|hrs?))?(\s?,?)"
+        "(?:(?P<minutes>[0-9]{1,5})(\s?)(?:minutes?|m|mins?))?(\s?,?)"
+        "(?:(?P<seconds>[0-9]{1,5})(\s?)(?:seconds?|s|secs?))?(\s?,?)",
         re.VERBOSE,
     )
 
