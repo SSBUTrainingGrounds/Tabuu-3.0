@@ -13,9 +13,15 @@ class TestTime(unittest.TestCase):
         self.assertEqual(
             convert_time("0d20h5m1s"), (72301, "20 hours, 5 minutes, 1 second")
         )
+        # with regex
         self.assertEqual(convert_time("3days0hrs30sec"), (259230, "3 days, 30 seconds"))
+        # with the ignored spaces and commas
         self.assertEqual(
             convert_time("3days 0 hrs, 30sec"), (259230, "3 days, 30 seconds")
+        )
+        self.assertEqual(
+            convert_time(" 30 d , 20 hr 1 minutes, 20secs"),
+            (2664080, "30 days, 20 hours, 1 minute, 20 seconds"),
         )
 
         # some error checking
