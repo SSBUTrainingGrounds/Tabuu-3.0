@@ -22,6 +22,28 @@ class Starboard(commands.Cog):
     starboard_channel = TGChannelIDs.STARBOARD_CHANNEL
     listening_channels = TGChannelIDs.STARBOARD_LISTENING_CHANNELS
 
+    async def update_starboard_message(
+        self, reaction: discord.Reaction, message_id: int
+    ):
+        """
+        Updates the starboard message with the new value for the reaction count
+        whenever a reaction is removed or added.
+        """
+        star_channel = await self.bot.fetch_channel(self.starboard_channel)
+
+        try:
+            edit_message = await star_channel.fetch_message(message_id)
+            new_embed = edit_message.embeds[0]
+            new_value = f"**{reaction.count} {str(reaction.emoji)}**"
+
+            if new_embed.fields[0].value == new_value:
+                return
+
+            new_embed.set_field_at(0, name="\u200b", value=new_value)
+            await edit_message.edit(embed=new_embed)
+        except discord.errors.NotFound:
+            return
+
     @commands.command()
     @utils.check.is_moderator()
     async def starboardemoji(self, ctx, emoji):
@@ -93,79 +115,61 @@ class Starboard(commands.Cog):
             return
 
         for reaction in message.reactions:
-            if str(reaction.emoji) == data["emoji"]:
-                if reaction.count >= data["threshold"]:
-                    async with aiosqlite.connect("./db/database.db") as db:
-                        message_list = await db.execute_fetchall(
-                            """SELECT original_id, starboard_id FROM starboardmessages"""
-                        )
-
-                    # just editing the number on already existing messages
-                    for x in message_list:
-                        if x[0] == payload.message_id:
-                            star_channel = await self.bot.fetch_channel(
-                                self.starboard_channel
-                            )
-                            # gets the sent starboard message,
-                            # in a try except block cause it could be deleted already
-                            try:
-                                edit_message = await star_channel.fetch_message(x[1])
-                                new_embed = edit_message.embeds[0]
-                                new_value = (
-                                    f"**{reaction.count} {str(reaction.emoji)}**"
-                                )
-                                # updates the embed with the new count,
-                                # except if the values are the exact same anyways, which could happen
-                                if new_embed.fields[0].value == new_value:
-                                    return
-                                new_embed.set_field_at(
-                                    0, name="\u200b", value=new_value
-                                )
-                                await edit_message.edit(embed=new_embed)
-                                return
-                            except discord.errors.NotFound:
-                                return
-
-                    # if it doesnt already exist, it creates a new message
-                    star_channel = await self.bot.fetch_channel(self.starboard_channel)
-
-                    # again dont want error messages,
-                    # so if the content is invalid it gets replaced by a whitespace character
-                    if len(message.content) == 0 or len(message.content[2000:]) > 0:
-                        message.content = "\u200b"
-
-                    embed = discord.Embed(
-                        description=message.content,
-                        colour=message.author.colour,
+            if (
+                str(reaction.emoji) == data["emoji"]
+                and reaction.count >= data["threshold"]
+            ):
+                async with aiosqlite.connect("./db/database.db") as db:
+                    message_list = await db.execute_fetchall(
+                        """SELECT original_id, starboard_id FROM starboardmessages"""
                     )
-                    embed.add_field(
-                        name="\u200b",
-                        value=f"**{reaction.count} {str(reaction.emoji)}**",
-                    )
-                    embed.add_field(
-                        name="\u200b",
-                        value=f"[Message Link]({message.jump_url})",
-                    )
-                    embed.set_author(
-                        name=f"{str(message.author)} ({message.author.id})",
-                        icon_url=message.author.display_avatar.url,
-                    )
-                    embed.set_footer(text=f"{message.id}")
-                    embed.timestamp = discord.utils.utcnow()
 
-                    embed = utils.embed.add_attachments_to_embed(embed, message)
+                # just editing the number on already existing messages
+                for x in message_list:
+                    if x[0] == payload.message_id:
+                        await self.update_starboard_message(reaction, x[1])
+                        return
 
-                    star_message = await star_channel.send(embed=embed)
+                # if it doesnt already exist, it creates a new message
+                star_channel = await self.bot.fetch_channel(self.starboard_channel)
 
-                    async with aiosqlite.connect("./db/database.db") as db:
-                        await db.execute(
-                            """INSERT INTO starboardmessages VALUES (:original_id, :starboard_id)""",
-                            {
-                                "original_id": message.id,
-                                "starboard_id": star_message.id,
-                            },
-                        )
-                        await db.commit()
+                # again dont want error messages,
+                # so if the content is invalid it gets replaced by a whitespace character
+                if len(message.content) == 0 or len(message.content[2000:]) > 0:
+                    message.content = "\u200b"
+
+                embed = discord.Embed(
+                    description=message.content,
+                    colour=message.author.colour,
+                )
+                embed.add_field(
+                    name="\u200b",
+                    value=f"**{reaction.count} {str(reaction.emoji)}**",
+                )
+                embed.add_field(
+                    name="\u200b",
+                    value=f"[Message Link]({message.jump_url})",
+                )
+                embed.set_author(
+                    name=f"{str(message.author)} ({message.author.id})",
+                    icon_url=message.author.display_avatar.url,
+                )
+                embed.set_footer(text=f"{message.id}")
+                embed.timestamp = discord.utils.utcnow()
+
+                embed = utils.embed.add_attachments_to_embed(embed, message)
+
+                star_message = await star_channel.send(embed=embed)
+
+                async with aiosqlite.connect("./db/database.db") as db:
+                    await db.execute(
+                        """INSERT INTO starboardmessages VALUES (:original_id, :starboard_id)""",
+                        {
+                            "original_id": message.id,
+                            "starboard_id": star_message.id,
+                        },
+                    )
+                    await db.commit()
 
     @commands.Cog.listener()
     async def on_raw_reaction_remove(self, payload):
@@ -203,22 +207,7 @@ class Starboard(commands.Cog):
                 # just editing the number on already existing messages, cant go below 1 though
                 for x in message_list:
                     if x[0] == payload.message_id:
-                        star_channel = await self.bot.fetch_channel(
-                            self.starboard_channel
-                        )
-                        # gets the sent starboard message, in a try except block cause it could be deleted already
-                        try:
-                            edit_message = await star_channel.fetch_message(x[1])
-                            new_embed = edit_message.embeds[0]
-                            new_value = f"**{reaction.count} {str(reaction.emoji)}**"
-                            # updates the embed with the new count,
-                            # except if the values are the exact same anyways, which could happen
-                            if new_embed.fields[0].value == new_value:
-                                return
-                            new_embed.set_field_at(0, name="\u200b", value=new_value)
-                            await edit_message.edit(embed=new_embed)
-                        except discord.errors.NotFound:
-                            return
+                        await self.update_starboard_message(reaction, x[1])
 
     @starboardemoji.error
     async def starboardemoji_error(self, ctx, error):
