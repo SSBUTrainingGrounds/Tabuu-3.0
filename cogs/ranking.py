@@ -542,14 +542,8 @@ class Ranking(commands.Cog):
                 text="React within 120s to turn ranked notifications on or off until the next match"
             )
 
-        embed_message = await ctx.send(embed=embed)
+            embed_message = await ctx.send(embed=embed)
 
-        # same here
-        if (
-            selfcheck is True
-            and ctx.guild is not None
-            and ctx.guild.id == GuildIDs.TRAINING_GROUNDS
-        ):
             await embed_message.add_reaction("🔔")
             await embed_message.add_reaction("🔕")
 
@@ -571,8 +565,9 @@ class Ranking(commands.Cog):
                     await self.update_ranked_role(ctx.author, ctx.guild, 1)
                 elif str(reaction.emoji) == "🔕":
                     await self.remove_ranked_roles(ctx.author, ctx.guild)
-                else:
-                    pass
+
+        else:
+            embed_message = await ctx.send(embed=embed)
 
     @commands.command()
     @utils.check.is_moderator()
