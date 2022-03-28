@@ -198,13 +198,12 @@ class Events(commands.Cog):
             if before.bot or after.bot:
                 return
 
-            if before.pending:
-                if not after.pending:
-                    if before.guild.id == GuildIDs.TRAINING_GROUNDS:
-                        cadetrole = discord.utils.get(
-                            before.guild.roles, id=TGLevelRoleIDs.RECRUIT_ROLE
-                        )
-                        await after.add_roles(cadetrole)
+            if before.pending and not after.pending:
+                if before.guild.id == GuildIDs.TRAINING_GROUNDS:
+                    cadetrole = discord.utils.get(
+                        before.guild.roles, id=TGLevelRoleIDs.RECRUIT_ROLE
+                    )
+                    await after.add_roles(cadetrole)
         except AttributeError:
             pass
 
