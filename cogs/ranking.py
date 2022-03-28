@@ -129,9 +129,7 @@ class Ranking(commands.Cog):
         Removes every ranked role a user has.
         """
         elo_roles = self.get_all_ranked_roles(guild)
-        for role in elo_roles:
-            if role in member.roles:
-                await member.remove_roles(role)
+        await member.remove_roles(*elo_roles)
 
     async def update_ranked_role(
         self, member: discord.Member, guild: discord.Guild, threshold: int = 5

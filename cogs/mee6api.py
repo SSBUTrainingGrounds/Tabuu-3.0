@@ -43,45 +43,34 @@ class Mee6api(commands.Cog):
 
         levelroles = [defaultrole, level10, level25, level50, level75, level100]
 
+        async def assign_level_role(assign_role: discord.Role):
+            """
+            Removes every other level role and assigns the correct one.
+            """
+            roles_to_remove = [role for role in levelroles if role is not assign_role]
+            await member.remove_roles(*roles_to_remove)
+            await member.add_roles(assign_role)
+            return assign_role
+
         if level >= 100:
             if level100 not in member.roles:
-                for role in levelroles:
-                    if role in member.roles:
-                        await member.remove_roles(role)
-                await member.add_roles(level100)
-                rolegiven = level100
+                rolegiven = await assign_level_role(level100)
 
         elif level >= 75:
             if level75 not in member.roles:
-                for role in levelroles:
-                    if role in member.roles:
-                        await member.remove_roles(role)
-                await member.add_roles(level75)
-                rolegiven = level75
+                rolegiven = await assign_level_role(level75)
 
         elif level >= 50:
             if level50 not in member.roles:
-                for role in levelroles:
-                    if role in member.roles:
-                        await member.remove_roles(role)
-                await member.add_roles(level50)
-                rolegiven = level50
+                rolegiven = await assign_level_role(level50)
 
         elif level >= 25:
             if level25 not in member.roles:
-                for role in levelroles:
-                    if role in member.roles:
-                        await member.remove_roles(role)
-                await member.add_roles(level25)
-                rolegiven = level25
+                rolegiven = await assign_level_role(level25)
 
         elif level >= 10:
             if level10 not in member.roles:
-                for role in levelroles:
-                    if role in member.roles:
-                        await member.remove_roles(role)
-                await member.add_roles(level10)
-                rolegiven = level10
+                rolegiven = await assign_level_role(level10)
 
         return rolegiven
 
