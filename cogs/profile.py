@@ -330,84 +330,89 @@ class Profile(commands.Cog):
         if profile_input is None:
             profile_input = ""
 
-        # tried to be as broad as possible here, hope thats enough
-        if profile_input.lower() in (
-            "na",
-            "north america",
-            "usa",
-            "us",
-            "canada",
-            "latin america",
-            "america",
-            "united states",
-        ):
-            profile_input = "North America"
-        elif profile_input.lower() in (
-            "east coast",
-            "us east",
-            "east",
-            "midwest",
-            "na east",
-            "canada east",
-        ):
-            profile_input = "NA East"
-        elif profile_input.lower() in (
-            "west coast",
-            "us west",
-            "west",
-            "na west",
-            "canada west",
-        ):
-            profile_input = "NA West"
-        elif profile_input.lower() in (
-            "mexico",
-            "south",
-            "us south",
-            "na south",
-            "texas",
-            "southern",
-        ):
-            profile_input = "NA South"
-        elif profile_input.lower() in (
-            "sa",
-            "brazil",
-            "argentina",
-            "south america",
-            "chile",
-            "peru",
-        ):
-            profile_input = "South America"
-        elif profile_input.lower() in (
-            "eu",
-            "europe",
-            "uk",
-            "england",
-            "france",
-            "germany",
-        ):
-            profile_input = "Europe"
-        elif profile_input.lower() in (
-            "asia",
-            "sea",
-            "china",
-            "japan",
-            "india",
-            "middle east",
-        ):
-            profile_input = "Asia"
-        elif profile_input.lower() in ("africa", "south africa", "egypt"):
-            profile_input = "Africa"
-        elif profile_input.lower() in (
-            "australia",
-            "new zealand",
-            "nz",
-            "au",
-            "oceania",
-        ):
-            profile_input = "Oceania"
-        elif profile_input == "":
-            pass
-        else:
+        # tried to be as broad as possible here, hope i didnt miss anything big
+        region_dict = {
+            "North America": [
+                "na",
+                "north america",
+                "usa",
+                "us",
+                "canada",
+                "latin america",
+                "america",
+                "united states",
+            ],
+            "NA East": [
+                "east coast",
+                "us east",
+                "east",
+                "midwest",
+                "na east",
+                "canada east",
+            ],
+            "NA West": [
+                "west coast",
+                "us west",
+                "west",
+                "na west",
+                "canada west",
+            ],
+            "NA South": [
+                "mexico",
+                "south",
+                "us south",
+                "na south",
+                "texas",
+                "southern",
+            ],
+            "South America": [
+                "sa",
+                "brazil",
+                "argentina",
+                "south america",
+                "chile",
+                "peru",
+            ],
+            "Europe": [
+                "eu",
+                "europe",
+                "uk",
+                "england",
+                "france",
+                "germany",
+            ],
+            "Asia": [
+                "asia",
+                "sea",
+                "china",
+                "japan",
+                "india",
+                "middle east",
+            ],
+            "Africa": [
+                "africa",
+                "south africa",
+                "egypt",
+                "nigeria",
+                "maghreb",
+                "north africa",
+            ],
+            "Oceania": [
+                "australia",
+                "new zealand",
+                "nz",
+                "au",
+                "oceania",
+            ],
+        }
+
+        # matching the input to the dict
+        for region, input_regions in region_dict.items():
+            if profile_input.lower() in input_regions:
+                profile_input = region
+
+        # double checking if the input got matched and is not None
+        if profile_input and profile_input not in region_dict:
             await ctx.send("Please choose a valid region. Example: `%region Europe`")
             return
 
