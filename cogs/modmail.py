@@ -21,7 +21,9 @@ class ConfirmationButtons(discord.ui.View):
 
     @discord.ui.button(label="Confirm", style=discord.ButtonStyle.green, emoji="✔️")
     async def confirm_button(
-        self, button: discord.ui.Button, interaction: discord.Interaction
+        self,
+        interaction: discord.Interaction,
+        button: discord.ui.Button,
     ):
         self.confirm = True
         self.clear_items()
@@ -30,7 +32,9 @@ class ConfirmationButtons(discord.ui.View):
 
     @discord.ui.button(label="Cancel", style=discord.ButtonStyle.red, emoji="❌")
     async def cancel_button(
-        self, button: discord.ui.Button, interaction: discord.Interaction
+        self,
+        interaction: discord.Interaction,
+        button: discord.ui.Button,
     ):
         self.confirm = False
         self.clear_items()
@@ -60,7 +64,9 @@ class ModmailButton(discord.ui.View):
         emoji="✉️",
     )
     async def modmail_button(
-        self, button: discord.ui.Button, interaction: discord.Interaction
+        self,
+        interaction: discord.Interaction,
+        button: discord.ui.Button,
     ):
 
         view = ConfirmationButtons(interaction.user)

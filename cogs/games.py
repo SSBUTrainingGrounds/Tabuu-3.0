@@ -19,7 +19,7 @@ class RpsButtons(discord.ui.View):
         self.message = None
 
     @discord.ui.button(label="Rock", emoji="🪨", style=discord.ButtonStyle.gray)
-    async def rock(self, button: discord.ui.Button, interaction: discord.Interaction):
+    async def rock(self, interaction: discord.Interaction, button: discord.ui.Button):
         """
         Registers the author and user input for Rock.
         Stops if both parties made a choice.
@@ -35,7 +35,7 @@ class RpsButtons(discord.ui.View):
             self.stop()
 
     @discord.ui.button(label="Paper", emoji="📝", style=discord.ButtonStyle.gray)
-    async def paper(self, button: discord.ui.Button, interaction: discord.Interaction):
+    async def paper(self, interaction: discord.Interaction, button: discord.ui.Button):
         """
         Registers the author and user input for Paper.
         Stops if both parties made a choice.
@@ -50,7 +50,9 @@ class RpsButtons(discord.ui.View):
 
     @discord.ui.button(label="Scissors", emoji="✂️", style=discord.ButtonStyle.gray)
     async def scissors(
-        self, button: discord.ui.Button, interaction: discord.Interaction
+        self,
+        interaction: discord.Interaction,
+        button: discord.ui.Button,
     ):
         """
         Registers the author and user input for Scissors.
@@ -308,7 +310,7 @@ class BlackJackButtons(discord.ui.View):
     @discord.ui.button(
         label="Draw a Card", emoji="🃏", style=discord.ButtonStyle.blurple
     )
-    async def draw(self, button: discord.ui.Button, interaction: discord.Interaction):
+    async def draw(self, interaction: discord.Interaction, button: discord.ui.Button):
         """
         Draws another card and checks if the players turn is over.
         """
@@ -333,7 +335,7 @@ class BlackJackButtons(discord.ui.View):
         )
 
     @discord.ui.button(label="Fold", emoji="❌", style=discord.ButtonStyle.red)
-    async def fold(self, button: discord.ui.Button, interaction: discord.Interaction):
+    async def fold(self, interaction: discord.Interaction, button: discord.ui.Button):
         """
         Folds and switches the turn, or exits the game.
         """
