@@ -63,27 +63,28 @@ def convert_time(input_time: str):
         raise ValueError("Invalid input! Please use a number followed by a duration.")
 
     # getting a dict of the match
-    time_dict = match.groupdict()
+    time_dict = match.groupdict(default="0")
 
     # extracting the values for each entry
-    # checks if the values are None or "0"
+    # checks if the user hasnt entered anything for the value,
+    # or if they entered "0" manually.
     days = time_dict.get("days")
-    if days and days != "0":
+    if days != "0":
         total_seconds += int(days) * 60 * 60 * 24
         readable_time = append_readable_time(readable_time, int(days), "day")
 
     hours = time_dict.get("hours")
-    if hours and hours != "0":
+    if hours != "0":
         total_seconds += int(hours) * 60 * 60
         readable_time = append_readable_time(readable_time, int(hours), "hour")
 
     minutes = time_dict.get("minutes")
-    if minutes and minutes != "0":
+    if minutes != "0":
         total_seconds += int(minutes) * 60
         readable_time = append_readable_time(readable_time, int(minutes), "minute")
 
     seconds = time_dict.get("seconds")
-    if seconds and seconds != "0":
+    if seconds != "0":
         total_seconds += int(seconds)
         readable_time = append_readable_time(readable_time, int(seconds), "second")
 
