@@ -141,8 +141,8 @@ class Conversion:
     def gal_to_l(self, gal: float):
         return f"`{gal} gal` is equal to `{round((gal * 3.785412), 2)} l`."
 
-    def l_to_gal(self, l: float):
-        return f"`{l} l` is equal to `{round((l * 0.264172), 2)} gal`."
+    def l_to_gal(self, ltr: float):
+        return f"`{ltr} l` is equal to `{round((ltr * 0.264172), 2)} gal`."
 
     def floz_to_ml(self, floz: float):
         return f"`{floz} fl oz` is equal to `{round((floz * 29.574), 2)} ml`."
