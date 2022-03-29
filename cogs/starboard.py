@@ -120,15 +120,15 @@ class Starboard(commands.Cog):
                 and reaction.count >= data["threshold"]
             ):
                 async with aiosqlite.connect("./db/database.db") as db:
-                    message_list = await db.execute_fetchall(
-                        """SELECT original_id, starboard_id FROM starboardmessages"""
+                    matching_entry = await db.execute_fetchall(
+                        """SELECT starboard_id FROM starboardmessages WHERE :original_id = original_id""",
+                        {"original_id": payload.message_id},
                     )
 
                 # just editing the number on already existing messages
-                for x in message_list:
-                    if x[0] == payload.message_id:
-                        await self.update_starboard_message(reaction, x[1])
-                        return
+                if len(matching_entry) != 0:
+                    await self.update_starboard_message(reaction, matching_entry[0][0])
+                    return
 
                 # if it doesnt already exist, it creates a new message
                 star_channel = await self.bot.fetch_channel(self.starboard_channel)
@@ -199,15 +199,20 @@ class Starboard(commands.Cog):
             return
 
         for reaction in message.reactions:
-            if str(reaction.emoji) == data["emoji"]:
+            if (
+                str(reaction.emoji) == data["emoji"]
+                and reaction.count >= data["threshold"]
+            ):
                 async with aiosqlite.connect("./db/database.db") as db:
-                    message_list = await db.execute_fetchall(
-                        """SELECT original_id, starboard_id FROM starboardmessages"""
+                    matching_entry = await db.execute_fetchall(
+                        """SELECT starboard_id FROM starboardmessages WHERE :original_id = original_id""",
+                        {"original_id": payload.message_id},
                     )
-                # just editing the number on already existing messages, cant go below 1 though
-                for x in message_list:
-                    if x[0] == payload.message_id:
-                        await self.update_starboard_message(reaction, x[1])
+
+                # just editing the number on already existing messages
+                if len(matching_entry) != 0:
+                    await self.update_starboard_message(reaction, matching_entry[0][0])
+                    return
 
     @starboardemoji.error
     async def starboardemoji_error(self, ctx, error):
