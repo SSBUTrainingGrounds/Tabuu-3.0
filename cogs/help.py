@@ -99,6 +99,7 @@ class Responses(discord.ui.Select):
 ```%modifyrolemenu <message ID> <exclusive> <Optional Role(s)>``` - Sets special permissions for a Role menu.
 ```%geteveryrolemenu``` - Gets you every role menu entry currently active.
 ```%rename <@user> <name>``` - Sets a new nickname for a user or removes it.
+```%say <channel> <message>``` - Admin only, Repeats the message in the chnanel.
 ```%createmacro <name> <output>``` - Creates a new macro.
 ```%deletemacro <name>``` - Deletes a macro.
 ```%starboardemoji <emoji>``` - Changes the emoji used for the starboard.
@@ -165,7 +166,7 @@ class Responses(discord.ui.Select):
     """
 
     misc_desc = """
-```%modmail <your message>``` - A private way to communicate with the moderator team. Only works in my DM channel.
+```%modmail <your message>``` - Message the Mod Team privately. Only works in my DM channel.
 ```%updatelevel <@user>``` - Updates the level role manually.
 ```%stagelist``` - Our Stagelist for Crew Battles.
 ```%avatar <@user>``` - Gets you the avatar of a user.

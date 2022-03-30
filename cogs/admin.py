@@ -246,6 +246,14 @@ class Admin(commands.Cog):
             f"Changed the display name of {discord.utils.escape_markdown(str(member))} to `{name}`."
         )
 
+    @commands.command()
+    @commands.has_permissions(administrator=True)
+    async def say(self, ctx, channel: discord.TextChannel, *, message):
+        """
+        Repeats a message in a given channel.
+        """
+        await channel.send(message)
+
     # error handling for the commands above
     # they all are fairly similar
     @kick.error
@@ -377,6 +385,17 @@ class Admin(commands.Cog):
             await ctx.send("Please enter a member.")
         elif isinstance(error, commands.CommandInvokeError):
             await ctx.send("Something went wrong! Please try again.")
+        else:
+            raise error
+
+    @say.error
+    async def say_error(self, ctx, error):
+        if isinstance(error, commands.MissingPermissions):
+            await ctx.send("Nice try, but you don't have the permissions to do that!")
+        elif isinstance(error, commands.MissingRequiredArgument):
+            await ctx.send("Please specify a channel and a message to repeat.")
+        elif isinstance(error, commands.ChannelNotFound):
+            await ctx.send("Please specify a valid channel.")
         else:
             raise error
 
