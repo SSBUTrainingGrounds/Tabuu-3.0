@@ -287,7 +287,7 @@ Everything else should be fairly self-explanatory.
     - Example: `%rps @ExampleUser`  
     - Aliases: rockpaperscissors, rochambeau, roshambo  
   
-**%say** `<channel> <message>`  
+- **%say** `<channel> <message>`  
     - Info: **Admin Only.** Repeats the given Message in the given Text Channel.  
     - Example: `%say #announcements Important Announcement`  
   
