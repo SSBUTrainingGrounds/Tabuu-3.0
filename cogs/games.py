@@ -1,5 +1,5 @@
-from math import ceil
 import random
+from math import ceil
 
 import discord
 from discord.ext import commands

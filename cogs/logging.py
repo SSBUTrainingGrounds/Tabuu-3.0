@@ -4,7 +4,7 @@ import discord
 from discord.ext import commands
 
 import utils.embed
-from utils.ids import GuildIDs, TGChannelIDs, BGChannelIDs
+from utils.ids import BGChannelIDs, GuildIDs, TGChannelIDs
 
 
 class Logging(commands.Cog):

@@ -5,8 +5,8 @@ import time
 
 import aiosqlite
 import discord
-from discord.ext import commands
 import psutil
+from discord.ext import commands
 
 import utils.check
 from utils.ids import GuildIDs, TGRoleIDs

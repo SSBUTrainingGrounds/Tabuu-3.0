@@ -1,5 +1,5 @@
-from datetime import time, datetime
 import unittest
+from datetime import datetime, time
 from zoneinfo import ZoneInfo
 
 from utils.time import convert_time, convert_to_utc

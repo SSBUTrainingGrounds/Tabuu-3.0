@@ -4,7 +4,7 @@ from discord.ext import commands
 
 import utils.check
 import utils.embed
-from utils.ids import TGRoleIDs, GuildIDs, TGChannelIDs
+from utils.ids import GuildIDs, TGChannelIDs, TGRoleIDs
 
 
 class ConfirmationButtons(discord.ui.View):

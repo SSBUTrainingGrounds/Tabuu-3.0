@@ -4,7 +4,7 @@ import discord
 from discord.ext import commands
 
 import utils.check
-from utils.ids import GuildNames, GuildIDs, AdminVars
+from utils.ids import AdminVars, GuildIDs, GuildNames
 from utils.role import search_role
 
 

@@ -7,11 +7,11 @@ from discord.ext import commands
 
 import utils.check
 from utils.ids import (
-    GuildNames,
+    Emojis,
     GuildIDs,
+    GuildNames,
     TGArenaChannelIDs,
     TGMatchmakingRoleIDs,
-    Emojis,
 )
 
 

@@ -3,9 +3,9 @@ import json
 import discord
 from discord.ext import commands
 
+import utils.check
 from cogs.matchmaking import Matchmaking
 from cogs.ranking import Ranking
-import utils.check
 from utils.ids import TGArenaChannelIDs
 
 

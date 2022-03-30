@@ -5,7 +5,7 @@ import discord
 from discord.ext import commands
 
 from cogs.warn import Warn
-from utils.ids import GuildIDs, TGRoleIDs, TGChannelIDs, AdminVars
+from utils.ids import AdminVars, GuildIDs, TGChannelIDs, TGRoleIDs
 
 with open(r"./files/badwords.txt", encoding="utf-8") as file:
     file = file.read().split()

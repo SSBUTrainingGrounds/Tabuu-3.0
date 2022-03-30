@@ -4,7 +4,7 @@ import discord
 from discord.ext import commands, tasks
 from mee6_py_api import API
 
-from utils.ids import GuildNames, GuildIDs, TGLevelRoleIDs
+from utils.ids import GuildIDs, GuildNames, TGLevelRoleIDs
 
 # this is purposefully not made into GuildIDs.TRAINING_GROUNDS.
 # even in testing i want the TG leaderboard, not the leaderboard of my testing server. change it if you want to.
