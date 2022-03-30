@@ -107,7 +107,7 @@ class Responses(discord.ui.Select):
 ```%forcedeleteprofile <@user>``` - Deletes the profile of a user.
 ```%addbadges <@user> <emojis>``` - Adds badges to a user.
 ```%removebadge <@user> <emoji>``` - Removes one badge from a user.
-```%clearbadge <@user>``` - Clears every badge from a user.
+```%clearbadges <@user>``` - Clears every badge from a user.
 ```%syncbanlist``` - Syncs the ban list from main server to secondary server.
 ```%setupmodmailbutton``` - Sets up a new modmail button for the bot to listen to.
     """
@@ -191,77 +191,73 @@ class Responses(discord.ui.Select):
 
     async def callback(self, interaction: discord.Interaction):
         if self.values[0] == "Moderation Commands":
-            mod_embed = discord.Embed(
+            embed = discord.Embed(
                 title="🕵️Moderation Commands🕵️",
                 color=0xFF0000,
                 description=self.moderation_desc,
             )
-            await interaction.response.send_message(embed=mod_embed, ephemeral=True)
 
         elif self.values[0] == "Admin Utility Commands":
-            admin_util_embed = discord.Embed(
+            embed = discord.Embed(
                 title="🧰Admin Utility Commands🧰",
                 colour=0x540707,
                 description=self.admin_util_desc,
             )
-            await interaction.response.send_message(
-                embed=admin_util_embed, ephemeral=True
-            )
 
         elif self.values[0] == "Info Commands":
-            info_embed = discord.Embed(
+            embed = discord.Embed(
                 title="❓Info Commands❓", color=0x06515F, description=self.info_desc
             )
-            await interaction.response.send_message(embed=info_embed, ephemeral=True)
 
         elif self.values[0] == "Matchmaking Commands":
-            matchmaking_embed = discord.Embed(
+            embed = discord.Embed(
                 title="⚔️Matchmaking Commands⚔️",
                 color=0x420202,
                 description=self.mm_desc,
             )
-            await interaction.response.send_message(
-                embed=matchmaking_embed, ephemeral=True
-            )
 
         elif self.values[0] == "Profile Commands":
-            profile_embed = discord.Embed(
+            embed = discord.Embed(
                 title="👥Profile Commands👥", color=0x7C3ED, description=self.profile_desc
             )
-            await interaction.response.send_message(embed=profile_embed, ephemeral=True)
 
         elif self.values[0] == "Utility Commands":
-            utility_embed = discord.Embed(
+            embed = discord.Embed(
                 title="🔧Utility Commands🔧", color=0x424242, description=self.util_desc
             )
-            await interaction.response.send_message(embed=utility_embed, ephemeral=True)
 
         elif self.values[0] == "Game Commands":
-            game_embed = discord.Embed(
+            embed = discord.Embed(
                 title="🎮Game Commands🎮", colour=0x333333, description=self.game_desc
             )
-            await interaction.response.send_message(embed=game_embed, ephemeral=True)
 
         elif self.values[0] == "Miscellaneous Commands":
-            miscellaneous_embed = discord.Embed(
+            embed = discord.Embed(
                 title="📋Miscellaneous Commands📋",
                 color=0x155A00,
                 description=self.misc_desc,
             )
-            await interaction.response.send_message(
-                embed=miscellaneous_embed, ephemeral=True
-            )
 
         elif self.values[0] == "Fun Commands":
-            fun_embed = discord.Embed(
+            embed = discord.Embed(
                 title="😂Fun Commands😂", color=0x841E8B, description=self.fun_desc
             )
-            await interaction.response.send_message(embed=fun_embed, ephemeral=True)
 
         else:
-            await interaction.response.send_message(
-                "Something went wrong! Please try again.", ephemeral=True
+            embed = discord.Embed(
+                title="❌Looks like something went wrong❌",
+                colour=0x700416,
+                description="Please try again.",
             )
+
+        embed.add_field(
+            name="\u200b",
+            value="[Details: `%help <command>` or visit my GitHub.]"
+            "(https://github.com/atomflunder/Tabuu-3.0-Bot/blob/main/CommandList.md)",
+            inline=False,
+        )
+
+        await interaction.response.send_message(embed=embed, ephemeral=True)
 
 
 class DropdownHelp(discord.ui.View):
@@ -324,6 +320,13 @@ class CustomHelp(commands.HelpCommand):
             embed.add_field(name="Usable by you:", value="Yes", inline=False)
         except commands.CommandError as exc:
             embed.add_field(name="Usable by you:", value=f"No:\n{exc}", inline=False)
+
+        embed.add_field(
+            name="\u200b",
+            value="[Overview: `%help` or visit my GitHub.]"
+            "(https://github.com/atomflunder/Tabuu-3.0-Bot/blob/main/CommandList.md)",
+            inline=False,
+        )
 
         channel = self.get_destination()
         await channel.send(embed=embed)
