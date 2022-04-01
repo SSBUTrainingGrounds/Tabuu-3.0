@@ -92,6 +92,7 @@ class Responses(discord.ui.Select):
     admin_util_desc = """
 ```%reloadcogs <cogs>``` - Owner only, reloads some or all of the modules of this bot.
 ```%synccommands <guild>``` - Owner only, syncs application commands to one or all guilds.
+```%editrole <property> <role> <value>``` - Edits a role's properties to the given value.
 ```%clearmmpings``` - Clears all matchmaking pings.
 ```%records``` - Shows ban records.
 ```%forcereportmatch <@winner> <@loser>``` - If someone abandons a ranked match.
@@ -274,13 +275,13 @@ class DropdownHelp(discord.ui.View):
 
 
 class CustomHelp(commands.HelpCommand):
-    async def help_embed(
-        self, embed: discord.Embed, command: Union[commands.Command, commands.Group]
-    ):
+    async def help_embed(self, command: Union[commands.Command, commands.Group]):
         """
-        Populates the help embed with useful information.
+        Creates a help embed with useful information.
         Luckily most things work for both commands and groups.
         """
+        embed = discord.Embed(title=self.get_command_signature(command), color=0x007377)
+
         # the command.help is just the docstring inside every command.
         embed.add_field(name="Help:", value=command.help, inline=False)
         embed.set_thumbnail(url=self.context.bot.user.display_avatar.url)
@@ -335,11 +336,7 @@ class CustomHelp(commands.HelpCommand):
         """
         Sends you specific help information about a command.
         """
-        embed = discord.Embed(
-            title=self.get_command_signature(command), colour=0x007377
-        )
-
-        embed = await self.help_embed(embed, command)
+        embed = await self.help_embed(command)
 
         channel = self.get_destination()
         await channel.send(embed=embed)
@@ -350,8 +347,7 @@ class CustomHelp(commands.HelpCommand):
         """
         command_names = [command.name for command in group.commands]
 
-        embed = discord.Embed(title=self.get_command_signature(group), color=0x007377)
-        embed = await self.help_embed(embed, group)
+        embed = await self.help_embed(group)
 
         embed.insert_field_at(
             index=1,

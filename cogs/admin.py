@@ -228,6 +228,142 @@ class Admin(commands.Cog):
         await member.remove_roles(role)
         await ctx.send(f"{member.mention} no longer has the {role} role.")
 
+    @commands.group()
+    @utils.check.is_moderator()
+    async def editrole(self, ctx):
+        """
+        Lists the group commands for editing a role.
+        """
+        if ctx.invoked_subcommand:
+            return
+
+        embed = discord.Embed(
+            title="Available subcommands:",
+            description="`%editrole name <role> <new name>`\n"
+            "`%editrole colour <role> <hex colour>`\n"
+            "`%editrole icon <role> <emoji/attachment>`\n"
+            "`%editrole mentionable <role> <True/False>`\n",
+            colour=0x007377,
+        )
+        embed.set_thumbnail(url=self.bot.user.display_avatar.url)
+        await ctx.send(embed=embed)
+
+    @editrole.command(name="name")
+    @utils.check.is_moderator()
+    async def editrole_name(self, ctx, role: discord.Role, *, name: str):
+        """
+        Edits the name of a role.
+        """
+        old_role_name = role.name
+
+        # unfortunately we have to handle the Forbidden error here,
+        # since the error handler will not handle it easily.
+        try:
+            await role.edit(name=name)
+            await ctx.send(f"Changed name of {old_role_name} to {role.name}.")
+        except discord.errors.Forbidden:
+            await ctx.send("I do not have the required permissions to edit this role.")
+
+    @editrole.command(name="colour", aliases=["color"])
+    @utils.check.is_moderator()
+    async def editrole_colour(self, ctx, role: discord.Role, hex_colour):
+        """
+        Edits the colour of a role, use a hex colour code.
+        """
+        # hex colour codes are 7 digits long and start with #
+        if not hex_colour.startswith("#") or not len(hex_colour) == 7:
+            await ctx.send(
+                "Please choose a valid hex colour code. Example: `%editrole colour role #8a0f84`"
+            )
+            return
+
+        hex_colour = hex_colour.replace("#", "0x")
+
+        try:
+            colour = int(hex_colour, 16)
+        except ValueError:
+            await ctx.send(
+                "Please choose a valid hex colour code. Example: `%editrole colour role #8a0f84`"
+            )
+            return
+
+        try:
+            await role.edit(colour=colour)
+            await ctx.send(f"Changed colour of {role.name} to {hex_colour}")
+        except discord.errors.Forbidden:
+            await ctx.send("I do not have the required permissions to edit this role.")
+
+    @editrole.command(name="icon")
+    @utils.check.is_moderator()
+    async def editrole_icon(
+        self, ctx, role: discord.Role, emoji: Union[discord.Emoji, str] = None
+    ):
+        """
+        Edits the role icon with an emoji or an attachment.
+        """
+        # role icons can be either emojis or images
+        # if none of these are specified, we remove the icon
+        if not emoji and not ctx.message.attachments:
+            try:
+                await role.edit(display_icon=None)
+                await ctx.send(f"Removed the display icon of {role.name}.")
+            except discord.errors.Forbidden:
+                await ctx.send(
+                    "I do not have the required permissions to edit this role."
+                )
+            return
+
+        async def apply_icon(asset: Union[discord.Emoji, discord.Attachment]):
+            """
+            This function reads the asset as a byte-like object
+            and tries to insert that as the role icon.
+            """
+            try:
+                asset_icon = await asset.read()
+                await role.edit(display_icon=asset_icon)
+                await ctx.send(
+                    f"Edited the display icon of {role.name} to {asset.url} ."
+                )
+            # the normal Missing Permissions thing doesnt work here,
+            # since this could raise a variety of errors.
+            except (discord.errors.Forbidden, discord.errors.HTTPException) as exc:
+                await ctx.send(f"Something went wrong:\n`{exc}`")
+
+        if emoji:
+            # we first need to check for a custom emoji
+            if isinstance(emoji, discord.Emoji):
+                await apply_icon(emoji)
+                return
+
+            # or else if it is a regular emoji
+            try:
+                await role.edit(display_icon=emoji)
+                await ctx.send(f"Edited the display icon of {role.name} to {emoji}.")
+            except (discord.errors.Forbidden, discord.errors.HTTPException) as exc:
+                await ctx.send(f"Something went wrong:\n`{exc}`")
+            return
+
+        # we check if the attachment its a supported icon type
+        if not ctx.message.attachments[0].url.endswith((".jpg", ".jpeg", ".png")):
+            await ctx.send(
+                "Please either specify an emoji or attach an image to use as a role icon."
+            )
+            return
+
+        await apply_icon(ctx.message.attachments[0])
+
+    @editrole.command(name="mentionable", aliases=["mention"])
+    @utils.check.is_moderator()
+    async def editrole_mentionable(self, ctx, role: discord.Role, mentionable: bool):
+        """
+        Makes the role mentionable or unmentionable. Use a boolean type.
+        """
+        try:
+            await role.edit(mentionable=mentionable)
+            await ctx.send(f"Set {role.name} mentionable status to: {mentionable}.")
+        except discord.errors.Forbidden:
+            await ctx.send("I do not have the required permissions to edit this role.")
+
     @commands.command()
     @utils.check.is_moderator()
     async def records(self, ctx):
@@ -347,6 +483,61 @@ class Admin(commands.Cog):
                 "I didn't find a good match for the role you provided. "
                 "Please be more specific, or mention the role, or use the Role ID."
             )
+        else:
+            raise error
+
+    @editrole.error
+    async def editrole_error(self, ctx, error):
+        if isinstance(error, commands.MissingPermissions):
+            await ctx.send("Nice try, but you don't have the permissions to do that!")
+        else:
+            raise error
+
+    @editrole_name.error
+    async def editrole_name_error(self, ctx, error):
+        if isinstance(error, commands.MissingPermissions):
+            await ctx.send("Nice try, but you don't have the permissions to do that!")
+        elif isinstance(error, commands.RoleNotFound):
+            await ctx.send("Please specify a valid role.")
+        elif isinstance(error, commands.MissingRequiredArgument):
+            await ctx.send("Please specify a role and the new name of the role.")
+        elif isinstance(error, commands.CommandInvokeError):
+            await ctx.send("Please specify a valid role name.")
+        else:
+            raise error
+
+    @editrole_colour.error
+    async def editrole_colour_error(self, ctx, error):
+        if isinstance(error, commands.MissingPermissions):
+            await ctx.send("Nice try, but you don't have the permissions to do that!")
+        elif isinstance(error, commands.RoleNotFound):
+            await ctx.send("Please specify a valid role.")
+        elif isinstance(error, commands.MissingRequiredArgument):
+            await ctx.send("Please specify a role and a hex colour code.")
+        else:
+            raise error
+
+    @editrole_icon.error
+    async def editrole_icon_error(self, ctx, error):
+        if isinstance(error, commands.MissingPermissions):
+            await ctx.send("Nice try, but you don't have the permissions to do that!")
+        elif isinstance(error, commands.RoleNotFound):
+            await ctx.send("Please specify a valid role.")
+        elif isinstance(error, commands.MissingRequiredArgument):
+            await ctx.send("Please specify a role and an optional icon or emoji.")
+        else:
+            raise error
+
+    @editrole_mentionable.error
+    async def editrole_mentionable_error(self, ctx, error):
+        if isinstance(error, commands.MissingPermissions):
+            await ctx.send("Nice try, but you don't have the permissions to do that!")
+        elif isinstance(error, commands.RoleNotFound):
+            await ctx.send("Please specify a valid role.")
+        elif isinstance(error, commands.MissingRequiredArgument):
+            await ctx.send("Please specify a role and if it should be mentionable.")
+        elif isinstance(error, commands.BadBoolArgument):
+            await ctx.send("Please only use either True or False as the value.")
         else:
             raise error
 

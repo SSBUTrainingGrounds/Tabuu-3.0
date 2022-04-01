@@ -118,8 +118,29 @@ Everything else should be fairly self-explanatory.
     - Example: `%emote :BowserFail:`  
     - Aliases: emoji  
   
+- **%editrole** 
+    - Info: **Moderator only.** Group command that lists the subcommands and their usage. The available properties to edit are: name, colour, icon, mentionable.  
+
+- **%editrole colour** `<colour>`  
+    - Info: **Moderator only.** Edits the colour of the role. Mention the role or use role ID. You need to use a hex colour code.  
+    - Example: `%editrole colour @Admin #FFFFFF`  
+    - Aliases: color  
+  
+- **%editrole icon** `<emoji: Optional>`  
+    - Info: **Moderator only.** Edits the icon of the role. Mention the role or use role ID. You can either use a default or custom emoji, which the bot needs access to, or you can attach an image file that must not be bigger than 256kb. If you do not specify an emoji or image file, the icon will be deleted from the role.  
+    - Example: `%editrole icon @Admin 👍`  
+  
+- **%editrole mentionable** `<boolean>`  
+    - Info: **Moderator only.** Edits whether or not the role can be mentioned by others. Mention the role or use role ID. You need to use a boolean value (True/False).  
+    - Example: `%editrole mentionable @Admin False`  
+    - Aliases: mention  
+  
+- **%editrole name** `<name>`  
+    - Info: **Moderator only.** Edits the name of the role. Mention the role or use role ID. The name can be a maximum of 100 characters long.  
+    - Example: `%editrole name @Admin New Admin Role Name`  
+  
 - **%forcedeleteprofile** `<@user>`  
-    - Info: **Moderator only.** deletes the profile of the mentioned User.  
+    - Info: **Moderator only.** Deletes the profile of the mentioned User.  
     - Example: `%forcedeleteprofile @ExampleUser`  
   
 - **%forcereportmatch** `<@winner> <@loser>`  
