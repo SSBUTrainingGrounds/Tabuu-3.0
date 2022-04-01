@@ -1,3 +1,5 @@
+from typing import Union
+
 import discord
 from discord.ext import commands
 
@@ -272,35 +274,13 @@ class DropdownHelp(discord.ui.View):
 
 
 class CustomHelp(commands.HelpCommand):
-    async def send_bot_help(self, mapping):
+    async def help_embed(
+        self, embed: discord.Embed, command: Union[commands.Command, commands.Group]
+    ):
         """
-        Sends you the dropdown with every command and explanation on how to use it.
-        The user can choose which dropdown they wanna see,
-        it is intentionally grouped different than in our cogs.
-        It looks a lot nicer this way, in my opinion, than the default option.
-        We just have to remember to add new commands to the embeds up above.
+        Populates the help embed with useful information.
+        Luckily most things work for both commands and groups.
         """
-        channel = self.get_destination()
-        await channel.send("Here are the available subcommands:", view=DropdownHelp())
-
-    async def send_cog_help(self, cog):
-        """
-        We dont really want to send out anything here,
-        since we grouped the commands above a lot differently than the cogs would.
-        So instead we just send out the command not found error,
-        if the user happens to specify a cog as an argument.
-        Otherwise the bot would not respond at all, which is obviously suboptimal.
-        We would need to do the same thing for command groups, but we dont have any.
-        """
-        await self.send_error_message(self.command_not_found(cog.qualified_name))
-
-    async def send_command_help(self, command):
-        """
-        Sends you specific help information about a command.
-        """
-        embed = discord.Embed(
-            title=self.get_command_signature(command), colour=0x007377
-        )
         # the command.help is just the docstring inside every command.
         embed.add_field(name="Help:", value=command.help, inline=False)
         embed.set_thumbnail(url=self.context.bot.user.display_avatar.url)
@@ -311,7 +291,7 @@ class CustomHelp(commands.HelpCommand):
                 inline=False,
             )
         else:
-            embed.add_field(name="Names", value=command.name, inline=False)
+            embed.add_field(name="Names:", value=command.name, inline=False)
 
         # this checks if the command could be used right now.
         # it throws the error directly if the command cant be used and tells you why.
@@ -325,6 +305,58 @@ class CustomHelp(commands.HelpCommand):
             name="\u200b",
             value="[Overview: `%help` or visit my GitHub.]"
             "(https://github.com/atomflunder/Tabuu-3.0-Bot/blob/main/CommandList.md)",
+            inline=False,
+        )
+
+        return embed
+
+    async def send_bot_help(self, mapping):
+        """
+        Sends you the dropdown with every command and explanation on how to use it.
+        The user can choose which dropdown they wanna see,
+        it is intentionally grouped different than in our cogs.
+        It looks a lot nicer this way, in my opinion, than the default option.
+        We just have to remember to add new commands to the embeds up above.
+        """
+        channel = self.get_destination()
+        await channel.send("Here are the available subcommands:", view=DropdownHelp())
+
+    async def send_cog_help(self, cog: commands.Cog):
+        """
+        We dont really want to send out anything here,
+        since we grouped the commands above a lot differently than the cogs would.
+        So instead we just send out the command not found error,
+        if the user happens to specify a cog as an argument.
+        Otherwise the bot would not respond at all, which is obviously suboptimal.
+        """
+        await self.send_error_message(self.command_not_found(cog.qualified_name))
+
+    async def send_command_help(self, command: commands.Command):
+        """
+        Sends you specific help information about a command.
+        """
+        embed = discord.Embed(
+            title=self.get_command_signature(command), colour=0x007377
+        )
+
+        embed = await self.help_embed(embed, command)
+
+        channel = self.get_destination()
+        await channel.send(embed=embed)
+
+    async def send_group_help(self, group: commands.Group):
+        """
+        Sends you help information for grouped commands.
+        """
+        command_names = [command.name for command in group.commands]
+
+        embed = discord.Embed(title=self.get_command_signature(group), color=0x007377)
+        embed = await self.help_embed(embed, group)
+
+        embed.insert_field_at(
+            index=1,
+            name="Available Subcommands:",
+            value=", ".join(command_names),
             inline=False,
         )
 
