@@ -1,4 +1,5 @@
 import asyncio
+from typing import Union
 
 import discord
 from discord.ext import commands
@@ -248,9 +249,11 @@ class Admin(commands.Cog):
 
     @commands.command()
     @commands.has_permissions(administrator=True)
-    async def say(self, ctx, channel: discord.TextChannel, *, message):
+    async def say(
+        self, ctx, channel: Union[discord.TextChannel, discord.Thread], *, message
+    ):
         """
-        Repeats a message in a given channel.
+        Repeats a message in a given channel or thread.
         """
         await channel.send(message)
 
@@ -394,7 +397,7 @@ class Admin(commands.Cog):
             await ctx.send("Nice try, but you don't have the permissions to do that!")
         elif isinstance(error, commands.MissingRequiredArgument):
             await ctx.send("Please specify a channel and a message to repeat.")
-        elif isinstance(error, commands.ChannelNotFound):
+        elif isinstance(error, commands.BadUnionArgument):
             await ctx.send("Please specify a valid channel.")
         else:
             raise error
