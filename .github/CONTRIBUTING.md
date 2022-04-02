@@ -10,7 +10,7 @@ You can find the code of conduct [here](https://github.com/atomflunder/Tabuu-3.0
 Generally speaking, the rules of our [discord server](https://discord.gg/ssbutg) will also apply here.  
 
 ### Questions
-If you just need to ask a question, consider joining our [discord server](https://discord.gg/ssbutg) or sending a DM to Phxenix#1104.  
+If you just need to ask a question, head over to the [discussions tab](https://github.com/atomflunder/Tabuu-3.0-Bot/discussions), join our [discord server](https://discord.gg/ssbutg) or send a DM to Phxenix#1104.  
 
 ## Contributing
 If you are just getting started, [please read the `README.md` on how to get the bot running on your environment](https://github.com/atomflunder/Tabuu-3.0-Bot#running-the-bot).
