@@ -1,0 +1,8 @@
+blank_issues_enabled: true
+contact_links:
+  - name: Questions/Discussion
+    about: "Ask a question or start a new discussion."
+    url: https://github.com/atomflunder/Tabuu-3.0-Bot/discussions
+  - name: Join our Discord Server
+    about: "Use the #suggestions thread for feature requests."
+    url: https://discord.gg/ssbutg
