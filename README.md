@@ -27,9 +27,9 @@ Made by Phxenix#1104. If you have any questions feel free to contact me on Disco
 
 ##  Running the bot
 Since this bot is only intended to be used on the SSBU Training Grounds Server, this means that **you cannot just invite a running instance of the bot to your own server.**  
-What you can do instead is run your own instance of this bot. Please keep in mind however that this bot is highly tailored to the SSBU Training Grounds Server. If you are looking for an easy-to-setup, highly customisable discord bot, you should probably look elsewhere.  
+What you can do instead is run your own instance of this bot. Please keep in mind however that this bot is highly tailored to the SSBU Training Grounds Server. If you are looking for an easy-to-setup, highly customisable discord bot, you should probably look elsewhere. With all that said...  
 
-### With all that said, here's how to run the bot yourself:  
+### Here's how to run the bot yourself:  
 1) Clone this repository.  
 2) Install at least Python 3.9 or newer and the latest version of the [discord.py](https://github.com/Rapptz/discord.py) alpha, as well as the other packages needed with `pip install -r requirements.txt`.  
 3) [Create and host your own Discord Application](https://discord.com/developers/applications).  
@@ -38,9 +38,22 @@ What you can do instead is run your own instance of this bot. Please keep in min
 6) Create a file named `token.txt` in the [`./files/`](files/) directory and paste your discord bot token into it.  
 7) Run `main.py` and enjoy!  
 
-**A few optional extra steps to consider:**  
+**Optional steps to consider:**  
 1) If you want the Mee6 leaderboard of your server instead of the Training Grounds one, you need to change that too, in the [`./cogs/mee6api.py`](cogs/mee6api.py) file. Make sure that Mee6 is present in your server and the levels plugin is enabled.  
 2) The stagelist file [`./files/stagelist.png`](files/stagelist.png) shows our current stagelist. If your ruleset is different, replace the image but keep the same file name.  
 3) The emojis used in the profile commands are stored in [`./files/characters.json`](files/characters.json), change them if you have your own. If bots do not have access to emojis they will just display `:EmojiName:`, so it will still kind of work.  
 
-These are entirely optional, but if you are planning on seriously using this bot for your own server, I highly recommend doing these steps for appearance purposes.  
+While these are entirely optional, if you are planning on seriously using this bot for your own server, I would highly recommend following these steps for appearance purposes.  
+
+## Contributing to Tabuu 3.0
+Thanks to everyone who wants to contribute to this repository in any form, be it adding new features, fixing bugs, spelling corrections, bug reports or feature requests. If you have something in mind, do not hesitate to contribute.   
+You can view the guidelines and how to get started [here](.github/CONTRIBUTING.md).  
+
+## Useful links
+A collection of the most important links, for quick access.
+- [Discord server](https://discord.gg/ssbutg)
+- [List of every command available](/CommandList.md)
+- [How to run the bot](/README.md#running-the-bot)
+- [Contributing guidelines](.github/CONTRIBUTING.md)
+- [Code of conduct](.github/CODE_OF_CONDUCT.md)
+- [License](/LICENSE)
