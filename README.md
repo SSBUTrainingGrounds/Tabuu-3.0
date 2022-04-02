@@ -27,12 +27,12 @@ Made by Phxenix#1104. If you have any questions feel free to contact me on Disco
 
 ##  Running the bot
 Since this bot is only intended to be used on the SSBU Training Grounds Server, this means that **you cannot just invite a running instance of the bot to your own server.**  
-What you can do instead is run your own instance of this bot. Please keep in mind however that this bot is highly tailored to the SSBU Training Grounds Server. If you are looking for an easy-to-setup, highly customisable discord bot, you should probably look elsewhere. With all that said...  
+What you can do instead is run your own instance of this bot. Please keep in mind however that this bot is highly tailored to the SSBU Training Grounds Server. If you are looking for an easy-to-setup, highly customisable discord bot, you should probably look elsewhere. With all that being said...  
 
 ### Here's how to run the bot yourself:  
 1) Clone this repository.  
 2) Install at least Python 3.9 or newer and the latest version of the [discord.py](https://github.com/Rapptz/discord.py) alpha, as well as the other packages needed with `pip install -r requirements.txt`.  
-3) [Create and host your own Discord Application](https://discord.com/developers/applications).  
+3) [Create your own Discord Bot](https://discord.com/developers/applications).  
 4) This bot needs *a lot* of server-specific IDs to function properly, so you need to modify the values in the [`./utils/ids.py`](utils/ids.py) file with the unique IDs of your servers/channels/roles.  
 5) Replace the contents of [`./files/badwords.txt`](files/badwords.txt) with words that will get you automatically warned on usage.  
 6) Create a file named `token.txt` in the [`./files/`](files/) directory and paste your discord bot token into it.  
@@ -46,7 +46,7 @@ What you can do instead is run your own instance of this bot. Please keep in min
 While these are entirely optional, if you are planning on seriously using this bot for your own server, I would highly recommend following these steps for appearance purposes.  
 
 ## Contributing to Tabuu 3.0
-Thanks to everyone who wants to contribute to this repository in any form, be it adding new features, fixing bugs, spelling corrections, bug reports or feature requests. If you have something in mind, do not hesitate to contribute.   
+Thanks to everyone who wants to contribute to this repository in any form, be it adding new features, fixing bugs, spelling corrections, bug reports, feature requests or anything else. If you have something in mind, do not hesitate to contribute.   
 You can view the guidelines and how to get started [here](.github/CONTRIBUTING.md).  
 
 ## Useful links
