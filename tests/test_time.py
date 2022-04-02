@@ -37,8 +37,9 @@ class TestTime(unittest.TestCase):
         expected_times = [1, -5, 12]
 
         for zone, offset in zip(timezones, expected_times):
-            if ZoneInfo(zone).dst(datetime.now()):
+            if ZoneInfo(zone).dst(datetime.now(ZoneInfo(zone))):
                 offset = offset + 1
+
             self.assertEqual(
                 convert_to_utc(time(14, 0, 0, 0), zone),
                 time((14 - offset), 0, 0, 0),
