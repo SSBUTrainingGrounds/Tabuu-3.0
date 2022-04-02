@@ -1,9 +1,9 @@
 ---
-Name: Bug report
-About: Create a report to help improve the bot
-Title: 'Bug report: [Very brief summary of the bug]'
-Labels: bug
-Assignees: atomflunder
+name: Bug report
+about: Create a report to help improve the bot
+title: 'Bug report: [Very brief summary of the bug]'
+labels: bug
+assignees: atomflunder
 
 ---
 
