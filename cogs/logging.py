@@ -346,6 +346,11 @@ class Logging(commands.Cog):
 
             if after.icon:
                 embed.set_image(url=after.icon.url)
+            else:
+                embed.add_field(
+                    name="Server icon has been deleted.", value="\u200b", inline=False
+                )
+
             embed.set_author(
                 name=f"{str(self.bot.user)} ({self.bot.user.id})",
                 icon_url=self.bot.user.display_avatar.url,
@@ -366,6 +371,11 @@ class Logging(commands.Cog):
 
             if after.banner:
                 embed.set_image(url=after.banner.url)
+            else:
+                embed.add_field(
+                    name="Server banner has been deleted.", value="\u200b", inline=False
+                )
+
             embed.set_author(
                 name=f"{str(self.bot.user)} ({self.bot.user.id})",
                 icon_url=self.bot.user.display_avatar.url,
