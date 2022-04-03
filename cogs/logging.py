@@ -335,14 +335,17 @@ class Logging(commands.Cog):
             if logs:
                 await logs.send(embed=embed)
 
-        if before.icon.url != after.icon.url:
+        if before.icon != after.icon:
             embed = discord.Embed(
                 title="**📷 Server icon changed 📷**",
                 description="New icon below:",
                 colour=discord.Colour.dark_gray(),
             )
-            embed.set_thumbnail(url=before.icon.url)
-            embed.set_image(url=after.icon.url)
+            if before.icon:
+                embed.set_thumbnail(url=before.icon.url)
+
+            if after.icon:
+                embed.set_image(url=after.icon.url)
             embed.set_author(
                 name=f"{str(self.bot.user)} ({self.bot.user.id})",
                 icon_url=self.bot.user.display_avatar.url,
@@ -352,14 +355,17 @@ class Logging(commands.Cog):
             if logs:
                 await logs.send(embed=embed)
 
-        if before.banner.url != after.banner.url:
+        if before.banner != after.banner:
             embed = discord.Embed(
                 title="**📷 Server banner changed 📷**",
                 description="New banner below:",
                 colour=discord.Colour.dark_gray(),
             )
-            embed.set_thumbnail(url=before.banner.url)
-            embed.set_image(url=after.banner.url)
+            if before.banner:
+                embed.set_thumbnail(url=before.banner.url)
+
+            if after.banner:
+                embed.set_image(url=after.banner.url)
             embed.set_author(
                 name=f"{str(self.bot.user)} ({self.bot.user.id})",
                 icon_url=self.bot.user.display_avatar.url,
