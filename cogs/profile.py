@@ -276,7 +276,7 @@ class Profile(commands.Cog):
         """
         # since you can have some more pockets, i put it at 10 max.
         # there could be a max of around 25 per embed field however
-        chars = " ".join(self.match_character(profile_input)[:7])
+        chars = " ".join(self.match_character(profile_input)[:10])
 
         await self.make_new_profile(ctx.author)
 
