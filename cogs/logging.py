@@ -1,4 +1,5 @@
 from io import StringIO
+from typing import Sequence
 
 import discord
 from discord.ext import commands
@@ -28,7 +29,7 @@ class Logging(commands.Cog):
         return None
 
     @commands.Cog.listener()
-    async def on_user_update(self, before, after):
+    async def on_user_update(self, before: discord.User, after: discord.User):
         # username change
         if before.name != after.name:
             embed = discord.Embed(
@@ -83,7 +84,7 @@ class Logging(commands.Cog):
                     await logs.send(embed=embed)
 
     @commands.Cog.listener()
-    async def on_member_update(self, before, after):
+    async def on_member_update(self, before: discord.Member, after: discord.Member):
         # if someone changes their nickname on this server
         if before.display_name != after.display_name:
             embed = discord.Embed(
@@ -103,12 +104,12 @@ class Logging(commands.Cog):
         if before.roles != after.roles:
             # user gains a role
             if len(before.roles) < len(after.roles):
-                newRole = next(
+                new_role = next(
                     role for role in after.roles if role not in before.roles
-                )  # gets the new role
+                )
                 embed = discord.Embed(
                     title="**📈 User gained role 📈**",
-                    description=f"Role gained: {newRole.mention}",
+                    description=f"Role gained: {new_role.mention}",
                     colour=discord.Colour.green(),
                 )
                 embed.set_author(
@@ -121,12 +122,12 @@ class Logging(commands.Cog):
 
             # user loses a role
             if len(before.roles) > len(after.roles):
-                oldRole = next(
+                old_role = next(
                     role for role in before.roles if role not in after.roles
-                )  # gets the old role
+                )
                 embed = discord.Embed(
                     title="**📉 User lost role 📉**",
-                    description=f"Role lost: {oldRole.mention}",
+                    description=f"Role lost: {old_role.mention}",
                     colour=discord.Colour.dark_red(),
                 )
                 embed.set_author(
@@ -138,7 +139,7 @@ class Logging(commands.Cog):
                     await logs.send(embed=embed)
 
     @commands.Cog.listener()
-    async def on_member_join(self, member):
+    async def on_member_join(self, member: discord.Member):
         embed = discord.Embed(
             title="**🎆 New member joined 🎆**",
             description=f"{member.mention} has joined the server!\n\n"
@@ -154,7 +155,7 @@ class Logging(commands.Cog):
             await logs.send(embed=embed)
 
     @commands.Cog.listener()
-    async def on_member_remove(self, member):
+    async def on_member_remove(self, member: discord.Member):
         # @everyone is considered a role too, so we remove that from the list
         everyonerole = discord.utils.get(member.guild.roles, name="@everyone")
         roles = [role.mention for role in member.roles if role is not everyonerole]
@@ -175,7 +176,7 @@ class Logging(commands.Cog):
             await logs.send(embed=embed)
 
     @commands.Cog.listener()
-    async def on_message_edit(self, before, after):
+    async def on_message_edit(self, before: discord.Message, after: discord.Message):
         # dont want dms to be included, same in the below listeners
         if not after.guild:
             return
@@ -226,7 +227,7 @@ class Logging(commands.Cog):
             await logs.send(embed=embed)
 
     @commands.Cog.listener()
-    async def on_message_delete(self, message):
+    async def on_message_delete(self, message: discord.Message):
         if not message.guild:
             return
 
@@ -255,7 +256,7 @@ class Logging(commands.Cog):
             await logs.send(embed=embed)
 
     @commands.Cog.listener()
-    async def on_bulk_message_delete(self, messages):
+    async def on_bulk_message_delete(self, messages: list[discord.Message]):
         # defines the embed
         embed = discord.Embed(
             title=f"**❌ Bulk message deletion in {messages[0].channel.name}! ❌**",
@@ -288,7 +289,7 @@ class Logging(commands.Cog):
                 await logs.send(embed=embed)
 
     @commands.Cog.listener()
-    async def on_member_ban(self, guild, user):
+    async def on_member_ban(self, guild: discord.Guild, user: discord.User):
         embed = discord.Embed(
             title="**🚫 New ban! 🚫**",
             description=f"{user.mention} has been banned from this server!",
@@ -303,7 +304,7 @@ class Logging(commands.Cog):
             await logs.send(embed=embed)
 
     @commands.Cog.listener()
-    async def on_member_unban(self, guild, user):
+    async def on_member_unban(self, guild: discord.Guild, user: discord.User):
         embed = discord.Embed(
             title="**🔓 New unban! 🔓**",
             description=f"{user.mention} has been unbanned from this server!",
@@ -314,6 +315,412 @@ class Logging(commands.Cog):
         )
         embed.timestamp = discord.utils.utcnow()
         logs = self.bot.get_channel(self.get_logchannel(guild.id))
+        if logs:
+            await logs.send(embed=embed)
+
+    @commands.Cog.listener()
+    async def on_guild_update(self, before: discord.Guild, after: discord.Guild):
+        if before.name != after.name:
+            embed = discord.Embed(
+                title="🏠 Server name updated! 🏠",
+                description=f"Old name: {before.name}\nNew name: {after.name}",
+                colour=discord.Colour.dark_grey(),
+            )
+            embed.set_author(
+                name=f"{str(self.bot.user)} ({self.bot.user.id})",
+                icon_url=self.bot.user.display_avatar.url,
+            )
+            embed.timestamp = discord.utils.utcnow()
+            logs = self.bot.get_channel(self.get_logchannel(after.id))
+            if logs:
+                await logs.send(embed=embed)
+
+        if before.icon.url != after.icon.url:
+            embed = discord.Embed(
+                title="**📷 Server icon changed 📷**",
+                description="New icon below:",
+                colour=discord.Colour.dark_gray(),
+            )
+            embed.set_thumbnail(url=before.icon.url)
+            embed.set_image(url=after.icon.url)
+            embed.set_author(
+                name=f"{str(self.bot.user)} ({self.bot.user.id})",
+                icon_url=self.bot.user.display_avatar.url,
+            )
+            embed.timestamp = discord.utils.utcnow()
+            logs = self.bot.get_channel(self.get_logchannel(after.id))
+            if logs:
+                await logs.send(embed=embed)
+
+        if before.banner.url != after.banner.url:
+            embed = discord.Embed(
+                title="**📷 Server banner changed 📷**",
+                description="New banner below:",
+                colour=discord.Colour.dark_gray(),
+            )
+            embed.set_thumbnail(url=before.banner.url)
+            embed.set_image(url=after.banner.url)
+            embed.set_author(
+                name=f"{str(self.bot.user)} ({self.bot.user.id})",
+                icon_url=self.bot.user.display_avatar.url,
+            )
+            embed.timestamp = discord.utils.utcnow()
+            logs = self.bot.get_channel(self.get_logchannel(after.id))
+            if logs:
+                await logs.send(embed=embed)
+
+    @commands.Cog.listener()
+    async def on_guild_channel_create(self, channel: discord.abc.GuildChannel):
+        embed = discord.Embed(
+            title="📜 New channel created! 📜",
+            description=f"Name: #{channel.name}\nCategory: {channel.category}",
+            colour=discord.Color.green(),
+        )
+        embed.set_author(
+            name=f"{str(self.bot.user)} ({self.bot.user.id})",
+            icon_url=self.bot.user.display_avatar.url,
+        )
+        embed.timestamp = discord.utils.utcnow()
+        logs = self.bot.get_channel(self.get_logchannel(channel.guild.id))
+        if logs:
+            await logs.send(embed=embed)
+
+    @commands.Cog.listener()
+    async def on_guild_channel_delete(self, channel: discord.abc.GuildChannel):
+        embed = discord.Embed(
+            title="❌ Channel deleted! ❌",
+            description=f"Name: #{channel.name}\nCategory: {channel.category}",
+            colour=discord.Colour.red(),
+        )
+        embed.set_author(
+            name=f"{str(self.bot.user)} ({self.bot.user.id})",
+            icon_url=self.bot.user.display_avatar.url,
+        )
+        embed.timestamp = discord.utils.utcnow()
+        logs = self.bot.get_channel(self.get_logchannel(channel.guild.id))
+        if logs:
+            await logs.send(embed=embed)
+
+    @commands.Cog.listener()
+    async def on_guild_channel_update(
+        self, before: discord.abc.GuildChannel, after: discord.abc.GuildChannel
+    ):
+        # we just log those two here, since the other stuff doesnt make much sense to log, imo.
+        # position would get very spammy and permissions are hard to display in an embed.
+        if before.name != after.name:
+            embed = discord.Embed(
+                title="📜 Channel name updated! 📜",
+                description=f"Old name: #{before.name}\nNew name: #{after.name}",
+                colour=discord.Colour.dark_grey(),
+            )
+            embed.set_author(
+                name=f"{str(self.bot.user)} ({self.bot.user.id})",
+                icon_url=self.bot.user.display_avatar.url,
+            )
+            embed.timestamp = discord.utils.utcnow()
+            logs = self.bot.get_channel(self.get_logchannel(after.guild.id))
+            if logs:
+                await logs.send(embed=embed)
+
+        if before.category != after.category:
+            embed = discord.Embed(
+                title=f"📜 Channel category updated for {after.name}! 📜",
+                description=f"Old category: {before.category}\nNew category: #{after.category}",
+                colour=discord.Colour.dark_grey(),
+            )
+            embed.set_author(
+                name=f"{str(self.bot.user)} ({self.bot.user.id})",
+                icon_url=self.bot.user.display_avatar.url,
+            )
+            embed.timestamp = discord.utils.utcnow()
+            logs = self.bot.get_channel(self.get_logchannel(after.guild.id))
+            if logs:
+                await logs.send(embed=embed)
+
+    @commands.Cog.listener()
+    async def on_guild_emojis_update(
+        self,
+        guild: discord.Guild,
+        before: Sequence[discord.Emoji],
+        after: Sequence[discord.Emoji],
+    ):
+        if len(before) > len(after):
+            old_emoji = next(emoji for emoji in before if emoji not in after)
+
+            embed = discord.Embed(
+                title="😭 Emoji deleted! 😭",
+                description=f"Name: {old_emoji.name}\nID: {old_emoji.id}",
+                colour=discord.Colour.red(),
+            )
+            embed.set_image(url=old_emoji.url)
+            embed.set_author(
+                name=f"{str(self.bot.user)} ({self.bot.user.id})",
+                icon_url=self.bot.user.display_avatar.url,
+            )
+            embed.timestamp = discord.utils.utcnow()
+
+            logs = self.bot.get_channel(self.get_logchannel(guild.id))
+            if logs:
+                await logs.send(embed=embed)
+
+        if len(before) < len(after):
+            new_emoji = next(emoji for emoji in after if emoji not in before)
+
+            embed = discord.Embed(
+                title="😀 New emoji created! 😀",
+                description=f"Name: {new_emoji.name}\nID: {new_emoji.id}",
+                colour=discord.Colour.yellow(),
+            )
+            embed.set_image(url=new_emoji.url)
+            embed.set_author(
+                name=f"{str(self.bot.user)} ({self.bot.user.id})",
+                icon_url=self.bot.user.display_avatar.url,
+            )
+            embed.timestamp = discord.utils.utcnow()
+
+            logs = self.bot.get_channel(self.get_logchannel(guild.id))
+            if logs:
+                await logs.send(embed=embed)
+
+    @commands.Cog.listener()
+    async def on_guild_stickers_update(
+        self,
+        guild: discord.Guild,
+        before: Sequence[discord.Sticker],
+        after: Sequence[discord.Sticker],
+    ):
+        if len(before) > len(after):
+            old_sticker = next(sticker for sticker in before if sticker not in after)
+
+            embed = discord.Embed(
+                title="😭 Sticker deleted! 😭",
+                description=f"Name: {old_sticker.name}\nID: {old_sticker.id}",
+                colour=discord.Colour.red(),
+            )
+            embed.set_image(url=old_sticker.url)
+            embed.set_author(
+                name=f"{str(self.bot.user)} ({self.bot.user.id})",
+                icon_url=self.bot.user.display_avatar.url,
+            )
+            embed.timestamp = discord.utils.utcnow()
+
+            logs = self.bot.get_channel(self.get_logchannel(guild.id))
+            if logs:
+                await logs.send(embed=embed)
+
+        if len(before) < len(after):
+            new_sticker = next(sticker for sticker in after if sticker not in before)
+
+            embed = discord.Embed(
+                title="😀 New sticker created! 😀",
+                description=f"Name: {new_sticker.name}\nID: {new_sticker.id}",
+                colour=discord.Colour.yellow(),
+            )
+            embed.set_image(url=new_sticker.url)
+            embed.set_author(
+                name=f"{str(self.bot.user)} ({self.bot.user.id})",
+                icon_url=self.bot.user.display_avatar.url,
+            )
+            embed.timestamp = discord.utils.utcnow()
+
+            logs = self.bot.get_channel(self.get_logchannel(guild.id))
+            if logs:
+                await logs.send(embed=embed)
+
+    @commands.Cog.listener()
+    async def on_invite_create(self, invite: discord.Invite):
+        invite_uses = invite.max_uses if invite.max_uses > 0 else "Unlimited"
+        expiration = (
+            discord.utils.format_dt(invite.expires_at) if invite.expires_at else "Never"
+        )
+
+        embed = discord.Embed(
+            title="✉️ New invite created! ✉️",
+            description=f"From: {str(invite.inviter)}\nDestination: {invite.channel.mention}\n"
+            f"Uses: {invite_uses}\nExpiration: {expiration}",
+            colour=discord.Colour.green(),
+        )
+        embed.set_author(
+            name=f"{str(invite.inviter)} ({invite.inviter.id})",
+            icon_url=invite.inviter.display_avatar.url,
+        )
+        embed.timestamp = discord.utils.utcnow()
+        logs = self.bot.get_channel(self.get_logchannel(invite.guild.id))
+        if logs:
+            await logs.send(embed=embed)
+
+    @commands.Cog.listener()
+    async def on_guild_role_create(self, role: discord.Role):
+        embed = discord.Embed(
+            title="✨ New role created! ✨",
+            description=f"Name: {role.name}\nID: {role.id}",
+            colour=role.colour,
+        )
+        embed.set_author(
+            name=f"{str(self.bot.user)} ({self.bot.user.id})",
+            icon_url=self.bot.user.display_avatar.url,
+        )
+        embed.timestamp = discord.utils.utcnow()
+        logs = self.bot.get_channel(self.get_logchannel(role.guild.id))
+        if logs:
+            await logs.send(embed=embed)
+
+    @commands.Cog.listener()
+    async def on_guild_role_delete(self, role: discord.Role):
+        embed = discord.Embed(
+            title="❌ Role deleted! ❌",
+            description=f"Name: {role.name}\nID: {role.id}",
+            colour=role.colour,
+        )
+        if role.icon:
+            embed.set_thumbnail(url=role.icon.url)
+
+        embed.set_author(
+            name=f"{str(self.bot.user)} ({self.bot.user.id})",
+            icon_url=self.bot.user.display_avatar.url,
+        )
+        embed.timestamp = discord.utils.utcnow()
+        logs = self.bot.get_channel(self.get_logchannel(role.guild.id))
+        if logs:
+            await logs.send(embed=embed)
+
+    @commands.Cog.listener()
+    async def on_guild_role_update(self, before: discord.Role, after: discord.Role):
+        if before.name != after.name:
+            embed = discord.Embed(
+                title="🔧 Role name updated! 🔧",
+                description=f"Old name: {before.name}\nNew name: {after.name}",
+                colour=after.colour,
+            )
+            if after.icon:
+                embed.set_thumbnail(url=after.icon.url)
+
+            embed.set_author(
+                name=f"{str(self.bot.user)} ({self.bot.user.id})",
+                icon_url=self.bot.user.display_avatar.url,
+            )
+            embed.timestamp = discord.utils.utcnow()
+            logs = self.bot.get_channel(self.get_logchannel(after.guild.id))
+            if logs:
+                await logs.send(embed=embed)
+
+        if before.colour != after.colour:
+            embed = discord.Embed(
+                title=f"🔧 {after.name} colour updated! 🔧",
+                description=f"Old colour: {before.colour}\nNew colour: {after.colour}",
+                colour=after.colour,
+            )
+            if after.icon:
+                embed.set_thumbnail(url=after.icon.url)
+
+            embed.set_author(
+                name=f"{str(self.bot.user)} ({self.bot.user.id})",
+                icon_url=self.bot.user.display_avatar.url,
+            )
+            embed.timestamp = discord.utils.utcnow()
+            logs = self.bot.get_channel(self.get_logchannel(after.guild.id))
+            if logs:
+                await logs.send(embed=embed)
+
+        if before.icon != after.icon:
+            embed = discord.Embed(
+                title=f"🔧 {after.name} icon updated! 🔧",
+                description="New icon below:",
+                colour=after.colour,
+            )
+            if before.icon:
+                embed.set_thumbnail(url=before.icon.url)
+
+            if after.icon:
+                embed.set_image(url=after.icon.url)
+            else:
+                embed.add_field(
+                    name="Role icon has been deleted.", value="\u200b", inline=False
+                )
+
+            embed.set_author(
+                name=f"{str(self.bot.user)} ({self.bot.user.id})",
+                icon_url=self.bot.user.display_avatar.url,
+            )
+            embed.timestamp = discord.utils.utcnow()
+            logs = self.bot.get_channel(self.get_logchannel(after.guild.id))
+            if logs:
+                await logs.send(embed=embed)
+
+        if before.unicode_emoji != after.unicode_emoji:
+            embed = discord.Embed(
+                title=f"🔧 {after.name} emoji updated! 🔧",
+                description=f"Old emoji: {before.unicode_emoji}\nNew emoji: {after.unicode_emoji}",
+                colour=after.colour,
+            )
+
+            embed.set_author(
+                name=f"{str(self.bot.user)} ({self.bot.user.id})",
+                icon_url=self.bot.user.display_avatar.url,
+            )
+            embed.timestamp = discord.utils.utcnow()
+            logs = self.bot.get_channel(self.get_logchannel(after.guild.id))
+            if logs:
+                await logs.send(embed=embed)
+
+    @commands.Cog.listener()
+    async def on_thread_join(self, thread: discord.Thread):
+        embed = discord.Embed(
+            title="🧵 New thread created! 🧵",
+            description=f"Name: {thread.name}\nID: {thread.id}\n"
+            f"Channel: {thread.parent.mention}\nCreator: {thread.owner.mention}\n"
+            f"Archives after {thread.auto_archive_duration} minutes of inactivity.",
+            colour=discord.Colour.blue(),
+        )
+
+        embed.set_author(
+            name=f"{str(thread.owner)} ({thread.owner.id})",
+            icon_url=thread.owner.display_avatar.url,
+        )
+        embed.timestamp = discord.utils.utcnow()
+        logs = self.bot.get_channel(self.get_logchannel(thread.guild.id))
+        if logs:
+            await logs.send(embed=embed)
+
+    @commands.Cog.listener()
+    async def on_thread_delete(self, thread: discord.Thread):
+        embed = discord.Embed(
+            title="❌ Thread deleted! ❌",
+            description=f"Name: {thread.name}\nID: {thread.id}\n"
+            f"Channel: {thread.parent.mention}\nCreator: {thread.owner.mention}",
+            colour=discord.Colour.red(),
+        )
+        embed.set_author(
+            name=f"{str(thread.owner)} ({thread.owner.id})",
+            icon_url=thread.owner.display_avatar.url,
+        )
+        embed.timestamp = discord.utils.utcnow()
+        logs = self.bot.get_channel(self.get_logchannel(thread.guild.id))
+        if logs:
+            await logs.send(embed=embed)
+
+    @commands.Cog.listener()
+    async def on_scheduled_event_create(self, event: discord.ScheduledEvent):
+        end_time = discord.utils.format_dt(event.end_time) if event.end_time else "None"
+
+        embed = discord.Embed(
+            title="🎇 New event created! 🎇",
+            description=f"Name: {event.name}\nID: {event.id}\n"
+            f"Description: {event.description}\n\nLocation: {event.location}\n"
+            f"Start time: {discord.utils.format_dt(event.start_time)}\nEnd time: {end_time}",
+            colour=discord.Colour.og_blurple(),
+        )
+
+        if event.cover_image:
+            embed.set_image(url=event.cover_image.url)
+
+        embed.set_author(
+            name=f"{str(self.bot.user)} ({self.bot.user.id})",
+            icon_url=self.bot.user.display_avatar.url,
+        )
+
+        embed.timestamp = discord.utils.utcnow()
+        logs = self.bot.get_channel(self.get_logchannel(event.guild.id))
         if logs:
             await logs.send(embed=embed)
 
