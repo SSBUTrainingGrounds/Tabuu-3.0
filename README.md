@@ -39,9 +39,9 @@ What you can do instead is run your own instance of this bot. Please keep in min
 7) Run `main.py` and enjoy!  
 
 **Optional steps to consider:**  
-1) If you want the Mee6 leaderboard of your server instead of the Training Grounds one, you need to change that too, in the [`./cogs/mee6api.py`](cogs/mee6api.py) file. Make sure that Mee6 is present in your server and the levels plugin is enabled.  
-2) The stagelist file [`./files/stagelist.png`](files/stagelist.png) shows our current stagelist. If your ruleset is different, replace the image but keep the same file name.  
-3) The emojis used in the profile commands are stored in [`./files/characters.json`](files/characters.json), change them if you have your own. If bots do not have access to emojis they will just display `:EmojiName:`, so it will still kind of work.  
+1) The Mee6 Leaderboard is from the Training Grounds but you can change it to your own, in the [`./cogs/mee6api.py`](cogs/mee6api.py) file. Make sure that Mee6 is present in your server and the leaderboard is enabled and set to public.  
+2) The stagelist file [`./files/stagelist.png`](files/stagelist.png) shows our current stagelist. Feel free to replace the image, just keep the same file name.  
+3) The emojis used in the profile commands are stored in [`./files/characters.json`](files/characters.json), change them if you have your own. If the bot does not have access to emojis it will just display `:EmojiName:`, so it will still *kind of* work.  
 
 While these are entirely optional, if you are planning on seriously using this bot for your own server, I would highly recommend following these steps for appearance purposes.  
 
@@ -57,3 +57,4 @@ A collection of the most important links, for quick access.
 - [Contributing guidelines](.github/CONTRIBUTING.md)
 - [Code of conduct](.github/CODE_OF_CONDUCT.md)
 - [License](/LICENSE)
+- [discord.py documentation](https://discordpy.readthedocs.io/en/master/)
