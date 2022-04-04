@@ -2,7 +2,7 @@
 
 This here contains every command with a detailed explanation on how to use them. They are ordered alphabetically, search them with Ctrl+F.  
 
-Last updated: 25 March 2022  
+Last updated: 4 April 2022  
 
 ## Quick explanation of this document  
 Arguments that are optional all have the `: Optional` suffix. Every other argument is required.  
@@ -385,6 +385,10 @@ Everything else should be fairly self-explanatory.
 - **%timeout** `<@member> <time> <reason>`  
     - Info: **Moderator only.** Times out a Member for the specified time and tries to DM them the reason. Maximum time is 28 days - 1 second. Mention the Member or use Member ID. The reason will get DM'd to the muted person, if the bot can DM the Member. Uses the same time converter as tempmute and reminders, in a format with a number and the duration. Do not use spaces inbetween multiple times.  
     - Example: `%timeout @ExampleUser 12h30mins what an idiot`  
+  
+- **%translate** `<message>`  
+    - Info: Translates a message or a specified string into english. Either type your own message, reply to a message or specify a message via message ID or Link. Attempts to recognise the original language.  
+    - Example: `%translate bonjour!`  
   
 - **%unban** `<@user>`  
     - Info: **Moderator only.** Unbans a user. Mention the User or use User ID.  
