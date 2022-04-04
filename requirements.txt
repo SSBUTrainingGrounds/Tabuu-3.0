@@ -1,6 +1,7 @@
 git+https://github.com/Rapptz/discord.py
 aiosqlite==0.17.0
 fuzzywuzzy==0.18.0
+googletrans==3.1.0a0
 mee6_py_api==0.0.1
 psutil==5.9.0
 tzdata==2022.1

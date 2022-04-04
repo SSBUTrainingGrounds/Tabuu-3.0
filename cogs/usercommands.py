@@ -1,8 +1,10 @@
 import asyncio
 import random
+from typing import Union
 
 import discord
 from discord.ext import commands
+from googletrans import Translator
 
 import utils.conversion
 
@@ -254,6 +256,42 @@ class Usercommands(commands.Cog):
         Works with most commonly used measurements.
         """
         await ctx.send(utils.conversion.convert_input(conversion_input))
+
+    @commands.command()
+    async def translate(self, ctx, *, message: Union[discord.Message, str] = None):
+        """
+        Translates a message from any language to english.
+        Specify a string to translate, or a message to translate by either using message ID/Link,
+        or replying to a message.
+        Attempts to guess the original language.
+        """
+        # first we check if the user is replying to a message
+        if ctx.message.reference and not message:
+            message = await ctx.channel.fetch_message(ctx.message.reference.message_id)
+
+        # then we get the actual content to translate
+        if isinstance(message, discord.Message):
+            message = message.content
+
+        # checks if the message is empty if either the user failed to specify anything
+        # or if the message content of the message specified is empty
+        if not message:
+            await ctx.send("You need to specify a message to translate!")
+            return
+
+        translation = Translator().translate(f"{message}", dest="en")
+
+        embed = discord.Embed(title="Translation", colour=0x007377)
+        embed.add_field(
+            name=f"Original Text ({translation.src}):",
+            value=translation.origin[:1000],
+            inline=False,
+        )
+        embed.add_field(
+            name="Translated Text (en):", value=translation.text[:1000], inline=False
+        )
+
+        await ctx.send(embed=embed)
 
     # error handling for the above
     @avatar.error

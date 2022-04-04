@@ -156,6 +156,7 @@ class Responses(discord.ui.Select):
 ```%countdown <number>``` - Counts down from number.
 ```%time``` - Current time as a timezone aware object.
 ```%convert <input>``` - Converts the input from metric to imperial and vice versa.
+```%translate <message>``` - Translates a message or string to english.
 ```%poll <"question"> <"option 1"> <"option 2">``` - Starts a poll with a maximum of 10 choices.
 ```%reminder <time> <message>``` - Reminds you about something.
 ```%viewreminders``` - Lists your active reminders.
