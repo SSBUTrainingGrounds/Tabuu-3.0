@@ -716,6 +716,45 @@ class Logging(commands.Cog):
             await logs.send(embed=embed)
 
     @commands.Cog.listener()
+    async def on_thread_update(self, before: discord.Thread, after: discord.Thread):
+        # this event doesnt seem to fire if the thread gets unarchived
+        # so we only log it when a thread gets archived, and not the other way around.
+        if not before.archived and after.archived:
+            embed = discord.Embed(
+                title="🗃️ Thread archived! 🗃️",
+                description=f"Name: {before.name}\nID: {before.id}\n"
+                f"Channel: {before.parent.mention}\nCreator: {before.owner.mention}",
+                colour=discord.Colour.dark_orange(),
+            )
+
+            embed.set_author(
+                name=f"{str(before.owner)} ({before.owner.id})",
+                icon_url=before.owner.display_avatar.url,
+            )
+
+            embed.timestamp = discord.utils.utcnow()
+            logs = self.bot.get_channel(self.get_logchannel(before.guild.id))
+            if logs:
+                await logs.send(embed=embed)
+
+        if before.name != after.name:
+            embed = discord.Embed(
+                title="🧵 Thread name updated! 🧵",
+                description=f"Old name: {before.name}\nNew name: {after.name}\n\n"
+                f"Channel: {before.parent.mention}",
+                colour=discord.Colour.purple(),
+            )
+
+            embed.set_author(
+                name=f"{str(after.owner)} ({after.owner.id})",
+                icon_url=after.owner.display_avatar.url,
+            )
+            embed.timestamp = discord.utils.utcnow()
+            logs = self.bot.get_channel(self.get_logchannel(after.guild.id))
+            if logs:
+                await logs.send(embed=embed)
+
+    @commands.Cog.listener()
     async def on_scheduled_event_create(self, event: discord.ScheduledEvent):
         end_time = discord.utils.format_dt(event.end_time) if event.end_time else "None"
 
