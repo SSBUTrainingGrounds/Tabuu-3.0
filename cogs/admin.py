@@ -129,7 +129,7 @@ class Admin(commands.Cog):
 
         tg_guild = self.bot.get_guild(GuildIDs.TRAINING_GROUNDS)
 
-        bans = await tg_guild.bans()
+        bans = [entry async for entry in tg_guild.bans(limit=None)]
 
         await ctx.send("Syncing ban list... Please wait a few seconds.")
 

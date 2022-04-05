@@ -680,7 +680,7 @@ class Logging(commands.Cog):
                 await logs.send(embed=embed)
 
     @commands.Cog.listener()
-    async def on_thread_join(self, thread: discord.Thread):
+    async def on_thread_create(self, thread: discord.Thread):
         embed = discord.Embed(
             title="🧵 New thread created! 🧵",
             description=f"Name: {thread.name}\nID: {thread.id}\n"
