@@ -11,6 +11,7 @@ Arguments that are optional all have the `: Optional` suffix. Every other argume
 **Admin only** means that you need to have Administrator Rights in order to use this Command.  
 **Owner only** means that only the Bot's Owner can use this Command.  
 **Aliases** show you other names the Command is available under. The usage is exactly the same if you use the default name or one of the listed aliases.  
+**Slash version available** means that you can use this command the normal way, or as an application command with `/`.  
 Everything else should be fairly self-explanatory.  
 
 ## Full list of commands
@@ -156,7 +157,7 @@ Everything else should be fairly self-explanatory.
     - Info: **Moderator only.** Gets you every role menu entry currently saved.  
   
 - **%help** `<command: Optional>`  
-    - Info: Shows you Info about a specified command. If you do not specify a command you will get the help menu, which is broken into a dropdown cause there were too many commands to list. Available dropdowns are: Moderation, Admin Utility, Info, Matchmaking, Profile, Utility, Miscellaneous, and Fun.  
+    - Info: **Slash version available.** Shows you Info about a specified command. If you do not specify a command you will get the help menu, which is broken into a dropdown cause there were too many commands to list. Available dropdowns are: Moderation, Admin Utility, Info, Matchmaking, Profile, Utility, Miscellaneous, and Fun. The text-based version will show you if you can run this command, the slash based version cannot do so due of a discord limitation.  
   
 - **%hypemeup**  
     - Info: Hypes you up with a randomly chosen response before that next game of smash.  

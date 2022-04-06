@@ -1,7 +1,11 @@
 from typing import Union
 
 import discord
+import fuzzywuzzy
+from discord import app_commands
 from discord.ext import commands
+
+from utils.ids import GuildIDs
 
 
 class Responses(discord.ui.Select):
@@ -368,6 +372,112 @@ class Help(commands.Cog):
         help_command = CustomHelp()
         help_command.cog = self
         bot.help_command = help_command
+
+    @app_commands.command(
+        name="help",
+        description="Lists every command available, or helps you with a specific command.",
+    )
+    @app_commands.guilds(*GuildIDs.ALL_GUILDS)
+    @app_commands.describe(command="The optional command you need help with.")
+    async def help(self, interaction: discord.Interaction, command: str = None):
+        """
+        The help command, but replicated as a slash command, mostly.
+        We cannot use command.can_run here, since we cannot get the context from an interaction.
+        The rest is replicated as close as possible.
+
+        This will only get you the "normal" text based commands.
+        This shouldn't be a problem since I will always make them a priority over slash commands.
+        Slash commands will ideally only mimic the behaviour of the text based commands, as close as possible.
+        """
+        if not command:
+            await interaction.response.send_message(
+                "Here are the available subcommands:", view=DropdownHelp()
+            )
+            return
+
+        cmd = self.bot.get_command(command)
+
+        if not cmd:
+            await interaction.response.send_message(
+                "I could not find this command.\n"
+                "Leave the command option empty to see all available commands.",
+                ephemeral=True,
+            )
+            return
+
+        # replicates the get_command_signature of the HelpCommand class.
+        command_full_name = cmd.name
+
+        if cmd.aliases:
+            aliases = "|".join(cmd.aliases)
+            command_full_name = f"[{command_full_name}|{aliases}]"
+
+        if cmd.parent:
+            command_full_name = f"{cmd.full_parent_name} {command_full_name}"
+
+        full_command = f"{self.bot.command_prefix}{command_full_name} {cmd.signature}"
+
+        # unfortunately we need to construct our own embed
+        # since a lot of the stuff used is exclusive to the HelpCommand class
+        embed = discord.Embed(title=full_command, color=0x007377)
+
+        embed.add_field(name="Help:", value=cmd.help, inline=False)
+        embed.set_thumbnail(url=self.bot.user.display_avatar.url)
+
+        if isinstance(cmd, commands.Group):
+            command_names = [command.name for command in cmd.commands]
+
+            embed.add_field(
+                name="Available Subcommands:",
+                value=", ".join(command_names),
+                inline=False,
+            )
+
+        if cmd.aliases:
+            embed.add_field(
+                name="Names:",
+                value=f"{cmd.name}, {', '.join(cmd.aliases)}",
+                inline=False,
+            )
+        else:
+            embed.add_field(name="Names:", value=cmd.name, inline=False)
+
+        # cant do cmd.can_run here, since we do not have access to context in a slash command.
+
+        embed.add_field(
+            name="\u200b",
+            value="[Overview: `%help` or visit my GitHub.]"
+            "(https://github.com/atomflunder/Tabuu-3.0-Bot/blob/main/CommandList.md)",
+            inline=False,
+        )
+
+        await interaction.response.send_message(embed=embed)
+
+    @help.autocomplete("command")
+    async def command_autocomplete(
+        self, interaction: discord.Interaction, current: str
+    ):
+        command_list = []
+        for cmd in self.bot.commands:
+            if isinstance(cmd, commands.Group):
+                for c in cmd.commands:
+                    command_list.append(f"{cmd.name} {c.name}")
+
+            command_list.append(cmd.name)
+
+        choices = []
+
+        # we validate the input first, otherwise the console is
+        # getting spammed with warnings on invalid or unmatchable inputs
+        if fuzzywuzzy.utils.full_process(current):
+            match_list = fuzzywuzzy.process.extractBests(
+                current, command_list, limit=25, score_cutoff=60
+            )
+
+            for match in match_list:
+                choices.append(app_commands.Choice(name=match[0], value=match[0]))
+
+        return choices[:25]
 
 
 async def setup(bot):
