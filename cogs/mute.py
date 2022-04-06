@@ -6,7 +6,7 @@ import discord
 from discord.ext import commands
 
 import utils.check
-from utils.ids import AdminVars, BGRoleIDs, GuildIDs, GuildNames, TGRoleIDs
+from utils.ids import AdminVars, BGRoleIDs, GuildIDs, TGRoleIDs
 from utils.time import convert_time
 
 
@@ -17,6 +17,18 @@ class Mute(commands.Cog):
 
     def __init__(self, bot):
         self.bot = bot
+
+    def get_muted_role(self, guild_id: int):
+        """
+        Gets you the muted role of the server.
+        """
+        if guild_id == GuildIDs.TRAINING_GROUNDS:
+            return TGRoleIDs.MUTED_ROLE
+
+        if guild_id == GuildIDs.BATTLEGROUNDS:
+            return BGRoleIDs.MUTED_ROLE
+
+        return None
 
     async def add_mute(self, member: discord.Member):
         """
@@ -40,29 +52,21 @@ class Mute(commands.Cog):
 
                 await db.commit()
 
-        # first we add the mute on the tg server, or try to
-        try:
-            tg_guild = self.bot.get_guild(GuildIDs.TRAINING_GROUNDS)
-            tg_role = discord.utils.get(tg_guild.roles, id=TGRoleIDs.MUTED_ROLE)
-            tg_member = tg_guild.get_member(member.id)
-            await tg_member.add_roles(tg_role)
-        except discord.HTTPException as exc:
-            logger = self.bot.get_logger("bot.mute")
-            logger.warning(
-                f"Tried to add muted role in {GuildNames.TG} server but it failed: {exc}"
+        # tries to add the muted roles in each server.
+        for guild_id in GuildIDs.MOD_GUILDS:
+            guild = self.bot.get_guild(guild_id)
+            muted_role = discord.utils.get(
+                guild.roles, id=self.get_muted_role(guild_id)
             )
-
-        # then we add the mute on the bg server, or try to
-        try:
-            bg_guild = self.bot.get_guild(GuildIDs.BATTLEGROUNDS)
-            bg_role = discord.utils.get(bg_guild.roles, id=BGRoleIDs.MUTED_ROLE)
-            bg_member = bg_guild.get_member(member.id)
-            await bg_member.add_roles(bg_role)
-        except discord.HTTPException as exc:
-            logger = self.bot.get_logger("bot.mute")
-            logger.warning(
-                f"Tried to add muted role in {GuildNames.BG} server but it failed: {exc}"
-            )
+            guild_member = guild.get_member(member.id)
+            if muted_role and guild_member:
+                try:
+                    await guild_member.add_roles(muted_role)
+                except discord.HTTPException as exc:
+                    logger = self.bot.get_logger("bot.mute")
+                    logger.warning(
+                        f"Tried to add muted role in {guild.name} server but it failed: {exc}"
+                    )
 
     async def remove_mute(self, member: discord.Member):
         """
@@ -78,76 +82,56 @@ class Mute(commands.Cog):
 
             await db.commit()
 
-        try:
-            tg_guild = self.bot.get_guild(GuildIDs.TRAINING_GROUNDS)
-            tg_role = discord.utils.get(tg_guild.roles, id=TGRoleIDs.MUTED_ROLE)
-            tg_member = tg_guild.get_member(member.id)
-            await tg_member.remove_roles(tg_role)
-        except discord.HTTPException as exc:
-            logger = self.bot.get_logger("bot.mute")
-            logger.warning(
-                f"Tried to remove muted role in {GuildNames.TG} server but it failed: {exc}"
+        # tries to remove the muted roles in each server.
+        for guild_id in GuildIDs.MOD_GUILDS:
+            guild = self.bot.get_guild(guild_id)
+            muted_role = discord.utils.get(
+                guild.roles, id=self.get_muted_role(guild_id)
             )
-
-        try:
-            bg_guild = self.bot.get_guild(GuildIDs.BATTLEGROUNDS)
-            bg_role = discord.utils.get(bg_guild.roles, id=BGRoleIDs.MUTED_ROLE)
-            bg_member = bg_guild.get_member(member.id)
-            await bg_member.remove_roles(bg_role)
-        except discord.HTTPException as exc:
-            logger = self.bot.get_logger("bot.mute")
-            logger.warning(
-                f"Tried to remove muted role in {GuildNames.BG} server but it failed: {exc}"
-            )
+            guild_member = guild.get_member(member.id)
+            if muted_role and guild_member:
+                try:
+                    await guild_member.remove_roles(muted_role)
+                except discord.HTTPException as exc:
+                    logger = self.bot.get_logger("bot.mute")
+                    logger.warning(
+                        f"Tried to remove muted role in {guild.name} server but it failed: {exc}"
+                    )
 
     async def add_timeout(self, member: discord.Member, time: datetime):
         """
         Tries to add the timeout on both servers.
         """
-        try:
-            tg_guild = self.bot.get_guild(GuildIDs.TRAINING_GROUNDS)
-            tg_member = tg_guild.get_member(member.id)
-            await tg_member.edit(timed_out_until=time)
-        except discord.HTTPException as exc:
-            logger = self.bot.get_logger("bot.mute")
-            logger.warning(
-                f"Tried to add timeout in {GuildNames.TG} server but it failed: {exc}"
-            )
 
-        try:
-            bg_guild = self.bot.get_guild(GuildIDs.BATTLEGROUNDS)
-            bg_member = bg_guild.get_member(member.id)
-            await bg_member.edit(timed_out_until=time)
-        except discord.HTTPException as exc:
-            logger = self.bot.get_logger("bot.mute")
-            logger.warning(
-                f"Tried to add timeout in {GuildNames.BG} server but it failed: {exc}"
-            )
+        for guild_id in GuildIDs.MOD_GUILDS:
+            guild = self.bot.get_guild(guild_id)
+            guild_member = guild.get_member(member.id)
+            if guild_member:
+                try:
+                    await guild_member.edit(timed_out_until=time)
+                except discord.HTTPException as exc:
+                    logger = self.bot.get_logger("bot.mute")
+                    logger.warning(
+                        f"Tried to add timeout in {guild.name} server but it failed: {exc}"
+                    )
 
     async def remove_timeout(self, member: discord.Member):
         """
         Tries to remove the timeout on both servers.
         """
-        try:
-            tg_guild = self.bot.get_guild(GuildIDs.TRAINING_GROUNDS)
-            tg_member = tg_guild.get_member(member.id)
-            # setting it to None will remove the timeout
-            await tg_member.edit(timed_out_until=None)
-        except discord.HTTPException as exc:
-            logger = self.bot.get_logger("bot.mute")
-            logger.warning(
-                f"Tried to remove timeout in {GuildNames.TG} server but it failed: {exc}"
-            )
 
-        try:
-            bg_guild = self.bot.get_guild(GuildIDs.BATTLEGROUNDS)
-            bg_member = bg_guild.get_member(member.id)
-            await bg_member.edit(timed_out_until=None)
-        except discord.HTTPException as exc:
-            logger = self.bot.get_logger("bot.mute")
-            logger.warning(
-                f"Tried to remove timeout in {GuildNames.BG} server but it failed: {exc}"
-            )
+        for guild_id in GuildIDs.MOD_GUILDS:
+            guild = self.bot.get_guild(guild_id)
+            guild_member = guild.get_member(member.id)
+            if guild_member:
+                try:
+                    # setting it to None will remove the timeout
+                    await guild_member.edit(timed_out_until=None)
+                except discord.HTTPException as exc:
+                    logger = self.bot.get_logger("bot.mute")
+                    logger.warning(
+                        f"Tried to remove timeout in {guild.name} server but it failed: {exc}"
+                    )
 
     @commands.command()
     @utils.check.is_moderator()

@@ -29,6 +29,9 @@ class GuildIDs:
     # this is done for application commands
     # we need a list of guild objects
     ALL_GUILDS = [discord.Object(id=TRAINING_GROUNDS), discord.Object(id=BATTLEGROUNDS)]
+    # the list of guilds where mutes/timeouts etc. carry over.
+    # this is its own list, since you might want to add the bot to guilds where mutes do not apply.
+    MOD_GUILDS = [TRAINING_GROUNDS, BATTLEGROUNDS]
 
 
 class AdminVars:
