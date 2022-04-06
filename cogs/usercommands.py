@@ -367,6 +367,13 @@ class Usercommands(commands.Cog):
         else:
             raise error
 
+    @translate.error
+    async def translate_error(self, ctx, error):
+        if isinstance(error, commands.CommandInvokeError):
+            await ctx.send("Please translate a valid message or string.")
+        else:
+            raise error
+
 
 async def setup(bot):
     await bot.add_cog(Usercommands(bot))
