@@ -213,9 +213,7 @@ class Warn(commands.Cog):
             return
 
         embed_list = []
-        i = 1
-
-        for warning in user_warnings:
+        for i, warning in enumerate(user_warnings, start=1):
             # the first one is the user id, but we dont need it here
             (_, warn_id, mod_id, reason, timestamp) = warning
 
@@ -230,8 +228,6 @@ class Warn(commands.Cog):
                 value=discord.utils.format_dt(new_timestamp, style="F"),
             )
             embed_list.append(embed)
-
-            i += 1
 
         # the maximum amount of embeds you can send is 10,
         # we do ban people at 7 warnings but you never know what might happen
@@ -313,9 +309,9 @@ class Warn(commands.Cog):
 
     @warndetails.error
     async def warndetails_error(self, ctx, error):
-        if isinstance(error, commands.MissingRequiredArgument):
-            await ctx.send("You need to mention a valid member.")
-        elif isinstance(error, commands.MemberNotFound):
+        if isinstance(
+            error, (commands.MissingRequiredArgument, commands.MemberNotFound)
+        ):
             await ctx.send("You need to mention a valid member.")
         elif isinstance(error, commands.MissingPermissions):
             await ctx.send("Nice try, but you don't have the permissions to do that!")

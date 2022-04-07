@@ -121,10 +121,7 @@ class Macros(commands.Cog):
 
         # it returns a list of tuples,
         # so we need to extract them
-        macro_names = []
-        for m in macro_list:
-            macro_names.append(m[0])
-
+        macro_names = [m[0] for m in macro_list]
         await ctx.send(f"The registered macros are:\n`%{', %'.join(macro_names)}`")
 
     # the error handling for the commands above
@@ -137,11 +134,9 @@ class Macros(commands.Cog):
             await ctx.send(
                 "You need to input the macro name and then the desired output."
             )
-        elif isinstance(error, commands.ExpectedClosingQuoteError):
-            await ctx.send(
-                "Please do not create a macro with the `\"` letter. Use `'` instead."
-            )
-        elif isinstance(error, commands.UnexpectedQuoteError):
+        elif isinstance(
+            error, (commands.ExpectedClosingQuoteError, commands.UnexpectedQuoteError)
+        ):
             await ctx.send(
                 "Please do not create a macro with the `\"` letter. Use `'` instead."
             )

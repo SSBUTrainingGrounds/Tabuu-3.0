@@ -80,11 +80,11 @@ class Rolemenu(commands.Cog):
         Which means that a user can only have 1 of those roles at once.
         """
 
-        rolereq_ids = []
-        rolereq_names = []
-
         # if there are rolereqs supplied, gets every role in there
         if rolereqs is not None:
+            rolereq_ids = []
+            rolereq_names = []
+
             # saves the role ids and names
             for role in rolereqs:
                 rolereq_ids.append(str(role.id))
@@ -166,17 +166,14 @@ class Rolemenu(commands.Cog):
         for entry in rolemenu_entries:
             (message_id, exclusive, rolereq, emoji, role) = entry
             # to make it more readable
-            if exclusive == 0:
-                exclusive = "False"
-            else:
-                exclusive = "True"
+            exclusive = "False" if exclusive == 0 else "True"
 
             # converts the role reqs saved into mentions, if they exist
             if rolereq is not None:
-                role_mentions_list = []
+                role_mentions_list = [
+                    f"<@&{unique_role}>" for unique_role in rolereq.split()
+                ]
 
-                for unique_role in rolereq.split():
-                    role_mentions_list.append(f"<@&{unique_role}>")
                 role_mentions_list = " ".join(role_mentions_list)
 
                 rolereq = role_mentions_list
@@ -194,7 +191,7 @@ class Rolemenu(commands.Cog):
 
         embed_description = "\n".join(embed_description)
 
-        if len(embed_description) == 0:
+        if not embed_description:
             embed_description = "No entries found."
 
         try:
@@ -235,15 +232,14 @@ class Rolemenu(commands.Cog):
 
         if rolereq is not None:
             # you can have more than one required role,
-            # you dont need both though, only one of them will be enough.
-            roles_required = []
-            for role_required in rolereq.split():
-                roles_required.append(
-                    discord.utils.get(
-                        self.bot.get_guild(payload.guild_id).roles,
-                        id=int(role_required),
-                    )
+            # you dont need every though, only one of them will be enough.
+            roles_required = [
+                discord.utils.get(
+                    self.bot.get_guild(payload.guild_id).roles,
+                    id=int(role_required),
                 )
+                for role_required in rolereq.split()
+            ]
 
             if not any(role in payload.member.roles for role in roles_required):
                 # checks for the matching role
@@ -315,12 +311,9 @@ class Rolemenu(commands.Cog):
     async def newrolemenu_error(self, ctx, error):
         if isinstance(error, commands.MissingPermissions):
             await ctx.send("Nice try, but you don't have the permissions to do that!")
-        elif isinstance(error, commands.BadArgument):
-            await ctx.send(
-                "Something was not recognized properly. The syntax for this command is: \n"
-                "`%newrolemenu <message_id> <emoji> <role>`"
-            )
-        elif isinstance(error, commands.MissingRequiredArgument):
+        elif isinstance(
+            error, (commands.BadArgument, commands.MissingRequiredArgument)
+        ):
             await ctx.send(
                 "Something was not recognized properly. The syntax for this command is: \n"
                 "`%newrolemenu <message_id> <emoji> <role>`"
@@ -332,9 +325,9 @@ class Rolemenu(commands.Cog):
     async def deleterolemenu_error(self, ctx, error):
         if isinstance(error, commands.MissingPermissions):
             await ctx.send("Nice try, but you don't have the permissions to do that!")
-        elif isinstance(error, commands.MissingRequiredArgument):
-            await ctx.send("You need to input a valid message ID.")
-        elif isinstance(error, commands.BadArgument):
+        elif isinstance(
+            error, (commands.MissingRequiredArgument, commands.BadArgument)
+        ):
             await ctx.send("You need to input a valid message ID.")
         else:
             raise error
@@ -351,13 +344,12 @@ class Rolemenu(commands.Cog):
             await ctx.send(
                 "You need to input a boolean value for both arguments, True or False."
             )
-        elif isinstance(error, commands.RoleNotFound):
-            await ctx.send("Invalid role! Please input a valid Role.")
-        elif isinstance(error, commands.MissingRequiredArgument):
+        elif isinstance(
+            error, (commands.MissingRequiredArgument, commands.BadArgument)
+        ):
             await ctx.send("You need to input a valid message ID.")
-        elif isinstance(error, commands.BadArgument):
-            await ctx.send("You need to input a valid message ID.")
-        raise error
+        else:
+            raise error
 
     @geteveryrolemenu.error
     async def geteveryrolemenu_error(self, ctx, error):

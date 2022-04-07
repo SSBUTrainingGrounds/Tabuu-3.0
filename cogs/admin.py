@@ -271,7 +271,7 @@ class Admin(commands.Cog):
         Edits the colour of a role, use a hex colour code.
         """
         # hex colour codes are 7 digits long and start with #
-        if not hex_colour.startswith("#") or not len(hex_colour) == 7:
+        if not hex_colour.startswith("#") or len(hex_colour) != 7:
             await ctx.send(
                 "Please choose a valid hex colour code. Example: `%editrole colour role #8a0f84`"
             )

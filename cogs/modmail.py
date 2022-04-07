@@ -222,22 +222,17 @@ class Modmail(commands.Cog):
                 await modmail_channel.send(complete_message[:2000])
                 await modmail_channel.send(complete_message[2000:4000])
                 await modmail_channel.send(complete_message[4000:])
-                await ctx.send(
-                    "Your message has been sent to the Moderator Team. They will get back to you shortly."
-                )
 
             elif len(complete_message[2000:]) > 0:
                 await modmail_channel.send(complete_message[:2000])
                 await modmail_channel.send(complete_message[2000:])
-                await ctx.send(
-                    "Your message has been sent to the Moderator Team. They will get back to you shortly."
-                )
 
             else:
                 await modmail_channel.send(complete_message)
-                await ctx.send(
-                    "Your message has been sent to the Moderator Team. They will get back to you shortly."
-                )
+
+            await ctx.send(
+                "Your message has been sent to the Moderator Team. They will get back to you shortly."
+            )
 
         else:
             await ctx.message.delete()

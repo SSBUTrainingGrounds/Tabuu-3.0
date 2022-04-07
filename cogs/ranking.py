@@ -91,7 +91,7 @@ class Ranking(commands.Cog):
         elomaxrole = discord.utils.get(
             guild.roles, id=TGMatchmakingRoleIDs.ELO_MAX_ROLE
         )
-        elo_roles = [
+        return [
             elo800role,
             elo950role,
             elo1050role,
@@ -99,7 +99,6 @@ class Ranking(commands.Cog):
             elo1300role,
             elomaxrole,
         ]
-        return elo_roles
 
     def get_adjacent_roles(self, guild: discord.Guild, role: discord.Role):
         """
@@ -311,12 +310,8 @@ class Ranking(commands.Cog):
                 )
 
         list_of_searches.reverse()
-        searches = "".join(list_of_searches)
 
-        if len(searches) == 0:
-            searches = "Looks like no one has pinged recently :("
-
-        return searches
+        return "".join(list_of_searches) or "Looks like no one has pinged recently :("
 
     @commands.command(aliases=["rankedmm", "rankedmatchmaking", "rankedsingles"])
     @commands.cooldown(1, 120, commands.BucketType.user)
@@ -348,7 +343,7 @@ class Ranking(commands.Cog):
         pings = ""
 
         for pingrole in pingroles:
-            pings = pings + f" {pingrole.mention}"
+            pings = f"{pings} {pingrole.mention}"
 
         embed = discord.Embed(
             title="Ranked pings in the last 30 Minutes:",
@@ -582,15 +577,12 @@ class Ranking(commands.Cog):
             )
 
         embed_description = []
-        rank = 1
         # only gets the top 10
-        for user in all_users[:10]:
+        for rank, user in enumerate(all_users[:10], start=1):
             user_id, wins, losses, elo, _ = user
             embed_description.append(
                 f"{rank} | <@!{user_id}> | {elo} | {wins}/{losses}\n"
             )
-            rank += 1
-
         embedstats = "".join(embed_description)
 
         embed = discord.Embed(
@@ -613,9 +605,9 @@ class Ranking(commands.Cog):
             await ctx.send(
                 f"Please only use this command in the {GuildNames.TRAINING_GROUNDS} Discord Server."
             )
-        elif isinstance(error, commands.MissingRequiredArgument):
-            await ctx.send("Please mention the member that you beat in the match.")
-        elif isinstance(error, commands.MemberNotFound):
+        elif isinstance(
+            error, (commands.MissingRequiredArgument, commands.MemberNotFound)
+        ):
             await ctx.send("Please mention the member that you beat in the match.")
         else:
             raise error
@@ -624,12 +616,9 @@ class Ranking(commands.Cog):
     async def forcereportmatch_error(self, ctx, error):
         if isinstance(error, commands.MissingPermissions):
             await ctx.send("Nice try, but you don't have the permissions to do that!")
-        elif isinstance(error, commands.MissingRequiredArgument):
-            await ctx.send(
-                "Please mention the 2 members that have played in this match. "
-                "First mention the winner, second mention the loser."
-            )
-        elif isinstance(error, commands.MemberNotFound):
+        elif isinstance(
+            error, (commands.MissingRequiredArgument, commands.MemberNotFound)
+        ):
             await ctx.send(
                 "Please mention the 2 members that have played in this match. "
                 "First mention the winner, second mention the loser."

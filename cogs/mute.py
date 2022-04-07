@@ -105,8 +105,7 @@ class Mute(commands.Cog):
 
         for guild_id in GuildIDs.MOD_GUILDS:
             guild = self.bot.get_guild(guild_id)
-            guild_member = guild.get_member(member.id)
-            if guild_member:
+            if guild_member := guild.get_member(member.id):
                 try:
                     await guild_member.edit(timed_out_until=time)
                 except discord.HTTPException as exc:
@@ -122,8 +121,7 @@ class Mute(commands.Cog):
 
         for guild_id in GuildIDs.MOD_GUILDS:
             guild = self.bot.get_guild(guild_id)
-            guild_member = guild.get_member(member.id)
-            if guild_member:
+            if guild_member := guild.get_member(member.id):
                 try:
                     # setting it to None will remove the timeout
                     await guild_member.edit(timed_out_until=None)
@@ -351,9 +349,9 @@ class Mute(commands.Cog):
 
     @unmute.error
     async def unmute_error(self, ctx, error):
-        if isinstance(error, commands.MissingRequiredArgument):
-            await ctx.send("You need to mention a member!")
-        elif isinstance(error, commands.MemberNotFound):
+        if isinstance(
+            error, (commands.MissingRequiredArgument, commands.MemberNotFound)
+        ):
             await ctx.send("You need to mention a member!")
         elif isinstance(error, commands.MissingPermissions):
             await ctx.send("Nice try, but you don't have the permissions to do that!")
@@ -397,9 +395,9 @@ class Mute(commands.Cog):
     async def removetimeout_error(self, ctx, error):
         if isinstance(error, commands.MissingPermissions):
             await ctx.send("Nice try, but you don't have the permissions to do that!")
-        elif isinstance(error, commands.MissingRequiredArgument):
-            await ctx.send("You need to mention a member!")
-        elif isinstance(error, commands.MemberNotFound):
+        elif isinstance(
+            error, (commands.MissingRequiredArgument, commands.MemberNotFound)
+        ):
             await ctx.send("You need to mention a member!")
         else:
             raise error

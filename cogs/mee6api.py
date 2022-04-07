@@ -150,22 +150,19 @@ class Mee6api(commands.Cog):
 
         guild = self.bot.get_guild(GuildIDs.TRAINING_GROUNDS)
 
+        all_guild_member_ids = [guild_member.id for guild_member in guild.members]
+
         # gets the correct amount of pages
         page_number = ceil(len(guild.members) / 100)
         for i in range(page_number):
             leaderboard_page = await mee6API.levels.get_leaderboard_page(i)
             for user in leaderboard_page["players"]:
-                # checks if the user even is in the guild
-                if int(user["id"]) in [
-                    guild_member.id for guild_member in guild.members
-                ]:
-
-                    # need to fetch the member, since get_member is unreliable.
-                    # we only do this for members above level 10 though,
-                    # otherwise this would take ages.
-                    if user["level"] >= 10:
-                        member = await guild.fetch_member(user["id"])
-                        await self.update_level_role(member, user["level"], guild)
+                # need to fetch the member, since get_member is unreliable.
+                # we only do this for members in the server and above level 10 though,
+                # otherwise this would take ages.
+                if int(user["id"]) in all_guild_member_ids and user["level"] >= 10:
+                    member = await guild.fetch_member(user["id"])
+                    await self.update_level_role(member, user["level"], guild)
 
         logger.info("Successfully updated level roles!")
 

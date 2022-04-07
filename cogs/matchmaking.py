@@ -70,12 +70,8 @@ class Matchmaking(commands.Cog):
                 )
 
         list_of_searches.reverse()
-        searches = "".join(list_of_searches)
 
-        if len(searches) == 0:
-            searches = "Looks like no one has pinged recently :("
-
-        return searches
+        return "".join(list_of_searches) or "Looks like no one has pinged recently :("
 
     @commands.command(
         aliases=["matchmaking", "matchmakingsingles", "mmsingles", "Singles"]
@@ -139,31 +135,31 @@ class Matchmaking(commands.Cog):
 
     @singles.error
     async def singles_error(self, ctx, error):
-        if isinstance(error, commands.CommandOnCooldown):
-            # triggers when you're on cooldown, lists out the recent pings.
-            # same for every other type below.
-            timestamp = discord.utils.utcnow().timestamp()
-            if (
-                ctx.message.channel.id in TGArenaChannelIDs.PUBLIC_ARENAS
-                or ctx.message.channel.id in TGArenaChannelIDs.PRIVATE_ARENAS
-            ):
-                searches = self.get_recent_pings("singles", timestamp)
-
-                embed = discord.Embed(
-                    title="Singles pings in the last 30 Minutes:",
-                    description=searches,
-                    colour=discord.Colour.dark_red(),
-                )
-
-                await ctx.send(
-                    f"{ctx.author.mention}, you are on cooldown for another {round((error.retry_after)/60)} minutes to use this command. \n"
-                    "In the meantime, here are the most recent Singles pings in our open arenas:",
-                    embed=embed,
-                )
-            else:
-                await ctx.send("Please only use this command in our arena channels!")
-        else:
+        if not isinstance(error, commands.CommandOnCooldown):
             raise error
+
+        # triggers when you're on cooldown, lists out the recent pings.
+        # same for every other type below.
+        timestamp = discord.utils.utcnow().timestamp()
+        if (
+            ctx.message.channel.id in TGArenaChannelIDs.PUBLIC_ARENAS
+            or ctx.message.channel.id in TGArenaChannelIDs.PRIVATE_ARENAS
+        ):
+            searches = self.get_recent_pings("singles", timestamp)
+
+            embed = discord.Embed(
+                title="Singles pings in the last 30 Minutes:",
+                description=searches,
+                colour=discord.Colour.dark_red(),
+            )
+
+            await ctx.send(
+                f"{ctx.author.mention}, you are on cooldown for another {round((error.retry_after)/60)} minutes to use this command. \n"
+                "In the meantime, here are the most recent Singles pings in our open arenas:",
+                embed=embed,
+            )
+        else:
+            await ctx.send("Please only use this command in our arena channels!")
 
     @commands.command(aliases=["matchmakingdoubles", "mmdoubles", "Doubles"])
     @commands.cooldown(1, 600, commands.BucketType.user)
@@ -225,29 +221,29 @@ class Matchmaking(commands.Cog):
 
     @doubles.error
     async def doubles_error(self, ctx, error):
-        if isinstance(error, commands.CommandOnCooldown):
-            timestamp = discord.utils.utcnow().timestamp()
-            if (
-                ctx.message.channel.id in TGArenaChannelIDs.PUBLIC_ARENAS
-                or ctx.message.channel.id in TGArenaChannelIDs.PRIVATE_ARENAS
-            ):
-                searches = self.get_recent_pings("doubles", timestamp)
-
-                embed = discord.Embed(
-                    title="Doubles pings in the last 30 Minutes:",
-                    description=searches,
-                    colour=discord.Colour.dark_blue(),
-                )
-
-                await ctx.send(
-                    f"{ctx.author.mention}, you are on cooldown for another {round((error.retry_after)/60)} minutes to use this command. \n"
-                    "In the meantime, here are the most recent Doubles pings in our open arenas:",
-                    embed=embed,
-                )
-            else:
-                await ctx.send("Please only use this command in our arena channels!")
-        else:
+        if not isinstance(error, commands.CommandOnCooldown):
             raise error
+
+        timestamp = discord.utils.utcnow().timestamp()
+        if (
+            ctx.message.channel.id in TGArenaChannelIDs.PUBLIC_ARENAS
+            or ctx.message.channel.id in TGArenaChannelIDs.PRIVATE_ARENAS
+        ):
+            searches = self.get_recent_pings("doubles", timestamp)
+
+            embed = discord.Embed(
+                title="Doubles pings in the last 30 Minutes:",
+                description=searches,
+                colour=discord.Colour.dark_blue(),
+            )
+
+            await ctx.send(
+                f"{ctx.author.mention}, you are on cooldown for another {round((error.retry_after)/60)} minutes to use this command. \n"
+                "In the meantime, here are the most recent Doubles pings in our open arenas:",
+                embed=embed,
+            )
+        else:
+            await ctx.send("Please only use this command in our arena channels!")
 
     @commands.command(aliases=["matchmakingfunnies", "mmfunnies", "Funnies"])
     @commands.cooldown(1, 600, commands.BucketType.user)
@@ -274,16 +270,17 @@ class Matchmaking(commands.Cog):
                 colour=discord.Colour.green(),
             )
 
-            if not msg:
-                mm_message = await ctx.send(
-                    f"{ctx.author.mention} is looking for {funnies_role.mention} games!",
-                    embed=embed,
-                )
-            else:
+            if msg:
                 mm_message = await ctx.send(
                     f"{ctx.author.mention} is looking for {funnies_role.mention} games: `{msg}`",
                     embed=embed,
                 )
+            else:
+                mm_message = await ctx.send(
+                    f"{ctx.author.mention} is looking for {funnies_role.mention} games!",
+                    embed=embed,
+                )
+
             mm_thread = await mm_message.create_thread(
                 name=f"Funnies Arena of {ctx.author.name}", auto_archive_duration=60
             )
@@ -325,29 +322,29 @@ class Matchmaking(commands.Cog):
 
     @funnies.error
     async def funnies_error(self, ctx, error):
-        if isinstance(error, commands.CommandOnCooldown):
-            timestamp = discord.utils.utcnow().timestamp()
-            if (
-                ctx.message.channel.id in TGArenaChannelIDs.PUBLIC_ARENAS
-                or ctx.message.channel.id in TGArenaChannelIDs.PRIVATE_ARENAS
-            ):
-                searches = self.get_recent_pings("funnies", timestamp)
-
-                embed = discord.Embed(
-                    title="Funnies pings in the last 30 Minutes:",
-                    description=searches,
-                    colour=discord.Colour.green(),
-                )
-
-                await ctx.send(
-                    f"{ctx.author.mention}, you are on cooldown for another {round((error.retry_after)/60)} minutes to use this command. \n"
-                    "In the meantime, here are the most recent Funnies pings in our open arenas:",
-                    embed=embed,
-                )
-            else:
-                await ctx.send("Please only use this command in our arena channels!")
-        else:
+        if not isinstance(error, commands.CommandOnCooldown):
             raise error
+
+        timestamp = discord.utils.utcnow().timestamp()
+        if (
+            ctx.message.channel.id in TGArenaChannelIDs.PUBLIC_ARENAS
+            or ctx.message.channel.id in TGArenaChannelIDs.PRIVATE_ARENAS
+        ):
+            searches = self.get_recent_pings("funnies", timestamp)
+
+            embed = discord.Embed(
+                title="Funnies pings in the last 30 Minutes:",
+                description=searches,
+                colour=discord.Colour.green(),
+            )
+
+            await ctx.send(
+                f"{ctx.author.mention}, you are on cooldown for another {round((error.retry_after)/60)} minutes to use this command. \n"
+                "In the meantime, here are the most recent Funnies pings in our open arenas:",
+                embed=embed,
+            )
+        else:
+            await ctx.send("Please only use this command in our arena channels!")
 
 
 async def setup(bot):

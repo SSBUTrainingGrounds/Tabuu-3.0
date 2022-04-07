@@ -117,7 +117,7 @@ class TicTacToeGame(discord.ui.View):
         # initialises the board
         self.board = [0, 0, 0, 0, 0, 0, 0, 0, 0]
         # adds all of the buttons
-        for i in range(0, 9):
+        for i in range(9):
             self.add_item(TicTacToeButtons(i))
 
     def check_for_winner(self, board):
@@ -137,10 +137,7 @@ class TicTacToeGame(discord.ui.View):
 
         # checks for the winner and returns it, if found
         for combination in winning_combinations:
-            winning_list = []
-
-            for position in combination:
-                winning_list.append(board[position])
+            winning_list = [board[position] for position in combination]
 
             if winning_list == [1, 1, 1]:
                 return self.author
@@ -268,15 +265,13 @@ class BlackJackButtons(discord.ui.View):
 
         if self.turn == self.author:
             # if the card is an ace, checks if it should be worth 11 or 1
-            if card[1] == 1:
-                if self.author_hand[1] + 11 <= 21:
-                    card[1] = 11
+            if card[1] == 1 and self.author_hand[1] <= 10:
+                card[1] = 11
             self.author_hand[0].append(card[0])
             self.author_hand[1] += card[1]
         else:
-            if card[1] == 1:
-                if self.member_hand[1] + 11 <= 21:
-                    card[1] = 11
+            if card[1] == 1 and self.member_hand[1] <= 10:
+                card[1] = 11
             self.member_hand[0].append(card[0])
             self.member_hand[1] += card[1]
 
@@ -499,27 +494,27 @@ class Games(commands.Cog):
     # basic error handling
     @rps.error
     async def rps_error(self, ctx, error):
-        if isinstance(error, commands.MissingRequiredArgument):
-            await ctx.send("You need to mention a valid member.")
-        elif isinstance(error, commands.MemberNotFound):
+        if isinstance(
+            error, (commands.MissingRequiredArgument, commands.MemberNotFound)
+        ):
             await ctx.send("You need to mention a valid member.")
         else:
             raise error
 
     @tictactoe.error
     async def tictactoe_error(self, ctx, error):
-        if isinstance(error, commands.MissingRequiredArgument):
-            await ctx.send("You need to mention a valid member.")
-        elif isinstance(error, commands.MemberNotFound):
+        if isinstance(
+            error, (commands.MissingRequiredArgument, commands.MemberNotFound)
+        ):
             await ctx.send("You need to mention a valid member.")
         else:
             raise error
 
     @blackjack.error
     async def blackjack_error(self, ctx, error):
-        if isinstance(error, commands.MissingRequiredArgument):
-            await ctx.send("You need to mention a valid member.")
-        elif isinstance(error, commands.MemberNotFound):
+        if isinstance(
+            error, (commands.MissingRequiredArgument, commands.MemberNotFound)
+        ):
             await ctx.send("You need to mention a valid member.")
         else:
             raise error

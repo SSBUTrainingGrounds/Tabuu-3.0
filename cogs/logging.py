@@ -42,11 +42,10 @@ class Logging(commands.Cog):
             )
             embed.timestamp = discord.utils.utcnow()
             # we send the embed in every server that we have in common with the user
+            # if the bot is in another server without log channels,
+            # this would throw an error so we check with the walrus operator
             for server in after.mutual_guilds:
-                logs = self.bot.get_channel(self.get_logchannel(server.id))
-                # if the bot is in another server without log channels,
-                # this would throw an error so we check.
-                if logs:
+                if logs := self.bot.get_channel(self.get_logchannel(server.id)):
                     await logs.send(embed=embed)
 
         # discriminator change
@@ -61,8 +60,7 @@ class Logging(commands.Cog):
             )
             embed.timestamp = discord.utils.utcnow()
             for server in after.mutual_guilds:
-                logs = self.bot.get_channel(self.get_logchannel(server.id))
-                if logs:
+                if logs := self.bot.get_channel(self.get_logchannel(server.id)):
                     await logs.send(embed=embed)
 
         # avatar change
@@ -79,8 +77,7 @@ class Logging(commands.Cog):
             )
             embed.timestamp = discord.utils.utcnow()
             for server in after.mutual_guilds:
-                logs = self.bot.get_channel(self.get_logchannel(server.id))
-                if logs:
+                if logs := self.bot.get_channel(self.get_logchannel(server.id)):
                     await logs.send(embed=embed)
 
     @commands.Cog.listener()
@@ -96,8 +93,7 @@ class Logging(commands.Cog):
                 name=f"{str(after)} ({after.id})", icon_url=after.display_avatar.url
             )
             embed.timestamp = discord.utils.utcnow()
-            logs = self.bot.get_channel(self.get_logchannel(before.guild.id))
-            if logs:
+            if logs := self.bot.get_channel(self.get_logchannel(before.guild.id)):
                 await logs.send(embed=embed)
 
         # roles change
@@ -116,8 +112,7 @@ class Logging(commands.Cog):
                     name=f"{str(after)} ({after.id})", icon_url=after.display_avatar.url
                 )
                 embed.timestamp = discord.utils.utcnow()
-                logs = self.bot.get_channel(self.get_logchannel(before.guild.id))
-                if logs:
+                if logs := self.bot.get_channel(self.get_logchannel(before.guild.id)):
                     await logs.send(embed=embed)
 
             # user loses a role
@@ -134,8 +129,7 @@ class Logging(commands.Cog):
                     name=f"{str(after)} ({after.id})", icon_url=after.display_avatar.url
                 )
                 embed.timestamp = discord.utils.utcnow()
-                logs = self.bot.get_channel(self.get_logchannel(before.guild.id))
-                if logs:
+                if logs := self.bot.get_channel(self.get_logchannel(before.guild.id)):
                     await logs.send(embed=embed)
 
     @commands.Cog.listener()
@@ -150,8 +144,7 @@ class Logging(commands.Cog):
             name=f"{str(member)} ({member.id})", icon_url=member.display_avatar.url
         )
         embed.timestamp = discord.utils.utcnow()
-        logs = self.bot.get_channel(self.get_logchannel(member.guild.id))
-        if logs:
+        if logs := self.bot.get_channel(self.get_logchannel(member.guild.id)):
             await logs.send(embed=embed)
 
     @commands.Cog.listener()
@@ -160,7 +153,7 @@ class Logging(commands.Cog):
         everyonerole = discord.utils.get(member.guild.roles, name="@everyone")
         roles = [role.mention for role in member.roles if role is not everyonerole]
         # users may leave without a role to their name (except @everyone i guess)
-        role_description = f"{' '.join(roles)}" if len(roles) != 0 else "No roles"
+        role_description = f"{' '.join(roles)}" if roles else "No roles"
 
         embed = discord.Embed(
             title="** 🚶 Member left the server 🚶**",
@@ -171,8 +164,7 @@ class Logging(commands.Cog):
             name=f"{str(member)} ({member.id})", icon_url=member.display_avatar.url
         )
         embed.timestamp = discord.utils.utcnow()
-        logs = self.bot.get_channel(self.get_logchannel(member.guild.id))
-        if logs:
+        if logs := self.bot.get_channel(self.get_logchannel(member.guild.id)):
             await logs.send(embed=embed)
 
     @commands.Cog.listener()
@@ -222,8 +214,7 @@ class Logging(commands.Cog):
             )
         embed.add_field(name="Message ID:", value=f"{after.id}\n{after.jump_url}")
         embed.timestamp = discord.utils.utcnow()
-        logs = self.bot.get_channel(self.get_logchannel(before.guild.id))
-        if logs:
+        if logs := self.bot.get_channel(self.get_logchannel(before.guild.id)):
             await logs.send(embed=embed)
 
     @commands.Cog.listener()
@@ -248,11 +239,11 @@ class Logging(commands.Cog):
 
         embed.add_field(name="Message ID:", value=message.id)
         embed.timestamp = discord.utils.utcnow()
-        logs = self.bot.get_channel(self.get_logchannel(message.guild.id))
+
         # as far as i can tell, the maximum message possible with 4k chars + 10 attachments + 1 sticker
         # just barely fits in one embed, the limit for embeds are 6k chars total.
         # so we might wanna keep watching this in case of errors.
-        if logs:
+        if logs := self.bot.get_channel(self.get_logchannel(message.guild.id)):
             await logs.send(embed=embed)
 
     @commands.Cog.listener()
@@ -270,19 +261,18 @@ class Logging(commands.Cog):
         embed.timestamp = discord.utils.utcnow()
 
         # creates the file with the deleted messages
-        message_list = []
-        for message in messages:
-            message_list.append(
-                f"{str(message.author)} said at {message.created_at.replace(microsecond=0)} UTC: \n{message.content}\n\n"
-            )
+        message_list = [
+            f"{str(message.author)} said at {message.created_at.replace(microsecond=0)} UTC: \n"
+            f"{message.content}\n\n"
+            for message in messages
+        ]
+
         buffer = StringIO("".join(message_list))
         f = discord.File(buffer, filename="deleted_messages.txt")
 
-        logs = self.bot.get_channel(self.get_logchannel(messages[0].guild.id))
-
-        # the file could theoratically be too large to send, the limit is 8MB.
-        # realistically we will never, ever hit this
-        if logs:
+        if logs := self.bot.get_channel(self.get_logchannel(messages[0].guild.id)):
+            # the file could theoratically be too large to send, the limit is 8MB.
+            # realistically we will never, ever hit this
             try:
                 await logs.send(embed=embed, file=f)
             except discord.HTTPException:
@@ -299,8 +289,7 @@ class Logging(commands.Cog):
             name=f"{str(user)} ({user.id})", icon_url=user.display_avatar.url
         )
         embed.timestamp = discord.utils.utcnow()
-        logs = self.bot.get_channel(self.get_logchannel(guild.id))
-        if logs:
+        if logs := self.bot.get_channel(self.get_logchannel(guild.id)):
             await logs.send(embed=embed)
 
     @commands.Cog.listener()
@@ -314,8 +303,7 @@ class Logging(commands.Cog):
             name=f"{str(user)} ({user.id})", icon_url=user.display_avatar.url
         )
         embed.timestamp = discord.utils.utcnow()
-        logs = self.bot.get_channel(self.get_logchannel(guild.id))
-        if logs:
+        if logs := self.bot.get_channel(self.get_logchannel(guild.id)):
             await logs.send(embed=embed)
 
     @commands.Cog.listener()
@@ -331,8 +319,7 @@ class Logging(commands.Cog):
                 icon_url=self.bot.user.display_avatar.url,
             )
             embed.timestamp = discord.utils.utcnow()
-            logs = self.bot.get_channel(self.get_logchannel(after.id))
-            if logs:
+            if logs := self.bot.get_channel(self.get_logchannel(after.id)):
                 await logs.send(embed=embed)
 
         if before.icon != after.icon:
@@ -356,8 +343,7 @@ class Logging(commands.Cog):
                 icon_url=self.bot.user.display_avatar.url,
             )
             embed.timestamp = discord.utils.utcnow()
-            logs = self.bot.get_channel(self.get_logchannel(after.id))
-            if logs:
+            if logs := self.bot.get_channel(self.get_logchannel(after.id)):
                 await logs.send(embed=embed)
 
         if before.banner != after.banner:
@@ -381,8 +367,7 @@ class Logging(commands.Cog):
                 icon_url=self.bot.user.display_avatar.url,
             )
             embed.timestamp = discord.utils.utcnow()
-            logs = self.bot.get_channel(self.get_logchannel(after.id))
-            if logs:
+            if logs := self.bot.get_channel(self.get_logchannel(after.id)):
                 await logs.send(embed=embed)
 
     @commands.Cog.listener()
@@ -397,8 +382,7 @@ class Logging(commands.Cog):
             icon_url=self.bot.user.display_avatar.url,
         )
         embed.timestamp = discord.utils.utcnow()
-        logs = self.bot.get_channel(self.get_logchannel(channel.guild.id))
-        if logs:
+        if logs := self.bot.get_channel(self.get_logchannel(channel.guild.id)):
             await logs.send(embed=embed)
 
     @commands.Cog.listener()
@@ -413,8 +397,7 @@ class Logging(commands.Cog):
             icon_url=self.bot.user.display_avatar.url,
         )
         embed.timestamp = discord.utils.utcnow()
-        logs = self.bot.get_channel(self.get_logchannel(channel.guild.id))
-        if logs:
+        if logs := self.bot.get_channel(self.get_logchannel(channel.guild.id)):
             await logs.send(embed=embed)
 
     @commands.Cog.listener()
@@ -434,8 +417,7 @@ class Logging(commands.Cog):
                 icon_url=self.bot.user.display_avatar.url,
             )
             embed.timestamp = discord.utils.utcnow()
-            logs = self.bot.get_channel(self.get_logchannel(after.guild.id))
-            if logs:
+            if logs := self.bot.get_channel(self.get_logchannel(after.guild.id)):
                 await logs.send(embed=embed)
 
         if before.category != after.category:
@@ -449,8 +431,7 @@ class Logging(commands.Cog):
                 icon_url=self.bot.user.display_avatar.url,
             )
             embed.timestamp = discord.utils.utcnow()
-            logs = self.bot.get_channel(self.get_logchannel(after.guild.id))
-            if logs:
+            if logs := self.bot.get_channel(self.get_logchannel(after.guild.id)):
                 await logs.send(embed=embed)
 
     @commands.Cog.listener()
@@ -475,8 +456,7 @@ class Logging(commands.Cog):
             )
             embed.timestamp = discord.utils.utcnow()
 
-            logs = self.bot.get_channel(self.get_logchannel(guild.id))
-            if logs:
+            if logs := self.bot.get_channel(self.get_logchannel(guild.id)):
                 await logs.send(embed=embed)
 
         if len(before) < len(after):
@@ -494,8 +474,7 @@ class Logging(commands.Cog):
             )
             embed.timestamp = discord.utils.utcnow()
 
-            logs = self.bot.get_channel(self.get_logchannel(guild.id))
-            if logs:
+            if logs := self.bot.get_channel(self.get_logchannel(guild.id)):
                 await logs.send(embed=embed)
 
     @commands.Cog.listener()
@@ -520,8 +499,7 @@ class Logging(commands.Cog):
             )
             embed.timestamp = discord.utils.utcnow()
 
-            logs = self.bot.get_channel(self.get_logchannel(guild.id))
-            if logs:
+            if logs := self.bot.get_channel(self.get_logchannel(guild.id)):
                 await logs.send(embed=embed)
 
         if len(before) < len(after):
@@ -539,8 +517,7 @@ class Logging(commands.Cog):
             )
             embed.timestamp = discord.utils.utcnow()
 
-            logs = self.bot.get_channel(self.get_logchannel(guild.id))
-            if logs:
+            if logs := self.bot.get_channel(self.get_logchannel(guild.id)):
                 await logs.send(embed=embed)
 
     @commands.Cog.listener()
@@ -561,8 +538,7 @@ class Logging(commands.Cog):
             icon_url=invite.inviter.display_avatar.url,
         )
         embed.timestamp = discord.utils.utcnow()
-        logs = self.bot.get_channel(self.get_logchannel(invite.guild.id))
-        if logs:
+        if logs := self.bot.get_channel(self.get_logchannel(invite.guild.id)):
             await logs.send(embed=embed)
 
     @commands.Cog.listener()
@@ -577,8 +553,7 @@ class Logging(commands.Cog):
             icon_url=self.bot.user.display_avatar.url,
         )
         embed.timestamp = discord.utils.utcnow()
-        logs = self.bot.get_channel(self.get_logchannel(role.guild.id))
-        if logs:
+        if logs := self.bot.get_channel(self.get_logchannel(role.guild.id)):
             await logs.send(embed=embed)
 
     @commands.Cog.listener()
@@ -596,8 +571,7 @@ class Logging(commands.Cog):
             icon_url=self.bot.user.display_avatar.url,
         )
         embed.timestamp = discord.utils.utcnow()
-        logs = self.bot.get_channel(self.get_logchannel(role.guild.id))
-        if logs:
+        if logs := self.bot.get_channel(self.get_logchannel(role.guild.id)):
             await logs.send(embed=embed)
 
     @commands.Cog.listener()
@@ -616,8 +590,7 @@ class Logging(commands.Cog):
                 icon_url=self.bot.user.display_avatar.url,
             )
             embed.timestamp = discord.utils.utcnow()
-            logs = self.bot.get_channel(self.get_logchannel(after.guild.id))
-            if logs:
+            if logs := self.bot.get_channel(self.get_logchannel(after.guild.id)):
                 await logs.send(embed=embed)
 
         if before.colour != after.colour:
@@ -634,8 +607,7 @@ class Logging(commands.Cog):
                 icon_url=self.bot.user.display_avatar.url,
             )
             embed.timestamp = discord.utils.utcnow()
-            logs = self.bot.get_channel(self.get_logchannel(after.guild.id))
-            if logs:
+            if logs := self.bot.get_channel(self.get_logchannel(after.guild.id)):
                 await logs.send(embed=embed)
 
         if before.icon != after.icon:
@@ -659,8 +631,7 @@ class Logging(commands.Cog):
                 icon_url=self.bot.user.display_avatar.url,
             )
             embed.timestamp = discord.utils.utcnow()
-            logs = self.bot.get_channel(self.get_logchannel(after.guild.id))
-            if logs:
+            if logs := self.bot.get_channel(self.get_logchannel(after.guild.id)):
                 await logs.send(embed=embed)
 
         if before.unicode_emoji != after.unicode_emoji:
@@ -675,8 +646,7 @@ class Logging(commands.Cog):
                 icon_url=self.bot.user.display_avatar.url,
             )
             embed.timestamp = discord.utils.utcnow()
-            logs = self.bot.get_channel(self.get_logchannel(after.guild.id))
-            if logs:
+            if logs := self.bot.get_channel(self.get_logchannel(after.guild.id)):
                 await logs.send(embed=embed)
 
     @commands.Cog.listener()
@@ -694,8 +664,7 @@ class Logging(commands.Cog):
             icon_url=thread.owner.display_avatar.url,
         )
         embed.timestamp = discord.utils.utcnow()
-        logs = self.bot.get_channel(self.get_logchannel(thread.guild.id))
-        if logs:
+        if logs := self.bot.get_channel(self.get_logchannel(thread.guild.id)):
             await logs.send(embed=embed)
 
     @commands.Cog.listener()
@@ -711,8 +680,7 @@ class Logging(commands.Cog):
             icon_url=thread.owner.display_avatar.url,
         )
         embed.timestamp = discord.utils.utcnow()
-        logs = self.bot.get_channel(self.get_logchannel(thread.guild.id))
-        if logs:
+        if logs := self.bot.get_channel(self.get_logchannel(thread.guild.id)):
             await logs.send(embed=embed)
 
     @commands.Cog.listener()
@@ -733,8 +701,7 @@ class Logging(commands.Cog):
             )
 
             embed.timestamp = discord.utils.utcnow()
-            logs = self.bot.get_channel(self.get_logchannel(before.guild.id))
-            if logs:
+            if logs := self.bot.get_channel(self.get_logchannel(before.guild.id)):
                 await logs.send(embed=embed)
 
         if before.name != after.name:
@@ -750,8 +717,7 @@ class Logging(commands.Cog):
                 icon_url=after.owner.display_avatar.url,
             )
             embed.timestamp = discord.utils.utcnow()
-            logs = self.bot.get_channel(self.get_logchannel(after.guild.id))
-            if logs:
+            if logs := self.bot.get_channel(self.get_logchannel(after.guild.id)):
                 await logs.send(embed=embed)
 
     @commands.Cog.listener()
@@ -775,8 +741,7 @@ class Logging(commands.Cog):
         )
 
         embed.timestamp = discord.utils.utcnow()
-        logs = self.bot.get_channel(self.get_logchannel(event.guild.id))
-        if logs:
+        if logs := self.bot.get_channel(self.get_logchannel(event.guild.id)):
             await logs.send(embed=embed)
 
 

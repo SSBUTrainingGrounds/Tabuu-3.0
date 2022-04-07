@@ -128,12 +128,15 @@ class Matchmakingpings(commands.Cog):
     @commands.Cog.listener()
     async def on_thread_update(self, before, after):
         # if a matchmaking thread gets inactive, it gets deleted right away to clear space
-        if before.archived is False and after.archived is True:
-            if (
+        if (
+            before.archived is False
+            and after.archived is True
+            and (
                 after.parent_id in TGArenaChannelIDs.PUBLIC_ARENAS
                 or after.parent_id in TGArenaChannelIDs.RANKED_ARENAS
-            ):
-                await after.delete()
+            )
+        ):
+            await after.delete()
 
     @commands.command()
     async def recentpings(self, ctx):
@@ -171,10 +174,7 @@ class Matchmakingpings(commands.Cog):
         with open(r"./json/singles.json", "r", encoding="utf-8") as f:
             singles = json.load(f)
 
-        singles_requests = []
-
-        for user in singles:
-            singles_requests.append(user)
+        singles_requests = list(singles)
 
         for user in singles_requests:
             del singles[user]
@@ -189,10 +189,7 @@ class Matchmakingpings(commands.Cog):
         with open(r"./json/doubles.json", "r", encoding="utf-8") as f:
             doubles = json.load(f)
 
-        doubles_requests = []
-
-        for user in doubles:
-            doubles_requests.append(user)
+        doubles_requests = list(doubles)
 
         for user in doubles_requests:
             del doubles[user]
@@ -207,10 +204,7 @@ class Matchmakingpings(commands.Cog):
         with open(r"./json/funnies.json", "r", encoding="utf-8") as f:
             funnies = json.load(f)
 
-        funnies_requests = []
-
-        for user in funnies:
-            funnies_requests.append(user)
+        funnies_requests = list(funnies)
 
         for user in funnies_requests:
             del funnies[user]
@@ -225,10 +219,7 @@ class Matchmakingpings(commands.Cog):
         with open(r"./json/rankedpings.json", "r", encoding="utf-8") as f:
             ranked = json.load(f)
 
-        ranked_requests = []
-
-        for user in ranked:
-            ranked_requests.append(user)
+        ranked_requests = list(ranked)
 
         for user in ranked_requests:
             del ranked[user]

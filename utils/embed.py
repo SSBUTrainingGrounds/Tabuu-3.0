@@ -18,9 +18,10 @@ def add_attachments_to_embed(embed: discord.Embed, message: discord.Message):
                 )
         else:
             for i, x in enumerate(message.attachments, start=1):
-                if not embed.image:
-                    if x.url.endswith((".jpg", ".png", ".jpeg", ".gif")):
-                        embed.set_image(url=x.proxy_url)
+                if not embed.image and x.url.endswith(
+                    (".jpg", ".png", ".jpeg", ".gif")
+                ):
+                    embed.set_image(url=x.proxy_url)
 
                 embed.add_field(
                     name=f"Attachment ({i}/{len(message.attachments)}):",
@@ -29,10 +30,11 @@ def add_attachments_to_embed(embed: discord.Embed, message: discord.Message):
                 )
 
     if message.stickers:
-        if not embed.image:
+        if embed.image:
+            embed.add_field(name="Sticker:", value=f"{message.stickers[0].url}")
+
+        else:
             embed.set_image(url=message.stickers[0].url)
             embed.add_field(name="Sticker:", value="See below.", inline=False)
-        else:
-            embed.add_field(name="Sticker:", value=f"{message.stickers[0].url}")
 
     return embed

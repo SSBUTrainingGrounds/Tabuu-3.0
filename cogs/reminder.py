@@ -126,7 +126,7 @@ class Reminder(commands.Cog):
                 f"**ID:** {reminder_id} - **Time remaining:** {timediff} - **Message:** `{message}`\n"
             )
 
-        if len(reminder_list) == 0:
+        if not reminder_list:
             reminder_list = ["No reminders found."]
 
         try:

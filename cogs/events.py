@@ -143,23 +143,29 @@ class Events(commands.Cog):
     async def on_voice_state_update(self, member, before, after):
         # adds/removes a VC role when you join/leave a VC channel
         voice_channel = TGChannelIDs.GENERAL_VOICE_CHAT
-        if before.channel is None or before.channel.id != voice_channel:
-            if after.channel is not None and after.channel.id == voice_channel:
-                try:
-                    guild = self.bot.get_guild(GuildIDs.TRAINING_GROUNDS)
-                    vc_role = discord.utils.get(guild.roles, id=TGRoleIDs.VOICE_ROLE)
-                    await member.add_roles(vc_role)
-                except discord.HTTPException:
-                    pass
+        if (
+            (before.channel is None or before.channel.id != voice_channel)
+            and after.channel is not None
+            and after.channel.id == voice_channel
+        ):
+            try:
+                guild = self.bot.get_guild(GuildIDs.TRAINING_GROUNDS)
+                vc_role = discord.utils.get(guild.roles, id=TGRoleIDs.VOICE_ROLE)
+                await member.add_roles(vc_role)
+            except discord.HTTPException:
+                pass
 
-        if after.channel is None or after.channel.id != voice_channel:
-            if before.channel is not None and before.channel.id == voice_channel:
-                try:
-                    guild = self.bot.get_guild(GuildIDs.TRAINING_GROUNDS)
-                    vc_role = discord.utils.get(guild.roles, id=TGRoleIDs.VOICE_ROLE)
-                    await member.remove_roles(vc_role)
-                except discord.HTTPException:
-                    pass
+        if (
+            (after.channel is None or after.channel.id != voice_channel)
+            and before.channel is not None
+            and before.channel.id == voice_channel
+        ):
+            try:
+                guild = self.bot.get_guild(GuildIDs.TRAINING_GROUNDS)
+                vc_role = discord.utils.get(guild.roles, id=TGRoleIDs.VOICE_ROLE)
+                await member.remove_roles(vc_role)
+            except discord.HTTPException:
+                pass
 
     @commands.Cog.listener()
     async def on_member_update(self, before, after):
@@ -198,12 +204,15 @@ class Events(commands.Cog):
             if before.bot or after.bot:
                 return
 
-            if before.pending and not after.pending:
-                if before.guild.id == GuildIDs.TRAINING_GROUNDS:
-                    cadetrole = discord.utils.get(
-                        before.guild.roles, id=TGLevelRoleIDs.RECRUIT_ROLE
-                    )
-                    await after.add_roles(cadetrole)
+            if (
+                before.pending
+                and not after.pending
+                and before.guild.id == GuildIDs.TRAINING_GROUNDS
+            ):
+                cadetrole = discord.utils.get(
+                    before.guild.roles, id=TGLevelRoleIDs.RECRUIT_ROLE
+                )
+                await after.add_roles(cadetrole)
         except AttributeError:
             pass
 
@@ -221,8 +230,7 @@ class Events(commands.Cog):
                 all_macros = await db.execute_fetchall("""SELECT name FROM macros""")
 
             # appending all macro names to the list to get those too
-            for m in all_macros:
-                command_list.append(m[0])
+            command_list.extend(m[0] for m in all_macros)
 
             if ctx.invoked_with in command_list:
                 return
@@ -314,34 +322,31 @@ class Events(commands.Cog):
             return
 
         # runs every day, checks if it is the desired day in that timezone (utc could be off)
+        # stops this task from running the hour after the desired time in that timezone.
+        # have to do this because otherwise it would run again
+        # if i were to restart the bot after the task has already been run
         if (
             datetime.datetime.now(ZoneInfo(TournamentReminders.TIMEZONE)).weekday()
             == TournamentReminders.SMASH_OVERSEAS_DAY
+        ) and (
+            datetime.datetime.now(ZoneInfo(TournamentReminders.TIMEZONE)).hour
+            <= TournamentReminders.SMASH_OVERSEAS_HOUR
         ):
-            # stops this task from running the hour after the desired time in that timezone.
-            # have to do this because otherwise it would run again
-            # if i were to restart the bot after the task has already been run
-            if (
-                datetime.datetime.now(ZoneInfo(TournamentReminders.TIMEZONE)).hour
-                <= TournamentReminders.SMASH_OVERSEAS_HOUR
-            ):
-                guild = self.bot.get_guild(GuildIDs.TRAINING_GROUNDS)
-                streamer_channel = self.bot.get_channel(TGChannelIDs.STREAM_TEAM)
-                streamer_role = discord.utils.get(
-                    guild.roles, id=TGRoleIDs.STREAMER_ROLE
-                )
+            guild = self.bot.get_guild(GuildIDs.TRAINING_GROUNDS)
+            streamer_channel = self.bot.get_channel(TGChannelIDs.STREAM_TEAM)
+            streamer_role = discord.utils.get(guild.roles, id=TGRoleIDs.STREAMER_ROLE)
 
-                to_channel = self.bot.get_channel(TGChannelIDs.TOURNAMENT_TEAM)
-                to_role = discord.utils.get(
-                    guild.roles, id=TGRoleIDs.TOURNAMENT_OFFICIAL_ROLE
-                )
+            to_channel = self.bot.get_channel(TGChannelIDs.TOURNAMENT_TEAM)
+            to_role = discord.utils.get(
+                guild.roles, id=TGRoleIDs.TOURNAMENT_OFFICIAL_ROLE
+            )
 
-                await streamer_channel.send(
-                    f"{streamer_role.mention} Reminder that Smash Overseas begins in 1 hour, who is available to stream?"
-                )
-                await to_channel.send(
-                    f"{to_role.mention} Reminder that Smash Overseas begins in 1 hour, who is available?"
-                )
+            await streamer_channel.send(
+                f"{streamer_role.mention} Reminder that Smash Overseas begins in 1 hour, who is available to stream?"
+            )
+            await to_channel.send(
+                f"{to_role.mention} Reminder that Smash Overseas begins in 1 hour, who is available?"
+            )
 
     @tasks.loop(time=utils.time.convert_to_utc(tos_time, TournamentReminders.TIMEZONE))
     async def tos_ping(self):
@@ -351,28 +356,25 @@ class Events(commands.Cog):
         if (
             datetime.datetime.now(ZoneInfo(TournamentReminders.TIMEZONE)).weekday()
             == TournamentReminders.TRIALS_OF_SMASH_DAY
+        ) and (
+            datetime.datetime.now(ZoneInfo(TournamentReminders.TIMEZONE)).hour
+            <= TournamentReminders.TRIALS_OF_SMASH_HOUR
         ):
-            if (
-                datetime.datetime.now(ZoneInfo(TournamentReminders.TIMEZONE)).hour
-                <= TournamentReminders.TRIALS_OF_SMASH_HOUR
-            ):
-                guild = self.bot.get_guild(GuildIDs.TRAINING_GROUNDS)
-                streamer_channel = self.bot.get_channel(TGChannelIDs.STREAM_TEAM)
-                streamer_role = discord.utils.get(
-                    guild.roles, id=TGRoleIDs.STREAMER_ROLE
-                )
+            guild = self.bot.get_guild(GuildIDs.TRAINING_GROUNDS)
+            streamer_channel = self.bot.get_channel(TGChannelIDs.STREAM_TEAM)
+            streamer_role = discord.utils.get(guild.roles, id=TGRoleIDs.STREAMER_ROLE)
 
-                to_channel = self.bot.get_channel(TGChannelIDs.TOURNAMENT_TEAM)
-                to_role = discord.utils.get(
-                    guild.roles, id=TGRoleIDs.TOURNAMENT_OFFICIAL_ROLE
-                )
+            to_channel = self.bot.get_channel(TGChannelIDs.TOURNAMENT_TEAM)
+            to_role = discord.utils.get(
+                guild.roles, id=TGRoleIDs.TOURNAMENT_OFFICIAL_ROLE
+            )
 
-                await streamer_channel.send(
-                    f"{streamer_role.mention} Reminder that Trials of Smash begins in 1 hour, who is available to stream?"
-                )
-                await to_channel.send(
-                    f"{to_role.mention} Reminder that Trials of Smash begins in 1 hour, who is available?"
-                )
+            await streamer_channel.send(
+                f"{streamer_role.mention} Reminder that Trials of Smash begins in 1 hour, who is available to stream?"
+            )
+            await to_channel.send(
+                f"{to_role.mention} Reminder that Trials of Smash begins in 1 hour, who is available?"
+            )
 
     @tasks.loop(time=utils.time.convert_to_utc(dt_time, TournamentReminders.TIMEZONE))
     async def dt_ping(self):
@@ -386,21 +388,18 @@ class Events(commands.Cog):
         if (
             datetime.datetime.now(ZoneInfo(TournamentReminders.TIMEZONE)).weekday()
             == TournamentReminders.DESIGN_TEAM_DAY
+        ) and (
+            datetime.datetime.now(ZoneInfo(TournamentReminders.TIMEZONE)).hour
+            <= TournamentReminders.DESIGN_TEAM_HOUR
         ):
-            if (
-                datetime.datetime.now(ZoneInfo(TournamentReminders.TIMEZONE)).hour
-                <= TournamentReminders.DESIGN_TEAM_HOUR
-            ):
-                guild = self.bot.get_guild(GuildIDs.TRAINING_GROUNDS)
-                design_channel = self.bot.get_channel(TGChannelIDs.DESIGN_TEAM)
-                design_role = discord.utils.get(
-                    guild.roles, id=TGRoleIDs.DESIGN_TEAM_ROLE
-                )
+            guild = self.bot.get_guild(GuildIDs.TRAINING_GROUNDS)
+            design_channel = self.bot.get_channel(TGChannelIDs.DESIGN_TEAM)
+            design_role = discord.utils.get(guild.roles, id=TGRoleIDs.DESIGN_TEAM_ROLE)
 
-                await design_channel.send(
-                    f"{design_role.mention} Reminder that it is time to get to work on SO/ToS graphics! "
-                    "Who is able to take one or both?\n(Assuming alts have already been collected.)"
-                )
+            await design_channel.send(
+                f"{design_role.mention} Reminder that it is time to get to work on SO/ToS graphics! "
+                "Who is able to take one or both?\n(Assuming alts have already been collected.)"
+            )
 
     @so_ping.before_loop
     async def before_so_ping(self):

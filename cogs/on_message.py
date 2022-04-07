@@ -37,22 +37,19 @@ class On_message(commands.Cog):
         if (
             "discord.gg" in message.content
             or "discordapp.com/invite" in message.content
-        ):
-            if message.guild.id == GuildIDs.TRAINING_GROUNDS:
-                guild = self.bot.get_guild(GuildIDs.TRAINING_GROUNDS)
-                mod_role = discord.utils.get(guild.roles, id=TGRoleIDs.MOD_ROLE)
-                promoter_role = discord.utils.get(
-                    guild.roles, id=TGRoleIDs.PROMOTER_ROLE
+        ) and message.guild.id == GuildIDs.TRAINING_GROUNDS:
+            guild = self.bot.get_guild(GuildIDs.TRAINING_GROUNDS)
+            mod_role = discord.utils.get(guild.roles, id=TGRoleIDs.MOD_ROLE)
+            promoter_role = discord.utils.get(guild.roles, id=TGRoleIDs.PROMOTER_ROLE)
+            if (
+                mod_role not in message.author.roles
+                and promoter_role not in message.author.roles
+                and message.channel.id not in TGChannelIDs.INVITE_LINK_WHITELIST
+            ):
+                await message.delete()
+                await message.channel.send(
+                    f"Please don't send invite links here {message.author.mention}"
                 )
-                if (
-                    mod_role not in message.author.roles
-                    and promoter_role not in message.author.roles
-                    and message.channel.id not in TGChannelIDs.INVITE_LINK_WHITELIST
-                ):
-                    await message.delete()
-                    await message.channel.send(
-                        f"Please don't send invite links here {message.author.mention}"
-                    )
 
         # searches for bad words using regex
         # string.digits+string.whitespace+string.punctuation,
@@ -82,7 +79,7 @@ class On_message(commands.Cog):
                 )
 
                 if len(reason[1000:]) > 0:
-                    reason = reason[:997] + "..."
+                    reason = f"{reason[:997]}..."
 
                 await Warn.add_warn(self, message.guild.me, message.author, reason)
                 await message.channel.send(

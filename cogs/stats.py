@@ -72,10 +72,7 @@ class Stats(commands.Cog):
 
             badges = badges[0][0].split(" ")
 
-            for badge in badge_list:
-                if badge not in badges:
-                    added_badges.append(badge)
-
+            added_badges.extend(badge for badge in badge_list if badge not in badges)
             badges = badges + added_badges
 
             badges = " ".join(badges)
@@ -182,10 +179,7 @@ class Stats(commands.Cog):
                 {"user_id": member.id},
             )
 
-        if len(badges) == 0 or badges[0][0] == "":
-            badges = "None"
-        else:
-            badges = badges[0][0]
+        badges = "None" if len(badges) == 0 or badges[0][0] == "" else badges[0][0]
 
         embed = discord.Embed(
             title=f"Userinfo of {member.name}#{member.discriminator} ({member.id})",
@@ -263,8 +257,6 @@ class Stats(commands.Cog):
         role = search_role(ctx.guild, input_role)
 
         members = role.members
-        memberlist = []
-
         if len(members) > 60:
             await ctx.send(
                 f"Users with the {role} role ({len(role.members)}):\n`Too many users to list!`"
@@ -274,10 +266,10 @@ class Stats(commands.Cog):
             await ctx.send(f"No user currently has the {role} role!")
             return
 
-        for member in members:
-            memberlist.append(
-                f"{discord.utils.escape_markdown(member.name)}#{member.discriminator}"
-            )
+        memberlist = [
+            f"{discord.utils.escape_markdown(member.name)}#{member.discriminator}"
+            for member in members
+        ]
 
         all_members = ", ".join(memberlist)
 
@@ -460,9 +452,9 @@ Events parsed: {self.bot.events_listened_to}
     async def clearbadges_error(self, ctx, error):
         if isinstance(error, commands.MissingPermissions):
             await ctx.send("Nice try, but you don't have the permissions to do that!")
-        elif isinstance(error, commands.MissingRequiredArgument):
-            await ctx.send("Please mention a valid user!")
-        elif isinstance(error, commands.UserNotFound):
+        elif isinstance(
+            error, (commands.MissingRequiredArgument, commands.UserNotFound)
+        ):
             await ctx.send("Please mention a valid user!")
         else:
             raise error

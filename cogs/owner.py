@@ -79,11 +79,9 @@ class Owner(commands.Cog):
                             value=exc,
                             inline=False,
                         )
-            await ctx.send(embed=embed)
-
         else:
             embed = discord.Embed(
-                title="Reloading cog...", colour=discord.Colour.blue()
+                title="Reloading cog(s)...", colour=discord.Colour.blue()
             )
             for cog in cogs.split(","):
                 cog = cog.strip()
@@ -101,7 +99,8 @@ class Owner(commands.Cog):
                         value=exc,
                         inline=False,
                     )
-            await ctx.send(embed=embed)
+
+        await ctx.send(embed=embed)
 
     # some error handling
     @reloadcogs.error

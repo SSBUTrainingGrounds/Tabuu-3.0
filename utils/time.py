@@ -19,22 +19,21 @@ def append_readable_time(readable_time: str, time: int, duration: str):
     """
     Appends to the readable_time string with the specified time and duration.
     """
-    # if the string is empty
-    if not readable_time:
-        # checks if its just one or multiple for proper wording
-        if int(time) == 1:
-            # str(int(days)) looks stupid but it gets rid of leading zeroes. 00001d -> 1d
-            readable_time = f"{str(int(time))} {duration}"
-        # luckily the -s ending works out for every case
-        else:
-            readable_time = f"{str(int(time))} {duration}s"
-    else:
-        if int(time) == 1:
-            readable_time = readable_time + f", {str(int(time))} {duration}"
-        else:
-            readable_time = readable_time + f", {str(int(time))} {duration}s"
 
-    return readable_time
+    # if the string is empty
+    if readable_time:
+        # checks if its just one or multiple for proper wording
+        # luckily the -s ending works out for every case
+        # str(int(time)) looks stupid but it gets rid of leading zeroes. 00001d -> 1d
+        return (
+            f"{readable_time}, {str(int(time))} {duration}"
+            if time == 1
+            else f"{readable_time}, {str(int(time))} {duration}s"
+        )
+
+    return (
+        f"{str(int(time))} {duration}" if time == 1 else f"{str(int(time))} {duration}s"
+    )
 
 
 def convert_time(input_time: str):

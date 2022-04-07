@@ -50,9 +50,8 @@ class Profile(commands.Cog):
                     i_char == match_char["name"]
                     or i_char in match_char["id"]
                     or i_char in match_char["aliases"]
-                ):
-                    if match_char["emoji"] not in output_characters:
-                        output_characters.append(match_char["emoji"])
+                ) and match_char["emoji"] not in output_characters:
+                    output_characters.append(match_char["emoji"])
 
         return output_characters
 
@@ -69,15 +68,15 @@ class Profile(commands.Cog):
 
         # the badge roles are not in only one server
         for guild in user.mutual_guilds:
-            member = guild.get_member(user.id)
-
-            if member:
+            if member := guild.get_member(user.id):
                 # getting all of the role ids in a list
                 role_ids = [role.id for role in member.roles]
                 # and then checking with the dict
-                for badge, role in Emojis.PROFILE_BADGES.items():
-                    if role in role_ids:
-                        badges.append(badge)
+                badges.extend(
+                    badge
+                    for badge, role in Emojis.PROFILE_BADGES.items()
+                    if role in role_ids
+                )
 
         return badges
 
@@ -133,11 +132,8 @@ class Profile(commands.Cog):
             return
 
         (_, tag, region, mains, secondaries, pockets, note, colour) = matching_user[0]
-        if len(matching_user_elo) == 0:
-            elo = 1000
-        else:
-            elo = matching_user_elo[0][0]
 
+        elo = 1000 if len(matching_user_elo) == 0 else matching_user_elo[0][0]
         badges = " ".join(self.get_badges(user))
 
         embed = discord.Embed(title=f"Smash profile of {str(user)}", colour=colour)
@@ -469,7 +465,7 @@ class Profile(commands.Cog):
         Use a hex colour code with a leading #.
         """
         # hex colour codes are 7 digits long and start with #
-        if not profile_input.startswith("#") or not len(profile_input) == 7:
+        if not profile_input.startswith("#") or len(profile_input) != 7:
             await ctx.send(
                 "Please choose a valid hex colour code. Example: `%colour #8a0f84`"
             )

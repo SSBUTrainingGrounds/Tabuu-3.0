@@ -460,9 +460,7 @@ class Help(commands.Cog):
         command_list = []
         for cmd in self.bot.commands:
             if isinstance(cmd, commands.Group):
-                for c in cmd.commands:
-                    command_list.append(f"{cmd.name} {c.name}")
-
+                command_list.extend(f"{cmd.name} {c.name}" for c in cmd.commands)
             command_list.append(cmd.name)
 
         choices = []
@@ -474,8 +472,10 @@ class Help(commands.Cog):
                 current, command_list, limit=25, score_cutoff=60
             )
 
-            for match in match_list:
-                choices.append(app_commands.Choice(name=match[0], value=match[0]))
+            choices.extend(
+                app_commands.Choice(name=match[0], value=match[0])
+                for match in match_list
+            )
 
         return choices[:25]
 
