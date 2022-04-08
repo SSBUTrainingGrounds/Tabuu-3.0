@@ -268,6 +268,42 @@ class Warn(commands.Cog):
 
         await ctx.send(f"Deleted warning {warn_id} for {member.mention}")
 
+    @tasks.loop(hours=24)
+    async def warnloop(self):
+        """
+        This here checks if a warning is older than 30 days and has expired,
+        if that is the case, deletes the expired warnings.
+        """
+        logger = self.bot.get_logger("bot.warn")
+
+        async with aiosqlite.connect("./db/database.db") as db:
+            every_warning = await db.execute_fetchall("""SELECT * FROM warnings""")
+
+            # we check for every warning if it is older than 30 days
+            for warning in every_warning:
+                # the underscores are mod_id and reason
+                (user_id, warn_id, _, _, timestamp) = warning
+                timediff = datetime.utcnow() - datetime.strptime(
+                    timestamp, "%A, %B %d %Y @ %H:%M:%S %p"
+                )
+                if timediff.days > 29:
+                    # user id and warn id should be enough to identify each warning (hopefully)
+                    await db.execute(
+                        """DELETE FROM warnings WHERE user_id = :user_id AND warn_id = :warn_id""",
+                        {"user_id": user_id, "warn_id": warn_id},
+                    )
+                    logger.info(
+                        f"Deleted Warning #{warn_id} for user {user_id} after 30 days."
+                    )
+
+            await db.commit()
+
+        logger.info("Warnloop finished.")
+
+    @warnloop.before_loop
+    async def before_warnloop(self):
+        await self.bot.wait_until_ready()
+
     # basic error handling for the above
     @warn.error
     async def warn_error(self, ctx, error):
@@ -317,42 +353,6 @@ class Warn(commands.Cog):
             await ctx.send("Nice try, but you don't have the permissions to do that!")
         else:
             raise error
-
-    @tasks.loop(hours=24)
-    async def warnloop(self):
-        """
-        This here checks if a warning is older than 30 days and has expired,
-        if that is the case, deletes the expired warnings.
-        """
-        logger = self.bot.get_logger("bot.warn")
-
-        async with aiosqlite.connect("./db/database.db") as db:
-            every_warning = await db.execute_fetchall("""SELECT * FROM warnings""")
-
-            # we check for every warning if it is older than 30 days
-            for warning in every_warning:
-                # the underscores are mod_id and reason
-                (user_id, warn_id, _, _, timestamp) = warning
-                timediff = datetime.utcnow() - datetime.strptime(
-                    timestamp, "%A, %B %d %Y @ %H:%M:%S %p"
-                )
-                if timediff.days > 29:
-                    # user id and warn id should be enough to identify each warning (hopefully)
-                    await db.execute(
-                        """DELETE FROM warnings WHERE user_id = :user_id AND warn_id = :warn_id""",
-                        {"user_id": user_id, "warn_id": warn_id},
-                    )
-                    logger.info(
-                        f"Deleted Warning #{warn_id} for user {user_id} after 30 days."
-                    )
-
-            await db.commit()
-
-        logger.info("Warnloop finished.")
-
-    @warnloop.before_loop
-    async def before_warnloop(self):
-        await self.bot.wait_until_ready()
 
 
 async def setup(bot):

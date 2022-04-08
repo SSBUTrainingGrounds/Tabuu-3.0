@@ -22,6 +22,35 @@ class Reminder(commands.Cog):
     def cog_unload(self):
         self.reminder_loop.cancel()
 
+    async def notify_user(
+        self, user_id: int, channel_id: int, message: str, read_time: str
+    ):
+        """
+        Notifies the user when their reminder expires.
+        First we try in the channel, then their DMs.
+        """
+        logger = self.bot.get_logger("bot.reminder")
+
+        try:
+            channel = await self.bot.fetch_channel(channel_id)
+            await channel.send(
+                f"<@!{user_id}>, you wanted me to remind you of `{message}`, {read_time} ago."
+            )
+            # the channel could get deleted in the meantime,
+            # or something else can prevent us having access
+        except discord.HTTPException:
+            # unfortunately we need a second try/except block because
+            # people can block your bot and this would throw an error otherwise,
+            # and we dont wanna interrupt the loop
+            try:
+                member = await self.bot.fetch_user(user_id)
+                await member.send(
+                    f"<@!{user_id}>, you wanted me to remind you of `{message}`, "
+                    f"{read_time} ago, in a deleted channel."
+                )
+            except discord.HTTPException as exc:
+                logger.info(f"Could not notify user due to: {exc}")
+
     @commands.command(aliases=["remindme", "newreminder", "newremindme"])
     async def reminder(self, ctx, time, *, reminder_message):
         """
@@ -174,48 +203,29 @@ class Reminder(commands.Cog):
         Checks every minute if a reminder has passed.
         If that is the case, notifies the user and deletes the reminder.
         """
+        logger = self.bot.get_logger("bot.reminder")
+
         async with aiosqlite.connect("./db/database.db") as db:
             every_reminder = await db.execute_fetchall("""SELECT * FROM reminder""")
 
-        logger = self.bot.get_logger("bot.reminder")
+            for reminder in every_reminder:
+                (user_id, reminder_id, channel_id, date, read_time, message) = reminder
 
-        for reminder in every_reminder:
-            (user_id, reminder_id, channel_id, date, read_time, message) = reminder
+                date_now = discord.utils.utcnow().timestamp()
+                if date < date_now:
 
-            date_now = discord.utils.utcnow().timestamp()
-            if date < date_now:
-                logger.info(
-                    f"Reminder #{reminder_id} from user {user_id} has passed. Notifying user and deleting reminder..."
-                )
-
-                try:
-                    channel = await self.bot.fetch_channel(channel_id)
-                    await channel.send(
-                        f"<@!{user_id}>, you wanted me to remind you of `{message}`, {read_time} ago."
+                    logger.info(
+                        f"Reminder #{reminder_id} from user {user_id} has passed. Notifying user and deleting reminder..."
                     )
-                    # the channel could get deleted in the meantime,
-                    # or something else can prevent us having access
-                except discord.HTTPException:
-                    # unfortunately we need a second try/except block because
-                    # people can block your bot and this would throw an error otherwise,
-                    # and we dont wanna interrupt the loop
-                    try:
-                        member = await self.bot.fetch_user(user_id)
-                        await member.send(
-                            f"<@!{user_id}>, you wanted me to remind you of `{message}`, "
-                            f"{read_time} ago, in a deleted channel."
-                        )
-                    except discord.HTTPException as exc:
-                        logger.info(f"Could not notify user due to: {exc}")
 
-                async with aiosqlite.connect("./db/database.db") as db:
                     await db.execute(
                         """DELETE FROM reminder WHERE user_id = :user_id AND reminder_id = :reminder_id""",
                         {"user_id": user_id, "reminder_id": reminder_id},
                     )
-                    await db.commit()
 
-                logger.info("Deleted reminder successfully.")
+                    await self.notify_user(user_id, channel_id, message, read_time)
+
+            await db.commit()
 
     @reminder_loop.before_loop
     async def before_reminder_loop(self):
