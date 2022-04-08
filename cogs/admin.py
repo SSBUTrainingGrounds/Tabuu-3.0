@@ -19,7 +19,7 @@ class Admin(commands.Cog):
 
     @commands.command()
     @utils.check.is_moderator()
-    async def clear(self, ctx, amount=1):
+    async def clear(self, ctx, amount: int = 1):
         """
         Clears the last X messages from the channel the command is used in.
         If you do not specify an amount it defaults to 1.
@@ -46,7 +46,7 @@ class Admin(commands.Cog):
 
     @commands.command()
     @utils.check.is_moderator()
-    async def ban(self, ctx, user: discord.User, *, reason):
+    async def ban(self, ctx, user: discord.User, *, reason: str):
         """
         Bans a user from the current server with the specified reason, also tries to DM the user.
         Asks you for confirmation beforehand, because the Mod Team couldn't stop playing with this command.
@@ -150,7 +150,7 @@ class Admin(commands.Cog):
 
     @commands.command()
     @utils.check.is_moderator()
-    async def kick(self, ctx, member: discord.Member, *, reason):
+    async def kick(self, ctx, member: discord.Member, *, reason: str):
         """
         Kicks a user from the current server with the specified reason, also tries to DM the user.
         Asks you for confirmation beforehand, because the Mod Team couldn't stop playing with this command.
@@ -208,7 +208,7 @@ class Admin(commands.Cog):
 
     @commands.command()
     @utils.check.is_moderator()
-    async def addrole(self, ctx, member: discord.Member, *, input_role):
+    async def addrole(self, ctx, member: discord.Member, *, input_role: str):
         """
         Adds the specified role to the specified member.
         """
@@ -219,7 +219,7 @@ class Admin(commands.Cog):
 
     @commands.command()
     @utils.check.is_moderator()
-    async def removerole(self, ctx, member: discord.Member, *, input_role):
+    async def removerole(self, ctx, member: discord.Member, *, input_role: str):
         """
         Removes the specified role from the specified member.
         """
@@ -266,7 +266,7 @@ class Admin(commands.Cog):
 
     @editrole.command(name="colour", aliases=["color"])
     @utils.check.is_moderator()
-    async def editrole_colour(self, ctx, role: discord.Role, hex_colour):
+    async def editrole_colour(self, ctx, role: discord.Role, hex_colour: str):
         """
         Edits the colour of a role, use a hex colour code.
         """
@@ -374,7 +374,7 @@ class Admin(commands.Cog):
 
     @commands.command()
     @utils.check.is_moderator()
-    async def rename(self, ctx, member: discord.Member, *, name=None):
+    async def rename(self, ctx, member: discord.Member, *, name: str = None):
         """
         Renames the specified member to the specified name.
         """
@@ -390,7 +390,7 @@ class Admin(commands.Cog):
         ctx,
         channel: Union[discord.TextChannel, discord.Thread, discord.Message],
         *,
-        message,
+        message: str,
     ):
         """
         Repeats a message in a given channel or thread, or replies to a message.

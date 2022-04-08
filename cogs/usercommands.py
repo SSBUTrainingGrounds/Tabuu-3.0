@@ -126,7 +126,7 @@ class Usercommands(commands.Cog):
             await ctx.send("This user does not have a banner.")
 
     @commands.command()
-    async def poll(self, ctx, question, *options: str):
+    async def poll(self, ctx, question: str, *options: str):
         """
         Poll command, with up to 10 options.
         Sends it out in a neat embed and adds the reactions.
@@ -249,7 +249,7 @@ class Usercommands(commands.Cog):
         )
 
     @commands.command(aliases=["conversion"])
-    async def convert(self, ctx, *, conversion_input):
+    async def convert(self, ctx, *, conversion_input: str):
         """
         Converts your input between metric and imperial
         and the other way around.

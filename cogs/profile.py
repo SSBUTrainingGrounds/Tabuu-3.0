@@ -211,7 +211,7 @@ class Profile(commands.Cog):
         )
 
     @commands.command(aliases=["main", "setmain", "spmains", "profilemains"])
-    async def mains(self, ctx, *, profile_input=None):
+    async def mains(self, ctx, *, profile_input: str = None):
         """
         Sets your mains on your smash profile.
         Separates the input by commas, and then matches with names, nicknames and fighter numbers.
@@ -238,7 +238,7 @@ class Profile(commands.Cog):
     @commands.command(
         aliases=["secondary", "setsecondary", "spsecondaries", "profilesecondaries"]
     )
-    async def secondaries(self, ctx, *, profile_input=None):
+    async def secondaries(self, ctx, *, profile_input: str = None):
         """
         Sets your secondaries on your smash profile.
         Separates the input by commas, and then matches with names, nicknames and fighter numbers.
@@ -264,7 +264,7 @@ class Profile(commands.Cog):
             )
 
     @commands.command(aliases=["pocket", "setpocket", "sppockets", "profilepockets"])
-    async def pockets(self, ctx, *, profile_input=None):
+    async def pockets(self, ctx, *, profile_input: str = None):
         """
         Sets your pockets on your smash profile.
         Separates the input by commas, and then matches with names, nicknames and fighter numbers.
@@ -290,7 +290,7 @@ class Profile(commands.Cog):
             await ctx.send(f"{ctx.author.mention}, I have set your pockets to: {chars}")
 
     @commands.command(aliases=["smashtag", "sptag", "settag"])
-    async def tag(self, ctx, *, profile_input=None):
+    async def tag(self, ctx, *, profile_input: str = None):
         """
         Sets your tag on your smash profile.
         Up to 30 characters long.
@@ -317,7 +317,7 @@ class Profile(commands.Cog):
         )
 
     @commands.command(aliases=["setregion", "spregion", "country"])
-    async def region(self, ctx, *, profile_input=None):
+    async def region(self, ctx, *, profile_input: str = None):
         """
         Sets your region on your smash profile.
         Matches to commonly used regions, which are:
@@ -430,7 +430,7 @@ class Profile(commands.Cog):
             )
 
     @commands.command(aliases=["setnote", "spnote"])
-    async def note(self, ctx, *, profile_input=None):
+    async def note(self, ctx, *, profile_input: str = None):
         """
         Sets your note on your smash profile.
         Up to 150 characters long.
@@ -459,7 +459,7 @@ class Profile(commands.Cog):
             )
 
     @commands.command(aliases=["color", "spcolour", "spcolor", "setcolour", "setcolor"])
-    async def colour(self, ctx, profile_input):
+    async def colour(self, ctx, profile_input: str):
         """
         Sets your embed colour on your smash profile.
         Use a hex colour code with a leading #.

@@ -44,7 +44,7 @@ class Stats(commands.Cog):
 
     @commands.command(aliases=["addbadge"])
     @utils.check.is_moderator()
-    async def addbadges(self, ctx, user: discord.User, *badge_list):
+    async def addbadges(self, ctx, user: discord.User, *badge_list: str):
         """
         Adds multiple emoji badges to a user.
         Emojis must be a default emoji or a custom emoji the bot can use.
@@ -88,7 +88,7 @@ class Stats(commands.Cog):
 
     @commands.command(aliases=["removebadges"])
     @utils.check.is_moderator()
-    async def removebadge(self, ctx, user: discord.User, badge):
+    async def removebadge(self, ctx, user: discord.User, badge: str):
         """
         Removes a badge from a user.
         """
@@ -216,7 +216,7 @@ class Stats(commands.Cog):
         await ctx.send(embed=embed)
 
     @commands.command(aliases=["role"])
-    async def roleinfo(self, ctx, *, input_role):
+    async def roleinfo(self, ctx, *, input_role: str):
         """
         Basic information about a given role.
         """
@@ -249,7 +249,7 @@ class Stats(commands.Cog):
         await ctx.send(embed=embed)
 
     @commands.command(aliases=["listroles"])
-    async def listrole(self, ctx, *, input_role):
+    async def listrole(self, ctx, *, input_role: str):
         """
         Lists every member of a role.
         Well up to 60 members at least.

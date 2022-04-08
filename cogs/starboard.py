@@ -46,7 +46,7 @@ class Starboard(commands.Cog):
 
     @commands.command()
     @utils.check.is_moderator()
-    async def starboardemoji(self, ctx, emoji):
+    async def starboardemoji(self, ctx, emoji: str):
         """
         Sets the Starboard Emoji.
         The bot does need access to this Emoji.
@@ -88,7 +88,7 @@ class Starboard(commands.Cog):
         await ctx.send(f"Changed the threshold to: `{i}`")
 
     @commands.Cog.listener()
-    async def on_raw_reaction_add(self, payload):
+    async def on_raw_reaction_add(self, payload: discord.RawReactionActionEvent):
         # the listener for reactions for the starboard.
         # first we check if the reaction happened in the right channel.
         if payload.channel_id not in self.listening_channels:
@@ -172,7 +172,7 @@ class Starboard(commands.Cog):
                     await db.commit()
 
     @commands.Cog.listener()
-    async def on_raw_reaction_remove(self, payload):
+    async def on_raw_reaction_remove(self, payload: discord.RawReactionActionEvent):
         # if the amount of reactions to a starboard message decrease,
         # we also wanna update the message then
         if payload.channel_id not in self.listening_channels:

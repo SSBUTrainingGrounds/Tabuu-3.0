@@ -133,7 +133,7 @@ class Mute(commands.Cog):
 
     @commands.command()
     @utils.check.is_moderator()
-    async def mute(self, ctx, member: discord.Member, *, reason):
+    async def mute(self, ctx, member: discord.Member, *, reason: str):
         """
         Mutes a member in both servers indefinitely and DMs them the reason for it.
         """
@@ -192,7 +192,9 @@ class Mute(commands.Cog):
 
     @commands.command()
     @utils.check.is_moderator()
-    async def tempmute(self, ctx, member: discord.Member, mute_time, *, reason):
+    async def tempmute(
+        self, ctx, member: discord.Member, mute_time: str, *, reason: str
+    ):
         """
         Mutes a member in both servers, waits the specified time and unmutes them again.
         """
@@ -262,7 +264,9 @@ class Mute(commands.Cog):
 
     @commands.command()
     @utils.check.is_moderator()
-    async def timeout(self, ctx, member: discord.Member, mute_time, *, reason):
+    async def timeout(
+        self, ctx, member: discord.Member, mute_time: str, *, reason: str
+    ):
         """
         Times out a member with the built in timeout function.
         Specify a time and a reason.

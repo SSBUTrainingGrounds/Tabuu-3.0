@@ -247,7 +247,7 @@ class Matchmaking(commands.Cog):
 
     @commands.command(aliases=["matchmakingfunnies", "mmfunnies", "Funnies"])
     @commands.cooldown(1, 600, commands.BucketType.user)
-    async def funnies(self, ctx, *, msg=None):
+    async def funnies(self, ctx, *, msg: str = None):
         """
         Used for 1v1 Matchmaking with non-competitive rules. Very similar to singles.
         """

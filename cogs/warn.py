@@ -24,7 +24,9 @@ class Warn(commands.Cog):
     def cog_unload(self):
         self.warnloop.cancel()
 
-    async def add_warn(self, author: discord.Member, member: discord.Member, reason):
+    async def add_warn(
+        self, author: discord.Member, member: discord.Member, reason: str
+    ):
         """
         Adds a warning to the database.
         Also logs it to our infraction-logs channel.
@@ -131,7 +133,7 @@ class Warn(commands.Cog):
 
     @commands.command()
     @utils.check.is_moderator()
-    async def warn(self, ctx, member: discord.Member, *, reason):
+    async def warn(self, ctx, member: discord.Member, *, reason: str):
         """
         Warns a user.
         """
@@ -243,7 +245,7 @@ class Warn(commands.Cog):
 
     @commands.command()
     @utils.check.is_moderator()
-    async def deletewarn(self, ctx, member: discord.Member, warn_id):
+    async def deletewarn(self, ctx, member: discord.Member, warn_id: str):
         """
         Deletes a specific warning of a user, by the randomly generated warning ID.
         Use warndetails to see these warning IDs.

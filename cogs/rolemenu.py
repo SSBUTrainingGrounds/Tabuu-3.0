@@ -17,7 +17,7 @@ class Rolemenu(commands.Cog):
 
     @commands.command()
     @utils.check.is_moderator()
-    async def newrolemenu(self, ctx, message: int, emoji, role: discord.Role):
+    async def newrolemenu(self, ctx, message: int, emoji: str, role: discord.Role):
         """
         Creates a brand new role menu.
         """
@@ -205,7 +205,7 @@ class Rolemenu(commands.Cog):
             await ctx.send("Error! Too many entries to list!")
 
     @commands.Cog.listener()
-    async def on_raw_reaction_add(self, payload):
+    async def on_raw_reaction_add(self, payload: discord.RawReactionActionEvent):
         # The listener to actually add the correct role on a raw reaction event
         # Also does the checking for the special properties
 
@@ -279,7 +279,7 @@ class Rolemenu(commands.Cog):
                 await payload.member.add_roles(role_tbd)
 
     @commands.Cog.listener()
-    async def on_raw_reaction_remove(self, payload):
+    async def on_raw_reaction_remove(self, payload: discord.RawReactionActionEvent):
         # The listener to remove the correct role on a raw reaction remove event
         # Does not need any additional checking
         async with aiosqlite.connect("./db/database.db") as db:

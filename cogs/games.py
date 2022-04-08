@@ -10,7 +10,7 @@ class RpsButtons(discord.ui.View):
     Contains the RPS Game Buttons.
     """
 
-    def __init__(self, author, member):
+    def __init__(self, author: discord.Member, member: discord.Member):
         super().__init__(timeout=60)
         self.author = author
         self.member = member
@@ -108,7 +108,7 @@ class TicTacToeGame(discord.ui.View):
     Contains the TicTacToe Game Logic.
     """
 
-    def __init__(self, author, member):
+    def __init__(self, author: discord.Member, member: discord.Member):
         super().__init__(timeout=60)
         self.author = author
         self.member = member
@@ -120,7 +120,7 @@ class TicTacToeGame(discord.ui.View):
         for i in range(9):
             self.add_item(TicTacToeButtons(i))
 
-    def check_for_winner(self, board):
+    def check_for_winner(self, board: list[int]):
         """
         Checks if there is a winner, a tie or if the game is still going on.
         """
@@ -215,7 +215,7 @@ class TicTacToeGame(discord.ui.View):
 
 
 class BlackJackButtons(discord.ui.View):
-    def __init__(self, author, member):
+    def __init__(self, author: discord.Member, member: discord.Member):
         super().__init__(timeout=60)
         self.author = author
         self.member = member

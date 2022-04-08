@@ -200,7 +200,7 @@ class Modmail(commands.Cog):
         )
 
     @commands.command()
-    async def modmail(self, ctx, *, args):
+    async def modmail(self, ctx, *, args: str):
         """
         Very basic one-way modmail system.
         Only works in the Bots DMs.

@@ -23,7 +23,7 @@ class On_message(commands.Cog):
         self.bot = bot
 
     @commands.Cog.listener()
-    async def on_message(self, message):
+    async def on_message(self, message: discord.Message):
         # dont want any recursive stuff to happen, so any messages from tabuu 3.0 wont get checked, just in case
         if message.author == self.bot.user:
             return

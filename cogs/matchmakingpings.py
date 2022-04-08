@@ -126,7 +126,7 @@ class Matchmakingpings(commands.Cog):
         self.clear_mmrequests()
 
     @commands.Cog.listener()
-    async def on_thread_update(self, before, after):
+    async def on_thread_update(self, before: discord.Thread, after: discord.Thread):
         # if a matchmaking thread gets inactive, it gets deleted right away to clear space
         if (
             before.archived is False

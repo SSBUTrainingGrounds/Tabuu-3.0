@@ -79,7 +79,7 @@ class Events(commands.Cog):
         await self.bot.wait_until_ready()
 
     @commands.Cog.listener()
-    async def on_member_join(self, member):
+    async def on_member_join(self, member: discord.Member):
         async with aiosqlite.connect("./db/database.db") as db:
             matching_user = await db.execute_fetchall(
                 """SELECT * FROM muted WHERE user_id = :user_id""",
@@ -140,7 +140,12 @@ class Events(commands.Cog):
             )
 
     @commands.Cog.listener()
-    async def on_voice_state_update(self, member, before, after):
+    async def on_voice_state_update(
+        self,
+        member: discord.Member,
+        before: discord.VoiceState,
+        after: discord.VoiceState,
+    ):
         # adds/removes a VC role when you join/leave a VC channel
         voice_channel = TGChannelIDs.GENERAL_VOICE_CHAT
         if (
@@ -168,7 +173,7 @@ class Events(commands.Cog):
                 pass
 
     @commands.Cog.listener()
-    async def on_member_update(self, before, after):
+    async def on_member_update(self, before: discord.Member, after: discord.Member):
         # for announcing boosts/premium memberships
         if len(before.roles) < len(after.roles):
             channel = self.bot.get_channel(TGChannelIDs.ANNOUNCEMENTS_CHANNEL)
@@ -265,7 +270,7 @@ class Events(commands.Cog):
         self.bot.commands_ran += 1
 
     @commands.Cog.listener()
-    async def on_interaction(self, interaction):
+    async def on_interaction(self, interaction: discord.Interaction):
         logger = self.bot.get_logger("bot.app_commands")
         logger.info(
             f"Application Command successfully ran: {interaction.id} (invoked by {str(interaction.user)})"
@@ -273,7 +278,7 @@ class Events(commands.Cog):
         self.bot.commands_ran += 1
 
     @commands.Cog.listener()
-    async def on_socket_event_type(self, event_type):
+    async def on_socket_event_type(self, event_type: str):
         self.bot.events_listened_to += 1
 
     # these just log when the bot loses/regains connection

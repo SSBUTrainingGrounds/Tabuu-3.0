@@ -1,4 +1,5 @@
 import aiosqlite
+import discord
 from discord.ext import commands
 
 import utils.check
@@ -14,7 +15,7 @@ class Macros(commands.Cog):
         self.bot = bot
 
     @commands.Cog.listener()
-    async def on_message(self, message):
+    async def on_message(self, message: discord.Message):
         # listens for the macros
         async with aiosqlite.connect("./db/database.db") as db:
             macro_names = await db.execute_fetchall("""SELECT name FROM macros""")
@@ -37,7 +38,7 @@ class Macros(commands.Cog):
 
     @commands.command()
     @utils.check.is_moderator()
-    async def createmacro(self, ctx, name, *, payload):
+    async def createmacro(self, ctx, name: str, *, payload: str):
         """
         Creates a new macro with the desired name and payload and saves it in the database.
         """
@@ -89,7 +90,7 @@ class Macros(commands.Cog):
 
     @commands.command()
     @utils.check.is_moderator()
-    async def deletemacro(self, ctx, name):
+    async def deletemacro(self, ctx, name: str):
         """
         Deletes a macro with the specified name from the database.
         """

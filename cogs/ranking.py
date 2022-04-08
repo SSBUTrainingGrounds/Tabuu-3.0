@@ -189,7 +189,9 @@ class Ranking(commands.Cog):
 
                 await db.commit()
 
-    async def calculate_elo(self, winner: discord.Member, loser: discord.Member, k=32):
+    async def calculate_elo(
+        self, winner: discord.Member, loser: discord.Member, k: int = 32
+    ):
         """
         Calculates the new Elo value of the winner and loser.
         Uses the classic Elo calculations.

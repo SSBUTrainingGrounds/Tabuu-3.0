@@ -52,7 +52,7 @@ class Reminder(commands.Cog):
                 logger.info(f"Could not notify user due to: {exc}")
 
     @commands.command(aliases=["remindme", "newreminder", "newremindme"])
-    async def reminder(self, ctx, time, *, reminder_message):
+    async def reminder(self, ctx, time: str, *, reminder_message: str):
         """
         Saves a new reminder.
         """
@@ -173,7 +173,7 @@ class Reminder(commands.Cog):
     @commands.command(
         aliases=["delreminder", "rmreminder", "delreminders", "deletereminders"]
     )
-    async def deletereminder(self, ctx, reminder_id):
+    async def deletereminder(self, ctx, reminder_id: str):
         """
         Deletes a reminder of yours.
         """

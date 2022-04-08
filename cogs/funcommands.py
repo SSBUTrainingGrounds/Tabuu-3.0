@@ -149,7 +149,7 @@ class Funcommands(commands.Cog):
         await ctx.send(random.choice(messages))
 
     @commands.command(name="8ball")
-    async def _8ball(self, ctx, *, question=None):
+    async def _8ball(self, ctx, *, question: str = None):
         """
         Ask the magic 8ball.
         """
@@ -190,7 +190,7 @@ class Funcommands(commands.Cog):
             await ctx.send(random.choice(messages))
 
     @commands.command()
-    async def who(self, ctx, *, question=None):
+    async def who(self, ctx, *, question: str = None):
         """
         Returns a random online member of the server as a response.
         """
