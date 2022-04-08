@@ -1,5 +1,6 @@
 import asyncio
 from datetime import datetime, timedelta
+from typing import Optional
 
 import aiosqlite
 import discord
@@ -18,7 +19,7 @@ class Mute(commands.Cog):
     def __init__(self, bot):
         self.bot = bot
 
-    def get_muted_role(self, guild_id: int):
+    def get_muted_role(self, guild_id: int) -> Optional[int]:
         """
         Gets you the muted role of the server.
         """

@@ -27,7 +27,7 @@ class Mee6api(commands.Cog):
 
     async def update_level_role(
         self, member: discord.Member, level: int, guild: discord.Guild
-    ):
+    ) -> discord.Role:
         """
         Assigns you a new role depending on your level and removes all of the other ones.
         Returns the new role.
@@ -43,7 +43,7 @@ class Mee6api(commands.Cog):
 
         levelroles = [defaultrole, level10, level25, level50, level75, level100]
 
-        async def assign_level_role(assign_role: discord.Role):
+        async def assign_level_role(assign_role: discord.Role) -> discord.Role:
             """
             Removes every other level role and assigns the correct one.
             """

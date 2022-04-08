@@ -16,7 +16,7 @@ class Profile(commands.Cog):
     def __init__(self, bot):
         self.bot = bot
 
-    def match_character(self, profile_input: str):
+    def match_character(self, profile_input: str) -> list[str]:
         """
         Matches the input to one or multiple characters and returns the corresponding emoji.
         Separates the input by commas.
@@ -55,7 +55,7 @@ class Profile(commands.Cog):
 
         return output_characters
 
-    def get_badges(self, user: discord.User):
+    def get_badges(self, user: discord.User) -> list[str]:
 
         """
         Gets you all of the badges of a member.

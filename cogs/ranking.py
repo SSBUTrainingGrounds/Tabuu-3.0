@@ -23,7 +23,9 @@ class Ranking(commands.Cog):
     def __init__(self, bot):
         self.bot = bot
 
-    async def get_ranked_role(self, member: discord.Member, guild: discord.Guild):
+    async def get_ranked_role(
+        self, member: discord.Member, guild: discord.Guild
+    ) -> discord.Role:
         """
         This function retrieves the ranked role of a member.
         """
@@ -69,7 +71,7 @@ class Ranking(commands.Cog):
 
         return pingrole
 
-    def get_all_ranked_roles(self, guild: discord.Guild):
+    def get_all_ranked_roles(self, guild: discord.Guild) -> list[discord.Role]:
         """
         Gets you every ranked role.
         """
@@ -100,7 +102,9 @@ class Ranking(commands.Cog):
             elomaxrole,
         ]
 
-    def get_adjacent_roles(self, guild: discord.Guild, role: discord.Role):
+    def get_adjacent_roles(
+        self, guild: discord.Guild, role: discord.Role
+    ) -> list[discord.Role]:
         """
         Gets you your ranked role, as well as the ones above and below yours.
         """
@@ -191,7 +195,7 @@ class Ranking(commands.Cog):
 
     async def calculate_elo(
         self, winner: discord.Member, loser: discord.Member, k: int = 32
-    ):
+    ) -> tuple[int, int, int]:
         """
         Calculates the new Elo value of the winner and loser.
         Uses the classic Elo calculations.
@@ -286,7 +290,7 @@ class Ranking(commands.Cog):
         with open(r"./json/rankedpings.json", "w", encoding="utf-8") as f:
             json.dump(rankedusers, f, indent=4)
 
-    def get_recent_ranked_pings(self, timestamp: float):
+    def get_recent_ranked_pings(self, timestamp: float) -> str:
         """
         Gets a list with all the recent ranked pings.
         We need a different approach than unranked here because we also store the rank role here.

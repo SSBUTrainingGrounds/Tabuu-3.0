@@ -46,7 +46,7 @@ class Matchmaking(commands.Cog):
         with open(rf"./json/{mm_type}.json", "w", encoding="utf-8") as f:
             json.dump(user_pings, f, indent=4)
 
-    def get_recent_pings(self, mm_type: str, timestamp: float):
+    def get_recent_pings(self, mm_type: str, timestamp: float) -> str:
         """
         Gets a list with every Ping saved.
         As long as the ping is not older than 30 Minutes.

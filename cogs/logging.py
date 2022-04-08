@@ -1,5 +1,5 @@
 from io import StringIO
-from typing import Sequence
+from typing import Optional, Sequence
 
 import discord
 from discord.ext import commands
@@ -16,7 +16,7 @@ class Logging(commands.Cog):
     def __init__(self, bot):
         self.bot = bot
 
-    def get_logchannel(self, guild_id: int):
+    def get_logchannel(self, guild_id: int) -> Optional[int]:
         """
         Gets you the correct Log Channel ID.
         """
