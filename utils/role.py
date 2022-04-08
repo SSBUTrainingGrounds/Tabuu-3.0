@@ -1,8 +1,10 @@
+from typing import Optional
+
 import discord
 from fuzzywuzzy import process
 
 
-def search_role(guild: discord.Guild, input_role):
+def search_role(guild: discord.Guild, input_role: str) -> Optional[discord.Role]:
     """
     Searches all of the guilds roles for the given input role.
     First we convert a possible role mention into the raw role ID.
@@ -14,9 +16,7 @@ def search_role(guild: discord.Guild, input_role):
     for i in unwanted:
         input_role = input_role.replace(i, "")
 
-    all_roles = []
-    for role in guild.roles:
-        all_roles.append(role.name)
+    all_roles = [role.name for role in guild.roles]
 
     try:
         role = discord.utils.get(guild.roles, id=int(input_role))

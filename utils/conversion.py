@@ -1,7 +1,7 @@
 import re
 
 
-def convert_input(conversion_input: str):
+def convert_input(conversion_input: str) -> str:
     """
     Converts your input between metric and imperial, and the other way around.
     Works for most commonly used measurements for distance, speed, temperatures, weight and so on.

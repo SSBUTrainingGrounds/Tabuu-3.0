@@ -1,7 +1,9 @@
 import discord
 
 
-def add_attachments_to_embed(embed: discord.Embed, message: discord.Message):
+def add_attachments_to_embed(
+    embed: discord.Embed, message: discord.Message
+) -> discord.Embed:
     """
     Adds the message message attachments to the embed in a neat way.
     """

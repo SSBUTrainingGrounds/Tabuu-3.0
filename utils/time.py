@@ -3,7 +3,7 @@ import re
 from zoneinfo import ZoneInfo
 
 
-def convert_to_utc(dtime: datetime.time, tz: str):
+def convert_to_utc(dtime: datetime.time, tz: str) -> datetime.time:
     """
     Converts the time from a given timezone to the UTC time.
     We have to use this since timed tasks for some reason do not work with tzinfo.
@@ -15,7 +15,7 @@ def convert_to_utc(dtime: datetime.time, tz: str):
     return (temp_dtime - offset).time()
 
 
-def append_readable_time(readable_time: str, time: int, duration: str):
+def append_readable_time(readable_time: str, time: int, duration: str) -> str:
     """
     Appends to the readable_time string with the specified time and duration.
     """
@@ -36,7 +36,7 @@ def append_readable_time(readable_time: str, time: int, duration: str):
     )
 
 
-def convert_time(input_time: str):
+def convert_time(input_time: str) -> tuple[int, str]:
     """
     Converts the given input into raw seconds, plus a readable string.
     Searches for matches using regex with commonly used names and abbreviations.

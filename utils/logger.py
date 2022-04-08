@@ -21,7 +21,7 @@ def create_logger():
     logger.addHandler(handler)
 
 
-def get_logger(name):
+def get_logger(name: str) -> logging.Logger:
     """
     Gets you a descendant of the discord logger.
     Example:
