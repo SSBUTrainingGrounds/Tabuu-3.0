@@ -45,6 +45,9 @@ class Funcommands(commands.Cog):
             "What's the difference between a regular joke and a dad joke? It should be a-parent",
             "I took the shell off my racing snail to try to make him go faster. It just made him more slug-ish",
             "Why did the chicken go to the seance? To get to the other side",
+            "When does a joke become a dad joke? When the punchline becomes a parent",
+            "I recently bought some perfume, but it didn't smell like anything. It made no scents.",
+            "How do you equip a frying pan ? You have to cast iron. You can use it to attack but you'll have to pass a skillet check.",
         ]
         await ctx.send(random.choice(messages))
 
@@ -116,7 +119,7 @@ class Funcommands(commands.Cog):
             "I only lost cause I got muted mid-set",
             "I only lost because I was trying to get pinned in #number-chain",
             "I only lost cause arto accidentally banned me from this server",
-            "I only lost because I didn’t DI away from plats",
+            "I only lost because I didn't DI away from plats",
             "I only lost cause spoon pinged everyone again",
             "I only lost because someone pinged %singles in our arena midmatch",
             "I only lost cause ewans bald head was blinding me",
