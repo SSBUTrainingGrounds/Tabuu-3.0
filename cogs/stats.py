@@ -355,11 +355,14 @@ class Stats(commands.Cog):
             macro_list = await db.execute_fetchall("""SELECT name FROM macros""")
 
         # adds all type of app commands together
-        all_app_commands = (
-            self.bot.tree.get_commands(type=discord.AppCommandType(1))
-            + self.bot.tree.get_commands(type=discord.AppCommandType(2))
-            + self.bot.tree.get_commands(type=discord.AppCommandType(3)),
-        )
+        app_commands = []
+
+        for i in range(1, 4):
+            app_commands.extend(
+                self.bot.tree.get_commands(
+                    guild=ctx.guild, type=discord.AppCommandType(i)
+                )
+            )
 
         # we use codeblocks with yml syntax highlighting
         # just cause it looks nice, in my opinion.
@@ -392,14 +395,14 @@ RAM Usage: {ram_used}GB/{ram_total}GB ({ram_percent}%)
         listeners_description = f"""
 ```yml
 Number of Message Commands: {(len(self.bot.commands) + len(macro_list))}
-Number of Application Commands: {len(all_app_commands)}
+Number of Application Commands: {len(app_commands)}
 Number of Events: {len(self.bot.extra_events)}
 ```
         """
 
         interactions_description = f"""
 ```yml
-Commands executed: {(self.bot.commands_ran + 1)}
+Commands executed: {self.bot.commands_ran}
 Events parsed: {self.bot.events_listened_to}
 ```
         """
