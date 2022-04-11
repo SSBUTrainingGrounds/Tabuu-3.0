@@ -434,7 +434,7 @@ Events parsed: {self.bot.events_listened_to}
         if isinstance(error, commands.MissingPermissions):
             await ctx.send("Nice try, but you don't have the permissions to do that!")
         elif isinstance(error, commands.MissingRequiredArgument):
-            await ctx.send("Please specifiy the user and badge to add!")
+            await ctx.send("Please specify the user and badge to add!")
         elif isinstance(error, commands.UserNotFound):
             await ctx.send("Please mention a valid user!")
         else:
@@ -445,7 +445,7 @@ Events parsed: {self.bot.events_listened_to}
         if isinstance(error, commands.MissingPermissions):
             await ctx.send("Nice try, but you don't have the permissions to do that!")
         elif isinstance(error, commands.MissingRequiredArgument):
-            await ctx.send("Please specifiy the user and badge to remove!")
+            await ctx.send("Please specify the user and badge to remove!")
         elif isinstance(error, commands.UserNotFound):
             await ctx.send("Please mention a valid user!")
         else:

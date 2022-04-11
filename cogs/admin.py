@@ -108,7 +108,7 @@ class Admin(commands.Cog):
     @utils.check.is_moderator()
     async def unban(self, ctx, user: discord.User):
         """
-        Unbans a user from the current server.
+        Removes the ban of a user from the current server.
         """
         await ctx.guild.unban(user)
         await ctx.send(f"{user.mention} has been unbanned!")
