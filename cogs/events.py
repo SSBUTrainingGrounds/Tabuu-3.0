@@ -254,9 +254,8 @@ class Events(commands.Cog):
                 await ctx.send(
                     "I could not find this command.\nType `%help` for all available commands."
                 )
-        else:
-            if ctx.command.has_error_handler() is False:
-                raise error
+        elif ctx.command.has_error_handler() is False:
+            raise error
 
     @commands.Cog.listener()
     async def on_command_completion(self, ctx):

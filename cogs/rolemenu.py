@@ -241,8 +241,8 @@ class Rolemenu(commands.Cog):
                 for role_required in rolereq.split()
             ]
 
-            if not any(role in payload.member.roles for role in roles_required):
-                # checks for the matching role
+            if all(role not in payload.member.roles for role in roles_required):
+                # checks if the user does not have the required roles
                 for entry in matching_entries:
                     (_, _, _, emoji, role) = entry
                     # we only send a message if the entry matches

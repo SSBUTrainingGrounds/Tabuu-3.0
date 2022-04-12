@@ -60,12 +60,12 @@ class Starboard(commands.Cog):
         with open(r"./json/starboard.json", "r", encoding="utf-8") as f:
             data = json.load(f)
 
-        data["emoji"] = str(emoji)
+        data["emoji"] = emoji
 
         with open(r"./json/starboard.json", "w", encoding="utf-8") as f:
             json.dump(data, f, indent=4)
 
-        await ctx.send(f"Changed the emoji to: `{str(emoji)}`")
+        await ctx.send(f"Changed the emoji to: `{emoji}`")
 
     @commands.command()
     @utils.check.is_moderator()
