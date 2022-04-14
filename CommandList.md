@@ -16,6 +16,9 @@ Everything else should be fairly self-explanatory.
 
 ## Full list of commands
   
+- **%2048**  
+    - Info: Starts a game of 2048.  
+  
 - **%8ball** `<question>`  
     - Info: Ask a question and you get a random response from the magic 8-ball.  
     - Example: `%8ball Is Tabuu 3.0 the best bot out there?`  

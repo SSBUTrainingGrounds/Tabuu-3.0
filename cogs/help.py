@@ -171,6 +171,7 @@ class Responses(discord.ui.Select):
 ```%rps <@user>``` - Plays a match of Rock, Paper, Scissors with the mentioned user.
 ```%tictactoe <@user>``` - Plays a match of Tic Tac Toe with the mentioned user.
 ```%blackjack <@user>``` - Plays a match of Blackjack with the mentioned user.
+```%2048``` - Plays a match of 2048.
     """
 
     misc_desc = """
