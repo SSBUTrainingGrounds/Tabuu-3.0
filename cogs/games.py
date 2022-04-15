@@ -506,6 +506,7 @@ class _2048Game(discord.ui.View):
             # colouring a new tile green so you can see it easier.
             chosen_tile.style = discord.ButtonStyle.green
             return chosen_tile
+        return None
 
     def merge_tiles(self, tiles: list[_2048Buttons], reverse: bool = False) -> list:
         """
@@ -522,10 +523,7 @@ class _2048Game(discord.ui.View):
             if (
                 tiles[i].label != self.empty_label
                 and tiles[i].label == tiles[i + 1].label
-            ) and (
-                (reverse and tiles[i + 1] not in merges)
-                or (not reverse and tiles[i] not in merges)
-            ):
+            ) and (tiles[i + int(reverse)] not in merges):
                 combined_score = int(tiles[i].label) + int(tiles[i + 1].label)
                 # if the order of tiles is reversed, we have to reverse the logic,
                 # so that the tiles are merged in the right order.
@@ -591,36 +589,25 @@ class _2048Game(discord.ui.View):
             for button in self.game_tiles:
                 button.style = discord.ButtonStyle.green
             self.win = True
-            return self.win
+
+        return self.win
 
     def check_if_full(self) -> bool:
-        if self.empty_label not in [button.label for button in self.game_tiles]:
-            return True
+        return self.empty_label not in [button.label for button in self.game_tiles]
 
     def check_for_possible_moves(self) -> bool:
         """
         Checks if any moves could be executed right now.
-        If this is not the case, and the board is full, the game is over.
+        Only gets called when the board is full. If there are no moves,
+        and the board is full, the game is over.
         """
-        for i in range(4):
-            column = [button for button in self.game_tiles if button.column == i]
-            row = [button for button in self.game_tiles if button.row == i]
+        for x in range(4):
+            column = [button for button in self.game_tiles if button.column == x]
+            row = [button for button in self.game_tiles if button.row == x]
             for i in range(3):
-                if (
-                    column[i].label != self.empty_label
-                    and column[i + 1].label == self.empty_label
-                ) or (
-                    column[i].label != self.empty_label
-                    and column[i].label == column[i + 1].label
-                ):
+                if column[i].label == column[i + 1].label:
                     return True
-                if (
-                    row[i].label != self.empty_label
-                    and row[i + 1].label == self.empty_label
-                ) or (
-                    row[i].label != self.empty_label
-                    and row[i].label == row[i + 1].label
-                ):
+                if row[i].label == row[i + 1].label:
                     return True
 
         return False
