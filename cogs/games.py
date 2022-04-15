@@ -518,9 +518,13 @@ class _2048Game(discord.ui.View):
         tiles.reverse()
 
         for i in range(len(tiles) - 1):
+            # checks if the labels match and if the tile has not already been merged.
             if (
                 tiles[i].label != self.empty_label
                 and tiles[i].label == tiles[i + 1].label
+            ) and (
+                (reverse and tiles[i + 1] not in merges)
+                or (not reverse and tiles[i] not in merges)
             ):
                 combined_score = int(tiles[i].label) + int(tiles[i + 1].label)
                 # if the order of tiles is reversed, we have to reverse the logic,
@@ -529,10 +533,12 @@ class _2048Game(discord.ui.View):
                 if reverse:
                     tiles[i].label = str(combined_score)
                     tiles[i + 1].label = self.empty_label
+                    merges.append(tiles[i])
                 else:
                     tiles[i + 1].label = str(combined_score)
                     tiles[i].label = self.empty_label
-                merges.append([tiles[i], tiles[i + 1]])
+                    merges.append(tiles[i + 1])
+
                 self.score += combined_score
 
         tiles.reverse()
