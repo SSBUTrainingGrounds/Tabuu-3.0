@@ -73,7 +73,9 @@ async def setup_db(filepath: str = "./db/database.db"):
         await db.execute(
             """CREATE TABLE IF NOT EXISTS macros(
                 name TEXT,
-                payload TEXT)"""
+                payload TEXT,
+                uses INTEGER,
+                author INTEGER)"""
         )
 
         await db.execute(

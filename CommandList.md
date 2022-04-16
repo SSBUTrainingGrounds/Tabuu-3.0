@@ -179,18 +179,18 @@ Everything else should be fairly self-explanatory.
 - **%leaderboard**  
     - Info: **Moderator only.** Gets you the Top 10 rated players of our ranked matchmaking system.  
   
-- **%listmacros**  
-    - Info: Lists out all registered macro commands.  
-    - Aliases: listmacro, macros, macro  
-  
 - **%listrole** `<role>`  
     - Info: Lists out every Member with a certain role. The bot first tries to use the Role ID or Role mention, after that it searches for the closest match for the role name.  
     - Example: `%listrole first class`  
     - Aliases: listroles  
   
 - **%`<macro>`**  
-    - Info: Invokes the macro command, list them all with `%listmacros`.  
+    - Info: Invokes the macro command, list them all with `%macros`.  
     - Example: `%test`  
+
+- **%macro** `<macro: Optional>`  
+    - Info: Gives you information about a specific macro, or if you do not specify a macro it will list out all registered macro commands.  
+    - Aliases: listmacro, macros, macrostats  
   
 - **%mains** `<main1, main2,..: Optional>`  
     - Info: Updates your mains listed on your profile. Up to 7 characters, separate them by commas. Accepts names, commonly used nicknames and the Fighter Numbers. Leave the field blank or input invalid characters to delete the characters.  

@@ -121,7 +121,7 @@ class Responses(discord.ui.Select):
 
     info_desc = """
 ```%help <command>``` - Help menu, or specific help with a command.
-```%listmacros``` - Lists every macro command registered.
+```%macro <macro>``` - Info about one macro, or lists every macro registered.
 ```%roleinfo <role>``` - Displays Role info.
 ```%listrole <role>``` - Displays all the members with a certain Role.
 ```%userinfo <member>``` - Shows user info of a mentioned member.

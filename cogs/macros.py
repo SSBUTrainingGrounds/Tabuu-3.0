@@ -34,7 +34,13 @@ class Macros(commands.Cog):
                     )
                     payload = matching_macro[0][0]
                     await message.channel.send(payload)
+
                     self.bot.commands_ran += 1
+                    await db.execute(
+                        """UPDATE macros SET uses = uses + 1 WHERE name = :name""",
+                        {"name": name},
+                    )
+                    await db.commit()
 
     @commands.command()
     @utils.check.is_moderator()
@@ -80,8 +86,8 @@ class Macros(commands.Cog):
                 return
 
             await db.execute(
-                """INSERT INTO macros VALUES (:name, :payload)""",
-                {"name": name, "payload": payload},
+                """INSERT INTO macros VALUES (:name, :payload, :uses, :author)""",
+                {"name": name, "payload": payload, "uses": 0, "author": ctx.author.id},
             )
 
             await db.commit()
@@ -112,18 +118,44 @@ class Macros(commands.Cog):
 
         await ctx.send(f"Deleted macro `{name}`")
 
-    @commands.command(aliases=["listmacro", "macros", "macro"])
-    async def listmacros(self, ctx):
+    @commands.command(aliases=["macros", "listmacros", "macrostats"])
+    async def macro(self, ctx, *, macro: str = None):
         """
-        Lists every macro saved.
+        Gives you detailed information about a macro,
+        or lists every macro saved.
         """
-        async with aiosqlite.connect("./db/database.db") as db:
-            macro_list = await db.execute_fetchall("""SELECT name FROM macros""")
+        if macro is None:
+            async with aiosqlite.connect("./db/database.db") as db:
+                macro_list = await db.execute_fetchall("""SELECT name FROM macros""")
 
-        # it returns a list of tuples,
-        # so we need to extract them
-        macro_names = [m[0] for m in macro_list]
-        await ctx.send(f"The registered macros are:\n`%{', %'.join(macro_names)}`")
+            # it returns a list of tuples,
+            # so we need to extract them
+            macro_names = [m[0] for m in macro_list]
+            await ctx.send(f"The registered macros are:\n`%{', %'.join(macro_names)}`")
+            return
+
+        async with aiosqlite.connect("./db/database.db") as db:
+            matching_macro = await db.execute_fetchall(
+                """SELECT * FROM macros WHERE name = :name""", {"name": macro}
+            )
+
+        # if the macro does not exist we want some kind of error message for the user
+        if len(matching_macro) == 0:
+            await ctx.send(
+                f"The macro `{macro}` was not found. List all macros with `%macros`."
+            )
+            return
+
+        name, payload, uses, author_id = matching_macro[0]
+
+        embed = discord.Embed(
+            title="Macro info",
+            color=0x007377,
+            description=f"**Name:** {name}\n**Uses:** {uses}\n"
+            f"**Author:**<@{author_id}>\n**Output:**\n{payload}\n",
+        )
+
+        await ctx.send(embed=embed)
 
     # the error handling for the commands above
     # fairly self-explanatory
