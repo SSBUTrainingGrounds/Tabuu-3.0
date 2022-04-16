@@ -1,4 +1,4 @@
-# General guidelines
+# Contributing guidelines
 First off, thank you very much for wanting to contribute to this project! Every single contribution is greatly appreciated.   
 If you are unsure or intimidated by contributing, please do not be. You cannot submit a bad contribution.  
 The following contains a few points to help you get started. Please remember that these are *guidelines*, not strict rules.  
@@ -11,18 +11,18 @@ Generally speaking, the rules of our [discord server](https://discord.gg/ssbutg)
 ## Questions
 If you just need to ask a question, head over to the [GitHub Discussions Tab](https://github.com/atomflunder/Tabuu-3.0-Bot/discussions), join our [discord server](https://discord.gg/ssbutg) or send a DM to Phxenix#1104.  
 
-# Contributing
+## Getting started with contributing
 If you are just getting started, please read [the `README.md` on how to get the bot running in your environment](https://github.com/atomflunder/Tabuu-3.0-Bot#running-the-bot).  
 Generally speaking, some knowledge of Python, [discord.py](https://github.com/Rapptz/discord.py), and other tools used would be beneficial.
 
 ## Bug reports
 Feel free to report bugs on discord ([Contact methods above](https://github.com/atomflunder/Tabuu-3.0-Bot/blob/main/.github/CONTRIBUTING.md#questions)), or head over to the [GitHub Issues Tab](https://github.com/atomflunder/Tabuu-3.0-Bot/issues) and fill out a new bug report.   
-Choose whatever works for you. Please be descriptive in your explanation of the bug and how to reproduce it.
+Choose whatever works for you. Please be descriptive in your explanation of the bug and how to reproduce it. If any error occurs, be sure to include the **full** traceback.
 
 ## Pull requests
 If this is your first time, consider reading [the GitHub page about pull requests](https://docs.github.com/en/pull-requests/collaborating-with-pull-requests/proposing-changes-to-your-work-with-pull-requests/about-pull-requests).  
-Please make sure you keep the scope of one pull request limited. If you want to fix 2 unrelated things, submit 2 pull requests.  
-No pull request is too small. Even if you only want to fix one typo, go right ahead.  
+Please make sure you keep the scope of one pull request limited. If you want to adjust 2 unrelated things, please submit 2 pull requests.  
+Every pull requst is appreciated and no pull request is too small. Even if you only want to fix one typo, please go right ahead.  
 If you want to go above and beyond, it would be incredibly nice if you stick to the general style of this repository. Which brings us to:
 
 ### Code style and tools
