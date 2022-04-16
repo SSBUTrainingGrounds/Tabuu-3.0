@@ -552,7 +552,7 @@ class Ranking(commands.Cog):
                 return (
                     member.id == ctx.author.id
                     and reaction.message.id == embed_message.id
-                    and str(reaction.emoji) in ["🔔", "🔕"]
+                    and str(reaction.emoji) in {"🔔", "🔕"}
                 )
 
             try:
@@ -568,7 +568,7 @@ class Ranking(commands.Cog):
                     await self.remove_ranked_roles(ctx.author, ctx.guild)
 
         else:
-            embed_message = await ctx.send(embed=embed)
+            await ctx.send(embed=embed)
 
     @commands.command()
     @utils.check.is_moderator()
