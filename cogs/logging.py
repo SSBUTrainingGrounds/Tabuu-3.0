@@ -184,6 +184,7 @@ class Logging(commands.Cog):
         # discord released an update where they allow nitro users to send messages with up to 4000 chars in them
         # but an embed can only have 6000 chars in them
         # so we need to add in a check to not get dumb errors.
+        # a description fits 4096 chars, so we cap it off at 2k each.
         # 2000 chars is still the limit for non-nitro users so it should be fine.
         if len(after.content[2000:]) > 0:
             after.content = "Content is too large to fit in a single embed."
@@ -196,22 +197,14 @@ class Logging(commands.Cog):
 
         embed = discord.Embed(
             title=f"**✍️ Edited Message in {after.channel.name}! ✍️**",
-            description=f"**New Content:**\n{after.content}",
+            description=f"**New Content:**\n{after.content}\n\n**Old Content:**\n{before.content}",
             colour=discord.Colour.orange(),
         )
         embed.set_author(
             name=f"{str(after.author)} ({after.author.id})",
             icon_url=after.author.display_avatar.url,
         )
-        embed.add_field(
-            name="**Old Content:**", value=f"{before.content[:1000]}", inline=False
-        )
-        # if a message is too long, it gets split into two embed fields
-        # 1000 chars is the limit for embed values
-        if len(before.content[1000:]) > 0:
-            embed.add_field(
-                name="(Continued from above)", value=before.content[1000:], inline=False
-            )
+
         embed.add_field(name="Message ID:", value=f"{after.id}\n{after.jump_url}")
         embed.timestamp = discord.utils.utcnow()
         if logs := self.bot.get_channel(self.get_logchannel(before.guild.id)):
