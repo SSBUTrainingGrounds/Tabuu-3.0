@@ -1,6 +1,5 @@
+import datetime
 import random
-import time
-from datetime import datetime
 
 import aiosqlite
 import discord
@@ -33,7 +32,7 @@ class Warn(commands.Cog):
         """
         # assigning each warning a random 6 digit number, hope thats enough to not get duplicates
         warn_id = random.randint(100000, 999999)
-        warndate = time.strftime("%A, %B %d %Y @ %H:%M:%S %p")
+        warndate = int(discord.utils.utcnow().timestamp())
 
         async with aiosqlite.connect("./db/database.db") as db:
             await db.execute(
@@ -219,15 +218,13 @@ class Warn(commands.Cog):
             # the first one is the user id, but we dont need it here
             (_, warn_id, mod_id, reason, timestamp) = warning
 
-            new_timestamp = datetime.strptime(timestamp, "%A, %B %d %Y @ %H:%M:%S %p")
-
             embed = discord.Embed(title=f"Warning #{i}", colour=discord.Colour.red())
             embed.add_field(name="Moderator: ", value=f"<@{mod_id}>")
             embed.add_field(name="Reason: ", value=f"{reason}")
             embed.add_field(name="ID:", value=f"{warn_id}")
             embed.add_field(
                 name="Warning given out at:",
-                value=discord.utils.format_dt(new_timestamp, style="F"),
+                value=f"<t:{timestamp}:F>",
             )
             embed_list.append(embed)
 
@@ -278,25 +275,13 @@ class Warn(commands.Cog):
         """
         logger = self.bot.get_logger("bot.warn")
 
-        async with aiosqlite.connect("./db/database.db") as db:
-            every_warning = await db.execute_fetchall("""SELECT * FROM warnings""")
+        expires_at = discord.utils.utcnow() - datetime.timedelta(days=30)
 
-            # we check for every warning if it is older than 30 days
-            for warning in every_warning:
-                # the underscores are mod_id and reason
-                (user_id, warn_id, _, _, timestamp) = warning
-                timediff = datetime.utcnow() - datetime.strptime(
-                    timestamp, "%A, %B %d %Y @ %H:%M:%S %p"
-                )
-                if timediff.days > 29:
-                    # user id and warn id should be enough to identify each warning (hopefully)
-                    await db.execute(
-                        """DELETE FROM warnings WHERE user_id = :user_id AND warn_id = :warn_id""",
-                        {"user_id": user_id, "warn_id": warn_id},
-                    )
-                    logger.info(
-                        f"Deleted Warning #{warn_id} for user {user_id} after 30 days."
-                    )
+        async with aiosqlite.connect("./db/database.db") as db:
+            await db.execute(
+                """DELETE FROM warnings WHERE timestamp < :expires_at""",
+                {"expires_at": int(expires_at.timestamp())},
+            )
 
             await db.commit()
 

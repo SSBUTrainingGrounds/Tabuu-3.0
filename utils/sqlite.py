@@ -15,7 +15,7 @@ async def setup_db(filepath: str = "./db/database.db"):
                 warn_id INTEGER,
                 mod_id INTEGER,
                 reason TEXT,
-                timestamp TEXT)"""
+                timestamp INTEGER)"""
         )
 
         await db.execute(

@@ -206,25 +206,27 @@ class Reminder(commands.Cog):
         """
         logger = self.bot.get_logger("bot.reminder")
 
+        date_now = discord.utils.utcnow().timestamp()
+
         async with aiosqlite.connect("./db/database.db") as db:
-            every_reminder = await db.execute_fetchall("""SELECT * FROM reminder""")
+            expired_reminders = await db.execute_fetchall(
+                """SELECT * FROM reminder WHERE date < :date_now""",
+                {"date_now": int(date_now)},
+            )
 
-            for reminder in every_reminder:
-                (user_id, reminder_id, channel_id, date, read_time, message) = reminder
+            for reminder in expired_reminders:
+                (user_id, reminder_id, channel_id, _, read_time, message) = reminder
 
-                date_now = discord.utils.utcnow().timestamp()
-                if date < date_now:
+                logger.info(
+                    f"Reminder #{reminder_id} from user {user_id} has passed. Notifying user and deleting reminder..."
+                )
 
-                    logger.info(
-                        f"Reminder #{reminder_id} from user {user_id} has passed. Notifying user and deleting reminder..."
-                    )
+                await self.notify_user(user_id, channel_id, message, read_time)
 
-                    await db.execute(
-                        """DELETE FROM reminder WHERE user_id = :user_id AND reminder_id = :reminder_id""",
-                        {"user_id": user_id, "reminder_id": reminder_id},
-                    )
-
-                    await self.notify_user(user_id, channel_id, message, read_time)
+            await db.execute(
+                """DELETE FROM reminder WHERE date < :date_now""",
+                {"date_now": int(date_now)},
+            )
 
             await db.commit()
 
