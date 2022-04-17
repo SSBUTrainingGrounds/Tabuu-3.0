@@ -11,8 +11,6 @@ It will be reviewed as soon as possible. -->
   - [ ] This PR fixes a bug.
   - [ ] This PR adds something new.
   - [ ] **I have tested the changes made.**
-  <!-- Do not worry if this PR does not pass the actions. -->
-  - [ ] **This code passes the GitHub Actions.**
 
 - [ ] This PR fixes typos in the code or errors in the documentation.
 - [ ] Other/Not described.
