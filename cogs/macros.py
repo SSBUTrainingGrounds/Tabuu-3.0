@@ -92,7 +92,7 @@ class Macros(commands.Cog):
 
             await db.commit()
 
-        await ctx.send(f"New macro `{name}` was created. \nOutput: `{payload}`")
+        await ctx.send(f"New macro `{name}` was created.\nOutput:\n`{payload}`")
 
     @commands.command()
     @utils.check.is_moderator()
@@ -142,7 +142,7 @@ class Macros(commands.Cog):
         # if the macro does not exist we want some kind of error message for the user
         if len(matching_macro) == 0:
             await ctx.send(
-                f"The macro `{macro}` was not found. List all macros with `%macros`."
+                "I could not find this macro. List all macros with `%macros`."
             )
             return
 
@@ -151,7 +151,7 @@ class Macros(commands.Cog):
         embed = discord.Embed(
             title="Macro info",
             color=0x007377,
-            description=f"**Name:** {name}\n**Uses:** {uses}\n"
+            description=f"**Name:** %{name}\n**Uses:** {uses}\n"
             f"**Author:**<@{author_id}>\n**Output:**\n{payload}\n",
         )
 
