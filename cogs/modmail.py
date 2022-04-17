@@ -118,7 +118,7 @@ class ModmailButton(discord.ui.View):
             # we have to use the followup here since you cant respond to an interaction twice?
             await interaction.followup.send(
                 f"Looks like something went wrong:\n```{exc}```\n"
-                "Please either use `%modmail` in my DMs or contact one of the moderators directly.",
+                f"Please either use `{self.bot.command_prefix}modmail` in my DMs or contact one of the moderators directly.",
                 ephemeral=True,
             )
 
@@ -252,7 +252,7 @@ class Modmail(commands.Cog):
         if isinstance(error, commands.MissingRequiredArgument):
             await ctx.send(
                 "Please provide a message to the moderators. It should look something like:\n"
-                "```%modmail (your message here)```"
+                f"```{self.bot.command_prefix}modmail (your message here)```"
             )
         else:
             raise error

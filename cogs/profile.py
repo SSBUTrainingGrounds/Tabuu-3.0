@@ -409,7 +409,9 @@ class Profile(commands.Cog):
 
         # double checking if the input got matched and is not None
         if profile_input and profile_input not in region_dict:
-            await ctx.send("Please choose a valid region. Example: `%region Europe`")
+            await ctx.send(
+                f"Please choose a valid region. Example: `{self.bot.command_prefix}region Europe`"
+            )
             return
 
         await self.make_new_profile(ctx.author)
@@ -467,7 +469,7 @@ class Profile(commands.Cog):
         # hex colour codes are 7 digits long and start with #
         if not profile_input.startswith("#") or len(profile_input) != 7:
             await ctx.send(
-                "Please choose a valid hex colour code. Example: `%colour #8a0f84`"
+                f"Please choose a valid hex colour code. Example: `{self.bot.command_prefix}colour #8a0f84`"
             )
             return
 
@@ -477,7 +479,7 @@ class Profile(commands.Cog):
             colour = int(profile_input, 16)
         except ValueError:
             await ctx.send(
-                "Please choose a valid hex colour code. Example: `%colour #8a0f84`"
+                f"Please choose a valid hex colour code. Example: `{self.bot.command_prefix}colour #8a0f84`"
             )
             return
 
@@ -522,7 +524,7 @@ class Profile(commands.Cog):
     async def colour_error(self, ctx, error):
         if isinstance(error, commands.MissingRequiredArgument):
             await ctx.send(
-                "Please choose a valid hex colour code. Example: `%colour #8a0f84`"
+                f"Please choose a valid hex colour code. Example: `{self.bot.command_prefix}colour #8a0f84`"
             )
         else:
             raise error

@@ -42,7 +42,7 @@ class Events(commands.Cog):
     # status cycles through these, update these once in a while to keep it fresh
     status = cycle(
         [
-            "type %help",
+            "type {prefix}help",
             "Always watching 👀",
             "What is love?",
             "Executing Plan Z.",
@@ -70,6 +70,7 @@ class Events(commands.Cog):
                 next(self.status).format(
                     members=len(set(self.bot.get_all_members())),
                     version=self.bot.version_number,
+                    prefix=self.bot.command_prefix,
                 )
             )
         )
@@ -225,7 +226,8 @@ class Events(commands.Cog):
     async def on_command_error(self, ctx, error):
         logger = self.bot.get_logger("bot.commands")
         logger.warning(
-            f"Command triggered an Error: %{ctx.invoked_with} (invoked by {str(ctx.author)}) - Error message: {error}"
+            f"Command triggered an Error: {self.bot.command_prefix}{ctx.invoked_with} "
+            f"(invoked by {str(ctx.author)}) - Error message: {error}"
         )
 
         if isinstance(error, commands.CommandNotFound):
@@ -248,11 +250,14 @@ class Events(commands.Cog):
                     scorer=fuzz.token_set_ratio,
                 )[0]
                 await ctx.send(
-                    f"I could not find this command. Did you mean `%{match}`?\nType `%help` for all available commands."
+                    "I could not find this command. "
+                    f"Did you mean `{self.bot.command_prefix}{match}`?\n"
+                    f"Type `{self.bot.command_prefix}help` for all available commands."
                 )
             except TypeError:
                 await ctx.send(
-                    "I could not find this command.\nType `%help` for all available commands."
+                    "I could not find this command.\n"
+                    f"Type `{self.bot.command_prefix}help` for all available commands."
                 )
         elif ctx.command.has_error_handler() is False:
             raise error
@@ -261,7 +266,8 @@ class Events(commands.Cog):
     async def on_command_completion(self, ctx):
         logger = self.bot.get_logger("bot.commands")
         logger.info(
-            f"Command successfully ran: %{ctx.invoked_with} (invoked by {str(ctx.author)})"
+            f"Command successfully ran: {self.bot.command_prefix}{ctx.invoked_with} "
+            f"(invoked by {str(ctx.author)})"
         )
 
     @commands.Cog.listener()

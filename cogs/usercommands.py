@@ -51,7 +51,10 @@ class Usercommands(commands.Cog):
         try:
             amount, sides = map(int, dice.split("d"))
         except ValueError:
-            await ctx.send("Wrong format!\nTry something like: %roll 1d100")
+            await ctx.send(
+                f"Wrong format!\n"
+                f"Try something like: `{self.bot.command_prefix}roll 1d100`"
+            )
             return
 
         results = []
@@ -320,7 +323,10 @@ class Usercommands(commands.Cog):
     @roll.error
     async def roll_error(self, ctx, error):
         if isinstance(error, commands.MissingRequiredArgument):
-            await ctx.send("Wrong format!\nTry something like: %roll 1d100")
+            await ctx.send(
+                "Wrong format!\n"
+                f"Try something like: `{self.bot.command_prefix}roll 1d100`"
+            )
         else:
             raise error
 
