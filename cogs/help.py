@@ -14,7 +14,11 @@ class Responses(discord.ui.Select):
     Every command is explained in here.
     """
 
-    def __init__(self):
+    def __init__(self, prefix: str):
+        # we dont have access to the bot prefix here,
+        # so we have to pass it in manually.
+        self.prefix = prefix
+
         options = [
             # black is being inconsistent here again, so..
             # fmt: off
@@ -73,183 +77,174 @@ class Responses(discord.ui.Select):
             options=options,
         )
 
-    # the various embed descriptions
-    moderation_desc = """
-```%ban <@user> <reason>``` - Bans a member from the server.
-```%unban <@user>``` - Revokes a ban from the server.
-```%kick <@user> <reason>``` - Kicks a user from the server.
-```%clear <amount>``` - Purges X messages from the channel (default:1).
-```%delete <message IDs>``` - Deletes certain messages by ID.
-```%mute <@user> <reason>``` - Mutes a user in the server.
-```%unmute <@user>``` - Unmutes a user in the server.
-```%tempmute <@user> <time> <reason>``` - Temporarily mutes a user.
-```%timeout <@user> <time> <reason>``` - Times out a user until the time specified.
-```%removetimeout <@user>``` - Removes a timeout from a user.
-```%addrole <@user> <role>``` - Adds a role to a user.
-```%removerole <@user> <role>``` - Removes a role from a user.
-```%warn <@user> <reason>``` - Warns a user.
-```%warndetails <@user>``` - Shows detailed warnings of a user.
-```%deletewarn <@user> <warn_id>``` - Deletes a specific warning.
-```%clearwarns <@user>``` - Clears all the warnings of a user.
-    """
-
-    admin_util_desc = """
-```%reloadcogs <cogs>``` - Owner only, reloads some or all of the modules of this bot.
-```%synccommands <guild>``` - Owner only, syncs application commands to one or all guilds.
-```%editrole <property> <role> <value>``` - Edits a role's properties to the given value.
-```%clearmmpings``` - Clears all matchmaking pings.
-```%records``` - Shows ban records.
-```%forcereportmatch <@winner> <@loser>``` - If someone abandons a ranked match.
-```%leaderboard``` - Leaderboards of ranked matchmaking.
-```%newrolemenu <message ID> <emoji> <role>``` - Adds an entry for a role menu.
-```%deleterolemenu <message ID>``` - Deletes every entry for a Message with a role menu.
-```%modifyrolemenu <message ID> <exclusive> <Optional Role(s)>``` - Sets special permissions for a Role menu.
-```%geteveryrolemenu``` - Gets you every role menu entry currently active.
-```%rename <@user> <name>``` - Sets a new nickname for a user or removes it.
-```%say <channel> <message>``` - Admin only, Repeats the message in the chnanel.
-```%createmacro <name> <output>``` - Creates a new macro.
-```%deletemacro <name>``` - Deletes a macro.
-```%starboardemoji <emoji>``` - Changes the emoji used for the starboard.
-```%starboardthreshold <number>``` - Changes the threshold used for the starboard.
-```%forcedeleteprofile <@user>``` - Deletes the profile of a user.
-```%addbadges <@user> <emojis>``` - Adds badges to a user.
-```%removebadge <@user> <emoji>``` - Removes one badge from a user.
-```%clearbadges <@user>``` - Clears every badge from a user.
-```%syncbanlist``` - Syncs the ban list from main server to secondary server.
-```%setupmodmailbutton``` - Sets up a new modmail button for the bot to listen to.
-    """
-
-    info_desc = """
-```%help <command>``` - Help menu, or specific help with a command.
-```%macro <macro>``` - Info about one macro, or lists every macro registered.
-```%roleinfo <role>``` - Displays Role info.
-```%listrole <role>``` - Displays all the members with a certain Role.
-```%userinfo <member>``` - Shows user info of a mentioned member.
-```%warns <@user>``` - Displays the number of warnings of a user.
-```%server``` - Info about the server.
-```%stats``` - Stats about the bot.
-```%emote <emoji>``` - Info about an emoji.
-```%sticker <sticker>``` - Info about a sticker.
-    """
-
-    mm_desc = """
-```%singles``` - Used for 1v1 matchmaking in our arena channels.
-```%doubles``` - Used for 2v2 matchmaking in our arena channels.
-```%funnies <message>``` - Used for non-competitive matchmaking in our arena channels.
-```%ranked``` - Used for 1v1 ranked matchmaking in our ranked channels.
-```%reportmatch <@user>``` - Winner of the set reports the result, <@user> being the person you won against.
-```%rankedstats``` - Your ranked stats.
-```%recentpings``` - Gets you the recent pings of any matchmaking type.
-    """
-
-    profile_desc = """
-```%profile <@user>``` - View a profile of a user.
-```%mains <main1, main2,...>``` - Set your mains, separated by commas.
-```%secondaries <sec1, sec2,...>``` - Set your secondaries, separated by commas.
-```%pockets <pocket1, pocket2,...>``` - Set your pockets, separated by commas.
-```%tag <tag>``` - Set your user tag.
-```%region <region>``` - Set your region (continent).
-```%note <note>``` - Set your note.
-```%colour <hex colour>``` - Set your profile embed colour, use a hex code.
-```%deleteprofile``` - Delete your profile.
-    """
-
-    util_desc = """
-```%coin``` - Throws a coin.
-```%roll <NdN>``` - Rolling dice, format %roll 1d100.
-```%countdown <number>``` - Counts down from number.
-```%time``` - Current time as a timezone aware object.
-```%convert <input>``` - Converts the input from metric to imperial and vice versa.
-```%translate <message>``` - Translates a message or string to english.
-```%poll <"question"> <"option 1"> <"option 2">``` - Starts a poll with a maximum of 10 choices.
-```%reminder <time> <message>``` - Reminds you about something.
-```%viewreminders``` - Lists your active reminders.
-```%deletereminder <ID>```Deletes one of your reminders by its ID.
-    """
-
-    game_desc = """
-```%rps <@user>``` - Plays a match of Rock, Paper, Scissors with the mentioned user.
-```%tictactoe <@user>``` - Plays a match of Tic Tac Toe with the mentioned user.
-```%blackjack <@user>``` - Plays a match of Blackjack with the mentioned user.
-```%2048``` - Plays a match of 2048.
-    """
-
-    misc_desc = """
-```%modmail <your message>``` - Message the Mod Team privately. Only works in my DM channel.
-```%updatelevel <@user>``` - Updates the level role manually.
-```%stagelist``` - Our Stagelist for Crew Battles.
-```%avatar <@user>``` - Gets you the avatar of a user.
-```%banner <@user>``` - Gets you the banner of a user.
-```%spotify <@user>``` - Posts the song the user is currently streaming.
-```%ping``` - Gets the ping of the bot.
-```%mp4<move>``` - Tells you the Mana Cost of any of Hero's moves.
-    """
-
-    fun_desc = """
-```%joke``` - Jokes.
-```%randomquote``` - Quotes.
-```%pickmeup``` - Nice words.
-```%wisdom``` - It's wisdom.
-```%boo``` - Looking for a scare, huh?
-```%tabuwu``` - For the silly people.
-```%john``` - If you need a john.
-```%hypemeup``` - Hypes you up before that next game of smash.
-```%8ball <question>``` - Ask the magic 8-ball.
-```%who <question>``` - Ask a question and get a random user in response.
-    """
-
     async def callback(self, interaction: discord.Interaction):
         if self.values[0] == "Moderation Commands":
             embed = discord.Embed(
                 title="🕵️Moderation Commands🕵️",
                 color=0xFF0000,
-                description=self.moderation_desc,
+                description=f"""
+```{self.prefix}ban <@user> <reason>``` - Bans a member from the server.
+```{self.prefix}unban <@user>``` - Revokes a ban from the server.
+```{self.prefix}kick <@user> <reason>``` - Kicks a user from the server.
+```{self.prefix}clear <amount>``` - Purges X messages from the channel (default:1).
+```{self.prefix}delete <message IDs>``` - Deletes certain messages by ID.
+```{self.prefix}mute <@user> <reason>``` - Mutes a user in the server.
+```{self.prefix}unmute <@user>``` - Unmutes a user in the server.
+```{self.prefix}tempmute <@user> <time> <reason>``` - Temporarily mutes a user.
+```{self.prefix}timeout <@user> <time> <reason>``` - Times out a user until the time specified.
+```{self.prefix}removetimeout <@user>``` - Removes a timeout from a user.
+```{self.prefix}addrole <@user> <role>``` - Adds a role to a user.
+```{self.prefix}removerole <@user> <role>``` - Removes a role from a user.
+```{self.prefix}warn <@user> <reason>``` - Warns a user.
+```{self.prefix}warndetails <@user>``` - Shows detailed warnings of a user.
+```{self.prefix}deletewarn <@user> <warn_id>``` - Deletes a specific warning.
+```{self.prefix}clearwarns <@user>``` - Clears all the warnings of a user.
+    """,
             )
 
         elif self.values[0] == "Admin Utility Commands":
             embed = discord.Embed(
                 title="🧰Admin Utility Commands🧰",
                 colour=0x540707,
-                description=self.admin_util_desc,
+                description=f"""
+```{self.prefix}reloadcogs <cogs>``` - Owner only, reloads some or all of the modules of this bot.
+```{self.prefix}synccommands <guild>``` - Owner only, syncs application commands to one or all guilds.
+```{self.prefix}editrole <property> <role> <value>``` - Edits a role's properties to the given value.
+```{self.prefix}clearmmpings``` - Clears all matchmaking pings.
+```{self.prefix}records``` - Shows ban records.
+```{self.prefix}forcereportmatch <@winner> <@loser>``` - If someone abandons a ranked match.
+```{self.prefix}leaderboard``` - Leaderboards of ranked matchmaking.
+```{self.prefix}newrolemenu <message ID> <emoji> <role>``` - Adds an entry for a role menu.
+```{self.prefix}deleterolemenu <message ID>``` - Deletes every entry for a Message with a role menu.
+```{self.prefix}modifyrolemenu <message ID> <exclusive> <role(s)>``` - Sets special permissions for a Role menu.
+```{self.prefix}geteveryrolemenu``` - Gets you every role menu entry currently active.
+```{self.prefix}rename <@user> <name>``` - Sets a new nickname for a user or removes it.
+```{self.prefix}say <channel> <message>``` - Admin only, Repeats the message in the chnanel.
+```{self.prefix}createmacro <name> <output>``` - Creates a new macro.
+```{self.prefix}deletemacro <name>``` - Deletes a macro.
+```{self.prefix}starboardemoji <emoji>``` - Changes the emoji used for the starboard.
+```{self.prefix}starboardthreshold <number>``` - Changes the threshold used for the starboard.
+```{self.prefix}forcedeleteprofile <@user>``` - Deletes the profile of a user.
+```{self.prefix}addbadges <@user> <emojis>``` - Adds badges to a user.
+```{self.prefix}removebadge <@user> <emoji>``` - Removes one badge from a user.
+```{self.prefix}clearbadges <@user>``` - Clears every badge from a user.
+```{self.prefix}syncbanlist``` - Syncs the ban list from main server to secondary server.
+```{self.prefix}setupmodmailbutton``` - Sets up a new modmail button for the bot to listen to.
+    """,
             )
 
         elif self.values[0] == "Info Commands":
             embed = discord.Embed(
-                title="❓Info Commands❓", color=0x06515F, description=self.info_desc
+                title="❓Info Commands❓",
+                color=0x06515F,
+                description=f"""
+```{self.prefix}help <command>``` - Help menu, or specific help with a command.
+```{self.prefix}macro <macro>``` - Info about one macro, or lists every macro registered.
+```{self.prefix}roleinfo <role>``` - Displays Role info.
+```{self.prefix}listrole <role>``` - Displays all the members with a certain Role.
+```{self.prefix}userinfo <member>``` - Shows user info of a mentioned member.
+```{self.prefix}warns <@user>``` - Displays the number of warnings of a user.
+```{self.prefix}server``` - Info about the server.
+```{self.prefix}stats``` - Stats about the bot.
+```{self.prefix}emote <emoji>``` - Info about an emoji.
+```{self.prefix}sticker <sticker>``` - Info about a sticker.
+    """,
             )
 
         elif self.values[0] == "Matchmaking Commands":
             embed = discord.Embed(
                 title="⚔️Matchmaking Commands⚔️",
                 color=0x420202,
-                description=self.mm_desc,
+                description=f"""
+```{self.prefix}singles``` - Used for 1v1 matchmaking in our arena channels.
+```{self.prefix}doubles``` - Used for 2v2 matchmaking in our arena channels.
+```{self.prefix}funnies <message>``` - Used for non-competitive matchmaking in our arena channels.
+```{self.prefix}ranked``` - Used for 1v1 ranked matchmaking in our ranked channels.
+```{self.prefix}reportmatch <@user>``` - Winner of the set reports the result, <@user> being the person you won against.
+```{self.prefix}rankedstats``` - Your ranked stats.
+```{self.prefix}recentpings``` - Gets you the recent pings of any matchmaking type.
+    """,
             )
 
         elif self.values[0] == "Profile Commands":
             embed = discord.Embed(
-                title="👥Profile Commands👥", color=0x7C3ED, description=self.profile_desc
+                title="👥Profile Commands👥",
+                color=0x7C3ED,
+                description=f"""
+```{self.prefix}profile <@user>``` - View a profile of a user.
+```{self.prefix}mains <main1, main2,...>``` - Set your mains, separated by commas.
+```{self.prefix}secondaries <sec1, sec2,...>``` - Set your secondaries, separated by commas.
+```{self.prefix}pockets <pocket1, pocket2,...>``` - Set your pockets, separated by commas.
+```{self.prefix}tag <tag>``` - Set your user tag.
+```{self.prefix}region <region>``` - Set your region (continent).
+```{self.prefix}note <note>``` - Set your note.
+```{self.prefix}colour <hex colour>``` - Set your profile embed colour, use a hex code.
+```{self.prefix}deleteprofile``` - Delete your profile.
+    """,
             )
 
         elif self.values[0] == "Utility Commands":
             embed = discord.Embed(
-                title="🔧Utility Commands🔧", color=0x424242, description=self.util_desc
+                title="🔧Utility Commands🔧",
+                color=0x424242,
+                description=f"""
+```{self.prefix}coin``` - Throws a coin.
+```{self.prefix}roll <NdN>``` - Rolling dice, format it like 1d100.
+```{self.prefix}countdown <number>``` - Counts down from number.
+```{self.prefix}time``` - Current time as a timezone aware object.
+```{self.prefix}convert <input>``` - Converts the input from metric to imperial and vice versa.
+```{self.prefix}translate <message>``` - Translates a message or string to english.
+```{self.prefix}poll <"question"> <"option 1"> <"option 2">``` - Starts a poll with a maximum of 10 choices.
+```{self.prefix}reminder <time> <message>``` - Reminds you about something.
+```{self.prefix}viewreminders``` - Lists your active reminders.
+```{self.prefix}deletereminder <ID>```Deletes one of your reminders by its ID.
+    """,
             )
 
         elif self.values[0] == "Game Commands":
             embed = discord.Embed(
-                title="🎮Game Commands🎮", colour=0x333333, description=self.game_desc
+                title="🎮Game Commands🎮",
+                colour=0x333333,
+                description=f"""
+```{self.prefix}rps <@user>``` - Plays a match of Rock, Paper, Scissors with the mentioned user.
+```{self.prefix}tictactoe <@user>``` - Plays a match of Tic Tac Toe with the mentioned user.
+```{self.prefix}blackjack <@user>``` - Plays a match of Blackjack with the mentioned user.
+```{self.prefix}2048``` - Plays a match of 2048.
+    """,
             )
 
         elif self.values[0] == "Miscellaneous Commands":
             embed = discord.Embed(
                 title="📋Miscellaneous Commands📋",
                 color=0x155A00,
-                description=self.misc_desc,
+                description=f"""
+```{self.prefix}modmail <your message>``` - Message the Mod Team privately. Only works in my DM channel.
+```{self.prefix}updatelevel <@user>``` - Updates the level role manually.
+```{self.prefix}stagelist``` - Our Stagelist for Crew Battles.
+```{self.prefix}avatar <@user>``` - Gets you the avatar of a user.
+```{self.prefix}banner <@user>``` - Gets you the banner of a user.
+```{self.prefix}spotify <@user>``` - Posts the song the user is currently streaming.
+```{self.prefix}ping``` - Gets the ping of the bot.
+```{self.prefix}mp4<move>``` - Tells you the Mana Cost of any of Hero's moves.
+    """,
             )
 
         elif self.values[0] == "Fun Commands":
             embed = discord.Embed(
-                title="😂Fun Commands😂", color=0x841E8B, description=self.fun_desc
+                title="😂Fun Commands😂",
+                color=0x841E8B,
+                description=f"""
+```{self.prefix}joke``` - Jokes.
+```{self.prefix}randomquote``` - Quotes.
+```{self.prefix}pickmeup``` - Nice words.
+```{self.prefix}wisdom``` - It's wisdom.
+```{self.prefix}boo``` - Looking for a scare, huh?
+```{self.prefix}tabuwu``` - For the silly people.
+```{self.prefix}john``` - If you need a john.
+```{self.prefix}hypemeup``` - Hypes you up before that next game of smash.
+```{self.prefix}8ball <question>``` - Ask the magic 8-ball.
+```{self.prefix}who <question>``` - Ask a question and get a random user in response.
+    """,
             )
 
         else:
@@ -261,7 +256,7 @@ class Responses(discord.ui.Select):
 
         embed.add_field(
             name="\u200b",
-            value="[Details: `%help <command>` or visit my GitHub.]"
+            value=f"[Details: `{self.prefix}help <command>` or visit my GitHub.]"
             "(https://github.com/atomflunder/Tabuu-3.0-Bot/blob/main/CommandList.md)",
             inline=False,
         )
@@ -274,10 +269,11 @@ class DropdownHelp(discord.ui.View):
     Adds the Items to the Dropdown.
     """
 
-    def __init__(self):
+    def __init__(self, prefix: str):
+        self.prefix = prefix
         super().__init__()
 
-        self.add_item(Responses())
+        self.add_item(Responses(self.prefix))
 
 
 class CustomHelp(commands.HelpCommand):
@@ -310,7 +306,7 @@ class CustomHelp(commands.HelpCommand):
 
         embed.add_field(
             name="\u200b",
-            value="[Overview: `%help` or visit my GitHub.]"
+            value=f"[Overview: `{self.context.bot.command_prefix}help` or visit my GitHub.]"
             "(https://github.com/atomflunder/Tabuu-3.0-Bot/blob/main/CommandList.md)",
             inline=False,
         )
@@ -326,7 +322,10 @@ class CustomHelp(commands.HelpCommand):
         We just have to remember to add new commands to the embeds up above.
         """
         channel = self.get_destination()
-        await channel.send("Here are the available subcommands:", view=DropdownHelp())
+        await channel.send(
+            "Here are the available subcommands:",
+            view=DropdownHelp(self.context.bot.command_prefix),
+        )
 
     async def send_cog_help(self, cog: commands.Cog):
         """
@@ -392,7 +391,8 @@ class Help(commands.Cog):
         """
         if not command:
             await interaction.response.send_message(
-                "Here are the available subcommands:", view=DropdownHelp()
+                "Here are the available subcommands:",
+                view=DropdownHelp(self.bot.command_prefix),
             )
             return
 
@@ -447,7 +447,7 @@ class Help(commands.Cog):
 
         embed.add_field(
             name="\u200b",
-            value="[Overview: `%help` or visit my GitHub.]"
+            value=f"[Overview: `{self.bot.command_prefix}help` or visit my GitHub.]"
             "(https://github.com/atomflunder/Tabuu-3.0-Bot/blob/main/CommandList.md)",
             inline=False,
         )

@@ -1,6 +1,6 @@
 # Tabuu 3.0
 # by Phxenix for SSBU Training Grounds
-# Version: 9.10.2
+# Version: 9.10.3
 # Last Changes: 17 April 2022
 # Contact me on Discord: Phxenix#1104
 
@@ -20,13 +20,15 @@ class Tabuu3(commands.Bot):
 
     def __init__(self):
         super().__init__(
+            # do not pass in multiple prefixes, or use when_mentioned_or
+            # this would break macros and the display of some command names.
             command_prefix="%",
             intents=discord.Intents.all(),
             status=discord.Status.online,
         )
 
         # to be used in %stats
-        self.version_number = "9.10.2"
+        self.version_number = "9.10.3"
         self.commands_ran = 0
         self.events_listened_to = 0
 
