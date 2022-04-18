@@ -3,6 +3,7 @@ import json
 
 import aiosqlite
 import discord
+from discord import app_commands
 from discord.ext import commands
 
 import utils.check
@@ -319,13 +320,12 @@ class Ranking(commands.Cog):
 
         return "".join(list_of_searches) or "Looks like no one has pinged recently :("
 
-    @commands.command(aliases=["rankedmm", "rankedmatchmaking", "rankedsingles"])
+    @commands.hybrid_command(aliases=["rankedmm", "rankedmatchmaking", "rankedsingles"])
     @commands.cooldown(1, 120, commands.BucketType.user)
+    @app_commands.guilds(*GuildIDs.ALL_GUILDS)
     async def ranked(self, ctx):
         """
-        Used for 1v1 ranked matchmaking.
-        Pings your ranked role and adjacent roles.
-        Stores your ping for 30 minutes and has a 2 minute cooldown.
+        Used for 1v1 competitive ranked matchmaking.
         """
         if ctx.channel.id not in TGArenaChannelIDs.RANKED_ARENAS:
             await ctx.send(
@@ -375,9 +375,11 @@ class Ranking(commands.Cog):
 
         self.delete_ranked_ping(ctx)
 
-    @commands.command(aliases=["reportgame"], cooldown_after_parsing=True)
+    @commands.hybrid_command(aliases=["reportgame"], cooldown_after_parsing=True)
     @commands.cooldown(1, 41, commands.BucketType.user)
     @commands.guild_only()
+    @app_commands.guilds(*GuildIDs.ALL_GUILDS)
+    @app_commands.describe(user="The user you beat in the ranked match.")
     async def reportmatch(self, ctx, user: discord.Member):
         """
         The winner of the match uses this to report a ranked set.
@@ -500,7 +502,9 @@ class Ranking(commands.Cog):
             f"Game was forcefully reported by: {ctx.author.mention}"
         )
 
-    @commands.command(aliases=["rankedstats"])
+    @commands.hybrid_command(aliases=["rankedstats"])
+    @app_commands.guilds(*GuildIDs.ALL_GUILDS)
+    @app_commands.describe(member="The user you want to see the ranked stats of.")
     async def rankstats(self, ctx, member: discord.User = None):
         """
         Gets you the ranked stats of a member, or your own if you dont specify a member.

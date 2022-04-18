@@ -2,7 +2,7 @@
 
 This here contains every command with a detailed explanation on how to use them. They are ordered alphabetically, search them with Ctrl+F.  
 
-Last updated: 4 April 2022  
+Last updated: 18 April 2022  
 
 ## Quick explanation of this document  
 Arguments that are optional all have the `: Optional` suffix. Every other argument is required.  
@@ -114,7 +114,7 @@ Everything else should be fairly self-explanatory.
     - Example: `%deletewarn @ExampleUser 123456`  
   
 - **%doubles**  
-    - Info: Pings the doubles role and stores your ping for 30 Minutes. Also creates a thread and invites the user to it. Has a 10 minute cooldown and can only be used in our arena channels.  
+    - Info: **Slash version available.** Pings the doubles role and stores your ping for 30 Minutes. Also creates a thread and invites the user to it. Has a 10 minute cooldown and can only be used in our arena channels.  
     - Aliases: matchmakingdoubles, mmdoubles, Doubles  
   
 - **%emote** `<emoji>`  
@@ -153,7 +153,7 @@ Everything else should be fairly self-explanatory.
     - Aliases: forcereportgame  
   
 - **%funnies** `<message: Optional>`  
-    - Info: Pings the funnies role with an optional custom message and stores your ping for 30 Minutes. Also creates a thread and invites the user to it. Has a 10 minute cooldown and can only be used in our arena channels.  
+    - Info: **Slash version available.** Pings the funnies role with an optional custom message and stores your ping for 30 Minutes. Also creates a thread and invites the user to it. Has a 10 minute cooldown and can only be used in our arena channels.  
     - Aliases: matchmakingfunnies, mmfunnies, Funnies  
   
 - **%geteveryrolemenu**  
@@ -246,13 +246,13 @@ Everything else should be fairly self-explanatory.
     - Info: Gets you a random quote from someone.  
   
 - **%ranked**  
-    - Info: Pings your ranked role according to you Elo value and stores your ping for 30 Minutes. Has a 2 minute cooldown and can only be used in our ranked arena channels.  
+    - Info: **Slash version available.** Pings your ranked role according to you Elo value and stores your ping for 30 Minutes. Has a 2 minute cooldown and can only be used in our ranked arena channels.  
     - Aliases: rankedmm, rankedmatchmaking, rankedsingles  
   
-- **%rankedstats** `<@user: Optional>`  
-    - Info: Gets you the ranked stats of any optional User. If you dont specify a User, this will get your own stats where you can also choose to remove or add your Elo role.
+- **%rankstats** `<@user: Optional>`  
+    - Info: **Slash version available.** Gets you the ranked stats of any optional User. If you dont specify a User, this will get your own stats where you can also choose to remove or add your Elo role.
     - Example: `%rankedstats @ExampleUser`  
-    - Aliases: rankstats  
+    - Aliases: rankedstats  
   
 - **%recentpings**  
     - Info: Gets you all pings in the last 30 Minutes of any matchmaking type without pinging the role yourself. Available dropdowns are: Singles, Doubles, Funnies, Ranked.  
@@ -293,7 +293,7 @@ Everything else should be fairly self-explanatory.
     - Example: `%rename @ExampleUser Example Name`  
   
 - **%reportmatch** `<@member>`  
-    - Info: The winner uses this command after a ranked match to report the result of the match, @member being the person who lost the ranked match. Mention the Member or use Member ID. Has a 41 second cooldown. Only works in ranked arenas or the threads within.  
+    - Info: **Slash version available.** The winner uses this command after a ranked match to report the result of the match, @member being the person who lost the ranked match. Mention the Member or use Member ID. Has a 41 second cooldown. Only works in ranked arenas or the threads within.  
     - Example: `%reportmatch @ExampleUser`  
     - Aliases: reportgame  
   
@@ -329,7 +329,7 @@ Everything else should be fairly self-explanatory.
     - Info: **Moderator only.** Sets up a new button to listen to, for creating modmail threads. Should really only be used once.  
   
 - **%singles**  
-    - Info: Pings the singles role and stores your ping for 30 Minutes. Also creates a thread and invites the User to it. Has a 10 minute cooldown and can only be used in our arena channels.  
+    - Info: **Slash version available.** Pings the singles role and stores your ping for 30 Minutes. Also creates a thread and invites the User to it. Has a 10 minute cooldown and can only be used in our arena channels.  
     - Aliases: matchmaking, matchmakingsingles, mmsingles, Singles  
   
 - **%spotify** `<@member: Optional>`  

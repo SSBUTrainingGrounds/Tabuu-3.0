@@ -2,9 +2,10 @@ import asyncio
 import json
 
 import discord
+from discord import app_commands
 from discord.ext import commands
 
-from utils.ids import TGArenaChannelIDs, TGMatchmakingRoleIDs
+from utils.ids import GuildIDs, TGArenaChannelIDs, TGMatchmakingRoleIDs
 
 
 class Matchmaking(commands.Cog):
@@ -73,10 +74,11 @@ class Matchmaking(commands.Cog):
 
         return "".join(list_of_searches) or "Looks like no one has pinged recently :("
 
-    @commands.command(
+    @commands.hybrid_command(
         aliases=["matchmaking", "matchmakingsingles", "mmsingles", "Singles"]
     )
     @commands.cooldown(1, 600, commands.BucketType.user)
+    @app_commands.guilds(*GuildIDs.ALL_GUILDS)
     async def singles(self, ctx):
         """
         Used for 1v1 Matchmaking with competitive rules.
@@ -161,11 +163,12 @@ class Matchmaking(commands.Cog):
         else:
             await ctx.send("Please only use this command in our arena channels!")
 
-    @commands.command(aliases=["matchmakingdoubles", "mmdoubles", "Doubles"])
+    @commands.hybrid_command(aliases=["matchmakingdoubles", "mmdoubles", "Doubles"])
     @commands.cooldown(1, 600, commands.BucketType.user)
+    @app_commands.guilds(*GuildIDs.ALL_GUILDS)
     async def doubles(self, ctx):
         """
-        Used for 2v2 Matchmaking. Very similar to singles.
+        Used for 2v2 Matchmaking.
         """
         timestamp = discord.utils.utcnow().timestamp()
         doubles_role = discord.utils.get(
@@ -245,19 +248,23 @@ class Matchmaking(commands.Cog):
         else:
             await ctx.send("Please only use this command in our arena channels!")
 
-    @commands.command(aliases=["matchmakingfunnies", "mmfunnies", "Funnies"])
+    @commands.hybrid_command(aliases=["matchmakingfunnies", "mmfunnies", "Funnies"])
     @commands.cooldown(1, 600, commands.BucketType.user)
-    async def funnies(self, ctx, *, msg: str = None):
+    @app_commands.guilds(*GuildIDs.ALL_GUILDS)
+    @app_commands.describe(
+        message="Optional message, for example the ruleset you want to use."
+    )
+    async def funnies(self, ctx, *, message: str = None):
         """
-        Used for 1v1 Matchmaking with non-competitive rules. Very similar to singles.
+        Used for 1v1 Matchmaking with non-competitive rules.
         """
         timestamp = discord.utils.utcnow().timestamp()
         funnies_role = discord.utils.get(
             ctx.guild.roles, id=TGMatchmakingRoleIDs.FUNNIES_ROLE
         )
 
-        if msg:
-            msg = discord.utils.remove_markdown(msg[:100])
+        if message:
+            message = discord.utils.remove_markdown(message[:100])
 
         if ctx.message.channel.id in TGArenaChannelIDs.PUBLIC_ARENAS:
             self.store_ping(ctx, "funnies", timestamp)
@@ -270,9 +277,9 @@ class Matchmaking(commands.Cog):
                 colour=discord.Colour.green(),
             )
 
-            if msg:
+            if message:
                 mm_message = await ctx.send(
-                    f"{ctx.author.mention} is looking for {funnies_role.mention} games: `{msg}`",
+                    f"{ctx.author.mention} is looking for {funnies_role.mention} games: `{message}`",
                     embed=embed,
                 )
             else:
@@ -303,15 +310,16 @@ class Matchmaking(commands.Cog):
                 colour=discord.Colour.green(),
             )
 
-            if not msg:
+            if message:
                 await ctx.send(
-                    f"{ctx.author.mention} is looking for {funnies_role.mention} games!\n"
+                    f"{ctx.author.mention} is looking for {funnies_role.mention} games: `{message}`\n"
                     "Here are the most recent Funnies pings in our open arenas:",
                     embed=embed,
                 )
+
             else:
                 await ctx.send(
-                    f"{ctx.author.mention} is looking for {funnies_role.mention} games: `{msg}`\n"
+                    f"{ctx.author.mention} is looking for {funnies_role.mention} games!\n"
                     "Here are the most recent Funnies pings in our open arenas:",
                     embed=embed,
                 )
