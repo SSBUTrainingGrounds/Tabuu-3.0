@@ -1,6 +1,7 @@
 from math import ceil
 
 import discord
+from discord import app_commands
 from discord.ext import commands, tasks
 from mee6_py_api import API
 
@@ -74,9 +75,13 @@ class Mee6api(commands.Cog):
 
         return rolegiven
 
-    @commands.command(aliases=["updatelvl", "updaterank"], cooldown_after_parsing=True)
+    @commands.hybrid_command(
+        aliases=["updatelvl", "updaterank"], cooldown_after_parsing=True
+    )
     @commands.guild_only()
     @commands.cooldown(1, 300, commands.BucketType.user)
+    @app_commands.guilds(*GuildIDs.ALL_GUILDS)
+    @app_commands.describe(member="The member you want to update the level role of.")
     async def updatelevel(self, ctx, member: discord.Member = None):
         """
         Updates your Level Role manually.

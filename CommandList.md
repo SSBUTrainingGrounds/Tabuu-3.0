@@ -17,10 +17,10 @@ Everything else should be fairly self-explanatory.
 ## Full list of commands
   
 - **%2048**  
-    - Info: Starts a game of 2048.  
+    - Info: **Slash version available.** Starts a game of 2048.  
   
 - **%8ball** `<question>`  
-    - Info: Ask a question and you get a random response from the magic 8-ball.  
+    - Info: **Slash version available.** Ask a question and you get a random response from the magic 8-ball.  
     - Example: `%8ball Is Tabuu 3.0 the best bot out there?`  
   
 - **%addbadges** `<@user> <emojis>`  
@@ -45,12 +45,12 @@ Everything else should be fairly self-explanatory.
     - Example: `%banner @ExampleUser`  
   
 - **%blackjack** `<@member>`  
-    - Info: Starts a game of Blackjack with the mentioned Member.  
+    - Info: **Slash version available.** Starts a game of Blackjack with the mentioned Member.  
     - Example: `%blackjack @ExampleUser`  
     - Aliases: 21, vingtetun, vigntun  
   
 - **%boo**  
-    - Info: Comes up with some scary stuff.  
+    - Info: **Slash version available.** Comes up with some scary stuff.  
   
 - **%clear** `<amount: Optional>`  
     - Info: **Moderator only.** Deletes the last X+1 messages in the current channel. Defaults to 1 if you do not specify an amount.  
@@ -163,13 +163,13 @@ Everything else should be fairly self-explanatory.
     - Info: **Slash version available.** Shows you Info about a specified command. If you do not specify a command you will get the help menu, which is broken into a dropdown cause there were too many commands to list. Available dropdowns are: Moderation, Admin Utility, Info, Matchmaking, Profile, Utility, Miscellaneous, and Fun. The text-based version will show you if you can run this command, the slash based version cannot do so due of a discord limitation.  
   
 - **%hypemeup**  
-    - Info: Hypes you up with a randomly chosen response before that next game of smash.  
+    - Info: **Slash version available.** Hypes you up with a randomly chosen response before that next game of smash.  
     
 - **%john**  
-    - Info: Returns a random excuse why you lost that last game of Smash.  
+    - Info: **Slash version available.** Returns a random excuse why you lost that last game of Smash.  
   
 - **%joke**  
-    - Info: Returns a random joke, funniness may vary.  
+    - Info: **Slash version available.** Returns a random joke, funniness may vary.  
     - Aliases: tabuujoke  
   
 - **%kick** `<@member> <reason>`  
@@ -223,7 +223,7 @@ Everything else should be fairly self-explanatory.
     - Aliases: setnote, spnote  
   
 - **%pickmeup**  
-    - Info: Gives you an inspiring quote.  
+    - Info: **Slash version available.** Gives you an inspiring quote.  
   
 - **%ping**  
     - Info: Gets the response time of the Bot, *not yourself*. Usually around 100-150ms in optimal conditions.  
@@ -243,7 +243,7 @@ Everything else should be fairly self-explanatory.
     - Aliases: smashprofile, profileinfo  
   
 - **%randomquote**  
-    - Info: Gets you a random quote from someone.  
+    - Info: **Slash version available.** Gets you a random quote from someone.  
   
 - **%ranked**  
     - Info: **Slash version available.** Pings your ranked role according to you Elo value and stores your ping for 30 Minutes. Has a 2 minute cooldown and can only be used in our ranked arena channels.  
@@ -308,7 +308,7 @@ Everything else should be fairly self-explanatory.
     - Aliases: r  
   
 - **%rps** `<@member: Optional>`  
-    - Info: Plays a game of Rock, Paper, Scissors with the mentioned Member. If you don't mention a Member, you will play against Tabuu 3.0 himself.  
+    - Info: **Slash version available.** Plays a game of Rock, Paper, Scissors with the mentioned Member. If you don't mention a Member, you will play against Tabuu 3.0 himself.  
     - Example: `%rps @ExampleUser`  
     - Aliases: rockpaperscissors, rochambeau, roshambo  
   
@@ -365,7 +365,7 @@ Everything else should be fairly self-explanatory.
     - Aliases: sync, syncommands  
   
 - **%tabuwu**  
-    - Info: For the silly people.  
+    - Info: **Slash version available.** For the silly people.  
     - Aliases: uwu  
   
 - **%tag** `<tag: Optional>`  
@@ -378,7 +378,7 @@ Everything else should be fairly self-explanatory.
     - Example: `%tempmute @ExampleUser 12h30mins what an idiot`  
   
 - **%tictactoe** `<@member>`  
-    - Info: Plays a game of Tic Tac Toe with the mentioned Member.  
+    - Info: **Slash version available.** Plays a game of Tic Tac Toe with the mentioned Member.  
     - Example: `%tictactoe @ExampleUser`  
     - Aliases: ttt  
   
@@ -403,7 +403,7 @@ Everything else should be fairly self-explanatory.
     - Example: `%unmute @ExampleUser`  
   
 - **%updatelevel** `<@member: Optional>`  
-    - Info: Updates your level role or the one of the mentioned Member according to your MEE6 level manually. Has a 5 minute cooldown. Note that this gets done anyways every 23 hours for everyone in the server. Only works in the Training Grounds server.  
+    - Info: **Slash version available.** Updates your level role or the one of the mentioned Member according to your MEE6 level manually. Has a 5 minute cooldown. Note that this gets done anyways every 23 hours for everyone in the server. Only works in the Training Grounds server.  
     - Example: `%updatelevel @ExampleUser`  
   
 - **%userinfo** `<@member: Optional>`  
@@ -429,8 +429,8 @@ Everything else should be fairly self-explanatory.
     - Aliases: warnings, infractions  
   
 - **%who** `<question>`  
-    - Info: Ask a question and you get a random Member that is currently online as a response. Does not work in DMs.  
+    - Info: **Slash version available.** Ask a question and you get a random Member that is currently online as a response. Does not work in DMs.  
     - Example: `%who is the most beautiful user?`  
   
 - **%wisdom**  
-    - Info: Gets you a random piece of wisdom.  
+    - Info: **Slash version available.** Gets you a random piece of wisdom.  

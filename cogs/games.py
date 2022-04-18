@@ -3,7 +3,10 @@ from math import ceil, floor
 from typing import Optional
 
 import discord
+from discord import app_commands
 from discord.ext import commands
+
+from utils.ids import GuildIDs
 
 
 class RpsButtons(discord.ui.View):
@@ -643,11 +646,13 @@ class Games(commands.Cog):
         self.bot = bot
 
     # never heard of those alternate names but wikipedia says they exist so might as well add them
-    @commands.command(aliases=["rockpaperscissors", "rochambeau", "roshambo"])
+    @commands.hybrid_command(aliases=["rockpaperscissors", "rochambeau", "roshambo"])
+    @app_commands.guilds(*GuildIDs.ALL_GUILDS)
+    @app_commands.describe(member="The member to play against.")
     async def rps(self, ctx, member: discord.Member = None):
         """
-        Plays a Game of Rock, Paper, Scissors with either a mentioned user,
-        or the bot, if you do not mention a user.
+        Plays a Game of Rock, Paper, Scissors with a mentioned user.
+        Or the bot, if you do not mention a user.
         """
         if member is None:
             member = self.bot.user
@@ -718,7 +723,9 @@ class Games(commands.Cog):
             elif view.memberchoice == "Paper":
                 await view.message.reply(author_winner_message)
 
-    @commands.command(aliases=["ttt"])
+    @commands.hybrid_command(aliases=["ttt"])
+    @app_commands.guilds(*GuildIDs.ALL_GUILDS)
+    @app_commands.describe(member="The member to play against.")
     async def tictactoe(self, ctx, member: discord.Member):
         """
         Starts a game of Tic Tac Toe vs another User.
@@ -739,7 +746,9 @@ class Games(commands.Cog):
             view=view,
         )
 
-    @commands.command(aliases=["21", "vingtetun", "vingtun"])
+    @commands.hybrid_command(aliases=["21", "vingtetun", "vingtun"])
+    @app_commands.guilds(*GuildIDs.ALL_GUILDS)
+    @app_commands.describe(member="The member to play against.")
     async def blackjack(self, ctx, member: discord.Member):
         """
         Starts a game of Blackjack vs another User.
@@ -759,7 +768,8 @@ class Games(commands.Cog):
             view=view,
         )
 
-    @commands.command(name="2048")
+    @commands.hybrid_command(name="2048")
+    @app_commands.guilds(*GuildIDs.ALL_GUILDS)
     async def _2048(self, ctx):
         """
         Starts a game of 2048.
