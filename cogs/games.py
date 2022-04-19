@@ -780,19 +780,27 @@ class Games(commands.Cog):
         timeout = await view.wait()
 
         if timeout:
-            await ctx.reply(
+            message = (
                 f"Your game timed out! Thanks for playing.\nFinal score: {view.score}"
             )
-            return
 
-        if view.win:
-            await ctx.reply("Congratulations! You win!\n" f"Final score: {view.score}")
-            return
+        elif view.win:
+            message = "Congratulations! You win!\n" f"Final score: {view.score}"
 
-        await ctx.reply(
-            "Too bad, but you will win next time! Thanks for playing.\n"
-            f"Final score: {view.score}"
-        )
+        else:
+            message = (
+                "Too bad, but you will win next time! Thanks for playing.\n"
+                f"Final score: {view.score}"
+            )
+
+        # we have 15 minutes to reply to the message,
+        # if the game goes on for longer, which is a common possibility,
+        # we cant reply to it anymore, which i would prefer but oh well.
+        try:
+            await ctx.reply(message)
+        except discord.HTTPException:
+            # we wanna mention the user if we cant reply
+            await ctx.send(f"{ctx.author.mention} {message}")
 
     # basic error handling
     @rps.error
