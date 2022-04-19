@@ -1,12 +1,13 @@
 import json
 
 import discord
+from discord import app_commands
 from discord.ext import commands
 
 import utils.check
 from cogs.matchmaking import Matchmaking
 from cogs.ranking import Ranking
-from utils.ids import TGArenaChannelIDs
+from utils.ids import GuildIDs, TGArenaChannelIDs
 
 
 class Pings(discord.ui.Select):
@@ -138,7 +139,8 @@ class Matchmakingpings(commands.Cog):
         ):
             await after.delete()
 
-    @commands.command()
+    @commands.hybrid_command()
+    @app_commands.guilds(*GuildIDs.ALL_GUILDS)
     async def recentpings(self, ctx):
         """
         Contains the Recentpings Dropdown Menu, where you can select each Matchmaking Type

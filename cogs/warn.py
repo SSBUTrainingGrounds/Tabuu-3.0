@@ -3,11 +3,12 @@ import random
 
 import aiosqlite
 import discord
+from discord import app_commands
 from discord.ext import commands, tasks
 
 import utils.check
 from cogs.mute import Mute
-from utils.ids import AdminVars, TGChannelIDs
+from utils.ids import AdminVars, GuildIDs, TGChannelIDs
 
 
 class Warn(commands.Cog):
@@ -161,10 +162,12 @@ class Warn(commands.Cog):
         # checks warn count for further actions
         await self.check_warn_count(ctx.guild, ctx.channel, member)
 
-    @commands.command(aliases=["warnings", "infractions"])
+    @commands.hybrid_command(aliases=["warnings", "infractions"])
+    @app_commands.guilds(*GuildIDs.ALL_GUILDS)
+    @app_commands.describe(member="The member you want to check the warning count of.")
     async def warns(self, ctx, member: discord.Member = None):
         """
-        Checks the warnings of a user, or yourself.
+        Checks the warning count of a user, or yourself.
         """
         if member is None:
             member = ctx.author

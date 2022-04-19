@@ -257,7 +257,7 @@ Everything else should be fairly self-explanatory.
     - Aliases: rankedstats  
   
 - **%recentpings**  
-    - Info: Gets you all pings in the last 30 Minutes of any matchmaking type without pinging the role yourself. Available dropdowns are: Singles, Doubles, Funnies, Ranked.  
+    - Info: **Slash version available.** Gets you all pings in the last 30 Minutes of any matchmaking type without pinging the role yourself. Available dropdowns are: Singles, Doubles, Funnies, Ranked.  
   
 - **%records**  
     - Info: **Moderator only.** Gets you our ban records.  
@@ -426,7 +426,7 @@ Everything else should be fairly self-explanatory.
     - Example: `%warndetails @ExampleUser`  
   
 - **%warns** `<@member: Optional>`  
-    - Info: This will return the number of active warnings a Member has. If you haven't specified a Member, this will get your own warning count. Mention the Member or use Member ID.  
+    - Info: **Slash version available.** This will return the number of active warnings a Member has. If you haven't specified a Member, this will get your own warning count. Mention the Member or use Member ID.  
     - Example: `%warns @ExampleUser`  
     - Aliases: warnings, infractions  
   
