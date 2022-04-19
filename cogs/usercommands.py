@@ -389,7 +389,12 @@ class Usercommands(commands.Cog):
     @convert.error
     async def convert_error(self, ctx, error):
         if isinstance(
-            error, (commands.MissingRequiredArgument, commands.CommandInvokeError)
+            error,
+            (
+                commands.MissingRequiredArgument,
+                commands.CommandInvokeError,
+                commands.HybridCommandError,
+            ),
         ):
             await ctx.send("Invalid input! Please try again.")
         else:

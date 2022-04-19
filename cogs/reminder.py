@@ -251,7 +251,9 @@ class Reminder(commands.Cog):
             await ctx.send(
                 "You need to specify an amount of time and the reminder message!"
             )
-        elif isinstance(error, commands.CommandInvokeError):
+        elif isinstance(
+            error, (commands.CommandInvokeError, commands.HybridCommandError)
+        ):
             await ctx.send(
                 "Invalid time format! Please use a number followed by d/h/m/s for days/hours/minutes/seconds.\n"
                 f"Example: `{self.bot.command_prefix}reminder 1h20m your message here`"
@@ -261,7 +263,9 @@ class Reminder(commands.Cog):
 
     @viewreminders.error
     async def viewreminders_error(self, ctx, error):
-        if isinstance(error, commands.CommandInvokeError):
+        if isinstance(
+            error, (commands.CommandInvokeError, commands.HybridCommandError)
+        ):
             await ctx.send("Here are your active reminders:\nNo reminders found.")
         else:
             raise error
@@ -273,7 +277,9 @@ class Reminder(commands.Cog):
                 "You need to specify which reminder to delete. "
                 f"View all of your active reminders with `{self.bot.command_prefix}viewreminders`"
             )
-        elif isinstance(error, commands.CommandInvokeError):
+        elif isinstance(
+            error, (commands.CommandInvokeError, commands.HybridCommandError)
+        ):
             await ctx.send("You have no active reminders to delete.")
         else:
             raise error

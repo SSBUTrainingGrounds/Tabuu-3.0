@@ -488,7 +488,9 @@ Events parsed: {self.bot.events_listened_to}
             await ctx.send("You need to name a valid role!")
         elif isinstance(error, commands.MissingPermissions):
             await ctx.send("Nice try, but you don't have the permissions to do that!")
-        elif isinstance(error, commands.CommandInvokeError):
+        elif isinstance(
+            error, (commands.CommandInvokeError, commands.HybridCommandError)
+        ):
             await ctx.send(
                 "I didn't find a good match for the role you provided. "
                 "Please be more specific, or mention the role, or use the Role ID."
@@ -502,7 +504,9 @@ Events parsed: {self.bot.events_listened_to}
             await ctx.send("You need to name a valid role!")
         elif isinstance(error, commands.MissingPermissions):
             await ctx.send("Nice try, but you don't have the permissions to do that!")
-        elif isinstance(error, commands.CommandInvokeError):
+        elif isinstance(
+            error, (commands.CommandInvokeError, commands.HybridCommandError)
+        ):
             await ctx.send(
                 "I didn't find a good match for the role you provided. "
                 "Please be more specific, or mention the role, or use the Role ID."
