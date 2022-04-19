@@ -6,6 +6,7 @@ import time
 import aiosqlite
 import discord
 import psutil
+from discord import app_commands
 from discord.ext import commands
 
 import utils.check
@@ -153,7 +154,9 @@ class Stats(commands.Cog):
 
         await ctx.send(f"Cleared all badges from {user.mention}.")
 
-    @commands.command(aliases=["user", "user-info", "info"])
+    @commands.hybrid_command(aliases=["user", "user-info", "info"])
+    @app_commands.guilds(*GuildIDs.ALL_GUILDS)
+    @app_commands.describe(member="The member you want to get info about.")
     async def userinfo(self, ctx, member: discord.Member = None):
         """
         Some information about a given user, or yourself.
@@ -215,7 +218,11 @@ class Stats(commands.Cog):
         embed.set_thumbnail(url=member.display_avatar.url)
         await ctx.send(embed=embed)
 
-    @commands.command(aliases=["role"])
+    @commands.hybrid_command(aliases=["role"])
+    @app_commands.guilds(*GuildIDs.ALL_GUILDS)
+    @app_commands.describe(
+        input_role="The role you want to get info about. Matches to your closest input."
+    )
     async def roleinfo(self, ctx, *, input_role: str):
         """
         Basic information about a given role.
@@ -248,7 +255,11 @@ class Stats(commands.Cog):
 
         await ctx.send(embed=embed)
 
-    @commands.command(aliases=["listroles"])
+    @commands.hybrid_command(aliases=["listroles"])
+    @app_commands.guilds(*GuildIDs.ALL_GUILDS)
+    @app_commands.describe(
+        input_role="The role you want to get info about. Matches to your closest input."
+    )
     async def listrole(self, ctx, *, input_role: str):
         """
         Lists every member of a role.
@@ -277,7 +288,8 @@ class Stats(commands.Cog):
             f"Users with the {role} role ({len(role.members)}):\n{all_members}"
         )
 
-    @commands.command(aliases=["serverinfo"])
+    @commands.hybrid_command(aliases=["serverinfo"])
+    @app_commands.guilds(*GuildIDs.ALL_GUILDS)
     async def server(self, ctx):
         """
         Various information about the server.
@@ -338,7 +350,8 @@ class Stats(commands.Cog):
         embed.set_thumbnail(url=ctx.guild.icon.url)
         await ctx.send(embed=embed)
 
-    @commands.command(aliases=["botstats"])
+    @commands.hybrid_command(aliases=["botstats"])
+    @app_commands.guilds(*GuildIDs.ALL_GUILDS)
     async def stats(self, ctx):
         """
         Statistics and information about this bot.

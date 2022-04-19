@@ -4,8 +4,10 @@ import random
 
 import aiosqlite
 import discord
+from discord import app_commands
 from discord.ext import commands, tasks
 
+from utils.ids import GuildIDs
 from utils.time import convert_time
 
 
@@ -51,7 +53,12 @@ class Reminder(commands.Cog):
             except discord.HTTPException as exc:
                 logger.info(f"Could not notify user due to: {exc}")
 
-    @commands.command(aliases=["remindme", "newreminder", "newremindme"])
+    @commands.hybrid_command(aliases=["remindme", "newreminder", "newremindme"])
+    @app_commands.guilds(*GuildIDs.ALL_GUILDS)
+    @app_commands.describe(
+        time="The time when you want me to remind you.",
+        reminder_message="The message you want me to remind you of.",
+    )
     async def reminder(self, ctx, time: str, *, reminder_message: str):
         """
         Saves a new reminder.
@@ -123,9 +130,10 @@ class Reminder(commands.Cog):
                 f"View all of your active reminders with `{self.bot.command_prefix}viewreminders`"
             )
 
-    @commands.command(
+    @commands.hybrid_command(
         aliases=["reminders", "myreminders", "viewreminder", "listreminders"]
     )
+    @app_commands.guilds(*GuildIDs.ALL_GUILDS)
     async def viewreminders(self, ctx):
         """
         Displays your active reminders.
@@ -170,9 +178,11 @@ class Reminder(commands.Cog):
                 f"Here are your first 6 reminders:\n{''.join(shortened_reminder_list)}"
             )
 
-    @commands.command(
+    @commands.hybrid_command(
         aliases=["delreminder", "rmreminder", "delreminders", "deletereminders"]
     )
+    @app_commands.guilds(*GuildIDs.ALL_GUILDS)
+    @app_commands.describe(reminder_id="The ID of the reminder you want to delete.")
     async def deletereminder(self, ctx, reminder_id: str):
         """
         Deletes a reminder of yours.

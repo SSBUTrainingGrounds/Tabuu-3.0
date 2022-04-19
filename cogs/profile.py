@@ -2,10 +2,11 @@ import json
 
 import aiosqlite
 import discord
+from discord import app_commands
 from discord.ext import commands
 
 import utils.check
-from utils.ids import Emojis
+from utils.ids import Emojis, GuildIDs
 
 
 class Profile(commands.Cog):
@@ -109,7 +110,9 @@ class Profile(commands.Cog):
 
             await db.commit()
 
-    @commands.command(aliases=["smashprofile", "profileinfo"])
+    @commands.hybrid_command(aliases=["smashprofile", "profileinfo"])
+    @app_commands.guilds(*GuildIDs.ALL_GUILDS)
+    @app_commands.describe(user="The user you want to see the profile of.")
     async def profile(self, ctx, user: discord.User = None):
         """
         Returns the profile of a user, or yourself if you do not specify a user.
@@ -159,7 +162,8 @@ class Profile(commands.Cog):
 
         await ctx.send(embed=embed)
 
-    @commands.command()
+    @commands.hybrid_command()
+    @app_commands.guilds(*GuildIDs.ALL_GUILDS)
     async def deleteprofile(self, ctx):
         """
         Deletes your profile.
@@ -210,15 +214,17 @@ class Profile(commands.Cog):
             f"{ctx.author.mention}, I have successfully deleted the profile of {discord.utils.escape_markdown(str(user))}."
         )
 
-    @commands.command(aliases=["main", "setmain", "spmains", "profilemains"])
-    async def mains(self, ctx, *, profile_input: str = None):
+    @commands.hybrid_command(aliases=["main", "setmain", "spmains", "profilemains"])
+    @app_commands.guilds(*GuildIDs.ALL_GUILDS)
+    @app_commands.describe(mains="Your mains, separated by commas.")
+    async def mains(self, ctx, *, mains: str = None):
         """
         Sets your mains on your smash profile.
         Separates the input by commas, and then matches with names, nicknames and fighter numbers.
         Echoes have an *e* behind their fighter number.
         """
         # only getting the first 7 chars, think thats a very generous cutoff
-        chars = " ".join(self.match_character(profile_input)[:7])
+        chars = " ".join(self.match_character(mains)[:7])
 
         await self.make_new_profile(ctx.author)
 
@@ -230,21 +236,23 @@ class Profile(commands.Cog):
 
             await db.commit()
 
-        if profile_input is None:
+        if mains is None:
             await ctx.send(f"{ctx.author.mention}, I have deleted your mains.")
         else:
             await ctx.send(f"{ctx.author.mention}, I have set your mains to: {chars}")
 
-    @commands.command(
+    @commands.hybrid_command(
         aliases=["secondary", "setsecondary", "spsecondaries", "profilesecondaries"]
     )
-    async def secondaries(self, ctx, *, profile_input: str = None):
+    @app_commands.guilds(*GuildIDs.ALL_GUILDS)
+    @app_commands.describe(secondaries="Your secondaries, separated by commas.")
+    async def secondaries(self, ctx, *, secondaries: str = None):
         """
         Sets your secondaries on your smash profile.
         Separates the input by commas, and then matches with names, nicknames and fighter numbers.
         Echoes have an *e* behind their fighter number.
         """
-        chars = " ".join(self.match_character(profile_input)[:7])
+        chars = " ".join(self.match_character(secondaries)[:7])
 
         await self.make_new_profile(ctx.author)
 
@@ -256,15 +264,19 @@ class Profile(commands.Cog):
 
             await db.commit()
 
-        if profile_input is None:
+        if secondaries is None:
             await ctx.send(f"{ctx.author.mention}, I have deleted your secondaries.")
         else:
             await ctx.send(
                 f"{ctx.author.mention}, I have set your secondaries to: {chars}"
             )
 
-    @commands.command(aliases=["pocket", "setpocket", "sppockets", "profilepockets"])
-    async def pockets(self, ctx, *, profile_input: str = None):
+    @commands.hybrid_command(
+        aliases=["pocket", "setpocket", "sppockets", "profilepockets"]
+    )
+    @app_commands.guilds(*GuildIDs.ALL_GUILDS)
+    @app_commands.describe(pockets="Your pockets, separated by commas.")
+    async def pockets(self, ctx, *, pockets: str = None):
         """
         Sets your pockets on your smash profile.
         Separates the input by commas, and then matches with names, nicknames and fighter numbers.
@@ -272,7 +284,7 @@ class Profile(commands.Cog):
         """
         # since you can have some more pockets, i put it at 10 max.
         # there could be a max of around 25 per embed field however
-        chars = " ".join(self.match_character(profile_input)[:10])
+        chars = " ".join(self.match_character(pockets)[:10])
 
         await self.make_new_profile(ctx.author)
 
@@ -284,47 +296,51 @@ class Profile(commands.Cog):
 
             await db.commit()
 
-        if profile_input is None:
+        if pockets is None:
             await ctx.send(f"{ctx.author.mention}, I have deleted your pockets.")
         else:
             await ctx.send(f"{ctx.author.mention}, I have set your pockets to: {chars}")
 
-    @commands.command(aliases=["smashtag", "sptag", "settag"])
-    async def tag(self, ctx, *, profile_input: str = None):
+    @commands.hybrid_command(aliases=["smashtag", "sptag", "settag"])
+    @app_commands.guilds(*GuildIDs.ALL_GUILDS)
+    @app_commands.describe(tag="Your tag.")
+    async def tag(self, ctx, *, tag: str = None):
         """
         Sets your tag on your smash profile.
         Up to 30 characters long.
         """
         # the default tag is just your discord tag
-        if profile_input is None:
-            profile_input = str(ctx.author)
+        if tag is None:
+            tag = str(ctx.author)
 
         # think 30 chars for a tag is fair
-        profile_input = profile_input[:30]
+        tag = tag[:30]
 
         await self.make_new_profile(ctx.author)
 
         async with aiosqlite.connect("./db/database.db") as db:
             await db.execute(
                 """UPDATE profile SET tag = :tag WHERE user_id = :user_id""",
-                {"tag": profile_input, "user_id": ctx.author.id},
+                {"tag": tag, "user_id": ctx.author.id},
             )
 
             await db.commit()
 
         await ctx.send(
-            f"{ctx.author.mention}, I have set your tag to: `{discord.utils.remove_markdown(profile_input)}`"
+            f"{ctx.author.mention}, I have set your tag to: `{discord.utils.remove_markdown(tag)}`"
         )
 
-    @commands.command(aliases=["setregion", "spregion", "country"])
-    async def region(self, ctx, *, profile_input: str = None):
+    @commands.hybrid_command(aliases=["setregion", "spregion", "country"])
+    @app_commands.guilds(*GuildIDs.ALL_GUILDS)
+    @app_commands.describe(region="Your region you want to display on your profile.")
+    async def region(self, ctx, *, region: str = None):
         """
         Sets your region on your smash profile.
         Matches to commonly used regions, which are:
         North America, NA East, NA West, NA South, South America, Europe, Asia, Africa, Oceania.
         """
-        if profile_input is None:
-            profile_input = ""
+        if region is None:
+            region = ""
 
         # tried to be as broad as possible here, hope i didnt miss anything big
         region_dict = {
@@ -403,12 +419,12 @@ class Profile(commands.Cog):
         }
 
         # matching the input to the dict
-        for region, input_regions in region_dict.items():
-            if profile_input.lower() in input_regions:
-                profile_input = region
+        for matching_region, input_regions in region_dict.items():
+            if region.lower() in input_regions:
+                region = matching_region
 
         # double checking if the input got matched and is not None
-        if profile_input and profile_input not in region_dict:
+        if region and region not in region_dict:
             await ctx.send(
                 f"Please choose a valid region. Example: `{self.bot.command_prefix}region Europe`"
             )
@@ -419,64 +435,70 @@ class Profile(commands.Cog):
         async with aiosqlite.connect("./db/database.db") as db:
             await db.execute(
                 """UPDATE profile SET region = :region WHERE user_id = :user_id""",
-                {"region": profile_input, "user_id": ctx.author.id},
+                {"region": region, "user_id": ctx.author.id},
             )
 
             await db.commit()
 
-        if profile_input == "":
+        if region == "":
             await ctx.send(f"{ctx.author.mention}, I have deleted your region.")
         else:
             await ctx.send(
-                f"{ctx.author.mention}, I have set your region to: `{profile_input}`"
+                f"{ctx.author.mention}, I have set your region to: `{region}`"
             )
 
-    @commands.command(aliases=["setnote", "spnote"])
-    async def note(self, ctx, *, profile_input: str = None):
+    @commands.hybrid_command(aliases=["setnote", "spnote"])
+    @app_commands.guilds(*GuildIDs.ALL_GUILDS)
+    @app_commands.describe(note="Your note you want to display on your profile.")
+    async def note(self, ctx, *, note: str = None):
         """
         Sets your note on your smash profile.
         Up to 150 characters long.
         """
-        if profile_input is None:
-            profile_input = ""
+        if note is None:
+            note = ""
 
         # for a note, 150 chars seem enough to me
-        profile_input = profile_input[:150]
+        note = note[:150]
 
         await self.make_new_profile(ctx.author)
 
         async with aiosqlite.connect("./db/database.db") as db:
             await db.execute(
                 """UPDATE profile SET note = :note WHERE user_id = :user_id""",
-                {"note": profile_input, "user_id": ctx.author.id},
+                {"note": note, "user_id": ctx.author.id},
             )
 
             await db.commit()
 
-        if profile_input == "":
+        if note == "":
             await ctx.send(f"{ctx.author.mention}, I have deleted your note.")
         else:
             await ctx.send(
-                f"{ctx.author.mention}, I have set your note to: `{discord.utils.remove_markdown(profile_input)}`"
+                f"{ctx.author.mention}, I have set your note to: `{discord.utils.remove_markdown(note)}`"
             )
 
-    @commands.command(aliases=["color", "spcolour", "spcolor", "setcolour", "setcolor"])
-    async def colour(self, ctx, profile_input: str):
+    @commands.hybrid_command(
+        aliases=["color", "spcolour", "spcolor", "setcolour", "setcolor"]
+    )
+    @app_commands.guilds(*GuildIDs.ALL_GUILDS)
+    @app_commands.describe(colour="The hex colour code for your smash profile.")
+    async def colour(self, ctx, colour: str):
         """
         Sets your embed colour on your smash profile.
         Use a hex colour code with a leading #.
         """
         # hex colour codes are 7 digits long and start with #
-        if not profile_input.startswith("#") or len(profile_input) != 7:
+        if not colour.startswith("#") or len(colour) != 7:
             await ctx.send(
                 f"Please choose a valid hex colour code. Example: `{self.bot.command_prefix}colour #8a0f84`"
             )
             return
 
-        profile_input = profile_input.replace("#", "0x")
+        colour = colour.replace("#", "0x")
 
         try:
-            colour = int(profile_input, 16)
+            hex_colour = int(colour, 16)
         except ValueError:
             await ctx.send(
                 f"Please choose a valid hex colour code. Example: `{self.bot.command_prefix}colour #8a0f84`"
@@ -488,14 +510,12 @@ class Profile(commands.Cog):
         async with aiosqlite.connect("./db/database.db") as db:
             await db.execute(
                 """UPDATE profile SET colour = :colour WHERE user_id = :user_id""",
-                {"colour": colour, "user_id": ctx.author.id},
+                {"colour": hex_colour, "user_id": ctx.author.id},
             )
 
             await db.commit()
 
-        await ctx.send(
-            f"{ctx.author.mention}, I have set your colour to: `{profile_input}`"
-        )
+        await ctx.send(f"{ctx.author.mention}, I have set your colour to: `{colour}`")
 
     # some basic error handling for the above
     @profile.error

@@ -1,8 +1,11 @@
 import aiosqlite
 import discord
+import fuzzywuzzy
+from discord import app_commands
 from discord.ext import commands
 
 import utils.check
+from utils.ids import GuildIDs
 
 
 class Macros(commands.Cog):
@@ -118,11 +121,12 @@ class Macros(commands.Cog):
 
         await ctx.send(f"Deleted macro `{name}`")
 
-    @commands.command(aliases=["macros", "listmacros", "macrostats"])
+    @commands.hybrid_command(aliases=["macros", "listmacros", "macrostats"])
+    @app_commands.guilds(*GuildIDs.ALL_GUILDS)
+    @app_commands.describe(macro="The macro you want to see the stats of.")
     async def macro(self, ctx, *, macro: str = None):
         """
-        Gives you detailed information about a macro,
-        or lists every macro saved.
+        Gives you detailed information about a macro, or lists every macro saved.
         """
         if macro is None:
             async with aiosqlite.connect("./db/database.db") as db:
@@ -159,6 +163,28 @@ class Macros(commands.Cog):
         )
 
         await ctx.send(embed=embed)
+
+    @macro.autocomplete("macro")
+    async def macro_autocomplete(self, interaction: discord.Interaction, current: str):
+        async with aiosqlite.connect("./db/database.db") as db:
+            macros = await db.execute_fetchall("""SELECT name FROM macros""")
+
+        # it returns a list of tuples,
+        # so we need to extract them
+        macro_names = [m[0] for m in macros]
+
+        choices = []
+        if fuzzywuzzy.utils.full_process(current):
+            match_list = fuzzywuzzy.process.extractBests(
+                current, macro_names, limit=25, score_cutoff=60
+            )
+
+            choices.extend(
+                app_commands.Choice(name=match[0], value=match[0])
+                for match in match_list
+            )
+
+        return choices[:25]
 
     # the error handling for the commands above
     # fairly self-explanatory

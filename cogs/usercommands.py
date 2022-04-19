@@ -3,10 +3,12 @@ import random
 from typing import Union
 
 import discord
+from discord import app_commands
 from discord.ext import commands
 from googletrans import Translator
 
 import utils.conversion
+from utils.ids import GuildIDs
 
 
 class Usercommands(commands.Cog):
@@ -17,23 +19,26 @@ class Usercommands(commands.Cog):
     def __init__(self, bot):
         self.bot = bot
 
-    @commands.command()
+    @commands.hybrid_command()
+    @app_commands.guilds(*GuildIDs.ALL_GUILDS)
     async def ping(self, ctx):
         """
-        Classic ping command.
+        Gets you the ping of the bot in milliseconds.
         """
         pingtime = self.bot.latency * 1000
         await ctx.send(f"Ping: {round(pingtime)}ms")
 
-    @commands.command()
+    @commands.hybrid_command(aliases=["coinflip", "flipcoin", "flip"])
+    @app_commands.guilds(*GuildIDs.ALL_GUILDS)
     async def coin(self, ctx):
         """
-        Generic coin toss.
+        Tosses a coin.
         """
         coin = ["Coin toss: **Heads!**", "Coin toss: **Tails!**"]
         await ctx.send(random.choice(coin))
 
-    @commands.command()
+    @commands.hybrid_command()
+    @app_commands.guilds(*GuildIDs.ALL_GUILDS)
     async def stagelist(self, ctx):
         """
         Picture with our stagelist on it.
@@ -43,7 +48,9 @@ class Usercommands(commands.Cog):
         """
         await ctx.send(file=discord.File(r"./files/stagelist.png"))
 
-    @commands.command(aliases=["r"])
+    @commands.hybrid_command(aliases=["r"])
+    @app_commands.guilds(*GuildIDs.ALL_GUILDS)
+    @app_commands.describe(dice="The dice to roll, in NdN format. Example: 2d20")
     async def roll(self, ctx, dice: str):
         """
         A dice roll, in NdN format.
@@ -74,10 +81,12 @@ class Usercommands(commands.Cog):
                 f"Rolling **1**-**{sides}** **{r+1}** times \nResults: **{results}** \nTotal: **{sum(results)}**"
             )
 
-    @commands.command()
+    @commands.hybrid_command()
+    @app_commands.guilds(*GuildIDs.ALL_GUILDS)
+    @app_commands.describe(count="The number to count down from.")
     async def countdown(self, ctx, count: int):
         """
-        Counts down from a number < 50.
+        Counts down from a number less than 50.
         """
         if count > 50:
             await ctx.send("Maximum limit is 50.")
@@ -104,7 +113,9 @@ class Usercommands(commands.Cog):
             content=f"Counting down from {initial_count}...\nFinished!"
         )
 
-    @commands.command()
+    @commands.hybrid_command(aliases=["icon"])
+    @app_commands.guilds(*GuildIDs.ALL_GUILDS)
+    @app_commands.describe(member="The member you want to see the avatar of.")
     async def avatar(self, ctx, member: discord.Member = None):
         """
         Gets you the avatar of a mentioned member, or yourself.
@@ -113,7 +124,9 @@ class Usercommands(commands.Cog):
             member = ctx.author
         await ctx.send(member.display_avatar.url)
 
-    @commands.command()
+    @commands.hybrid_command()
+    @app_commands.guilds(*GuildIDs.ALL_GUILDS)
+    @app_commands.describe(member="The member you want to see the banner of.")
     async def banner(self, ctx, member: discord.Member = None):
         """
         Gets you the banner of a mentioned member, or yourself.
@@ -212,7 +225,11 @@ class Usercommands(commands.Cog):
         embed.set_image(url=sticker.url)
         await ctx.send(embed=embed)
 
-    @commands.command()
+    @commands.hybrid_command()
+    @app_commands.guilds(*GuildIDs.ALL_GUILDS)
+    @app_commands.describe(
+        member="The member you want to see the current spotify listening status of."
+    )
     async def spotify(self, ctx, member: discord.Member = None):
         """
         Posts the Spotify Song Link the member (or yourself) is listening to.
@@ -242,7 +259,8 @@ class Usercommands(commands.Cog):
         else:
             await ctx.send(f"https://open.spotify.com/track/{listeningstatus.track_id}")
 
-    @commands.command(aliases=["currenttime"])
+    @commands.hybrid_command(aliases=["currenttime"])
+    @app_commands.guilds(*GuildIDs.ALL_GUILDS)
     async def time(self, ctx):
         """
         Shows the current time as a timezone aware object.
@@ -251,7 +269,11 @@ class Usercommands(commands.Cog):
             f"The current time is: {discord.utils.format_dt(discord.utils.utcnow(), style='T')}"
         )
 
-    @commands.command(aliases=["conversion"])
+    @commands.hybrid_command(aliases=["conversion"])
+    @app_commands.guilds(*GuildIDs.ALL_GUILDS)
+    @app_commands.describe(
+        conversion_input="The input you want to convert to metric or imperial."
+    )
     async def convert(self, ctx, *, conversion_input: str):
         """
         Converts your input between metric and imperial

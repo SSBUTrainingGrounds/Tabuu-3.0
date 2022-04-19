@@ -33,15 +33,16 @@ Everything else should be fairly self-explanatory.
     - Example: `%addrole @ExampleUser first class` 
   
 - **%avatar** `<@member: Optional>`  
-    - Info: Gets you the avatar of a Member. Member argument is optional, if there is none, this gets your own avatar. Otherwise mention the Member or use Member ID.  
+    - Info: **Slash version available.** Gets you the avatar of a Member. Member argument is optional, if there is none, this gets your own avatar. Otherwise mention the Member or use Member ID.  
     - Example: `%avatar @ExampleUser` 
+    - Aliases: icon  
   
 - **%ban** `<@user> <reason>`  
     - Info: **Moderator only.** Bans a User. Mention the User or use User ID. You will be asked for confirmation before the User gets banned. The reason will get logged in Audit logs and also DM'd to the User, if the bot can DM the User.  
     - Example: `%ban @ExampleUser what an idiot`  
   
 - **%banner** `<@member: Optional>`  
-    - Info: Gets you the banner of a Member. Member argument is optional, if there is none, this gets your own avatar. Otherwise mention the Member or use Member ID.  
+    - Info: **Slash version available.** Gets you the banner of a Member. Member argument is optional, if there is none, this gets your own avatar. Otherwise mention the Member or use Member ID.  
     - Example: `%banner @ExampleUser`  
   
 - **%blackjack** `<@member>`  
@@ -69,20 +70,21 @@ Everything else should be fairly self-explanatory.
     - Example: `%clearwarns @ExampleUser`  
   
 - **%coin**  
-    - Info: Flips a coin and gives you the result. Heads or Tails.  
+    - Info: **Slash version available.** Flips a coin and gives you the result. Heads or Tails.  
+    - Aliases: coinflip, flip, flipcoin  
   
 - **%colour** `<hex colour code>`  
-    - Info: Sets your colour on your profile embed. You need to use a hex colour code.  
+    - Info: **Slash version available.** Sets your colour on your profile embed. You need to use a hex colour code.  
     - Example: `%colour #FFFFFF`  
     - Aliases: color, spcolour, spcolor, setcolour, setcolor  
   
 - **%convert** `<input>`  
-    - Info: Converts the input between metric and imperial, and vice versa. Works with most common units of length, speed, weight, temperature and volume.  
+    - Info: **Slash version available.** Converts the input between metric and imperial, and vice versa. Works with most common units of length, speed, weight, temperature and volume.  
     - Example: `%convert 14 feet`  
     - Aliases: conversion  
   
 - **%countdown** `<number>`  
-    - Info: Counts down from the specified number between 2 and 50, used for syncing stuff.  
+    - Info: **Slash version available.** Counts down from the specified number between 2 and 50, used for syncing stuff.  
     - Example: `%countdown 5`  
   
 - **%createmacro** `<name> <payload>`  
@@ -98,10 +100,10 @@ Everything else should be fairly self-explanatory.
     - Example: `%deletemacro test`  
   
 - **%deleteprofile**  
-    - Info: Deletes your own profile.  
+    - Info: **Slash version available.** Deletes your own profile.  
   
 - **%deletereminder** `<reminder ID>`  
-    - Info: Deletes a reminder of yours by the reminder ID. View the reminder IDs with `%viewreminders`.  
+    - Info: **Slash version available.** Deletes a reminder of yours by the reminder ID. View the reminder IDs with `%viewreminders`.  
     - Example: `%deletereminder 1234567`  
     - Aliases: delreminder, rmreminder, delreminders, deletereminders  
   
@@ -180,7 +182,7 @@ Everything else should be fairly self-explanatory.
     - Info: **Moderator only.** Gets you the Top 10 rated players of our ranked matchmaking system.  
   
 - **%listrole** `<role>`  
-    - Info: Lists out every Member with a certain role. The bot first tries to use the Role ID or Role mention, after that it searches for the closest match for the role name.  
+    - Info: **Slash version available.** Lists out every Member with a certain role. The bot first tries to use the Role ID or Role mention, after that it searches for the closest match for the role name.  
     - Example: `%listrole first class`  
     - Aliases: listroles  
   
@@ -189,11 +191,11 @@ Everything else should be fairly self-explanatory.
     - Example: `%test`  
 
 - **%macro** `<macro: Optional>`  
-    - Info: Gives you information about a specific macro, or if you do not specify a macro it will list out all registered macro commands.  
+    - Info: **Slash version available.** Gives you information about a specific macro, or if you do not specify a macro it will list out all registered macro commands.  
     - Aliases: listmacro, macros, macrostats  
   
 - **%mains** `<main1, main2,..: Optional>`  
-    - Info: Updates your mains listed on your profile. Up to 7 characters, separate them by commas. Accepts names, commonly used nicknames and the Fighter Numbers. Leave the field blank or input invalid characters to delete the characters.  
+    - Info: **Slash version available.** Updates your mains listed on your profile. Up to 7 characters, separate them by commas. Accepts names, commonly used nicknames and the Fighter Numbers. Leave the field blank or input invalid characters to delete the characters.  
     - Example: `%mains incin, wii fit, 4e, paisy`  
     - Aliases: main, setmain, spmains, profilemains  
   
@@ -218,7 +220,7 @@ Everything else should be fairly self-explanatory.
     - Example: `%newrolemenu 858117781375418389 🥰 @Server Events`  
   
 - **%note** `<note: Optional>`  
-    - Info: Sets your note on your profile, up to 150 characters long. Leave it blank to delete the note.  
+    - Info: **Slash version available.** Sets your note on your profile, up to 150 characters long. Leave it blank to delete the note.  
     - Example: `%note test note`  
     - Aliases: setnote, spnote  
   
@@ -226,10 +228,10 @@ Everything else should be fairly self-explanatory.
     - Info: **Slash version available.** Gives you an inspiring quote.  
   
 - **%ping**  
-    - Info: Gets the response time of the Bot, *not yourself*. Usually around 100-150ms in optimal conditions.  
+    - Info: **Slash version available.** Gets the response time of the Bot, *not yourself*. Usually around 100-150ms in optimal conditions.  
   
 - **%pockets** `<pocket1, pocket2,..: Optional>`  
-    - Info: Updates your pockets listed on your profile. Up to 10 characters, separate them by commas. Accepts names, commonly used nicknames and the Fighter Numbers. Leave the field blank or input invalid characters to delete the characters.  
+    - Info: **Slash version available.** Updates your pockets listed on your profile. Up to 10 characters, separate them by commas. Accepts names, commonly used nicknames and the Fighter Numbers. Leave the field blank or input invalid characters to delete the characters.  
     - Example: `%pockets incin, wii fit, 4e, paisy`  
     - Aliases: pocket, setpocket, sppockets, profilepockets  
   
@@ -238,7 +240,7 @@ Everything else should be fairly self-explanatory.
     - Example: `%poll "What is your favourite Ice cream?" Chocolate Strawberry "None of the above"`  
   
 - **%profile** `<@user: Optional>`  
-    - Info: Gets you the profile of the mentioned User, if you dont specify a User, this will get your own.  
+    - Info: **Slash version available.** Gets you the profile of the mentioned User, if you dont specify a User, this will get your own.  
     - Example: `%profile @ExampleUser`  
     - Aliases: smashprofile, profileinfo  
   
@@ -261,7 +263,7 @@ Everything else should be fairly self-explanatory.
     - Info: **Moderator only.** Gets you our ban records.  
   
 - **%region** `<region: Optional>`  
-    - Info: Sets your region on your profile. The regions are the 6 commonly used continents, plus some more for North America, matches some inputs to those. So EU will work, as well as europe. Leave the field blank to delete the region from your profile.  
+    - Info: **Slash version available.** Sets your region on your profile. The regions are the 6 commonly used continents, plus some more for North America, matches some inputs to those. So EU will work, as well as europe. Leave the field blank to delete the region from your profile.  
     - Example: `%region europe`  
     - Aliases: setregion, spregion, country  
   
@@ -270,7 +272,7 @@ Everything else should be fairly self-explanatory.
     - Example: `%reloadcogs admin`  
   
 - **%reminder** `<time> <message>`  
-    - Info: Reminds you about something. Time is in a format with a number and the duration, do not use spaces inbetween multiple times. Minimum duration is 30 seconds, maximum is 90 days.  
+    - Info: **Slash version available.** Reminds you about something. Time is in a format with a number and the duration, do not use spaces inbetween multiple times. Minimum duration is 30 seconds, maximum is 90 days.  
     - Example: `%reminder 12h30mins get that thing done you wanted to get done`  
     - Aliases: remindme, newreminder, newremindme  
   
@@ -298,12 +300,12 @@ Everything else should be fairly self-explanatory.
     - Aliases: reportgame  
   
 - **%roleinfo** `<role>`  
-    - Info: Gets you information about a role. The bot first tries to use the Role ID or Role mention, after that it searches for the closest match for the role name.  
+    - Info: **Slash version available.** Gets you information about a role. The bot first tries to use the Role ID or Role mention, after that it searches for the closest match for the role name.  
     - Example: `%roleinfo first class`  
     - Aliases: role  
   
 - **%roll** `<NdN>`  
-    - Info: Rolls a dice. N are two numbers, first the number of dice then the amount of sides for the dice.  
+    - Info: **Slash version available.** Rolls a dice. N are two numbers, first the number of dice then the amount of sides for the dice.  
     - Example: `%roll 2d6`  
     - Aliases: r  
   
@@ -317,12 +319,12 @@ Everything else should be fairly self-explanatory.
     - Example: `%say #announcements Important Announcement`  
   
 - **%secondaries** `<secondary1, secondary2,..: Optional>`  
-    - Info: Updates your secondaries listed on your profile. Up to 7 characters, separate them by commas. Accepts names, commonly used nicknames and the Fighter Numbers. Leave the field blank or input invalid characters to delete the characters.  
+    - Info: **Slash version available.** Updates your secondaries listed on your profile. Up to 7 characters, separate them by commas. Accepts names, commonly used nicknames and the Fighter Numbers. Leave the field blank or input invalid characters to delete the characters.  
     - Example: `%secondaries incin, wii fit, 4e, paisy`  
     - Aliases: secondary, setsecondary, spsecondaries, profilesecondaries  
   
 - **%server**  
-    - Info: Gets you some information about the server, does not work in DMs for obvious reasons.  
+    - Info: **Slash version available.** Gets you some information about the server, does not work in DMs for obvious reasons.  
     - Aliases: serverinfo  
   
 - **%setupmodmailbutton**  
@@ -333,11 +335,11 @@ Everything else should be fairly self-explanatory.
     - Aliases: matchmaking, matchmakingsingles, mmsingles, Singles  
   
 - **%spotify** `<@member: Optional>`  
-    - Info: Posts the song you are currently listening to on Spotify. You need to enable the setting that displays your Spotify Session as your Discord Status for this to work. Does not work in DMs. Member is optional, if not set this will return your own. Mention the Member or use Member ID.  
+    - Info: **Slash version available.** Posts the song you are currently listening to on Spotify. You need to enable the setting that displays your Spotify Session as your Discord Status for this to work. Does not work in DMs. Member is optional, if not set this will return your own. Mention the Member or use Member ID.  
     - Example: `%spotify @ExampleUser`  
   
 - **%stagelist**  
-    - Info: Posts our version of the legal stages.  
+    - Info: **Slash version available.** Posts our version of the legal stages.  
   
 - **%starboardemoji** `<emoji>`  
     - Info: **Moderator only.** Changes the emoji used in our starboard.  
@@ -348,7 +350,7 @@ Everything else should be fairly self-explanatory.
     - Example: `%starboardthreshold 5`  
   
 - **%stats**  
-    - Info: Gets you various stats about this bot.  
+    - Info: **Slash version available.** Gets you various stats about this bot.  
     - Aliases: botstats  
   
 - **%sticker** `<sticker>`  
@@ -369,7 +371,7 @@ Everything else should be fairly self-explanatory.
     - Aliases: uwu  
   
 - **%tag** `<tag: Optional>`  
-    - Info: Updates your tag on your profile, up to 30 characters long. Leave the field blank to reset the tag to your Discord Username.  
+    - Info: **Slash version available.** Updates your tag on your profile, up to 30 characters long. Leave the field blank to reset the tag to your Discord Username.  
     - Example: `%tag test tag`  
     - Aliases: smashtag, sptag, settag  
   
@@ -383,7 +385,7 @@ Everything else should be fairly self-explanatory.
     - Aliases: ttt  
   
 - **%time**  
-    - Info: Shows the current time as a timezone aware object.  
+    - Info: **Slash version available.** Shows the current time as a timezone aware object.  
     - Aliases: currenttime  
   
 - **%timeout** `<@member> <time> <reason>`  
@@ -407,12 +409,12 @@ Everything else should be fairly self-explanatory.
     - Example: `%updatelevel @ExampleUser`  
   
 - **%userinfo** `<@member: Optional>`  
-    - Info: Gets you various information about a Member. If you haven't specified a Member, this will get your own info. Mention the Member or use Member ID. Does not work in DMs.  
+    - Info: **Slash version available.** Gets you various information about a Member. If you haven't specified a Member, this will get your own info. Mention the Member or use Member ID. Does not work in DMs.  
     - Example: `%userinfo @ExampleUser`  
     - Aliases: user, user-info, info  
   
 - **%viewreminders**  
-    - Info: Lists out your active reminders. If you have too many it will only display the first 6.  
+    - Info: **Slash version available.** Lists out your active reminders. If you have too many it will only display the first 6.  
     - Aliases: reminders, myreminders, viewreminder, listreminders  
   
 - **%warn** `<@member> <reason>`  
