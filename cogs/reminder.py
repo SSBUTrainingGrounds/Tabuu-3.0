@@ -208,6 +208,27 @@ class Reminder(commands.Cog):
 
         await ctx.send(f"Deleted reminder ID {reminder_id}.")
 
+    @deletereminder.autocomplete("reminder_id")
+    async def deletereminder_autocomplete(
+        self, interaction: discord.Interaction, current: str
+    ):
+        async with aiosqlite.connect("./db/database.db") as db:
+            user_reminders = await db.execute_fetchall(
+                """SELECT reminder_id FROM reminder WHERE user_id = :user_id""",
+                {"user_id": interaction.user.id},
+            )
+
+        reminder_ids = [str(reminder[0]) for reminder in user_reminders]
+
+        # we dont really need the fuzzy search here, this is all just numbers
+        choices = [
+            app_commands.Choice(name=reminder_name, value=reminder_name)
+            for reminder_name in reminder_ids
+            if current in reminder_name
+        ]
+
+        return choices[:25]
+
     @tasks.loop(seconds=60)
     async def reminder_loop(self):
         """
