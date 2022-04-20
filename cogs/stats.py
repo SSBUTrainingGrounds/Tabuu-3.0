@@ -11,7 +11,7 @@ from discord.ext import commands
 
 import utils.check
 from utils.ids import GuildIDs, TGRoleIDs
-from utils.role import search_role
+from utils.search import search_role
 
 
 class Stats(commands.Cog):

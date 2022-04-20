@@ -6,7 +6,7 @@ from discord.ext import commands
 
 import utils.check
 from utils.ids import AdminVars, GuildIDs, GuildNames
-from utils.role import search_role
+from utils.search import search_role
 
 
 class Admin(commands.Cog):
