@@ -42,10 +42,10 @@ def convert_time(input_time: str) -> tuple[int, str]:
 
     # matching the input into the appropriate group
     compiled = re.compile(
-        r"(\s?)(?:(?P<days>[0-9]{1,5})(\s?)(?:days?|d))?(\s?,?)"
-        r"(\s?)(?:(?P<hours>[0-9]{1,5})(\s?)(?:hours?|h|hrs?))?(\s?,?)"
-        r"(\s?)(?:(?P<minutes>[0-9]{1,5})(\s?)(?:minutes?|m|mins?))?(\s?,?)"
-        r"(\s?)(?:(?P<seconds>[0-9]{1,5})(\s?)(?:seconds?|s|secs?))?(\s?,?)",
+        r"(\s?)(?:(?P<days>[0-9]{1,5})(\s?)(?:days?|d))?(\s?(,|and)?)"
+        r"(\s?)(?:(?P<hours>[0-9]{1,5})(\s?)(?:hours?|hrs?|h))?(\s?(,|and)?)"
+        r"(\s?)(?:(?P<minutes>[0-9]{1,5})(\s?)(?:minutes?|mins?|m))?(\s?(,|and)?)"
+        r"(\s?)(?:(?P<seconds>[0-9]{1,5})(\s?)(?:seconds?|secs?|s))?(\s?(,|and)?)",
         re.VERBOSE,
     )
 

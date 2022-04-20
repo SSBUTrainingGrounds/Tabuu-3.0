@@ -23,6 +23,11 @@ class TestTime(unittest.TestCase):
             convert_time(" 30 d , 20 hr 1 minutes, 20secs"),
             (2664080, "30 days, 20 hours, 1 minute, 20 seconds"),
         )
+        self.assertEqual(
+            convert_time("30 days and 20 hrs and 1 m and 20 second"),
+            (2664080, "30 days, 20 hours, 1 minute, 20 seconds"),
+        )
+
         self.assertEqual(convert_time("00001m"), (60, "1 minute"))
 
         # some error checking
