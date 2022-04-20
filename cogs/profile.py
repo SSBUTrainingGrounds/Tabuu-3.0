@@ -2,6 +2,7 @@ import json
 
 import aiosqlite
 import discord
+import fuzzywuzzy
 from discord import app_commands
 from discord.ext import commands
 
@@ -109,6 +110,54 @@ class Profile(commands.Cog):
             )
 
             await db.commit()
+
+    async def character_autocomplete(self, current: str) -> list[app_commands.Choice]:
+        """
+        Autocompletion for the Smash characters.
+        We are using this for matching mains, secondaries and pockets.
+        """
+        with open(r"./files/characters.json", "r", encoding="utf-8") as f:
+            characters = json.load(f)
+
+        existing_chars = None
+        choices = []
+        character_names = [
+            character["name"].title() for character in characters["Characters"]
+        ]
+
+        # we only wanna match the current char, so we split the input
+        if "," in current:
+            existing_chars, current_char = current.rsplit(",", 1)
+
+        else:
+            current_char = current
+
+        # we validate the input first, otherwise the console is
+        # getting spammed with warnings on invalid or unmatchable inputs
+        if fuzzywuzzy.utils.full_process(current_char):
+            match_list = fuzzywuzzy.process.extractBests(
+                current_char, character_names, limit=25, score_cutoff=60
+            )
+
+            # we append the existing chars to the current choices,
+            # so you can select multiple characters at once and the autocomplete still works
+            if existing_chars:
+                choices.extend(
+                    # choices can be up to 100 chars in length,
+                    # which we could exceed with 10 chars, so we have to cut it off.
+                    app_commands.Choice(
+                        name=f"{existing_chars}, {match[0]}"[:100],
+                        value=f"{existing_chars}, {match[0]}"[:100],
+                    )
+                    for match in match_list
+                )
+            else:
+                choices.extend(
+                    app_commands.Choice(name=match[0], value=match[0])
+                    for match in match_list
+                )
+
+        return choices[:25]
 
     @commands.hybrid_command(aliases=["smashprofile", "profileinfo"])
     @app_commands.guilds(*GuildIDs.ALL_GUILDS)
@@ -241,6 +290,10 @@ class Profile(commands.Cog):
         else:
             await ctx.send(f"{ctx.author.mention}, I have set your mains to: {chars}")
 
+    @mains.autocomplete("mains")
+    async def mains_autocomplete(self, interaction: discord.Interaction, current: str):
+        return await self.character_autocomplete(current)
+
     @commands.hybrid_command(
         aliases=["secondary", "setsecondary", "spsecondaries", "profilesecondaries"]
     )
@@ -270,6 +323,12 @@ class Profile(commands.Cog):
             await ctx.send(
                 f"{ctx.author.mention}, I have set your secondaries to: {chars}"
             )
+
+    @secondaries.autocomplete("secondaries")
+    async def secondaries_autocomplete(
+        self, interaction: discord.Interaction, current: str
+    ):
+        return await self.character_autocomplete(current)
 
     @commands.hybrid_command(
         aliases=["pocket", "setpocket", "sppockets", "profilepockets"]
@@ -301,6 +360,12 @@ class Profile(commands.Cog):
         else:
             await ctx.send(f"{ctx.author.mention}, I have set your pockets to: {chars}")
 
+    @pockets.autocomplete("pockets")
+    async def pockets_autocomplete(
+        self, interaction: discord.Interaction, current: str
+    ):
+        return await self.character_autocomplete(current)
+
     @commands.hybrid_command(aliases=["smashtag", "sptag", "settag"])
     @app_commands.guilds(*GuildIDs.ALL_GUILDS)
     @app_commands.describe(tag="Your tag.")
@@ -330,6 +395,85 @@ class Profile(commands.Cog):
             f"{ctx.author.mention}, I have set your tag to: `{discord.utils.remove_markdown(tag)}`"
         )
 
+    # a dictionary of valid profile regions.
+    # tried to be as broad as possible here, hope i didnt miss anything big.
+    # outside of functions cause we need it in the autocomplete, too.
+    # but at the same time i didnt think this should be in a json file or something.
+    region_dict = {
+        "North America": [
+            "na",
+            "north america",
+            "usa",
+            "us",
+            "canada",
+            "latin america",
+            "america",
+            "united states",
+        ],
+        "NA East": [
+            "east coast",
+            "us east",
+            "east",
+            "midwest",
+            "na east",
+            "canada east",
+        ],
+        "NA West": [
+            "west coast",
+            "us west",
+            "west",
+            "na west",
+            "canada west",
+        ],
+        "NA South": [
+            "mexico",
+            "south",
+            "us south",
+            "na south",
+            "texas",
+            "southern",
+        ],
+        "South America": [
+            "sa",
+            "brazil",
+            "argentina",
+            "south america",
+            "chile",
+            "peru",
+        ],
+        "Europe": [
+            "eu",
+            "europe",
+            "uk",
+            "england",
+            "france",
+            "germany",
+        ],
+        "Asia": [
+            "asia",
+            "sea",
+            "china",
+            "japan",
+            "india",
+            "middle east",
+        ],
+        "Africa": [
+            "africa",
+            "south africa",
+            "egypt",
+            "nigeria",
+            "maghreb",
+            "north africa",
+        ],
+        "Oceania": [
+            "australia",
+            "new zealand",
+            "nz",
+            "au",
+            "oceania",
+        ],
+    }
+
     @commands.hybrid_command(aliases=["setregion", "spregion", "country"])
     @app_commands.guilds(*GuildIDs.ALL_GUILDS)
     @app_commands.describe(region="Your region you want to display on your profile.")
@@ -342,89 +486,13 @@ class Profile(commands.Cog):
         if region is None:
             region = ""
 
-        # tried to be as broad as possible here, hope i didnt miss anything big
-        region_dict = {
-            "North America": [
-                "na",
-                "north america",
-                "usa",
-                "us",
-                "canada",
-                "latin america",
-                "america",
-                "united states",
-            ],
-            "NA East": [
-                "east coast",
-                "us east",
-                "east",
-                "midwest",
-                "na east",
-                "canada east",
-            ],
-            "NA West": [
-                "west coast",
-                "us west",
-                "west",
-                "na west",
-                "canada west",
-            ],
-            "NA South": [
-                "mexico",
-                "south",
-                "us south",
-                "na south",
-                "texas",
-                "southern",
-            ],
-            "South America": [
-                "sa",
-                "brazil",
-                "argentina",
-                "south america",
-                "chile",
-                "peru",
-            ],
-            "Europe": [
-                "eu",
-                "europe",
-                "uk",
-                "england",
-                "france",
-                "germany",
-            ],
-            "Asia": [
-                "asia",
-                "sea",
-                "china",
-                "japan",
-                "india",
-                "middle east",
-            ],
-            "Africa": [
-                "africa",
-                "south africa",
-                "egypt",
-                "nigeria",
-                "maghreb",
-                "north africa",
-            ],
-            "Oceania": [
-                "australia",
-                "new zealand",
-                "nz",
-                "au",
-                "oceania",
-            ],
-        }
-
         # matching the input to the dict
-        for matching_region, input_regions in region_dict.items():
+        for matching_region, input_regions in self.region_dict.items():
             if region.lower() in input_regions:
                 region = matching_region
 
         # double checking if the input got matched and is not None
-        if region and region not in region_dict:
+        if region and region not in self.region_dict:
             await ctx.send(
                 f"Please choose a valid region. Example: `{self.bot.command_prefix}region Europe`"
             )
@@ -446,6 +514,19 @@ class Profile(commands.Cog):
             await ctx.send(
                 f"{ctx.author.mention}, I have set your region to: `{region}`"
             )
+
+    @region.autocomplete("region")
+    async def region_autocomplete(self, interaction: discord.Interaction, current: str):
+        valid_regions = list(self.region_dict.keys())
+
+        # again, dont really need fuzzy search here, these are just some very basic regions.
+        choices = [
+            app_commands.Choice(name=region, value=region)
+            for region in valid_regions
+            if current in region.lower()
+        ]
+
+        return choices[:25]
 
     @commands.hybrid_command(aliases=["setnote", "spnote"])
     @app_commands.guilds(*GuildIDs.ALL_GUILDS)
