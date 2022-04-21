@@ -484,8 +484,8 @@ Events parsed: {self.bot.events_listened_to}
         """
         if not move:
             await ctx.send(
-                "Here is a list of Hero's moves that cost mana: \n"
-                f"`{', '.join([m.title() for m in self.mana_dict.keys()])}`"
+                f"To see the mana cost of a move, use `{self.bot.command_prefix}mp4 <move>`.\n"
+                f"Available moves: \n`{', '.join([m.title() for m in self.mana_dict.keys()])}`"
             )
             return
 
