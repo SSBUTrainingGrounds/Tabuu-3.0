@@ -495,7 +495,14 @@ Events parsed: {self.bot.events_listened_to}
             )
             return
 
-        await ctx.send("Please input a valid move!")
+        if closest_match := fuzzywuzzy.process.extractOne(
+            move.lower(), self.mana_dict.keys(), score_cutoff=50
+        ):
+            await ctx.send(
+                f"Please input a valid move! Did you mean `{closest_match[0].title()}`?"
+            )
+        else:
+            await ctx.send("Please input a valid move!")
 
     @mp4.autocomplete("move")
     async def mp4_autocomplete(self, interaction: discord.Interaction, current: str):
