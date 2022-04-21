@@ -225,7 +225,7 @@ class Responses(discord.ui.Select):
 ```{self.prefix}banner <@user>``` - Gets you the banner of a user.
 ```{self.prefix}spotify <@user>``` - Posts the song the user is currently streaming.
 ```{self.prefix}ping``` - Gets the ping of the bot.
-```{self.prefix}mp4<move>``` - Tells you the Mana Cost of any of Hero's moves.
+```{self.prefix}mp4 <move>``` - Tells you the Mana Cost of any of Hero's moves.
     """,
             )
 

@@ -5,6 +5,7 @@ import time
 
 import aiosqlite
 import discord
+import fuzzywuzzy
 import psutil
 from discord import app_commands
 from discord.ext import commands
@@ -440,6 +441,79 @@ Events parsed: {self.bot.events_listened_to}
         embed.set_footer(text="Creator: Phxenix#1104, hosted on: Raspberry Pi 4")
         embed.set_thumbnail(url=self.bot.user.display_avatar.url)
         await ctx.send(embed=embed)
+
+    # dictionary of all of hero's moves and their mana cost
+    mana_dict = {
+        "acceleratle": 13,
+        "psycheup": 14,
+        "oomph": 16,
+        "whack": 10,
+        "thwack": 30,
+        "sizz": 8,
+        "bang": 9,
+        "kaboom": 37,
+        "magic burst": "all",
+        "snooze": 16,
+        "flame slash": 12,
+        "kacrackle slash": 11,
+        "kamikazee": 1,
+        "bounce": 14,
+        "hocus pocus": 4,
+        "heal": 7,
+        "zoom": 8,
+        "hatchet man": 15,
+        "kaclang": 6,
+        "metal slash": 6,
+        "frizz": 6,
+        "frizzle": 16,
+        "kafrizz": 36,
+        "zap": 8,
+        "zapple": 18,
+        "kazap": 42,
+        "woosh": 5,
+        "swoosh": 9,
+        "kaswoosh": 18,
+    }
+
+    @commands.hybrid_command()
+    @app_commands.guilds(*GuildIDs.ALL_GUILDS)
+    @app_commands.describe(move="The move you want get the mana cost for.")
+    async def mp4(self, ctx, *, move: str = None):
+        """
+        Gives you the amount of mana used for any of Hero's moves.
+        """
+        if not move:
+            await ctx.send(
+                "Here is a list of Hero's moves that cost mana: \n"
+                f"`{', '.join([m.title() for m in self.mana_dict.keys()])}`"
+            )
+            return
+
+        if move.lower() in self.mana_dict:
+            await ctx.send(
+                f"The MP cost for *{move.title()}* is {self.mana_dict[move.lower()]} MP."
+            )
+            return
+
+        await ctx.send("Please input a valid move!")
+
+    @mp4.autocomplete("move")
+    async def mp4_autocomplete(self, interaction: discord.Interaction, current: str):
+        move_list = [m.title() for m in self.mana_dict.keys()]
+
+        choices = []
+
+        if fuzzywuzzy.utils.full_process(current):
+            match_list = fuzzywuzzy.process.extractBests(
+                current, move_list, limit=25, score_cutoff=60
+            )
+
+            choices.extend(
+                app_commands.Choice(name=match[0], value=match[0])
+                for match in match_list
+            )
+
+        return choices[:25]
 
     # error handling
     @addbadges.error

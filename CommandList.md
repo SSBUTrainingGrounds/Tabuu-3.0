@@ -207,9 +207,9 @@ Everything else should be fairly self-explanatory.
     - Info: Privately contact the moderator team of this server. Only works in the DM channel of Tabuu 3.0. Use this for reporting rule violations or feedback/suggestions for the Mod Team. You can attach any attachments to the message. Your Username will be visible to prevent abuse.  
     - Example: `%modmail Hello, I think the moderator team has been doing an awful job lately.`  
   
-- **%mp4`<move>`**  
-    - Info: Gives you the mana cost of any of Hero's moves.  
-    - Example: `%mp4woosh`  
+- **%mp4** `<move>`  
+    - Info: **Slash version available.** Gives you the mana cost of any of Hero's moves. If you do not specify a move, lists every available move.  
+    - Example: `%mp4 woosh`  
   
 - **%mute** `<@member> <reason>`  
     - Info: **Moderator only.** Mutes a Member in both servers. The reason will get DM'd to the Member, if the bot can DM the Member.  
