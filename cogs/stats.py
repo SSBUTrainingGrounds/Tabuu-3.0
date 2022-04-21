@@ -368,16 +368,6 @@ class Stats(commands.Cog):
         async with aiosqlite.connect("./db/database.db") as db:
             macro_list = await db.execute_fetchall("""SELECT name FROM macros""")
 
-        # adds all type of app commands together
-        app_commands = []
-
-        for i in range(1, 4):
-            app_commands.extend(
-                self.bot.tree.get_commands(
-                    guild=ctx.guild, type=discord.AppCommandType(i)
-                )
-            )
-
         # we use codeblocks with yml syntax highlighting
         # just cause it looks nice, in my opinion.
         # well at least on desktop.
@@ -409,7 +399,7 @@ RAM Usage: {ram_used}GB/{ram_total}GB ({ram_percent}%)
         listeners_description = f"""
 ```yml
 Number of Message Commands: {(len(self.bot.commands) + len(macro_list))}
-Number of Application Commands: {len(app_commands)}
+Number of Application Commands: {len(self.bot.tree.get_commands(guild=ctx.guild, type=None))}
 Number of Events: {len(self.bot.extra_events)}
 ```
         """
@@ -485,7 +475,7 @@ Events parsed: {self.bot.events_listened_to}
         if not move:
             await ctx.send(
                 f"To see the mana cost of a move, use `{self.bot.command_prefix}mp4 <move>`.\n"
-                f"Available moves: \n`{', '.join([m.title() for m in self.mana_dict.keys()])}`"
+                f"Available moves: \n`{', '.join([m.title() for m in self.mana_dict])}`"
             )
             return
 
@@ -506,7 +496,7 @@ Events parsed: {self.bot.events_listened_to}
 
     @mp4.autocomplete("move")
     async def mp4_autocomplete(self, interaction: discord.Interaction, current: str):
-        move_list = [m.title() for m in self.mana_dict.keys()]
+        move_list = [m.title() for m in self.mana_dict]
 
         choices = []
 
