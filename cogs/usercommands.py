@@ -1,6 +1,5 @@
 import asyncio
 import random
-from typing import Union
 
 import discord
 from discord import app_commands
@@ -354,8 +353,10 @@ class Usercommands(commands.Cog):
         """
         await ctx.send(utils.conversion.convert_input(conversion_input))
 
-    @commands.command()
-    async def translate(self, ctx, *, message: Union[discord.Message, str] = None):
+    @commands.hybrid_command()
+    @app_commands.guilds(*GuildIDs.ALL_GUILDS)
+    @app_commands.describe(message="The string or message to translate.")
+    async def translate(self, ctx, *, message: str = None):
         """
         Translates a message from any language to english.
         Specify a string to translate, or a message to translate by either using message ID/Link,
@@ -364,11 +365,19 @@ class Usercommands(commands.Cog):
         """
         # first we check if the user is replying to a message
         if ctx.message.reference and not message:
-            message = await ctx.channel.fetch_message(ctx.message.reference.message_id)
+            fetched_message = await ctx.channel.fetch_message(
+                ctx.message.reference.message_id
+            )
+            message = fetched_message.content
 
-        # then we get the actual content to translate
-        if isinstance(message, discord.Message):
-            message = message.content
+        # similar to the emoji command, we have to use the converter ourselves here,
+        # instead of just typehinting a Union of Message and str and letting discord.py handle it.
+        try:
+            message_converter = commands.MessageConverter()
+            fetched_message = await message_converter.convert(ctx, message)
+            message = fetched_message.content
+        except commands.CommandError:
+            pass
 
         # checks if the message is empty if either the user failed to specify anything
         # or if the message content of the message specified is empty
