@@ -194,7 +194,7 @@ class Responses(discord.ui.Select):
 ```{self.prefix}time``` - Current time as a timezone aware object.
 ```{self.prefix}convert <input>``` - Converts the input from metric to imperial and vice versa.
 ```{self.prefix}translate <message>``` - Translates a message or string to english.
-```{self.prefix}poll <"question"> <"option 1"> <"option 2">``` - Starts a poll with a maximum of 10 choices.
+```{self.prefix}poll <options> <question>``` - Starts a poll with the specified options as a number, between 2 and 5.
 ```{self.prefix}reminder <time> <message>``` - Reminds you about something.
 ```{self.prefix}viewreminders``` - Lists your active reminders.
 ```{self.prefix}deletereminder <ID>```Deletes one of your reminders by its ID.

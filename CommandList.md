@@ -2,7 +2,7 @@
 
 This here contains every command with a detailed explanation on how to use them. They are ordered alphabetically, search them with Ctrl+F.  
 
-Last updated: 18 April 2022  
+Last updated: 22 April 2022  
 
 ## Quick explanation of this document  
 Arguments that are optional all have the `: Optional` suffix. Every other argument is required.  
@@ -235,9 +235,9 @@ Everything else should be fairly self-explanatory.
     - Example: `%pockets incin, wii fit, 4e, paisy`  
     - Aliases: pocket, setpocket, sppockets, profilepockets  
   
-- **%poll** `<"question"> <"option 1"> <"option 2">`  
-    - Info: Creates a poll for Users to vote on with reactions. Takes 2-10 Options. If the question or the options have more than 1 word in them, make sure to surround them with quotes.  
-    - Example: `%poll "What is your favourite Ice cream?" Chocolate Strawberry "None of the above"`  
+- **%poll** `<options> <question>`  
+    - Info: **Slash version available.** Creates a poll for Users to vote on with reactions. Specify the amount of options with a number, between 2 and 5. Sends a button which, if you click it opens a modal for you to type the choices into.  
+    - Example: `%poll 3 What is your favorite Ice Cream?`  
   
 - **%profile** `<@user: Optional>`  
     - Info: **Slash version available.** Gets you the profile of the mentioned User, if you dont specify a User, this will get your own.  

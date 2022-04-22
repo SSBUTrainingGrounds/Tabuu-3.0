@@ -141,48 +141,111 @@ class Usercommands(commands.Cog):
         else:
             await ctx.send("This user does not have a banner.")
 
-    @commands.command()
-    async def poll(self, ctx, question: str, *options: str):
+    @commands.hybrid_command()
+    @app_commands.guilds(*GuildIDs.ALL_GUILDS)
+    @app_commands.describe(
+        option_amount="The amount of options for the poll, between 2 and 5.",
+        question="Your question for the poll.",
+    )
+    async def poll(self, ctx: commands.Context, option_amount: int, *, question: str):
         """
-        Poll command, with up to 10 options.
-        Sends it out in a neat embed and adds the reactions.
+        Creates a new poll with 2 to 5 options.
+        Sends a button, which if you click it, opens a modal to submit the options.
+        Afterwards sends out an embed with the poll and reacts with the reactions.
         """
-        if len(options) < 2:
-            await ctx.send("You need at least 2 options to make a poll!")
+
+        if option_amount < 2 or option_amount > 5:
+            await ctx.send("Please choose between 2 and 5 options.")
             return
-        if len(options) > 10:
-            await ctx.send("You can only have 10 options at most!")
+
+        # some basic check for ridiculous question lengths
+        if len(question[250:]) > 0:
+            await ctx.send("The maximum length for the question is 250 characters.")
             return
+
+        # for some fields we can only have a very short maximum
+        # however some questions are just longer than that.
+        # so we provide a shortened form for those fields.
+        shortened_question = question
+
+        if len(question[45:]) > 0:
+            shortened_question = f"{question[:42]}..."
+
+        # the emojis which will be used for reacting to the poll message
+        # unfortunately we are limited to 5 options.
+        reactions = ["1️⃣", "2️⃣", "3️⃣", "4️⃣", "5️⃣"]
+
+        # the modal for filling out the poll options.
+        # we define it in the function so we have access to the needed variables.
+        class PollOptions(discord.ui.Modal, title=shortened_question):
+            def __init__(self):
+                super().__init__()
+                for i in range(option_amount):
+                    self.add_item(
+                        discord.ui.TextInput(
+                            label=f"Option {i+1}",
+                            placeholder=f"The choice for Option #{i+1}",
+                            style=discord.TextStyle.short,
+                            required=True,
+                            max_length=100,
+                        )
+                    )
+
+            async def on_submit(self, interaction: discord.Interaction):
+                await interaction.response.send_message(
+                    "Creating poll...", ephemeral=True
+                )
+
+                embed_description = [
+                    f"{reactions[i]}: {option.value}"
+                    for i, option in enumerate(self.children)
+                ]
+
+                embed = discord.Embed(
+                    title=question,
+                    colour=discord.Colour.dark_purple(),
+                    description="\n".join(embed_description),
+                )
+                embed.set_footer(
+                    text=f"Poll created by {str(ctx.author)}",
+                )
+
+                embed_message = await ctx.send(embed=embed)
+
+                for reaction in reactions[: len(self.children)]:
+                    await embed_message.add_reaction(reaction)
+
+        # we can only send a modal through an interaction, so we need this middle step of creating a button.
+        # theoretically we only need this when you use a normal text based command,
+        # but to keep them both the same we just do it no matter what.
+        class PollButton(discord.ui.View):
+            def __init__(self):
+                super().__init__(timeout=60)
+
+            @discord.ui.button(
+                label=f"Select the {option_amount} options for: {shortened_question}."
+            )
+            async def poll_button(
+                self, interaction: discord.Interaction, button: discord.Button
+            ):
+                await interaction.response.send_modal(PollOptions())
+                self.stop()
+
+            async def interaction_check(self, interaction: discord.Interaction):
+                return interaction.user == ctx.author
+
+        view = PollButton()
+
+        button_message = await ctx.send(view=view)
+
+        await view.wait()
+
+        # cleaning up afterwards.
         try:
+            await button_message.delete()
             await ctx.message.delete()
         except discord.HTTPException:
             pass
-
-        reactions = [
-            "1️⃣",
-            "2️⃣",
-            "3️⃣",
-            "4️⃣",
-            "5️⃣",
-            "6️⃣",
-            "7️⃣",
-            "8️⃣",
-            "9️⃣",
-            "0️⃣",
-        ]
-        description = []
-
-        for x, option in enumerate(options):
-            description += f"\n{reactions[x]}: {option}"
-        embed = discord.Embed(
-            title=question,
-            description="".join(description),
-            colour=discord.Colour.dark_purple(),
-        )
-        embed.set_footer(text=f"Poll by {ctx.author}")
-        embed_message = await ctx.send(embed=embed)
-        for reaction in reactions[: len(options)]:
-            await embed_message.add_reaction(reaction)
 
     @commands.command(aliases=["emoji"])
     async def emote(self, ctx, emoji: discord.PartialEmoji):
@@ -335,9 +398,10 @@ class Usercommands(commands.Cog):
 
     @poll.error
     async def poll_error(self, ctx, error):
-        if isinstance(error, commands.MissingRequiredArgument):
+        if isinstance(error, (commands.MissingRequiredArgument, commands.BadArgument)):
             await ctx.send(
-                "You need to specify a question, and then at least 2 options!"
+                "Please provide an amount of options (between 2 and 5) and a question.\n"
+                f"Example: `{self.bot.command_prefix}poll 4 What is your favourite colour?`"
             )
         else:
             raise error

@@ -1,7 +1,7 @@
 # Tabuu 3.0
 # by Phxenix for SSBU Training Grounds
-# Version: 9.13.0
-# Last Changes: 21 April 2022
+# Version: 9.14.0
+# Last Changes: 22 April 2022
 # Contact me on Discord: Phxenix#1104
 
 import os
@@ -28,7 +28,7 @@ class Tabuu3(commands.Bot):
         )
 
         # to be used in %stats
-        self.version_number = "9.13.0"
+        self.version_number = "9.14.0"
         self.commands_ran = 0
         self.events_listened_to = 0
 
