@@ -393,7 +393,7 @@ Everything else should be fairly self-explanatory.
     - Example: `%timeout @ExampleUser 12h30mins what an idiot`  
   
 - **%translate** `<message>`  
-    - Info: Translates a message or a specified string into english. Either type your own message, reply to a message or specify a message via message ID or Link. Attempts to recognise the original language.  
+    - Info: **Slash version available.** Translates a message or a specified string into english. Either type your own message, reply to a message or specify a message via message ID or Link. Attempts to recognise the original language.  
     - Example: `%translate bonjour!`  
   
 - **%unban** `<@user>`  
