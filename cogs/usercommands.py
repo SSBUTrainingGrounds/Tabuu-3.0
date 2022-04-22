@@ -247,11 +247,20 @@ class Usercommands(commands.Cog):
         except discord.HTTPException:
             pass
 
-    @commands.command(aliases=["emoji"])
-    async def emote(self, ctx, emoji: discord.PartialEmoji):
+    @commands.hybrid_command(aliases=["emote"])
+    @app_commands.guilds(*GuildIDs.ALL_GUILDS)
+    @app_commands.describe(emoji="The emoji you want to see the stats of.")
+    async def emoji(self, ctx, emoji: str):
         """
         Gives you information about an Emoji.
         """
+        # since discord doesnt allow emojis as an argument,
+        # we convert it ourselves with the partial emoji converter.
+        # we are using the partial converter because the normal converter can only get
+        # emojis from the bots servers, and we want to be able to get every emoji.
+        partial_converter = commands.PartialEmojiConverter()
+        emoji = await partial_converter.convert(ctx, emoji)
+
         embed = discord.Embed(
             title="Emoji Info",
             colour=discord.Colour.orange(),
@@ -271,8 +280,8 @@ class Usercommands(commands.Cog):
         Gives you information about a Sticker.
         Note that Stickers work very differently from Emojis.
         They count as a message attachment, so we fetch the first of those.
-        Also you cant send a message together with a Sticker on Mobile,
-        so this command is straight up useless on anything other than Desktop.
+        Also you cant send a message together with a Sticker on Mobile or with Slash Commands,
+        so this command only works as a text-based command on Desktop, unfortunately.
         """
         sticker = await ctx.message.stickers[0].fetch()
         embed = discord.Embed(
@@ -425,7 +434,7 @@ class Usercommands(commands.Cog):
         else:
             raise error
 
-    @emote.error
+    @emoji.error
     async def emote_error(self, ctx, error):
         if isinstance(error, commands.MissingRequiredArgument):
             await ctx.send("You need to specify an emoji!")

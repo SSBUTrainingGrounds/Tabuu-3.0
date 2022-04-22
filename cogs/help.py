@@ -146,7 +146,7 @@ class Responses(discord.ui.Select):
 ```{self.prefix}warns <@user>``` - Displays the number of warnings of a user.
 ```{self.prefix}server``` - Info about the server.
 ```{self.prefix}stats``` - Stats about the bot.
-```{self.prefix}emote <emoji>``` - Info about an emoji.
+```{self.prefix}emoji <emoji>``` - Info about an emoji.
 ```{self.prefix}sticker <sticker>``` - Info about a sticker.
     """,
             )

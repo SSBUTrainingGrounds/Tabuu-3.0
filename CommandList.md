@@ -119,10 +119,10 @@ Everything else should be fairly self-explanatory.
     - Info: **Slash version available.** Pings the doubles role and stores your ping for 30 Minutes. Also creates a thread and invites the user to it. Has a 10 minute cooldown and can only be used in our arena channels.  
     - Aliases: matchmakingdoubles, mmdoubles, Doubles  
   
-- **%emote** `<emoji>`  
-    - Info: Gives you Information about an Emoji. Keep in mind this does not work with default emojis.  
+- **%emoji** `<emoji>`  
+    - Info: **Slash version available.** Gives you Information about an Emoji. Keep in mind this does not work with default emojis.  
     - Example: `%emote :BowserFail:`  
-    - Aliases: emoji  
+    - Aliases: emote  
   
 - **%editrole** 
     - Info: **Moderator only.** Group command that lists the subcommands and their usage. The available properties to edit are: name, colour, icon, mentionable.  
