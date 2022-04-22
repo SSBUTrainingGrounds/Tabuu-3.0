@@ -484,7 +484,9 @@ class Usercommands(commands.Cog):
 
     @translate.error
     async def translate_error(self, ctx, error):
-        if isinstance(error, commands.CommandInvokeError):
+        if isinstance(
+            error, (commands.CommandInvokeError, commands.HybridCommandError)
+        ):
             await ctx.send("Please translate a valid message or string.")
         else:
             raise error
