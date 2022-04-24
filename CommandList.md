@@ -7,7 +7,7 @@ Last updated: 22 April 2022
 ## Quick explanation of this document  
 
 Arguments that are optional all have the `: Optional` suffix. Every other argument is required.  
-**User** refers to any Discord User, **Member** refers to a Server Member.
+**User** refers to any Discord User, **Member** refers to a Server Member.  
 **Moderator only** means that you have to be the Server Owner, have Administrator Rights or the Moderator Role to use this Command.  
 **Admin only** means that you need to have Administrator Rights in order to use this Command.  
 **Owner only** means that only the Bot's Owner can use this Command.  
@@ -31,11 +31,11 @@ Everything else should be fairly self-explanatory.
   
 - **%addrole** `<@member> <role>`  
   - Info: **Moderator only.** Adds a Role to a Member. Mention the Member or use Member ID, for the Role the bot first tries to use the Role ID or Role mention, after that it searches for the closest match for the role name.  
-  - Example: `%addrole @ExampleUser first class`
+  - Example: `%addrole @ExampleUser first class`  
   
 - **%avatar** `<@member: Optional>`  
   - Info: **Slash version available.** Gets you the avatar of a Member. Member argument is optional, if there is none, this gets your own avatar. Otherwise mention the Member or use Member ID.  
-  - Example: `%avatar @ExampleUser`
+  - Example: `%avatar @ExampleUser`  
   - Aliases: icon  
   
 - **%ban** `<@user> <reason>`  
