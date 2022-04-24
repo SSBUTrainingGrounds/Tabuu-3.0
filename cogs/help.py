@@ -120,7 +120,7 @@ class Responses(discord.ui.Select):
 ```{self.prefix}geteveryrolemenu``` - Gets you every role menu entry currently active.
 ```{self.prefix}rename <@user> <name>``` - Sets a new nickname for a user or removes it.
 ```{self.prefix}say <channel> <message>``` - Admin only, Repeats the message in the chnanel.
-```{self.prefix}createmacro <name> <output>``` - Creates a new macro.
+```{self.prefix}createmacro``` - Creates a new macro.
 ```{self.prefix}deletemacro <name>``` - Deletes a macro.
 ```{self.prefix}starboardemoji <emoji>``` - Changes the emoji used for the starboard.
 ```{self.prefix}starboardthreshold <number>``` - Changes the threshold used for the starboard.

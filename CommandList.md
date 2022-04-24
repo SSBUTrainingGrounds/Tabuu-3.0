@@ -2,7 +2,7 @@
 
 This here contains every command with a detailed explanation on how to use them. They are ordered alphabetically, search them with Ctrl+F.  
 
-Last updated: 22 April 2022  
+Last updated: 24 April 2022  
 
 ## Quick explanation of this document  
 
@@ -88,9 +88,8 @@ Everything else should be fairly self-explanatory.
   - Info: **Slash version available.** Counts down from the specified number between 2 and 50, used for syncing stuff.  
   - Example: `%countdown 5`  
   
-- **%createmacro** `<name> <payload>`  
-  - Info: **Moderator only.** creates a new macro command with your desired payload.  
-  - Example: `%createmacro test hello this is a test`  
+- **%createmacro**  
+  - Info: **Moderator only.** Sends you a button, which if you press it gives you access to a Modal which allows you to create a new macro with your desired name and payload.  
   
 - **%delete** `<message IDs>`  
   - Info: **Moderator only.** Deletes Messages by their IDs. The messages need to be in the same channel of the command. Takes as many messages as you like.  
@@ -167,7 +166,7 @@ Everything else should be fairly self-explanatory.
   
 - **%hypemeup**  
   - Info: **Slash version available.** Hypes you up with a randomly chosen response before that next game of smash.  
-
+  
 - **%john**  
   - Info: **Slash version available.** Returns a random excuse why you lost that last game of Smash.  
   
@@ -190,7 +189,7 @@ Everything else should be fairly self-explanatory.
 - **%`<macro>`**  
   - Info: Invokes the macro command, list them all with `%macros`.  
   - Example: `%test`  
-
+  
 - **%macro** `<macro: Optional>`  
   - Info: **Slash version available.** Gives you information about a specific macro, or if you do not specify a macro it will list out all registered macro commands.  
   - Aliases: listmacro, macros, macrostats  
