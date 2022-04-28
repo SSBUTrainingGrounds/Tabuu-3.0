@@ -143,19 +143,14 @@ class Usercommands(commands.Cog):
     @commands.hybrid_command()
     @app_commands.guilds(*GuildIDs.ALL_GUILDS)
     @app_commands.describe(
-        option_amount="The amount of options for the poll, between 2 and 5.",
         question="Your question for the poll.",
     )
-    async def poll(self, ctx: commands.Context, option_amount: int, *, question: str):
+    async def poll(self, ctx: commands.Context, *, question: str):
         """
         Creates a new poll with 2 to 5 options.
         Sends a button, which if you click it, opens a modal to submit the options.
         Afterwards sends out an embed with the poll and reacts with the reactions.
         """
-
-        if option_amount < 2 or option_amount > 5:
-            await ctx.send("Please choose between 2 and 5 options.")
-            return
 
         # some basic check for ridiculous question lengths
         if len(question[250:]) > 0:
@@ -171,33 +166,46 @@ class Usercommands(commands.Cog):
             shortened_question = f"{question[:42]}..."
 
         # the emojis which will be used for reacting to the poll message
-        # unfortunately we are limited to 5 options.
-        reactions = ["1️⃣", "2️⃣", "3️⃣", "4️⃣", "5️⃣"]
+        reactions = ["1️⃣", "2️⃣", "3️⃣", "4️⃣", "5️⃣", "6️⃣", "7️⃣", "8️⃣", "9️⃣", "🔟"]
 
         # the modal for filling out the poll options.
         # we define it in the function so we have access to the needed variables.
         class PollOptions(discord.ui.Modal, title=shortened_question):
             def __init__(self):
                 super().__init__()
-                for i in range(option_amount):
-                    self.add_item(
-                        discord.ui.TextInput(
-                            label=f"Option {i+1}",
-                            placeholder=f"The choice for Option #{i+1}",
-                            style=discord.TextStyle.short,
-                            required=True,
-                            max_length=100,
-                        )
+                self.add_item(
+                    discord.ui.TextInput(
+                        label="The options for your poll. One in each line.",
+                        placeholder="Enter between 2 and 10 options, separated by new lines.",
+                        style=discord.TextStyle.paragraph,
+                        required=True,
+                        max_length=2000,
                     )
+                )
 
             async def on_submit(self, interaction: discord.Interaction):
                 await interaction.response.send_message(
                     "Creating poll...", ephemeral=True
                 )
 
+                options = self.children[0].value.split("\n")
+
+                if len(options) < 2:
+                    await interaction.followup.send(
+                        "Please enter at least 2 options for your poll.",
+                        ephemeral=True,
+                    )
+                    return
+
+                if len(options) > 10:
+                    await interaction.followup.send(
+                        "You entered too many options for the poll! Maximum is 10.",
+                        ephemeral=True,
+                    )
+                    return
+
                 embed_description = [
-                    f"{reactions[i]}: {option.value}"
-                    for i, option in enumerate(self.children)
+                    f"{reactions[i]}: {option}" for i, option in enumerate(options)
                 ]
 
                 embed = discord.Embed(
@@ -211,7 +219,7 @@ class Usercommands(commands.Cog):
 
                 embed_message = await ctx.send(embed=embed)
 
-                for reaction in reactions[: len(self.children)]:
+                for reaction in reactions[: len(options)]:
                     await embed_message.add_reaction(reaction)
 
         # we can only send a modal through an interaction, so we need this middle step of creating a button.
@@ -221,9 +229,7 @@ class Usercommands(commands.Cog):
             def __init__(self):
                 super().__init__(timeout=60)
 
-            @discord.ui.button(
-                label=f"Select the {option_amount} options for: {shortened_question}."
-            )
+            @discord.ui.button(label=f"Select the options for: {shortened_question}.")
             async def poll_button(
                 self, interaction: discord.Interaction, button: discord.Button
             ):
@@ -418,8 +424,8 @@ class Usercommands(commands.Cog):
     async def poll_error(self, ctx, error):
         if isinstance(error, (commands.MissingRequiredArgument, commands.BadArgument)):
             await ctx.send(
-                "Please provide an amount of options (between 2 and 5) and a question.\n"
-                f"Example: `{self.bot.command_prefix}poll 4 What is your favourite colour?`"
+                "Please provide a question for your poll.\n"
+                f"Example: `{self.bot.command_prefix}poll What is your favourite colour?`"
             )
         else:
             raise error
