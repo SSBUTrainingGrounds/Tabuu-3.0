@@ -1,10 +1,10 @@
 from typing import Union
 
 import discord
-import fuzzywuzzy
 from discord import app_commands
 from discord.ext import commands
 
+import utils.search
 from utils.ids import GuildIDs
 
 
@@ -464,21 +464,7 @@ class Help(commands.Cog):
                 command_list.extend(f"{cmd.name} {c.name}" for c in cmd.commands)
             command_list.append(cmd.name)
 
-        choices = []
-
-        # we validate the input first, otherwise the console is
-        # getting spammed with warnings on invalid or unmatchable inputs
-        if fuzzywuzzy.utils.full_process(current):
-            match_list = fuzzywuzzy.process.extractBests(
-                current, command_list, limit=25, score_cutoff=60
-            )
-
-            choices.extend(
-                app_commands.Choice(name=match[0], value=match[0])
-                for match in match_list
-            )
-
-        return choices[:25]
+        return utils.search.autocomplete_choices(current, command_list)
 
 
 async def setup(bot):

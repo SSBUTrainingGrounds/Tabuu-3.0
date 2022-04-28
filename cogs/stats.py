@@ -5,14 +5,14 @@ import time
 
 import aiosqlite
 import discord
-import fuzzywuzzy
 import psutil
 from discord import app_commands
 from discord.ext import commands
+from stringmatch import Match
 
 import utils.check
+import utils.search
 from utils.ids import GuildIDs, TGRoleIDs
-from utils.search import search_role
 
 
 class Stats(commands.Cog):
@@ -228,7 +228,7 @@ class Stats(commands.Cog):
         """
         Basic information about a given role.
         """
-        role = search_role(ctx.guild, input_role)
+        role = utils.search.search_role(ctx.guild, input_role)
 
         embed = discord.Embed(
             title=f"Roleinfo of {role.name} ({role.id})", color=role.colour
@@ -266,7 +266,7 @@ class Stats(commands.Cog):
         Lists every member of a role.
         Well up to 60 members at least.
         """
-        role = search_role(ctx.guild, input_role)
+        role = utils.search.search_role(ctx.guild, input_role)
 
         members = role.members
         if len(members) > 60:
@@ -485,32 +485,22 @@ Events parsed: {self.bot.events_listened_to}
             )
             return
 
-        if closest_match := fuzzywuzzy.process.extractOne(
-            move.lower(), self.mana_dict.keys(), score_cutoff=50
+        match = Match()
+
+        if closest_match := match.get_best_match(
+            move.lower(), self.mana_dict.keys(), score=40, ignore_case=True
         ):
             await ctx.send(
-                f"Please input a valid move! Did you mean `{closest_match[0].title()}`?"
+                f"Please input a valid move! Did you mean `{closest_match.title()}`?"
             )
         else:
             await ctx.send("Please input a valid move!")
 
     @mp4.autocomplete("move")
     async def mp4_autocomplete(self, interaction: discord.Interaction, current: str):
-        move_list = [m.title() for m in self.mana_dict]
-
-        choices = []
-
-        if fuzzywuzzy.utils.full_process(current):
-            match_list = fuzzywuzzy.process.extractBests(
-                current, move_list, limit=25, score_cutoff=60
-            )
-
-            choices.extend(
-                app_commands.Choice(name=match[0], value=match[0])
-                for match in match_list
-            )
-
-        return choices[:25]
+        return utils.search.autocomplete_choices(
+            current, [m.title() for m in self.mana_dict]
+        )
 
     # error handling
     @addbadges.error

@@ -1,10 +1,10 @@
 import aiosqlite
 import discord
-import fuzzywuzzy
 from discord import app_commands
 from discord.ext import commands
 
 import utils.check
+import utils.search
 from utils.ids import GuildIDs
 
 
@@ -208,22 +208,7 @@ class Macros(commands.Cog):
         async with aiosqlite.connect("./db/database.db") as db:
             macros = await db.execute_fetchall("""SELECT name FROM macros""")
 
-        # it returns a list of tuples,
-        # so we need to extract them
-        macro_names = [m[0] for m in macros]
-
-        choices = []
-        if fuzzywuzzy.utils.full_process(current):
-            match_list = fuzzywuzzy.process.extractBests(
-                current, macro_names, limit=25, score_cutoff=60
-            )
-
-            choices.extend(
-                app_commands.Choice(name=match[0], value=match[0])
-                for match in match_list
-            )
-
-        return choices[:25]
+        return utils.search.autocomplete_choices(current, [m[0] for m in macros])
 
     # the error handling for the commands above
     # fairly self-explanatory

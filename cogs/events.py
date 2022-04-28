@@ -5,7 +5,7 @@ from zoneinfo import ZoneInfo
 import aiosqlite
 import discord
 from discord.ext import commands, tasks
-from fuzzywuzzy import fuzz, process
+from stringmatch import Match
 
 import utils.time
 from utils.ids import (
@@ -242,19 +242,16 @@ class Events(commands.Cog):
             if ctx.invoked_with in command_list:
                 return
 
-            try:
-                match = process.extractOne(
-                    ctx.invoked_with,
-                    command_list,
-                    score_cutoff=30,
-                    scorer=fuzz.token_set_ratio,
-                )[0]
+            match = Match()
+            if command_match := match.get_best_match(
+                ctx.invoked_with, command_list, score=30, ignore_case=True
+            ):
                 await ctx.send(
                     "I could not find this command. "
-                    f"Did you mean `{self.bot.command_prefix}{match}`?\n"
+                    f"Did you mean `{self.bot.command_prefix}{command_match}`?\n"
                     f"Type `{self.bot.command_prefix}help` for all available commands."
                 )
-            except TypeError:
+            else:
                 await ctx.send(
                     "I could not find this command.\n"
                     f"Type `{self.bot.command_prefix}help` for all available commands."

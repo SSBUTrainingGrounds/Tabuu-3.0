@@ -2,9 +2,9 @@ import json
 
 import aiosqlite
 import discord
-import fuzzywuzzy
 from discord import app_commands
 from discord.ext import commands
+from stringmatch import Match
 
 import utils.check
 from utils.ids import Emojis, GuildIDs
@@ -132,30 +132,30 @@ class Profile(commands.Cog):
         else:
             current_char = current
 
-        # we validate the input first, otherwise the console is
-        # getting spammed with warnings on invalid or unmatchable inputs
-        if fuzzywuzzy.utils.full_process(current_char):
-            match_list = fuzzywuzzy.process.extractBests(
-                current_char, character_names, limit=25, score_cutoff=60
-            )
+        # we dont use the autocomplete function here from utils.search,
+        # cause we need some customisation here
+        match = Match()
 
-            # we append the existing chars to the current choices,
-            # so you can select multiple characters at once and the autocomplete still works
-            if existing_chars:
-                choices.extend(
-                    # choices can be up to 100 chars in length,
-                    # which we could exceed with 10 chars, so we have to cut it off.
-                    app_commands.Choice(
-                        name=f"{existing_chars}, {match[0]}"[:100],
-                        value=f"{existing_chars}, {match[0]}"[:100],
-                    )
-                    for match in match_list
+        match_list = match.get_best_matches(
+            current_char, character_names, score=40, limit=25, ignore_case=True
+        )
+
+        # we append the existing chars to the current choices,
+        # so you can select multiple characters at once and the autocomplete still works
+        if existing_chars:
+            choices.extend(
+                # choices can be up to 100 chars in length,
+                # which we could exceed with 10 chars, so we have to cut it off.
+                app_commands.Choice(
+                    name=f"{existing_chars}, {match}"[:100],
+                    value=f"{existing_chars}, {match}"[:100],
                 )
-            else:
-                choices.extend(
-                    app_commands.Choice(name=match[0], value=match[0])
-                    for match in match_list
-                )
+                for match in match_list
+            )
+        else:
+            choices.extend(
+                app_commands.Choice(name=match, value=match) for match in match_list
+            )
 
         return choices[:25]
 
@@ -519,7 +519,7 @@ class Profile(commands.Cog):
     async def region_autocomplete(self, interaction: discord.Interaction, current: str):
         valid_regions = list(self.region_dict.keys())
 
-        # again, dont really need fuzzy search here, these are just some very basic regions.
+        # again, dont really need custom search here, these are just some very basic regions.
         choices = [
             app_commands.Choice(name=region, value=region)
             for region in valid_regions
