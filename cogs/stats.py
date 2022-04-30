@@ -187,7 +187,7 @@ class Stats(commands.Cog):
 
         embed = discord.Embed(
             title=f"Userinfo of {member.name}#{member.discriminator} ({member.id})",
-            color=member.top_role.color,
+            colour=member.colour,
         )
         embed.add_field(name="Name:", value=member.mention, inline=True)
         embed.add_field(name="Top Role:", value=member.top_role.mention, inline=True)
@@ -231,7 +231,7 @@ class Stats(commands.Cog):
         role = utils.search.search_role(ctx.guild, input_role)
 
         embed = discord.Embed(
-            title=f"Roleinfo of {role.name} ({role.id})", color=role.colour
+            title=f"Roleinfo of {role.name} ({role.id})", colour=role.colour
         )
         embed.add_field(name="Role Name:", value=role.mention, inline=True)
         embed.add_field(name="Users with role:", value=len(role.members), inline=True)
@@ -241,7 +241,7 @@ class Stats(commands.Cog):
         )
         embed.add_field(name="Mentionable:", value=role.mentionable, inline=True)
         embed.add_field(name="Displayed Seperately:", value=role.hoist, inline=True)
-        embed.add_field(name="Color:", value=role.color, inline=True)
+        embed.add_field(name="Colour:", value=role.colour, inline=True)
 
         if role.display_icon:
             # the display_icon could be an asset or a default emoji with the str type, so we have to check
@@ -310,7 +310,7 @@ class Stats(commands.Cog):
         ]
 
         embed = discord.Embed(
-            title=f"{ctx.guild.name} ({ctx.guild.id})", color=discord.Color.green()
+            title=f"{ctx.guild.name} ({ctx.guild.id})", colour=discord.Colour.green()
         )
         embed.add_field(
             name="Created on:",
@@ -413,7 +413,7 @@ Events parsed: {self.bot.events_listened_to}
 
         embed = discord.Embed(
             title="Tabuu 3.0 Stats",
-            color=0x007377,
+            colour=0x007377,
             url="https://github.com/atomflunder/Tabuu-3.0-Bot",
         )
         embed.add_field(name="Bot", value=bot_description, inline=False)
