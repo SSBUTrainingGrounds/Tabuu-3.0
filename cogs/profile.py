@@ -134,10 +134,10 @@ class Profile(commands.Cog):
 
         # we dont use the autocomplete function here from utils.search,
         # cause we need some customisation here
-        match = Match()
+        match = Match(ignore_case=True, include_partial=True)
 
         match_list = match.get_best_matches(
-            current_char, character_names, score=40, limit=25, ignore_case=True
+            current_char, character_names, score=40, limit=25
         )
 
         # we append the existing chars to the current choices,

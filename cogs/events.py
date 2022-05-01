@@ -242,9 +242,9 @@ class Events(commands.Cog):
             if ctx.invoked_with in command_list:
                 return
 
-            match = Match()
+            match = Match(ignore_case=True)
             if command_match := match.get_best_match(
-                ctx.invoked_with, command_list, score=30, ignore_case=True
+                ctx.invoked_with, command_list, score=30
             ):
                 await ctx.send(
                     "I could not find this command. "

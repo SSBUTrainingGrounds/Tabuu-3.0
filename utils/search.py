@@ -22,10 +22,8 @@ def search_role(guild: discord.Guild, input_role: str) -> Optional[discord.Role]
     try:
         role = discord.utils.get(guild.roles, id=int(input_role))
     except ValueError:
-        match = Match()
-        role_match = match.get_best_match(
-            input_role, all_roles, score=55, ignore_case=True
-        )
+        match = Match(ignore_case=True, include_partial=True)
+        role_match = match.get_best_match(input_role, all_roles, score=55)
         role = discord.utils.get(guild.roles, name=role_match)
 
     return role
@@ -38,12 +36,15 @@ def autocomplete_choices(
     Returns a list of the first 25 autocomplete choices for the given current string
     and the choices supplied. Used primarily in autocompletion for slash commands.
     """
-    match = Match()
+    match = Match(ignore_case=True, include_partial=True)
 
     matching_choices = []
 
     match_list = match.get_best_matches(
-        current, available_choices, score=40, limit=25, ignore_case=True
+        current,
+        available_choices,
+        score=40,
+        limit=25,
     )
 
     matching_choices.extend(

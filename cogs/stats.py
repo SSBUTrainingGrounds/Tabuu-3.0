@@ -485,10 +485,10 @@ Events parsed: {self.bot.events_listened_to}
             )
             return
 
-        match = Match()
+        match = Match(ignore_case=True)
 
         if closest_match := match.get_best_match(
-            move.lower(), self.mana_dict.keys(), score=40, ignore_case=True
+            move.lower(), self.mana_dict.keys(), score=40
         ):
             await ctx.send(
                 f"Please input a valid move! Did you mean `{closest_match.title()}`?"
