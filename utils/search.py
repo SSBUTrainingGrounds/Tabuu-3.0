@@ -19,10 +19,18 @@ def search_role(guild: discord.Guild, input_role: str) -> Optional[discord.Role]
 
     all_roles = [role.name for role in guild.roles]
 
+    match = Match(ignore_case=True, include_partial=True)
+
     try:
         role = discord.utils.get(guild.roles, id=int(input_role))
+
+        # if the role is None we just search for it below.
+        # this will happen if the input is an integer, but not a role ID.
+        # like when you would search for a role named "100".
+        if not role:
+            raise ValueError
+
     except ValueError:
-        match = Match(ignore_case=True, include_partial=True)
         role_match = match.get_best_match(input_role, all_roles, score=55)
         role = discord.utils.get(guild.roles, name=role_match)
 
