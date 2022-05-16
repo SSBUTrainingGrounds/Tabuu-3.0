@@ -252,13 +252,16 @@ class Rolemenu(commands.Cog):
                         )
 
                         # sends a message telling them what roles they need
-                        await payload.member.send(
-                            f"The role {wanted_role.name} was not added to you "
-                            "due to not having one or more of the following roles:"
-                            f"{', '.join([missing_role.name for missing_role in roles_required])}.\n\n"
-                            f"Check <#{TGChannelIDs.RULES_CHANNEL}> for information "
-                            f"or inquire in <#{TGChannelIDs.HELP_CHANNEL}> if you cannot find the details on the required roles.",
-                        )
+                        try:
+                            await payload.member.send(
+                                f"The role {wanted_role.name} was not added to you "
+                                "due to not having one or more of the following roles:"
+                                f"{', '.join([missing_role.name for missing_role in roles_required])}.\n\n"
+                                f"Check <#{TGChannelIDs.RULES_CHANNEL}> for information "
+                                f"or inquire in <#{TGChannelIDs.HELP_CHANNEL}> if you cannot find the details on the required roles.",
+                            )
+                        except discord.HTTPException:
+                            pass
                 return
 
         if exclusive == 1:
