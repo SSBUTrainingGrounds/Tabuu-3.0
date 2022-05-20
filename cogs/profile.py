@@ -608,8 +608,6 @@ class Profile(commands.Cog):
         """
         matching_character = " ".join(self.match_character(character)[:1])
 
-        print(matching_character)
-
         if not matching_character:
             await ctx.send("Please input a valid character!")
             return
