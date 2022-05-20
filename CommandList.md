@@ -230,6 +230,10 @@ Everything else should be fairly self-explanatory.
 - **%ping**  
   - Info: **Slash version available.** Gets the response time of the Bot, *not yourself*. Usually around 100-150ms in optimal conditions.  
   
+- **%players** `<character>`  
+  - Info: **Slash version available.** Lists every main, secondary and pocket registered with the profile commands for that character.  
+  - Example: `%players incin`  
+  
 - **%pockets** `<pocket1, pocket2,..: Optional>`  
   - Info: **Slash version available.** Updates your pockets listed on your profile. Up to 10 characters, separate them by commas. Accepts names, commonly used nicknames and the Fighter Numbers. Leave the field blank or input invalid characters to delete the characters.  
   - Example: `%pockets incin, wii fit, 4e, paisy`  

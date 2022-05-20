@@ -598,6 +598,94 @@ class Profile(commands.Cog):
 
         await ctx.send(f"{ctx.author.mention}, I have set your colour to: `{colour}`")
 
+    @commands.hybrid_command()
+    @app_commands.guilds(*GuildIDs.ALL_GUILDS)
+    @app_commands.describe(character="The character you are looking for.")
+    async def players(self, ctx, character: str):
+        """
+        Looks up a character's players in the database.
+        Sorted by mains, secondaries and pockets.
+        """
+        matching_character = " ".join(self.match_character(character)[:1])
+
+        if not matching_character:
+            await ctx.send("Please input a valid character!")
+            return
+
+        async with aiosqlite.connect("./db/database.db") as db:
+            # We look for the players that have registered the character in their profile.
+            # We sort it by the length of the mains, which does roughly correlate to the amount of mains.
+            # So that a solo-main will show up near the top.
+            matching_mains = await db.execute_fetchall(
+                """SELECT user_id FROM profile WHERE INSTR(mains, :character) ORDER BY length(mains)""",
+                {"character": matching_character},
+            )
+
+            matching_secondaries = await db.execute_fetchall(
+                """SELECT user_id FROM profile WHERE INSTR(secondaries, :character) ORDER BY length(secondaries)""",
+                {"character": matching_character},
+            )
+
+            matching_pockets = await db.execute_fetchall(
+                """SELECT user_id FROM profile WHERE INSTR(pockets, :character) ORDER BY length(pockets)""",
+                {"character": matching_character},
+            )
+
+        try:
+            emoji_converter = commands.PartialEmojiConverter()
+            emoji = await emoji_converter.convert(ctx, matching_character)
+
+            if not emoji:
+                raise commands.errors.EmojiNotFound
+
+            embed = discord.Embed(title=f"{emoji.name} Players:", colour=0x007377)
+            embed.set_thumbnail(url=emoji.url)
+        except (
+            commands.errors.PartialEmojiConversionFailure,
+            commands.errors.EmojiNotFound,
+        ):
+            embed = discord.Embed(
+                title=f"{matching_character} Players:", colour=0x007377
+            )
+
+        # An embed field can only hold 1k characters in it, so we need to cap the listings off at some point.
+        # If my calculations are correct they can each hold 45 players.
+        embed.add_field(
+            name="Mains:",
+            value=", ".join([f"<@{pl[0]}>" for pl in matching_mains[:45]])
+            if matching_mains
+            else "None",
+            inline=False,
+        )
+
+        embed.add_field(
+            name="Secondaries:",
+            value=", ".join([f"<@{pl[0]}>" for pl in matching_secondaries[:45]])
+            if matching_secondaries
+            else "None",
+            inline=False,
+        )
+
+        embed.add_field(
+            name="Pockets:",
+            value=", ".join([f"<@{pl[0]}>" for pl in matching_pockets[:45]])
+            if matching_pockets
+            else "None",
+            inline=False,
+        )
+
+        embed.set_footer(
+            text=f"To see the individual profiles: {self.bot.command_prefix}profile <player>"
+        )
+
+        await ctx.send(embed=embed)
+
+    @players.autocomplete("character")
+    async def players_autocomplete(
+        self, interaction: discord.Interaction, current: str
+    ):
+        return await self.character_autocomplete(current)
+
     # some basic error handling for the above
     @profile.error
     async def profile_error(self, ctx, error):

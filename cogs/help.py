@@ -172,6 +172,7 @@ class Responses(discord.ui.Select):
                 color=0x7C3ED,
                 description=f"""
 ```{self.prefix}profile <@user>``` - View a profile of a user.
+```{self.prefix}players <character>``` - View all players of a character.
 ```{self.prefix}mains <main1, main2,...>``` - Set your mains, separated by commas.
 ```{self.prefix}secondaries <sec1, sec2,...>``` - Set your secondaries, separated by commas.
 ```{self.prefix}pockets <pocket1, pocket2,...>``` - Set your pockets, separated by commas.
