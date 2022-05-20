@@ -601,12 +601,14 @@ class Profile(commands.Cog):
     @commands.hybrid_command()
     @app_commands.guilds(*GuildIDs.ALL_GUILDS)
     @app_commands.describe(character="The character you are looking for.")
-    async def players(self, ctx, character: str):
+    async def players(self, ctx, *, character: str):
         """
         Looks up a character's players in the database.
         Sorted by mains, secondaries and pockets.
         """
         matching_character = " ".join(self.match_character(character)[:1])
+
+        print(matching_character)
 
         if not matching_character:
             await ctx.send("Please input a valid character!")
@@ -714,6 +716,15 @@ class Profile(commands.Cog):
         if isinstance(error, commands.MissingRequiredArgument):
             await ctx.send(
                 f"Please choose a valid hex colour code. Example: `{self.bot.command_prefix}colour #8a0f84`"
+            )
+        else:
+            raise error
+
+    @players.error
+    async def players_error(self, ctx, error):
+        if isinstance(error, commands.MissingRequiredArgument):
+            await ctx.send(
+                "Please input the character you want to look up players for."
             )
         else:
             raise error
