@@ -146,7 +146,7 @@ Everything else should be fairly self-explanatory.
   - Example: `%forcedeleteprofile @ExampleUser`  
   
 - **%forcereportmatch** `<@winner> <@loser>`  
-  - Info: **Moderator only.** If someone abandons their ranked match an admin will use this to report the match anyways. Mention the Members or use Member IDs. Has a 41 second cooldown. Only works in the Training Grounds Server.  
+  - Info: **Slash version available. Moderator only.** If someone abandons their ranked match an admin will use this to report the match anyways. Mention the Members or use Member IDs. Has a 41 second cooldown. Only works in the Training Grounds Server.  
   - Example: `%forcereportmatch @Tabuu 3.0 @ExampleUser`  
   - Aliases: forcereportgame  
   
@@ -155,7 +155,7 @@ Everything else should be fairly self-explanatory.
   - Aliases: matchmakingfunnies, mmfunnies, Funnies  
   
 - **%geteveryrolemenu**  
-  - Info: **Moderator only.** Gets you every role menu entry currently saved.  
+  - Info: **Slash version available. Moderator only.** Gets you every role menu entry currently saved.  
   
 - **%help** `<command: Optional>`  
   - Info: **Slash version available.** Shows you Info about a specified command. If you do not specify a command you will get the help menu, which is broken into a dropdown cause there were too many commands to list. Available dropdowns are: Moderation, Admin Utility, Info, Matchmaking, Profile, Utility, Miscellaneous, and Fun. The text-based version will show you if you can run this command, the slash based version cannot do so due of a discord limitation.  
@@ -175,7 +175,7 @@ Everything else should be fairly self-explanatory.
   - Example: `%kick @ExampleUser what an idiot`  
   
 - **%leaderboard**  
-  - Info: **Moderator only.** Gets you the Top 10 rated players of our ranked matchmaking system.  
+  - Info: **Slash version available. Moderator only.** Gets you the Top 10 rated players of our ranked matchmaking system.  
   
 - **%listrole** `<role>`  
   - Info: **Slash version available.** Lists out every Member with a certain role. The bot first tries to use the Role ID or Role mention, after that it searches for the closest match for the role name.  
