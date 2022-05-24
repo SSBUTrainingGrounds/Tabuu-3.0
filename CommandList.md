@@ -30,7 +30,7 @@ Everything else should be fairly self-explanatory.
   - Aliases: addbadge  
   
 - **%addrole** `<@member> <role>`  
-  - Info: **Moderator only.** Adds a Role to a Member. Mention the Member or use Member ID, for the Role the bot first tries to use the Role ID or Role mention, after that it searches for the closest match for the role name.  
+  - Info: **Slash version available. Moderator only.** Adds a Role to a Member. Mention the Member or use Member ID, for the Role the bot first tries to use the Role ID or Role mention, after that it searches for the closest match for the role name.  
   - Example: `%addrole @ExampleUser first class`  
   
 - **%avatar** `<@member: Optional>`  
@@ -39,7 +39,7 @@ Everything else should be fairly self-explanatory.
   - Aliases: icon  
   
 - **%ban** `<@user> <reason>`  
-  - Info: **Moderator only.** Bans a User. Mention the User or use User ID. You will be asked for confirmation before the User gets banned. The reason will get logged in Audit logs and also DM'd to the User, if the bot can DM the User.  
+  - Info: **Slash version available. Moderator only.** Bans a User. Mention the User or use User ID. You will be asked for confirmation before the User gets banned. The reason will get logged in Audit logs and also DM'd to the User, if the bot can DM the User.  
   - Example: `%ban @ExampleUser what an idiot`  
   
 - **%banner** `<@member: Optional>`  
@@ -55,7 +55,7 @@ Everything else should be fairly self-explanatory.
   - Info: **Slash version available.** Comes up with some scary stuff.  
   
 - **%clear** `<amount: Optional>`  
-  - Info: **Moderator only.** Deletes the last X+1 messages in the current channel. Defaults to 1 if you do not specify an amount.  
+  - Info: **Slash version available. Moderator only.** Deletes the last X+1 messages in the current channel. Defaults to 1 if you do not specify an amount.  
   - Example: `%clear 10`  
   
 - **%clearbadges** `<@user>`  
@@ -90,10 +90,6 @@ Everything else should be fairly self-explanatory.
   
 - **%createmacro**  
   - Info: **Moderator only.** Sends you a button, which if you press it gives you access to a Modal which allows you to create a new macro with your desired name and payload.  
-  
-- **%delete** `<message IDs>`  
-  - Info: **Moderator only.** Deletes Messages by their IDs. The messages need to be in the same channel of the command. Takes as many messages as you like.  
-  - Example: `%delete 858117781375418389 858117780859256882`  
   
 - **%deletemacro** `<name>`  
   - Info: **Moderator only.** Deletes the specified macro command.  
@@ -175,7 +171,7 @@ Everything else should be fairly self-explanatory.
   - Aliases: tabuujoke  
   
 - **%kick** `<@member> <reason>`  
-  - Info: **Moderator only.** Kicks a member from the server. Mention the Member or use Member ID. You will be asked for confirmation before the Member gets kicked. The reason will get logged in Audit logs and also DM'd to the Member, if the bot can DM the Member.  
+  - Info: **Slash version available. Moderator only.** Kicks a member from the server. Mention the Member or use Member ID. You will be asked for confirmation before the Member gets kicked. The reason will get logged in Audit logs and also DM'd to the Member, if the bot can DM the Member.  
   - Example: `%kick @ExampleUser what an idiot`  
   
 - **%leaderboard**  
@@ -264,7 +260,7 @@ Everything else should be fairly self-explanatory.
   - Info: **Slash version available.** Gets you all pings in the last 30 Minutes of any matchmaking type without pinging the role yourself. Available dropdowns are: Singles, Doubles, Funnies, Ranked.  
   
 - **%records**  
-  - Info: **Moderator only.** Gets you our ban records.  
+  - Info: **Slash version available. Moderator only.** Gets you our ban records.  
   
 - **%region** `<region: Optional>`  
   - Info: **Slash version available.** Sets your region on your profile. The regions are the 6 commonly used continents, plus some more for North America, matches some inputs to those. So EU will work, as well as europe. Leave the field blank to delete the region from your profile.  
@@ -286,7 +282,7 @@ Everything else should be fairly self-explanatory.
   - Aliases: removebadges  
   
 - **%removerole** `<@member> <role>`  
-  - Info: **Moderator only.** Removes a role from a Member. Mention the Member or use Member ID, for the Role the bot first tries to use the Role ID or Role mention, after that it searches for the closest match for the role name.  
+  - Info: **Slash version available. Moderator only.** Removes a role from a Member. Mention the Member or use Member ID, for the Role the bot first tries to use the Role ID or Role mention, after that it searches for the closest match for the role name.  
   - Example: `%removerole @ExampleUser first class`  
   
 - **%removetimeout** `<@member>`  
@@ -295,7 +291,7 @@ Everything else should be fairly self-explanatory.
   - Aliases: untimeout  
   
 - **%rename** `<@member> <name: Optional>`  
-  - Info: **Moderator only.** Renames the Member to the given nickname. Removes the nickname if you do not pass in a new one.  
+  - Info: **Slash version available. Moderator only.** Renames the Member to the given nickname. Removes the nickname if you do not pass in a new one.  
   - Example: `%rename @ExampleUser Example Name`  
   
 - **%reportmatch** `<@member>`  
@@ -362,7 +358,7 @@ Everything else should be fairly self-explanatory.
   - Example: `%sticker Attach Random Sticker Here`  
   
 - **%syncbanlist**  
-  - Info: **Moderator only.** applies the bans from the SSBUTG server to the SSBUBG server. Can only be used in the SSBUBG server.  
+  - Info: **Slash version available. Moderator only.** applies the bans from the SSBUTG server to the SSBUBG server. Can only be used in the SSBUBG server.  
   - Aliases: syncbans  
   
 - **%synccommands** `<guild: Optional>`  
@@ -401,7 +397,7 @@ Everything else should be fairly self-explanatory.
   - Example: `%translate bonjour!`  
   
 - **%unban** `<@user>`  
-  - Info: **Moderator only.** Unbans a user. Mention the User or use User ID.  
+  - Info: **Slash version available. Moderator only.** Unbans a user. Mention the User or use User ID.  
   - Example: `%unban @ExampleUser`  
   
 - **%unmute** `<@member>`  

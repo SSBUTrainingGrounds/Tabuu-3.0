@@ -9,18 +9,16 @@ from utils.ids import GuildIDs
 
 
 class Responses(discord.ui.Select):
-    """
-    Contains the Dropdown Menu for our custom help command.
+    """Contains the Dropdown Menu for our custom help command.
     Every command is explained in here.
     """
 
     def __init__(self, prefix: str):
-        # we dont have access to the bot prefix here,
-        # so we have to pass it in manually.
+        # We dont have access to the bot prefix here,
+        # So we have to pass it in manually.
         self.prefix = prefix
 
         options = [
-            # black is being inconsistent here again, so..
             # fmt: off
             discord.SelectOption(
                 label="Moderation Commands",
@@ -86,8 +84,7 @@ class Responses(discord.ui.Select):
 ```{self.prefix}ban <@user> <reason>``` - Bans a member from the server.
 ```{self.prefix}unban <@user>``` - Revokes a ban from the server.
 ```{self.prefix}kick <@user> <reason>``` - Kicks a user from the server.
-```{self.prefix}clear <amount>``` - Purges X messages from the channel (default:1).
-```{self.prefix}delete <message IDs>``` - Deletes certain messages by ID.
+```{self.prefix}clear <amount>``` - Purges X messages from the channel.
 ```{self.prefix}mute <@user> <reason>``` - Mutes a user in the server.
 ```{self.prefix}unmute <@user>``` - Unmutes a user in the server.
 ```{self.prefix}tempmute <@user> <time> <reason>``` - Temporarily mutes a user.
@@ -266,9 +263,7 @@ class Responses(discord.ui.Select):
 
 
 class DropdownHelp(discord.ui.View):
-    """
-    Adds the Items to the Dropdown.
-    """
+    """Adds the Items to the Dropdown."""
 
     def __init__(self, prefix: str):
         self.prefix = prefix
@@ -279,13 +274,12 @@ class DropdownHelp(discord.ui.View):
 
 class CustomHelp(commands.HelpCommand):
     async def help_embed(self, command: Union[commands.Command, commands.Group]):
-        """
-        Creates a help embed with useful information.
+        """Creates a help embed with useful information.
         Luckily most things work for both commands and groups.
         """
         embed = discord.Embed(title=self.get_command_signature(command), color=0x007377)
 
-        # the command.help is just the docstring inside every command.
+        # The command.help is just the docstring inside every command.
         embed.add_field(name="Help:", value=command.help, inline=False)
         embed.set_thumbnail(url=self.context.bot.user.display_avatar.url)
         if command.aliases:
@@ -297,8 +291,8 @@ class CustomHelp(commands.HelpCommand):
         else:
             embed.add_field(name="Names:", value=command.name, inline=False)
 
-        # this checks if the command could be used right now.
-        # it throws the error directly if the command cant be used and tells you why.
+        # This checks if the command could be used right now.
+        # It throws the error directly if the command cant be used and tells you why.
         try:
             await command.can_run(self.context)
             embed.add_field(name="Usable by you:", value="Yes", inline=False)
@@ -315,8 +309,7 @@ class CustomHelp(commands.HelpCommand):
         return embed
 
     async def send_bot_help(self, mapping):
-        """
-        Sends you the dropdown with every command and explanation on how to use it.
+        """Sends you the dropdown with every command and explanation on how to use it.
         The user can choose which dropdown they wanna see,
         it is intentionally grouped different than in our cogs.
         It looks a lot nicer this way, in my opinion, than the default option.
@@ -329,8 +322,7 @@ class CustomHelp(commands.HelpCommand):
         )
 
     async def send_cog_help(self, cog: commands.Cog):
-        """
-        We dont really want to send out anything here,
+        """We dont really want to send out anything here,
         since we grouped the commands above a lot differently than the cogs would.
         So instead we just send out the command not found error,
         if the user happens to specify a cog as an argument.
@@ -339,18 +331,14 @@ class CustomHelp(commands.HelpCommand):
         await self.send_error_message(self.command_not_found(cog.qualified_name))
 
     async def send_command_help(self, command: commands.Command):
-        """
-        Sends you specific help information about a command.
-        """
+        """Sends you specific help information about a command."""
         embed = await self.help_embed(command)
 
         channel = self.get_destination()
         await channel.send(embed=embed)
 
     async def send_group_help(self, group: commands.Group):
-        """
-        Sends you help information for grouped commands.
-        """
+        """Sends you help information for grouped commands."""
         command_names = [command.name for command in group.commands]
 
         embed = await self.help_embed(group)
@@ -381,8 +369,7 @@ class Help(commands.Cog):
     @app_commands.guilds(*GuildIDs.ALL_GUILDS)
     @app_commands.describe(command="The optional command you need help with.")
     async def help(self, interaction: discord.Interaction, command: str = None):
-        """
-        The help command, but replicated as a slash command, mostly.
+        """The help command, but replicated as a slash command, mostly.
         We cannot use command.can_run here, since we cannot get the context from an interaction.
         The rest is replicated as close as possible.
 
@@ -407,7 +394,7 @@ class Help(commands.Cog):
             )
             return
 
-        # replicates the get_command_signature of the HelpCommand class.
+        # Replicates the get_command_signature of the HelpCommand class.
         command_full_name = cmd.name
 
         if cmd.aliases:
@@ -419,7 +406,7 @@ class Help(commands.Cog):
 
         full_command = f"{self.bot.command_prefix}{command_full_name} {cmd.signature}"
 
-        # unfortunately we need to construct our own embed
+        # Unfortunately we need to construct our own embed,
         # since a lot of the stuff used is exclusive to the HelpCommand class
         embed = discord.Embed(title=full_command, color=0x007377)
 
@@ -444,7 +431,7 @@ class Help(commands.Cog):
         else:
             embed.add_field(name="Names:", value=cmd.name, inline=False)
 
-        # cant do cmd.can_run here, since we do not have access to context in a slash command.
+        # Cant do cmd.can_run here, since we do not have access to context in a slash command.
 
         embed.add_field(
             name="\u200b",

@@ -2,6 +2,7 @@ import asyncio
 from typing import Union
 
 import discord
+from discord import app_commands
 from discord.ext import commands
 
 import utils.check
@@ -10,46 +11,42 @@ from utils.search import search_role
 
 
 class Admin(commands.Cog):
-    """
-    Contains most general purpose Admin Commands.
-    """
+    """Contains most general purpose Admin Commands."""
 
     def __init__(self, bot):
         self.bot = bot
 
-    @commands.command()
+    @commands.hybrid_command()
+    @app_commands.guilds(*GuildIDs.ALL_GUILDS)
+    @app_commands.describe(amount="The amount of messages to delete.")
+    @app_commands.default_permissions(administrator=True)
     @utils.check.is_moderator()
-    async def clear(self, ctx, amount: int = 1):
-        """
-        Clears the last X messages from the channel the command is used in.
+    async def clear(self, ctx: commands.Context, amount: int = 1):
+        """Clears the last X messages from the channel the command is used in.
         If you do not specify an amount it defaults to 1.
         """
         if amount < 1:
             await ctx.send("Please input a valid number!")
             return
 
+        await ctx.defer()
+
         deleted = await ctx.channel.purge(limit=amount + 1)
-        await ctx.send(
+
+        # Using channel.send for the slash command, it would otherwise try to reply to the deleted message.
+        await ctx.channel.send(
             f"Successfully deleted `{len(deleted)}` messages, {ctx.author.mention}"
         )
 
-    @commands.command()
+    @commands.hybrid_command()
+    @app_commands.guilds(*GuildIDs.ALL_GUILDS)
+    @app_commands.describe(user="The user to ban.", reason="The reason for the ban.")
+    @app_commands.default_permissions(administrator=True)
     @utils.check.is_moderator()
-    async def delete(self, ctx, *messages: discord.Message):
-        """
-        Deletes one or more messages via Message ID.
-        The messages have to be in the same channel the command is used in.
-        """
-        for message in messages:
-            await message.delete()
-        await ctx.message.delete()
-
-    @commands.command()
-    @utils.check.is_moderator()
-    async def ban(self, ctx, user: discord.User, *, reason: str):
-        """
-        Bans a user from the current server with the specified reason, also tries to DM the user.
-        Asks you for confirmation beforehand, because the Mod Team couldn't stop playing with this command.
+    async def ban(self, ctx: commands.Context, user: discord.User, *, reason: str):
+        """Bans a user from the current server.
+        Asks you for confirmation beforehand.
+        Tries to DM the user the reasoning along with the ban records.
         """
 
         def check(m):
@@ -59,7 +56,7 @@ class Admin(commands.Cog):
                 and m.channel == ctx.channel
             )
 
-        # if the reason provided is too long for the embed, we'll just cut it off
+        # If the reason provided is too long for the embed, we'll just cut it off
         if len(reason[2000:]) > 0:
             reason = reason[:2000]
 
@@ -84,8 +81,8 @@ class Admin(commands.Cog):
             return
         else:
             if msg.content.lower() == "y":
-                # tries to dm them first, need a try/except block
-                # cause you can ban ppl not on your server, or ppl can block your bot
+                # Tries to dm them first, need a try/except block.
+                # Because you can ban people not on your server, or they can block your bot, etc.
                 try:
                     await user.send(
                         f"You have been banned from the {ctx.guild.name} Server for the following reason: \n"
@@ -104,21 +101,23 @@ class Admin(commands.Cog):
                 await ctx.send(f"Ban for {user.mention} cancelled.")
                 return
 
-    @commands.command()
+    @commands.hybrid_command()
+    @app_commands.guilds(*GuildIDs.ALL_GUILDS)
+    @app_commands.describe(user="The user to unban.")
+    @app_commands.default_permissions(administrator=True)
     @utils.check.is_moderator()
-    async def unban(self, ctx, user: discord.User):
-        """
-        Removes the ban of a user from the current server.
-        """
+    async def unban(self, ctx: commands.Context, user: discord.User):
+        """Removes the ban of a user from the current server."""
         await ctx.guild.unban(user)
         await ctx.send(f"{user.mention} has been unbanned!")
 
-    @commands.command(aliases=["syncbans"])
+    @commands.hybrid_command(aliases=["syncbans"])
+    @app_commands.guilds(*GuildIDs.ALL_GUILDS)
+    @app_commands.default_permissions(administrator=True)
     @utils.check.is_moderator()
-    async def syncbanlist(self, ctx):
-        """
+    async def syncbanlist(self, ctx: commands.Context):
+        """Automatically bans every user who is banned on the Training Grounds Server.
         Only available on the Battlegrounds Server.
-        Automatically bans every user who is banned on the Training Grounds Server.
         Warning: Very slow & inefficient.
         """
         if ctx.guild.id != GuildIDs.BATTLEGROUNDS:
@@ -126,6 +125,8 @@ class Admin(commands.Cog):
                 f"This command is only available on the {GuildNames.BATTLEGROUNDS} server!"
             )
             return
+
+        await ctx.defer()
 
         tg_guild = self.bot.get_guild(GuildIDs.TRAINING_GROUNDS)
 
@@ -148,13 +149,17 @@ class Admin(commands.Cog):
 
         await ctx.send(f"Ban list was successfully synced. Banned {i} users.")
 
-    @commands.command()
+    @commands.hybrid_command()
+    @app_commands.guilds(*GuildIDs.ALL_GUILDS)
+    @app_commands.describe(
+        member="The user to kick.", reason="The reason for the kick."
+    )
+    @app_commands.default_permissions(administrator=True)
     @utils.check.is_moderator()
-    async def kick(self, ctx, member: discord.Member, *, reason: str):
-        """
-        Kicks a user from the current server with the specified reason, also tries to DM the user.
-        Asks you for confirmation beforehand, because the Mod Team couldn't stop playing with this command.
-        Very similar to the ban command.
+    async def kick(self, ctx: commands.Context, member: discord.Member, *, reason: str):
+        """Bans a user from the current server.
+        Asks you for confirmation beforehand.
+        Tries to DM the user the reasoning, similar to the ban command.
         """
 
         def check(m):
@@ -206,23 +211,33 @@ class Admin(commands.Cog):
                 await ctx.send(f"Kick for {member.mention} cancelled.")
                 return
 
-    @commands.command()
+    @commands.hybrid_command()
+    @app_commands.guilds(*GuildIDs.ALL_GUILDS)
+    @app_commands.describe(
+        member="The member to add a role to.", input_role="The role to add."
+    )
+    @app_commands.default_permissions(administrator=True)
     @utils.check.is_moderator()
-    async def addrole(self, ctx, member: discord.Member, *, input_role: str):
-        """
-        Adds the specified role to the specified member.
-        """
+    async def addrole(
+        self, ctx: commands.Context, member: discord.Member, *, input_role: str
+    ):
+        """Adds a role to a member."""
         role = search_role(ctx.guild, input_role)
 
         await member.add_roles(role)
         await ctx.send(f"{member.mention} was given the {role} role.")
 
-    @commands.command()
+    @commands.hybrid_command()
+    @app_commands.guilds(*GuildIDs.ALL_GUILDS)
+    @app_commands.describe(
+        member="The member to remove a role from.", input_role="The role to remove."
+    )
+    @app_commands.default_permissions(administrator=True)
     @utils.check.is_moderator()
-    async def removerole(self, ctx, member: discord.Member, *, input_role: str):
-        """
-        Removes the specified role from the specified member.
-        """
+    async def removerole(
+        self, ctx: commands.Context, member: discord.Member, *, input_role: str
+    ):
+        """Removes a role from a member."""
         role = search_role(ctx.guild, input_role)
 
         await member.remove_roles(role)
@@ -230,7 +245,7 @@ class Admin(commands.Cog):
 
     @commands.group()
     @utils.check.is_moderator()
-    async def editrole(self, ctx):
+    async def editrole(self, ctx: commands.Context):
         """
         Lists the group commands for editing a role.
         """
@@ -250,7 +265,9 @@ class Admin(commands.Cog):
 
     @editrole.command(name="name")
     @utils.check.is_moderator()
-    async def editrole_name(self, ctx, role: discord.Role, *, name: str):
+    async def editrole_name(
+        self, ctx: commands.Context, role: discord.Role, *, name: str
+    ):
         """
         Edits the name of a role.
         """
@@ -266,7 +283,9 @@ class Admin(commands.Cog):
 
     @editrole.command(name="colour", aliases=["color"])
     @utils.check.is_moderator()
-    async def editrole_colour(self, ctx, role: discord.Role, hex_colour: str):
+    async def editrole_colour(
+        self, ctx: commands.Context, role: discord.Role, hex_colour: str
+    ):
         """
         Edits the colour of a role, use a hex colour code.
         """
@@ -298,7 +317,10 @@ class Admin(commands.Cog):
     @editrole.command(name="icon")
     @utils.check.is_moderator()
     async def editrole_icon(
-        self, ctx, role: discord.Role, emoji: Union[discord.Emoji, str] = None
+        self,
+        ctx: commands.Context,
+        role: discord.Role,
+        emoji: Union[discord.Emoji, str] = None,
     ):
         """
         Edits the role icon with an emoji or an attachment.
@@ -356,7 +378,9 @@ class Admin(commands.Cog):
 
     @editrole.command(name="mentionable", aliases=["mention"])
     @utils.check.is_moderator()
-    async def editrole_mentionable(self, ctx, role: discord.Role, mentionable: bool):
+    async def editrole_mentionable(
+        self, ctx: commands.Context, role: discord.Role, mentionable: bool
+    ):
         """
         Makes the role mentionable or unmentionable. Use a boolean type.
         """
@@ -366,20 +390,23 @@ class Admin(commands.Cog):
         except discord.errors.Forbidden:
             await ctx.send("I do not have the required permissions to edit this role.")
 
-    @commands.command()
+    @commands.hybrid_command()
+    @app_commands.guilds(*GuildIDs.ALL_GUILDS)
+    @app_commands.default_permissions(administrator=True)
     @utils.check.is_moderator()
-    async def records(self, ctx):
-        """
-        Links our ban records google doc.
-        """
+    async def records(self, ctx: commands.Context):
+        """Links our ban records google doc."""
         await ctx.send(f"Link to our ban records:\n{AdminVars.BAN_RECORDS}")
 
-    @commands.command()
+    @commands.hybrid_command()
+    @app_commands.guilds(*GuildIDs.ALL_GUILDS)
+    @app_commands.describe(member="The member to rename.", name="The new name.")
+    @app_commands.default_permissions(administrator=True)
     @utils.check.is_moderator()
-    async def rename(self, ctx, member: discord.Member, *, name: str = None):
-        """
-        Renames the specified member to the specified name.
-        """
+    async def rename(
+        self, ctx: commands.Context, member: discord.Member, *, name: str = None
+    ):
+        """Renames a member to the specified name."""
         await member.edit(nick=name)
         await ctx.send(
             f"Changed the display name of {discord.utils.escape_markdown(str(member))} to `{name}`."
@@ -389,21 +416,19 @@ class Admin(commands.Cog):
     @commands.has_permissions(administrator=True)
     async def say(
         self,
-        ctx,
+        ctx: commands.Context,
         channel: Union[discord.TextChannel, discord.Thread, discord.Message],
         *,
         message: str,
     ):
-        """
-        Repeats a message in a given channel or thread, or replies to a message.
-        """
+        """Repeats a message in a given channel or thread, or replies to a message."""
         if isinstance(channel, discord.Message):
             await channel.reply(message)
         else:
             await channel.send(message)
 
-    # error handling for the commands above
-    # they all are fairly similar
+    # Error handling for the commands above.
+    # They all are fairly similar
     @kick.error
     async def kick_error(self, ctx, error):
         if isinstance(error, commands.MissingRequiredArgument):
@@ -412,6 +437,12 @@ class Admin(commands.Cog):
             await ctx.send("You need to mention a member!")
         elif isinstance(error, commands.MissingPermissions):
             await ctx.send("Nice try, but you don't have the permissions to do that!")
+        elif isinstance(
+            error, (commands.CommandInvokeError, commands.HybridCommandError)
+        ):
+            await ctx.send(
+                "Invalid ID, please make sure you got the right one, or just mention a member."
+            )
         else:
             raise error
 
@@ -423,7 +454,9 @@ class Admin(commands.Cog):
             await ctx.send("You need to mention a member!")
         elif isinstance(error, commands.MissingPermissions):
             await ctx.send("Nice try, but you don't have the permissions to do that!")
-        elif isinstance(error, commands.CommandInvokeError):
+        elif isinstance(
+            error, (commands.CommandInvokeError, commands.HybridCommandError)
+        ):
             await ctx.send(
                 "Invalid ID, please make sure you got the right one, or just mention a member."
             )
@@ -438,7 +471,9 @@ class Admin(commands.Cog):
             await ctx.send("Nice try, but you don't have the permissions to do that!")
         elif isinstance(error, commands.UserNotFound):
             await ctx.send("I could not find this user!")
-        elif isinstance(error, commands.CommandInvokeError):
+        elif isinstance(
+            error, (commands.CommandInvokeError, commands.HybridCommandError)
+        ):
             await ctx.send(
                 "I couldn't find a ban for this ID, make sure you have the right one."
             )
@@ -462,7 +497,9 @@ class Admin(commands.Cog):
             await ctx.send("You need to name a valid role!")
         elif isinstance(error, commands.MissingPermissions):
             await ctx.send("Nice try, but you don't have the permissions to do that!")
-        elif isinstance(error, commands.CommandInvokeError):
+        elif isinstance(
+            error, (commands.CommandInvokeError, commands.HybridCommandError)
+        ):
             await ctx.send(
                 "I didn't find a good match for the role you provided. "
                 "Please be more specific, or mention the role, or use the Role ID."
@@ -480,7 +517,9 @@ class Admin(commands.Cog):
             await ctx.send("You need to name a valid role!")
         elif isinstance(error, commands.MissingPermissions):
             await ctx.send("Nice try, but you don't have the permissions to do that!")
-        elif isinstance(error, commands.CommandInvokeError):
+        elif isinstance(
+            error, (commands.CommandInvokeError, commands.HybridCommandError)
+        ):
             await ctx.send(
                 "I didn't find a good match for the role you provided. "
                 "Please be more specific, or mention the role, or use the Role ID."
@@ -503,7 +542,9 @@ class Admin(commands.Cog):
             await ctx.send("Please specify a valid role.")
         elif isinstance(error, commands.MissingRequiredArgument):
             await ctx.send("Please specify a role and the new name of the role.")
-        elif isinstance(error, commands.CommandInvokeError):
+        elif isinstance(
+            error, (commands.CommandInvokeError, commands.HybridCommandError)
+        ):
             await ctx.send("Please specify a valid role name.")
         else:
             raise error
@@ -549,25 +590,13 @@ class Admin(commands.Cog):
             await ctx.send("Nice try, but you don't have the permissions to do that!")
         elif isinstance(error, commands.BadArgument):
             await ctx.send("Please input a valid number!")
-        elif isinstance(error, commands.CommandInvokeError):
+        elif isinstance(
+            error, (commands.CommandInvokeError, commands.HybridCommandError)
+        ):
             await ctx.send(
                 "I could not delete one or more of these messages! "
                 "Make sure they were not send too long ago or try a different amount."
             )
-        else:
-            raise error
-
-    @delete.error
-    async def delete_error(self, ctx, error):
-        if isinstance(error, commands.MissingPermissions):
-            await ctx.send("Nice try, but you don't have the permissions to do that!")
-        elif isinstance(error, commands.MessageNotFound):
-            await ctx.send(
-                "Could not find a message with that ID! "
-                "Make sure you are in the same channel as the message(s) you want to delete."
-            )
-        elif isinstance(error, commands.MissingRequiredArgument):
-            await ctx.send("Please supply one or more valid message IDs")
         else:
             raise error
 
@@ -586,7 +615,9 @@ class Admin(commands.Cog):
             await ctx.send("Please enter a valid member.")
         elif isinstance(error, commands.MissingRequiredArgument):
             await ctx.send("Please enter a member.")
-        elif isinstance(error, commands.CommandInvokeError):
+        elif isinstance(
+            error, (commands.CommandInvokeError, commands.HybridCommandError)
+        ):
             await ctx.send("Something went wrong! Please try again.")
         else:
             raise error
