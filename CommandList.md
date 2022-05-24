@@ -59,7 +59,7 @@ Everything else should be fairly self-explanatory.
   - Example: `%clear 10`  
   
 - **%clearbadges** `<@user>`  
-  - Info: **Moderator only.** Clears all Badges from a User. Mention the User or use User ID.  
+  - Info: **Slash version available. Moderator only.** Clears all Badges from a User. Mention the User or use User ID.  
   - Example: `%clearbadges @ExampleUser`  
   
 - **%clearmmpings**  
@@ -67,7 +67,7 @@ Everything else should be fairly self-explanatory.
   - Aliases: clearmmrequests, clearmm, clearmatchmaking  
   
 - **%clearwarns** `<@member>`  
-  - Info: **Moderator only.** Clears all warnings of a Member. Mention the Member or use Member ID.  
+  - Info: **Slash version available. Moderator only.** Clears all warnings of a Member. Mention the Member or use Member ID.  
   - Example: `%clearwarns @ExampleUser`  
   
 - **%coin**  
@@ -108,7 +108,7 @@ Everything else should be fairly self-explanatory.
   - Example: `%deleterolemenu 858117781375418389`  
   
 - **%deletewarn** `<@member> <warn_id>`  
-  - Info: **Moderator only.** Deletes a warning by the warning ID. View the warnings of a member with `%warndetails`. Mention the Member or use Member ID.  
+  - Info: **Slash version available. Moderator only.** Deletes a warning by the warning ID. View the warnings of a member with `%warndetails`. Mention the Member or use Member ID.  
   - Example: `%deletewarn @ExampleUser 123456`  
   
 - **%doubles**  
@@ -277,7 +277,7 @@ Everything else should be fairly self-explanatory.
   - Aliases: remindme, newreminder, newremindme  
   
 - **%removebadge** `<@user> <emoji>`  
-  - Info: **Moderator only.** Removes one Badge from a User. Mention the User or use User ID. Will check before if the User actually has the Badge in question.  
+  - Info: **Slash version available. Moderator only.** Removes one Badge from a User. Mention the User or use User ID. Will check before if the User actually has the Badge in question.  
   - Example: `%removebadge @ExampleUser :Example1:`  
   - Aliases: removebadges  
   
@@ -342,11 +342,11 @@ Everything else should be fairly self-explanatory.
   - Info: **Slash version available.** Posts our version of the legal stages.  
   
 - **%starboardemoji** `<emoji>`  
-  - Info: **Moderator only.** Changes the emoji used in our starboard.  
+  - Info: **Slash version available. Moderator only.** Changes the emoji used in our starboard.  
   - Example: `%starboardemoji :BowserFail:`  
   
 - **%starboardthreshold** `<number>`  
-  - Info: **Moderator only.** Changes the threshold for messages to appear on our starboard.  
+  - Info: **Slash version available. Moderator only.** Changes the threshold for messages to appear on our starboard.  
   - Example: `%starboardthreshold 5`  
   
 - **%stats**  
@@ -418,11 +418,11 @@ Everything else should be fairly self-explanatory.
   - Aliases: reminders, myreminders, viewreminder, listreminders  
   
 - **%warn** `<@member> <reason>`  
-  - Info: **Moderator only.** Use this to warn a Member. The reason will get DM'd to the person warned, if the bot can DM the Member. Mention the Member or use Member ID. Warning expire after 30 days. If a Member reaches 3 warnings within 30 days the Member will get muted, 5 within 30 days equal a kick and 7 within 30 days will get the Member banned.  
+  - Info: **Slash version available. Moderator only.** Use this to warn a Member. The reason will get DM'd to the person warned, if the bot can DM the Member. Mention the Member or use Member ID. Warning expire after 30 days. If a Member reaches 3 warnings within 30 days the Member will get muted, 5 within 30 days equal a kick and 7 within 30 days will get the Member banned.  
   - Example: `%warn @ExampleUser what an idiot`  
   
 - **%warndetails** `<@member>`  
-  - Info: **Moderator only.** This will give detailed information about a Members active warnings. Mention a Member or use Member ID.  
+  - Info: **Slash version available. Moderator only.** This will give detailed information about a Members active warnings. Mention a Member or use Member ID.  
   - Example: `%warndetails @ExampleUser`  
   
 - **%warns** `<@member: Optional>`  

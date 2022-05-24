@@ -12,9 +12,7 @@ from utils.ids import AdminVars, GuildIDs, TGChannelIDs
 
 
 class Warn(commands.Cog):
-    """
-    Contains our custom warning system.
-    """
+    """Contains our custom warning system."""
 
     def __init__(self, bot):
         self.bot = bot
@@ -27,11 +25,10 @@ class Warn(commands.Cog):
     async def add_warn(
         self, author: discord.Member, member: discord.Member, reason: str
     ):
-        """
-        Adds a warning to the database.
+        """Adds a warning to the database.
         Also logs it to our infraction-logs channel.
         """
-        # assigning each warning a random 6 digit number, hope thats enough to not get duplicates
+        # Assigning each warning a random 6 digit number, hope thats enough to not get duplicates.
         warn_id = random.randint(100000, 999999)
         warndate = int(discord.utils.utcnow().timestamp())
 
@@ -48,7 +45,7 @@ class Warn(commands.Cog):
             )
             await db.commit()
 
-        # and this second part here logs the warn into the warning log discord channel
+        # And this second part here logs the warn into the warning log discord channel.
         channel = self.bot.get_channel(TGChannelIDs.INFRACTION_LOGS)
         embed = discord.Embed(title="⚠️New Warning⚠️", color=discord.Color.dark_red())
         embed.add_field(name="Warned User", value=member.mention, inline=True)
@@ -61,8 +58,7 @@ class Warn(commands.Cog):
     async def check_warn_count(
         self, guild: discord.Guild, channel: discord.TextChannel, member: discord.Member
     ):
-        """
-        Checks the amount of warnings a user has and executes the according action.
+        """Checks the amount of warnings a user has and executes the according action.
 
         3 warnings:
             User gets muted indefinitely.
@@ -131,20 +127,22 @@ class Warn(commands.Cog):
                     f"Tried to message automatic mute reason to {str(member)}, but it failed: {exc}"
                 )
 
-    @commands.command()
+    @commands.hybrid_command()
+    @app_commands.guilds(*GuildIDs.ALL_GUILDS)
+    @app_commands.describe(
+        member="The member to warn.", reason="The reason for the warning."
+    )
+    @app_commands.default_permissions(administrator=True)
     @utils.check.is_moderator()
-    async def warn(self, ctx, member: discord.Member, *, reason: str):
-        """
-        Warns a user.
-        """
+    async def warn(self, ctx: commands.Context, member: discord.Member, *, reason: str):
+        """Warns a user."""
         if member.bot:
             await ctx.send("You can't warn bots, silly.")
             return
 
-        # adds the warning
         await self.add_warn(ctx.author, member, reason)
 
-        # tries to dm user
+        # Tries to dm user.
         try:
             await member.send(
                 f"You have been warned in the {ctx.guild.name} Server for the following reason: \n"
@@ -159,16 +157,14 @@ class Warn(commands.Cog):
 
         await ctx.send(f"{member.mention} has been warned!")
 
-        # checks warn count for further actions
+        # Checks warn count for further actions.
         await self.check_warn_count(ctx.guild, ctx.channel, member)
 
     @commands.hybrid_command(aliases=["warnings", "infractions"])
     @app_commands.guilds(*GuildIDs.ALL_GUILDS)
     @app_commands.describe(member="The member you want to check the warning count of.")
-    async def warns(self, ctx, member: discord.Member = None):
-        """
-        Checks the warning count of a user, or yourself.
-        """
+    async def warns(self, ctx: commands.Context, member: discord.Member = None):
+        """Checks the warning count of a user, or yourself."""
         if member is None:
             member = ctx.author
 
@@ -185,12 +181,13 @@ class Warn(commands.Cog):
         else:
             await ctx.send(f"{member.mention} has {warns} warning(s).")
 
-    @commands.command()
+    @commands.hybrid_command()
+    @app_commands.guilds(*GuildIDs.ALL_GUILDS)
+    @app_commands.describe(member="The member to remove all warnings from.")
+    @app_commands.default_permissions(administrator=True)
     @utils.check.is_moderator()
-    async def clearwarns(self, ctx, member: discord.Member):
-        """
-        Deletes all warnings of a user from the database.
-        """
+    async def clearwarns(self, ctx: commands.Context, member: discord.Member):
+        """Deletes all warnings of a user from the database."""
         async with aiosqlite.connect("./db/database.db") as db:
             await db.execute(
                 """DELETE FROM warnings WHERE user_id = :user_id""",
@@ -200,12 +197,13 @@ class Warn(commands.Cog):
 
         await ctx.send(f"Cleared all warnings for {member.mention}.")
 
-    @commands.command()
+    @commands.hybrid_command()
+    @app_commands.guilds(*GuildIDs.ALL_GUILDS)
+    @app_commands.describe(member="The member to see the warn details of.")
+    @app_commands.default_permissions(administrator=True)
     @utils.check.is_moderator()
-    async def warndetails(self, ctx, member: discord.Member):
-        """
-        Gets you the details of a Users warnings.
-        """
+    async def warndetails(self, ctx: commands.Context, member: discord.Member):
+        """Gets you the details of a Users warnings."""
         async with aiosqlite.connect("./db/database.db") as db:
             user_warnings = await db.execute_fetchall(
                 """SELECT * FROM warnings WHERE user_id = :user_id""",
@@ -218,7 +216,7 @@ class Warn(commands.Cog):
 
         embed_list = []
         for i, warning in enumerate(user_warnings, start=1):
-            # the first one is the user id, but we dont need it here
+            # The first one is the user id, but we dont need it here.
             (_, warn_id, mod_id, reason, timestamp) = warning
 
             embed = discord.Embed(title=f"Warning #{i}", colour=discord.Colour.red())
@@ -231,8 +229,8 @@ class Warn(commands.Cog):
             )
             embed_list.append(embed)
 
-        # the maximum amount of embeds you can send is 10,
-        # we do ban people at 7 warnings but you never know what might happen
+        # The maximum amount of embeds you can send is 10,
+        # we do ban people at 7 warnings but you never know what might happen.
         try:
             await ctx.send(
                 f"Active warnings for {member.mention}: {len(user_warnings)}",
@@ -243,11 +241,18 @@ class Warn(commands.Cog):
                 f"Active warnings for {member.mention}: {len(user_warnings)}\nCannot list warnings for this user!"
             )
 
-    @commands.command()
+    @commands.hybrid_command()
+    @app_commands.guilds(*GuildIDs.ALL_GUILDS)
+    @app_commands.describe(
+        member="The member to remove a warning of.",
+        warn_id="The ID of the warning to remove.",
+    )
+    @app_commands.default_permissions(administrator=True)
     @utils.check.is_moderator()
-    async def deletewarn(self, ctx, member: discord.Member, warn_id: str):
-        """
-        Deletes a specific warning of a user, by the randomly generated warning ID.
+    async def deletewarn(
+        self, ctx: commands.Context, member: discord.Member, warn_id: str
+    ):
+        """Deletes a specific warning of a user, by the randomly generated warning ID.
         Use warndetails to see these warning IDs.
         """
         async with aiosqlite.connect("./db/database.db") as db:
@@ -272,8 +277,7 @@ class Warn(commands.Cog):
 
     @tasks.loop(hours=24)
     async def warnloop(self):
-        """
-        This here checks if a warning is older than 30 days and has expired,
+        """This here checks if a warning is older than 30 days and has expired,
         if that is the case, deletes the expired warnings.
         """
         logger = self.bot.get_logger("bot.warn")
@@ -294,7 +298,6 @@ class Warn(commands.Cog):
     async def before_warnloop(self):
         await self.bot.wait_until_ready()
 
-    # basic error handling for the above
     @warn.error
     async def warn_error(self, ctx, error):
         if isinstance(error, commands.MissingRequiredArgument):

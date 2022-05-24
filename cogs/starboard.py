@@ -3,16 +3,16 @@ from datetime import datetime, timezone
 
 import aiosqlite
 import discord
+from discord import app_commands
 from discord.ext import commands
 
 import utils.check
 import utils.embed
-from utils.ids import TGChannelIDs
+from utils.ids import GuildIDs, TGChannelIDs
 
 
 class Starboard(commands.Cog):
-    """
-    Contains the Starboard commands and listeners.
+    """Contains the Starboard commands and listeners.
     Currently we only use this for our Charity Events.
     """
 
@@ -25,9 +25,8 @@ class Starboard(commands.Cog):
     async def update_starboard_message(
         self, reaction: discord.Reaction, message_id: int
     ):
-        """
-        Updates the starboard message with the new value for the reaction count
-        whenever a reaction is removed or added.
+        """Updates the starboard message with the new value for the
+        reaction count whenever a reaction is removed or added.
         """
         star_channel = await self.bot.fetch_channel(self.starboard_channel)
 
@@ -46,9 +45,8 @@ class Starboard(commands.Cog):
 
     @commands.command()
     @utils.check.is_moderator()
-    async def starboardemoji(self, ctx, emoji: str):
-        """
-        Sets the Starboard Emoji.
+    async def starboardemoji(self, ctx: commands.Context, emoji: str):
+        """Sets the Starboard Emoji.
         The bot does need access to this Emoji.
         """
         try:
@@ -67,37 +65,39 @@ class Starboard(commands.Cog):
 
         await ctx.send(f"Changed the emoji to: `{emoji}`")
 
-    @commands.command()
+    @commands.hybrid_command()
+    @app_commands.guilds(*GuildIDs.ALL_GUILDS)
+    @app_commands.describe(threshold="The new threshold for the starboard.")
+    @app_commands.default_permissions(administrator=True)
     @utils.check.is_moderator()
-    async def starboardthreshold(self, ctx, i: int):
-        """
-        Changes the threshold of reactions needed for the bot to post the message to the starboard channel.
-        """
-        if i < 1:
+    async def starboardthreshold(self, ctx: commands.Context, threshold: int):
+        """Changes the Starboard threshold.
+        This is the reactions needed for the bot to post the message to the starboard channel."""
+        if threshold < 1:
             await ctx.send("Please input a valid integer.")
             return
 
         with open(r"./json/starboard.json", "r", encoding="utf-8") as f:
             data = json.load(f)
 
-        data["threshold"] = i
+        data["threshold"] = threshold
 
         with open(r"./json/starboard.json", "w", encoding="utf-8") as f:
             json.dump(data, f, indent=4)
 
-        await ctx.send(f"Changed the threshold to: `{i}`")
+        await ctx.send(f"Changed the threshold to: `{threshold}`")
 
     @commands.Cog.listener()
     async def on_raw_reaction_add(self, payload: discord.RawReactionActionEvent):
-        # the listener for reactions for the starboard.
-        # first we check if the reaction happened in the right channel.
+        # The listener for reactions for the starboard.
+        # First we check if the reaction happened in the right channel.
         if payload.channel_id not in self.listening_channels:
             return
 
         with open(r"./json/starboard.json", "r", encoding="utf-8") as f:
             data = json.load(f)
 
-        # these prevent error messages in my console if the setup wasnt done yet.
+        # These prevent error messages in my console if the setup wasnt done yet.
         if "emoji" not in data:
             data["emoji"] = "placeholder"
 
@@ -110,7 +110,7 @@ class Starboard(commands.Cog):
         channel = await self.bot.fetch_channel(payload.channel_id)
         message = await channel.fetch_message(payload.message_id)
 
-        # dont want to update any old messages, 1 week seems fine
+        # Dont want to update any old messages, 1 week seems fine.
         if (datetime.now(timezone.utc) - message.created_at).days > 7:
             return
 
@@ -125,16 +125,16 @@ class Starboard(commands.Cog):
                         {"original_id": payload.message_id},
                     )
 
-                # just editing the number on already existing messages
+                # Just editing the number on already existing messages.
                 if len(matching_entry) != 0:
                     await self.update_starboard_message(reaction, matching_entry[0][0])
                     return
 
-                # if it doesnt already exist, it creates a new message
+                # If it doesnt already exist, it creates a new message.
                 star_channel = await self.bot.fetch_channel(self.starboard_channel)
 
-                # again dont want error messages,
-                # so if the content is invalid it gets replaced by a whitespace character
+                # Again dont want error messages,
+                # so if the content is invalid it gets replaced by a whitespace character.
                 if len(message.content) == 0 or len(message.content[2000:]) > 0:
                     message.content = "\u200b"
 
@@ -173,15 +173,15 @@ class Starboard(commands.Cog):
 
     @commands.Cog.listener()
     async def on_raw_reaction_remove(self, payload: discord.RawReactionActionEvent):
-        # if the amount of reactions to a starboard message decrease,
-        # we also wanna update the message then
+        # If the amount of reactions to a starboard message decrease,
+        # we also wanna update the message then.
         if payload.channel_id not in self.listening_channels:
             return
 
         with open(r"./json/starboard.json", "r", encoding="utf-8") as f:
             data = json.load(f)
 
-        # these prevent error messages in my console if the setup wasnt done yet.
+        # These prevent error messages in my console if the setup wasnt done yet.
         if "emoji" not in data:
             data["emoji"] = "placeholder"
 
@@ -194,7 +194,7 @@ class Starboard(commands.Cog):
         channel = await self.bot.fetch_channel(payload.channel_id)
         message = await channel.fetch_message(payload.message_id)
 
-        # dont want to update any old messages, 1 week seems fine
+        # Dont want to update any old messages, 1 week seems fine.
         if (datetime.now(timezone.utc) - message.created_at).days > 7:
             return
 
@@ -209,7 +209,7 @@ class Starboard(commands.Cog):
                         {"original_id": payload.message_id},
                     )
 
-                # just editing the number on already existing messages
+                # Just editing the number on already existing messages.
                 if len(matching_entry) != 0:
                     await self.update_starboard_message(reaction, matching_entry[0][0])
                     return

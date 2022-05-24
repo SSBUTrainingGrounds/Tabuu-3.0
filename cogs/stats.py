@@ -16,8 +16,7 @@ from utils.ids import GuildIDs, TGRoleIDs
 
 
 class Stats(commands.Cog):
-    """
-    Contains commands vaguely related to statistics.
+    """Contains commands vaguely related to statistics.
     User stats, Bot stats, Server stats, Role stats, you name it.
     """
 
@@ -25,9 +24,7 @@ class Stats(commands.Cog):
         self.bot = bot
 
     async def new_profile(self, user: discord.User):
-        """
-        Creates a new userbadges profile entry, if the user is not found in the database.
-        """
+        """Creates a new userbadges profile entry, if the user is not found in the database."""
         async with aiosqlite.connect("./db/database.db") as db:
             matching_users = await db.execute_fetchall(
                 """SELECT * FROM userbadges WHERE :user_id = user_id""",
@@ -46,9 +43,10 @@ class Stats(commands.Cog):
 
     @commands.command(aliases=["addbadge"])
     @utils.check.is_moderator()
-    async def addbadges(self, ctx, user: discord.User, *badge_list: str):
-        """
-        Adds multiple emoji badges to a user.
+    async def addbadges(
+        self, ctx: commands.Context, user: discord.User, *badge_list: str
+    ):
+        """Adds multiple emoji badges to a user.
         Emojis must be a default emoji or a custom emoji the bot can use.
         """
         if not badge_list:
@@ -88,13 +86,17 @@ class Stats(commands.Cog):
 
         await ctx.send(f"Added badge(s) {' '.join(added_badges)} to {user.mention}.")
 
-    @commands.command(aliases=["removebadges"])
+    @commands.hybrid_command(aliases=["removebadges"])
+    @app_commands.guilds(*GuildIDs.ALL_GUILDS)
+    @app_commands.describe(
+        user="The user to remove the badge from.", badge="The badge to remove."
+    )
+    @app_commands.default_permissions(administrator=True)
     @utils.check.is_moderator()
-    async def removebadge(self, ctx, user: discord.User, badge: str):
-        """
-        Removes a badge from a user.
-        """
-        # no emoji check here, since the bot could lose access in the meantime
+    async def removebadge(self, ctx: commands.Context, user: discord.User, badge: str):
+        """Removes a badge from a user."""
+        # No emoji check here, since the bot could lose access in the meantime.
+        # Also it doesnt really work with slash commands anyways.
 
         async with aiosqlite.connect("./db/database.db") as db:
             matching_users = await db.execute_fetchall(
@@ -130,12 +132,13 @@ class Stats(commands.Cog):
 
         await ctx.send(f"Removed badge {badge} from {user.mention}.")
 
-    @commands.command()
+    @commands.hybrid_command()
+    @app_commands.guilds(*GuildIDs.ALL_GUILDS)
+    @app_commands.describe(user="The user to remove all badges from.")
+    @app_commands.default_permissions(administrator=True)
     @utils.check.is_moderator()
-    async def clearbadges(self, ctx, user: discord.User):
-        """
-        Removes all badges from a user.
-        """
+    async def clearbadges(self, ctx: commands.Context, user: discord.User):
+        """Removes all badges from a user."""
         async with aiosqlite.connect("./db/database.db") as db:
             matching_users = await db.execute_fetchall(
                 """SELECT * FROM userbadges WHERE :user_id = user_id""",
@@ -158,10 +161,8 @@ class Stats(commands.Cog):
     @commands.hybrid_command(aliases=["user", "user-info", "info"])
     @app_commands.guilds(*GuildIDs.ALL_GUILDS)
     @app_commands.describe(member="The member you want to get info about.")
-    async def userinfo(self, ctx, member: discord.Member = None):
-        """
-        Some information about a given user, or yourself.
-        """
+    async def userinfo(self, ctx: commands.Context, member: discord.Member = None):
+        """Some information about a given user, or yourself."""
         if member is None:
             member = ctx.author
 
@@ -192,13 +193,13 @@ class Stats(commands.Cog):
         embed.add_field(name="Name:", value=member.mention, inline=True)
         embed.add_field(name="Top Role:", value=member.top_role.mention, inline=True)
         embed.add_field(
-            # gives the number of roles to prevent listing like 35 roles, -1 for the @everyone role
+            # Gives the number of roles to prevent listing like 35 roles, -1 for the @everyone role.
             name="Number of Roles:",
             value=f"{(len(member.roles)-1)}",
             inline=True,
         )
         embed.add_field(
-            # timezone aware datetime object, F is long formatting
+            # Timezone aware datetime object, F is long formatting.
             name="Joined Server on:",
             value=discord.utils.format_dt(member.joined_at, style="F"),
             inline=True,
@@ -224,10 +225,8 @@ class Stats(commands.Cog):
     @app_commands.describe(
         input_role="The role you want to get info about. Matches to your closest input."
     )
-    async def roleinfo(self, ctx, *, input_role: str):
-        """
-        Basic information about a given role.
-        """
+    async def roleinfo(self, ctx: commands.Context, *, input_role: str):
+        """Basic information about a given role."""
         role = utils.search.search_role(ctx.guild, input_role)
 
         embed = discord.Embed(
@@ -244,11 +243,11 @@ class Stats(commands.Cog):
         embed.add_field(name="Colour:", value=role.colour, inline=True)
 
         if role.display_icon:
-            # the display_icon could be an asset or a default emoji with the str type, so we have to check
-            # if its an asset, we display it in the thumbnail
+            # The display_icon could be an asset or a default emoji with the str type, so we have to check.
+            # If its an asset, we display it in the thumbnail.
             if isinstance(role.display_icon, discord.asset.Asset):
                 embed.set_thumbnail(url=role.display_icon.url)
-            # if its an emoji we add it as the 2nd field
+            # If its an emoji we add it as the 2nd field.
             elif isinstance(role.display_icon, str):
                 embed.insert_field_at(
                     1, name="Role Emoji:", value=role.display_icon, inline=True
@@ -261,9 +260,8 @@ class Stats(commands.Cog):
     @app_commands.describe(
         input_role="The role you want to get info about. Matches to your closest input."
     )
-    async def listrole(self, ctx, *, input_role: str):
-        """
-        Lists every member of a role.
+    async def listrole(self, ctx: commands.Context, *, input_role: str):
+        """Lists every member of a role.
         Well up to 60 members at least.
         """
         role = utils.search.search_role(ctx.guild, input_role)
@@ -291,10 +289,8 @@ class Stats(commands.Cog):
 
     @commands.hybrid_command(aliases=["serverinfo"])
     @app_commands.guilds(*GuildIDs.ALL_GUILDS)
-    async def server(self, ctx):
-        """
-        Various information about the server.
-        """
+    async def server(self, ctx: commands.Context):
+        """Various information about the server."""
         if not ctx.guild:
             await ctx.send("This command is only available on servers.")
             return
@@ -353,14 +349,12 @@ class Stats(commands.Cog):
 
     @commands.hybrid_command(aliases=["botstats"])
     @app_commands.guilds(*GuildIDs.ALL_GUILDS)
-    async def stats(self, ctx):
-        """
-        Statistics and information about this bot.
-        """
+    async def stats(self, ctx: commands.Context):
+        """Statistics and information about this bot."""
         proc = psutil.Process(os.getpid())
         uptime_seconds = time.time() - proc.create_time()
 
-        # they return byte values but we want gigabytes
+        # They return byte values but we want gigabytes.
         ram_used = round(psutil.virtual_memory()[3] / (1024 * 1024 * 1024), 2)
         ram_total = round(psutil.virtual_memory()[0] / (1024 * 1024 * 1024), 2)
         ram_percent = round((ram_used / ram_total) * 100, 1)
@@ -368,9 +362,9 @@ class Stats(commands.Cog):
         async with aiosqlite.connect("./db/database.db") as db:
             macro_list = await db.execute_fetchall("""SELECT name FROM macros""")
 
-        # we use codeblocks with yml syntax highlighting
+        # We use codeblocks with yml syntax highlighting
         # just cause it looks nice, in my opinion.
-        # well at least on desktop.
+        # Well at least it does on desktop.
         bot_description = f"""
 ```yml
 Servers: {len(self.bot.guilds)}
@@ -432,7 +426,7 @@ Events parsed: {self.bot.events_listened_to}
         embed.set_thumbnail(url=self.bot.user.display_avatar.url)
         await ctx.send(embed=embed)
 
-    # dictionary of all of hero's moves and their mana cost
+    # Dictionary of all of hero's moves and their mana cost.
     mana_dict = {
         "acceleratle": 13,
         "psycheup": 14,
@@ -468,10 +462,8 @@ Events parsed: {self.bot.events_listened_to}
     @commands.hybrid_command()
     @app_commands.guilds(*GuildIDs.ALL_GUILDS)
     @app_commands.describe(move="The move you want get the mana cost for.")
-    async def mp4(self, ctx, *, move: str = None):
-        """
-        Gives you the amount of mana used for any of Hero's moves.
-        """
+    async def mp4(self, ctx: commands.Context, *, move: str = None):
+        """Gives you the amount of mana used for any of Hero's moves."""
         if not move:
             await ctx.send(
                 f"To see the mana cost of a move, use `{self.bot.command_prefix}mp4 <move>`.\n"
@@ -502,7 +494,6 @@ Events parsed: {self.bot.events_listened_to}
             current, [m.title() for m in self.mana_dict]
         )
 
-    # error handling
     @addbadges.error
     async def addbadges_error(self, ctx, error):
         if isinstance(error, commands.MissingPermissions):
