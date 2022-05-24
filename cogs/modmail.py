@@ -8,9 +8,7 @@ from utils.ids import GuildIDs, TGChannelIDs, TGRoleIDs
 
 
 class ConfirmationButtons(discord.ui.View):
-    """
-    The buttons for confirming/cancelling the request.
-    """
+    """The buttons for confirming/cancelling the request."""
 
     def __init__(self, member: discord.Member = None):
         super().__init__()
@@ -42,14 +40,13 @@ class ConfirmationButtons(discord.ui.View):
         self.stop()
 
     async def interaction_check(self, interaction: discord.Interaction):
-        # we make sure its the right member thats pressing the button.
-        # not really needed since the message is ephemeral anyways
+        # We make sure its the right member thats pressing the button.
+        # Not really needed since the message is ephemeral anyways.
         return interaction.user == self.member
 
 
 class ModmailButton(discord.ui.View):
-    """
-    The persistent modmail button.
+    """The persistent modmail button.
     We dont really need to save it in a database or something,
     since it is ideally only used one time and always does the same thing.
     """
@@ -80,18 +77,17 @@ class ModmailButton(discord.ui.View):
 
         await view.wait()
 
-        # only proceeds if the confirm button is pressed
+        # Only proceeds if the confirm button is pressed
         if view.confirm is None:
-            # on_timeout to edit the original message doesnt work here, because
-            # interaction.response.send_message does not return a message object to store in a variable.
-            # and we dont have access to the interaction in on_timeout.
-            # so we have to do it like this.
+            # On_timeout to edit the original message doesnt work here,
+            # because interaction.response.send_message does not return a message object to store in a variable.
+            # And we dont have access to the interaction in on_timeout. So we have to do it like this.
             await interaction.followup.send(
                 "Your request timed out. Please try again.", ephemeral=True
             )
             return
         if view.confirm is False:
-            # for that case, the button class above handles it.
+            # For that case, the button class above handles it.
             return
 
         try:
@@ -111,11 +107,11 @@ class ModmailButton(discord.ui.View):
                 "Thanks for reaching out to the Moderator Team. They will be with you shortly.\n"
                 "Please use this thread for communication."
             )
-        # private threads can only be created if you have a subscripion level of 2.
-        # we won't create a thread, cause public modmail isnt really that great.
-        # just need to use the "classic" modmail then and tell the user exactly that.
+        # Private threads can only be created if you have a subscripion level of 2.
+        # We won't create a thread, cause public modmail isnt really that great.
+        # Just need to use the "classic" modmail then and tell the user exactly that.
         except discord.HTTPException as exc:
-            # we have to use the followup here since you cant respond to an interaction twice?
+            # We have to use the followup here since you cant respond to an interaction twice?
             await interaction.followup.send(
                 f"Looks like something went wrong:\n```{exc}```\n"
                 f"Please either use `{self.bot.command_prefix}modmail` in my DMs or contact one of the moderators directly.",
@@ -125,15 +121,14 @@ class ModmailButton(discord.ui.View):
 
 @app_commands.context_menu(name="Report This Message")
 async def report_message(interaction: discord.Interaction, message: discord.Message):
-    """
-    Context menu command for reporting a message to the moderator team.
+    """Context menu command for reporting a message to the moderator team.
     Context menu commands unfortunately cannot be inside of a Cog, so we define it here.
     """
     guild = interaction.client.get_guild(GuildIDs.TRAINING_GROUNDS)
     modmail_channel = guild.get_channel(TGChannelIDs.MODMAIL_CHANNEL)
     mod_role = discord.utils.get(guild.roles, id=TGRoleIDs.MOD_ROLE)
 
-    # the code below is more or less copied from logging deleted messages
+    # The code below is more or less copied from logging deleted messages
     if not message.content:
         message.content = "No content."
 
@@ -142,7 +137,7 @@ async def report_message(interaction: discord.Interaction, message: discord.Mess
         description=f"**Message Content:**\n{message.content}",
         colour=discord.Colour.dark_red(),
     )
-    # some basic info about the message
+    # Some basic info about the message
     embed.add_field(name="Message Author:", value=message.author.mention, inline=True)
     embed.add_field(name="Message Channel:", value=message.channel.mention, inline=True)
     embed.add_field(name="Message ID:", value=message.id, inline=True)
@@ -167,31 +162,28 @@ async def report_message(interaction: discord.Interaction, message: discord.Mess
 
 
 class Modmail(commands.Cog):
-    """
-    Contains the "new", modmail thread setup and also the "old" modmail command.
-    """
+    """Contains the "new", modmail thread setup and also the "old" modmail command."""
 
     def __init__(self, bot):
         self.bot = bot
 
-        # we have to add the context command manually
+        # We have to add the context command manually.
         self.bot.tree.add_command(
             report_message, guilds=GuildIDs.ALL_GUILDS, override=True
         )
 
     @commands.Cog.listener()
     async def on_ready(self):
-        # adds the modmail button if it hasnt already.
-        # on_ready gets called multiple times, so the check is needed.
+        # Adds the modmail button if it hasnt already.
+        # On_ready gets called multiple times, so the check is needed.
         if not self.bot.modmail_button_added:
             self.bot.add_view(ModmailButton())
             self.bot.modmail_button_added = True
 
     @commands.command()
     @utils.check.is_moderator()
-    async def setupmodmailbutton(self, ctx):
-        """
-        Sets up a persistent button for Modmail.
+    async def setupmodmailbutton(self, ctx: commands.Context):
+        """Sets up a persistent button for Modmail.
         Should really only be used one time.
         """
         await ctx.send(
@@ -200,9 +192,8 @@ class Modmail(commands.Cog):
         )
 
     @commands.command()
-    async def modmail(self, ctx, *, args: str):
-        """
-        Very basic one-way modmail system.
+    async def modmail(self, ctx: commands.Context, *, args: str):
+        """Very basic one-way modmail system.
         Only works in the Bots DMs.
         """
         if str(ctx.channel.type) == "private":
@@ -216,7 +207,7 @@ class Modmail(commands.Cog):
 
             complete_message = f"**✉️ New Modmail {mod_role.mention}! ✉️**\nFrom: {ctx.author} \nMessage:\n{args} \n{atm}"
 
-            # with the message attachments combined with the normal message lengths,
+            # With the message attachments combined with the normal message lengths,
             # the message can reach over 4k characters, but we can only send 2k at a time.
             if len(complete_message[4000:]) > 0:
                 await modmail_channel.send(complete_message[:2000])

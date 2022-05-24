@@ -11,8 +11,7 @@ from utils.ids import GuildIDs, TGArenaChannelIDs
 
 
 class Pings(discord.ui.Select):
-    """
-    Handles the Pings and Threads of our Matchmaking System.
+    """Handles the Pings and Threads of our Matchmaking System.
     Both Ranked and Unranked.
     Also contains the Recentpings command with the Dropdown Menu.
     """
@@ -108,9 +107,7 @@ class Pings(discord.ui.Select):
 
 
 class DropdownPings(discord.ui.View):
-    """
-    Adds the items to the Dropdown menu.
-    """
+    """Adds the items to the Dropdown menu."""
 
     def __init__(self):
         super().__init__()
@@ -119,16 +116,14 @@ class DropdownPings(discord.ui.View):
 
 class Matchmakingpings(commands.Cog):
     def __init__(self, bot):
-        """
-        Clears the Matchmaking Pings on Startup.
-        """
         self.bot = bot
 
+        # Clears the Matchmaking Pings on Startup.
         self.clear_mmrequests()
 
     @commands.Cog.listener()
     async def on_thread_update(self, before: discord.Thread, after: discord.Thread):
-        # if a matchmaking thread gets inactive, it gets deleted right away to clear space
+        # If a matchmaking thread gets inactive, it gets deleted right away to clear space.
         if (
             before.archived is False
             and after.archived is True
@@ -141,19 +136,16 @@ class Matchmakingpings(commands.Cog):
 
     @commands.hybrid_command()
     @app_commands.guilds(*GuildIDs.ALL_GUILDS)
-    async def recentpings(self, ctx):
-        """
-        Contains the Recentpings Dropdown Menu, where you can select each Matchmaking Type
-        and get the according Pings of the Last 30 Minutes.
-        """
+    async def recentpings(self, ctx: commands.Context):
+        """Gets you a menu where you can see the recent pings of each Matchmaking Type."""
         await ctx.send("Here are all available ping types:", view=DropdownPings())
 
-    @commands.command(aliases=["clearmmrequests", "clearmm", "clearmatchmaking"])
+    @commands.hybrid_command(aliases=["clearmmrequests", "clearmm", "clearmatchmaking"])
+    @app_commands.guilds(*GuildIDs.ALL_GUILDS)
+    @app_commands.default_permissions(administrator=True)
     @utils.check.is_moderator()
-    async def clearmmpings(self, ctx):
-        """
-        Clears the Matchmaking Pings manually, just in case.
-        """
+    async def clearmmpings(self, ctx: commands.Context):
+        """Clears the Matchmaking Pings manually."""
         self.clear_mmrequests()
         await ctx.send("Cleared the matchmaking pings!")
 
@@ -165,13 +157,11 @@ class Matchmakingpings(commands.Cog):
             raise error
 
     def clear_mmrequests(self):
-        """
-        Clears every Matchmaking Ping in the Singles, Doubles, Funnies and Ranked Files.
-        """
+        """Clears every Matchmaking Ping in the Singles, Doubles, Funnies and Ranked Files."""
         logger = self.bot.get_logger("bot.mm")
         logger.info("Starting to delete pings in the matchmaking files...")
 
-        # deleting singles file
+        # Deleting singles file.
 
         with open(r"./json/singles.json", "r", encoding="utf-8") as f:
             singles = json.load(f)
@@ -186,7 +176,7 @@ class Matchmakingpings(commands.Cog):
 
         logger.info("Singles file cleared!")
 
-        # deleting doubles file
+        # Deleting doubles file.
 
         with open(r"./json/doubles.json", "r", encoding="utf-8") as f:
             doubles = json.load(f)
@@ -201,7 +191,7 @@ class Matchmakingpings(commands.Cog):
 
         logger.info("Doubles file cleared!")
 
-        # deleting funnies file
+        # Deleting funnies file.
 
         with open(r"./json/funnies.json", "r", encoding="utf-8") as f:
             funnies = json.load(f)
@@ -216,7 +206,7 @@ class Matchmakingpings(commands.Cog):
 
         logger.info("Funnies file cleared!")
 
-        # deleting ranked file
+        # Deleting ranked file.
 
         with open(r"./json/rankedpings.json", "r", encoding="utf-8") as f:
             ranked = json.load(f)

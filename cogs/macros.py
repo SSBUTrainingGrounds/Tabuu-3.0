@@ -30,7 +30,7 @@ class MacroModal(discord.ui.Modal, title="Create a new macro"):
         macro_name = self.name.value.lower()
 
         # list of every command together with the aliases registered.
-        # cannot use those for a macro, obviously.
+        # Cannot use those for a macro, obviously.
         command_list = [command.name for command in interaction.client.commands]
         for command in interaction.client.commands:
             command_list.extend(iter(command.aliases))
@@ -40,7 +40,7 @@ class MacroModal(discord.ui.Modal, title="Create a new macro"):
                 """SELECT name FROM macros WHERE name = :name""", {"name": macro_name}
             )
 
-            # basic checks for invalid stuff
+            # Basic checks for invalid stuff.
             if len(matching_macro) != 0:
                 await interaction.response.send_message(
                     "This name was already taken. "
@@ -90,8 +90,7 @@ class MacroButton(discord.ui.View):
 
 
 class Macros(commands.Cog):
-    """
-    Contains the logic of adding/removing macros.
+    """Contains the logic of adding/removing macros.
     As well as listening for them.
     """
 
@@ -100,12 +99,12 @@ class Macros(commands.Cog):
 
     @commands.Cog.listener()
     async def on_message(self, message: discord.Message):
-        # listens for the macros
+        # Listens for the macros.
         async with aiosqlite.connect("./db/database.db") as db:
             macro_names = await db.execute_fetchall("""SELECT name FROM macros""")
 
             for name in macro_names:
-                # it returns tuples, so we need the first (and only) entry
+                # It returns tuples, so we need the first (and only) entry
                 name = name[0]
                 if (
                     len(message.content.split()) == 1
@@ -126,28 +125,29 @@ class Macros(commands.Cog):
                     )
                     await db.commit()
 
-    @commands.command()
+    @commands.hybrid_command()
+    @app_commands.guilds(*GuildIDs.ALL_GUILDS)
+    @app_commands.default_permissions(administrator=True)
     @utils.check.is_moderator()
-    async def createmacro(self, ctx):
-        """
-        Creates a new macro with the desired name and payload and saves it in the database.
-        """
+    async def createmacro(self, ctx: commands.Context):
+        """Creates a new macro with the desired name and payload."""
         view = MacroButton(ctx.author)
 
         await ctx.send(view=view)
 
-    @commands.command()
+    @commands.hybrid_command()
+    @app_commands.guilds(*GuildIDs.ALL_GUILDS)
+    @app_commands.describe(name="The name of the macro.")
+    @app_commands.default_permissions(administrator=True)
     @utils.check.is_moderator()
-    async def deletemacro(self, ctx, name: str):
-        """
-        Deletes a macro with the specified name from the database.
-        """
+    async def deletemacro(self, ctx: commands.Context, name: str):
+        """Deletes a macro with the specified name."""
         async with aiosqlite.connect("./db/database.db") as db:
             macro_names = await db.execute_fetchall(
                 """SELECT * FROM macros WHERE name = :name""", {"name": name}
             )
 
-            # if the macro does not exist we want some kind of error message for the user
+            # If the macro does not exist we want some kind of error message for the user.
             if len(macro_names) == 0:
                 await ctx.send(f"The macro `{name}` was not found. Please try again.")
                 return
@@ -160,19 +160,25 @@ class Macros(commands.Cog):
 
         await ctx.send(f"Deleted macro `{name}`")
 
+    @deletemacro.autocomplete("name")
+    async def deletemacro_autocomplete(
+        self, interaction: discord.Interaction, current: str
+    ):
+        async with aiosqlite.connect("./db/database.db") as db:
+            macros = await db.execute_fetchall("""SELECT name FROM macros""")
+
+        return utils.search.autocomplete_choices(current, [m[0] for m in macros])
+
     @commands.hybrid_command(aliases=["macros", "listmacros", "macrostats"])
     @app_commands.guilds(*GuildIDs.ALL_GUILDS)
     @app_commands.describe(macro="The macro you want to see the stats of.")
-    async def macro(self, ctx, *, macro: str = None):
-        """
-        Gives you detailed information about a macro, or lists every macro saved.
-        """
+    async def macro(self, ctx: commands.Context, *, macro: str = None):
+        """Gives you detailed information about a macro, or lists every macro saved."""
         if macro is None:
             async with aiosqlite.connect("./db/database.db") as db:
                 macro_list = await db.execute_fetchall("""SELECT name FROM macros""")
 
-            # it returns a list of tuples,
-            # so we need to extract them
+            # It returns a list of tuples, so we need to extract them.
             macro_names = [m[0] for m in macro_list]
             await ctx.send(
                 "The registered macros are:\n"
@@ -185,7 +191,7 @@ class Macros(commands.Cog):
                 """SELECT * FROM macros WHERE name = :name""", {"name": macro}
             )
 
-        # if the macro does not exist we want some kind of error message for the user
+        # If the macro does not exist we want some kind of error message for the user.
         if len(matching_macro) == 0:
             await ctx.send(
                 f"I could not find this macro. List all macros with `{self.bot.command_prefix}macros`."
@@ -210,8 +216,6 @@ class Macros(commands.Cog):
 
         return utils.search.autocomplete_choices(current, [m[0] for m in macros])
 
-    # the error handling for the commands above
-    # fairly self-explanatory
     @createmacro.error
     async def createmacro_error(self, ctx, error):
         if isinstance(error, commands.MissingPermissions):

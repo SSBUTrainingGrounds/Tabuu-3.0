@@ -63,7 +63,7 @@ Everything else should be fairly self-explanatory.
   - Example: `%clearbadges @ExampleUser`  
   
 - **%clearmmpings**  
-  - Info: **Moderator only.** Clears all matchmaking pings.  
+  - Info: **Slash version available. Moderator only.** Clears all matchmaking pings.  
   - Aliases: clearmmrequests, clearmm, clearmatchmaking  
   
 - **%clearwarns** `<@member>`  
@@ -89,10 +89,10 @@ Everything else should be fairly self-explanatory.
   - Example: `%countdown 5`  
   
 - **%createmacro**  
-  - Info: **Moderator only.** Sends you a button, which if you press it gives you access to a Modal which allows you to create a new macro with your desired name and payload.  
+  - Info: **Slash version available. Moderator only.** Sends you a button, which if you press it gives you access to a Modal which allows you to create a new macro with your desired name and payload.  
   
 - **%deletemacro** `<name>`  
-  - Info: **Moderator only.** Deletes the specified macro command.  
+  - Info: **Slash version available. Moderator only.** Deletes the specified macro command.  
   - Example: `%deletemacro test`  
   
 - **%deleteprofile**  
