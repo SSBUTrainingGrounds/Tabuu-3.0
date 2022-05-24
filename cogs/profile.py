@@ -11,16 +11,13 @@ from utils.ids import Emojis, GuildIDs
 
 
 class Profile(commands.Cog):
-    """
-    Contains the profile command and everything associated with it.
-    """
+    """Contains the profile command and everything associated with it."""
 
     def __init__(self, bot):
         self.bot = bot
 
     def match_character(self, profile_input: str) -> list[str]:
-        """
-        Matches the input to one or multiple characters and returns the corresponding emoji.
+        """Matches the input to one or multiple characters and returns the corresponding emoji.
         Separates the input by commas.
         Works with names, commonly used nicknames or Fighters ID Number.
         Example:
@@ -43,11 +40,11 @@ class Profile(commands.Cog):
         input_characters = profile_input.split(",")
 
         for i_char in input_characters:
-            # this strips leading and trailing whitespaces
+            # This strips leading and trailing whitespaces.
             i_char = i_char.strip()
 
             for match_char in characters["Characters"]:
-                # 2 characters (pt, aegis) have more than 1 id, so the ids need to be in a list
+                # 2 characters (pt, aegis) have more than 1 id, so the ids need to be in a list.
                 if (
                     i_char == match_char["name"]
                     or i_char in match_char["id"]
@@ -58,22 +55,19 @@ class Profile(commands.Cog):
         return output_characters
 
     def get_badges(self, user: discord.User) -> list[str]:
-
-        """
-        Gets you all of the badges of a member.
-        """
+        """Gets you all of the badges of a member."""
         badges = []
 
-        # quick check for ourselves
+        # Quick check for ourselves.
         if user == self.bot.user:
             return badges
 
-        # the badge roles are not in only one server
+        # The badge roles are not in only one server.
         for guild in user.mutual_guilds:
             if member := guild.get_member(user.id):
-                # getting all of the role ids in a list
+                # Getting all of the role ids in a list.
                 role_ids = [role.id for role in member.roles]
-                # and then checking with the dict
+                # And then checking with the dict.
                 badges.extend(
                     badge
                     for badge, role in Emojis.PROFILE_BADGES.items()
@@ -83,9 +77,7 @@ class Profile(commands.Cog):
         return badges
 
     async def make_new_profile(self, user: discord.User):
-        """
-        Creates a new profile for the user, if the user does not already have a profile set up.
-        """
+        """Creates a new profile for the user, if the user does not already have a profile set up."""
         async with aiosqlite.connect("./db/database.db") as db:
             matching_profile = await db.execute_fetchall(
                 """SELECT * FROM profile WHERE user_id = :user_id""",
@@ -112,8 +104,7 @@ class Profile(commands.Cog):
             await db.commit()
 
     async def character_autocomplete(self, current: str) -> list[app_commands.Choice]:
-        """
-        Autocompletion for the Smash characters.
+        """Autocompletion for the Smash characters.
         We are using this for matching mains, secondaries and pockets.
         """
         with open(r"./files/characters.json", "r", encoding="utf-8") as f:
@@ -125,26 +116,26 @@ class Profile(commands.Cog):
             character["name"].title() for character in characters["Characters"]
         ]
 
-        # we only wanna match the current char, so we split the input
+        # We only wanna match the current char, so we split the input.
         if "," in current:
             existing_chars, current_char = current.rsplit(",", 1)
 
         else:
             current_char = current
 
-        # we dont use the autocomplete function here from utils.search,
-        # cause we need some customisation here
+        # We dont use the autocomplete function here from utils.search,
+        # cause we need some customisation here.
         match = Match(ignore_case=True, include_partial=True)
 
         match_list = match.get_best_matches(
             current_char, character_names, score=40, limit=25
         )
 
-        # we append the existing chars to the current choices,
-        # so you can select multiple characters at once and the autocomplete still works
+        # We append the existing chars to the current choices,
+        # so you can select multiple characters at once and the autocomplete still works.
         if existing_chars:
             choices.extend(
-                # choices can be up to 100 chars in length,
+                # Choices can be up to 100 chars in length,
                 # which we could exceed with 10 chars, so we have to cut it off.
                 app_commands.Choice(
                     name=f"{existing_chars}, {match}"[:100],
@@ -162,10 +153,8 @@ class Profile(commands.Cog):
     @commands.hybrid_command(aliases=["smashprofile", "profileinfo"])
     @app_commands.guilds(*GuildIDs.ALL_GUILDS)
     @app_commands.describe(user="The user you want to see the profile of.")
-    async def profile(self, ctx, user: discord.User = None):
-        """
-        Returns the profile of a user, or yourself if you do not specify a user.
-        """
+    async def profile(self, ctx: commands.Context, user: discord.User = None):
+        """Returns the profile of a user, or yourself if you do not specify a user."""
         if user is None:
             user = ctx.author
 
@@ -214,9 +203,7 @@ class Profile(commands.Cog):
     @commands.hybrid_command()
     @app_commands.guilds(*GuildIDs.ALL_GUILDS)
     async def deleteprofile(self, ctx):
-        """
-        Deletes your profile.
-        """
+        """Deletes your profile."""
         async with aiosqlite.connect("./db/database.db") as db:
             matching_user = await db.execute_fetchall(
                 """SELECT * FROM profile WHERE user_id = :user_id""",
@@ -236,12 +223,12 @@ class Profile(commands.Cog):
 
         await ctx.send(f"Successfully deleted your profile, {ctx.author.mention}.")
 
-    @commands.command()
+    @commands.hybrid_command()
+    @app_commands.guilds(*GuildIDs.ALL_GUILDS)
+    @app_commands.default_permissions(administrator=True)
     @utils.check.is_moderator()
-    async def forcedeleteprofile(self, ctx, user: discord.User):
-        """
-        Deletes the profile of another user, just in case.
-        """
+    async def forcedeleteprofile(self, ctx: commands.Context, user: discord.User):
+        """Deletes the profile of another user, just in case."""
         async with aiosqlite.connect("./db/database.db") as db:
             matching_user = await db.execute_fetchall(
                 """SELECT * FROM profile WHERE user_id = :user_id""",
@@ -266,13 +253,12 @@ class Profile(commands.Cog):
     @commands.hybrid_command(aliases=["main", "setmain", "spmains", "profilemains"])
     @app_commands.guilds(*GuildIDs.ALL_GUILDS)
     @app_commands.describe(mains="Your mains, separated by commas.")
-    async def mains(self, ctx, *, mains: str = None):
-        """
-        Sets your mains on your smash profile.
+    async def mains(self, ctx: commands.Context, *, mains: str = None):
+        """Sets your mains on your smash profile.
         Separates the input by commas, and then matches with names, nicknames and fighter numbers.
         Echoes have an *e* behind their fighter number.
         """
-        # only getting the first 7 chars, think thats a very generous cutoff
+        # Only getting the first 7 chars, think thats a very generous cutoff.
         chars = " ".join(self.match_character(mains)[:7])
 
         await self.make_new_profile(ctx.author)
@@ -299,9 +285,8 @@ class Profile(commands.Cog):
     )
     @app_commands.guilds(*GuildIDs.ALL_GUILDS)
     @app_commands.describe(secondaries="Your secondaries, separated by commas.")
-    async def secondaries(self, ctx, *, secondaries: str = None):
-        """
-        Sets your secondaries on your smash profile.
+    async def secondaries(self, ctx: commands.Context, *, secondaries: str = None):
+        """Sets your secondaries on your smash profile.
         Separates the input by commas, and then matches with names, nicknames and fighter numbers.
         Echoes have an *e* behind their fighter number.
         """
@@ -335,14 +320,13 @@ class Profile(commands.Cog):
     )
     @app_commands.guilds(*GuildIDs.ALL_GUILDS)
     @app_commands.describe(pockets="Your pockets, separated by commas.")
-    async def pockets(self, ctx, *, pockets: str = None):
-        """
-        Sets your pockets on your smash profile.
+    async def pockets(self, ctx: commands.Context, *, pockets: str = None):
+        """Sets your pockets on your smash profile.
         Separates the input by commas, and then matches with names, nicknames and fighter numbers.
         Echoes have an *e* behind their fighter number.
         """
-        # since you can have some more pockets, i put it at 10 max.
-        # there could be a max of around 25 per embed field however
+        # Since you can have some more pockets, i put it at 10 max.
+        # There could be a max of around 25 per embed field however.
         chars = " ".join(self.match_character(pockets)[:10])
 
         await self.make_new_profile(ctx.author)
@@ -369,16 +353,15 @@ class Profile(commands.Cog):
     @commands.hybrid_command(aliases=["smashtag", "sptag", "settag"])
     @app_commands.guilds(*GuildIDs.ALL_GUILDS)
     @app_commands.describe(tag="Your tag.")
-    async def tag(self, ctx, *, tag: str = None):
-        """
-        Sets your tag on your smash profile.
+    async def tag(self, ctx: commands.Context, *, tag: str = None):
+        """Sets your tag on your smash profile.
         Up to 30 characters long.
         """
-        # the default tag is just your discord tag
+        # The default tag is just your discord tag.
         if tag is None:
             tag = str(ctx.author)
 
-        # think 30 chars for a tag is fair
+        # Think 30 chars for a tag is very fair.
         tag = tag[:30]
 
         await self.make_new_profile(ctx.author)
@@ -395,10 +378,10 @@ class Profile(commands.Cog):
             f"{ctx.author.mention}, I have set your tag to: `{discord.utils.remove_markdown(tag)}`"
         )
 
-    # a dictionary of valid profile regions.
-    # tried to be as broad as possible here, hope i didnt miss anything big.
-    # outside of functions cause we need it in the autocomplete, too.
-    # but at the same time i didnt think this should be in a json file or something.
+    # A dictionary of valid profile regions.
+    # Tried to be as broad as possible here, hope i didnt miss anything big.
+    # Outside of functions cause we need it in the autocomplete, too.
+    # But at the same time i didnt think this should be in a json file or something.
     region_dict = {
         "North America": [
             "na",
@@ -477,21 +460,20 @@ class Profile(commands.Cog):
     @commands.hybrid_command(aliases=["setregion", "spregion", "country"])
     @app_commands.guilds(*GuildIDs.ALL_GUILDS)
     @app_commands.describe(region="Your region you want to display on your profile.")
-    async def region(self, ctx, *, region: str = None):
-        """
-        Sets your region on your smash profile.
+    async def region(self, ctx: commands.Context, *, region: str = None):
+        """Sets your region on your smash profile.
         Matches to commonly used regions, which are:
         North America, NA East, NA West, NA South, South America, Europe, Asia, Africa, Oceania.
         """
         if region is None:
             region = ""
 
-        # matching the input to the dict
+        # Matching the input to the dict.
         for matching_region, input_regions in self.region_dict.items():
             if region.lower() in input_regions:
                 region = matching_region
 
-        # double checking if the input got matched and is not None
+        # Double checking if the input got matched and is not None.
         if region and region not in self.region_dict:
             await ctx.send(
                 f"Please choose a valid region. Example: `{self.bot.command_prefix}region Europe`"
@@ -519,7 +501,7 @@ class Profile(commands.Cog):
     async def region_autocomplete(self, interaction: discord.Interaction, current: str):
         valid_regions = list(self.region_dict.keys())
 
-        # again, dont really need custom search here, these are just some very basic regions.
+        # Again, dont really need custom search here, these are just some very basic regions.
         choices = [
             app_commands.Choice(name=region, value=region)
             for region in valid_regions
@@ -531,15 +513,14 @@ class Profile(commands.Cog):
     @commands.hybrid_command(aliases=["setnote", "spnote"])
     @app_commands.guilds(*GuildIDs.ALL_GUILDS)
     @app_commands.describe(note="Your note you want to display on your profile.")
-    async def note(self, ctx, *, note: str = None):
-        """
-        Sets your note on your smash profile.
+    async def note(self, ctx: commands.Context, *, note: str = None):
+        """Sets your note on your smash profile.
         Up to 150 characters long.
         """
         if note is None:
             note = ""
 
-        # for a note, 150 chars seem enough to me
+        # For a note, 150 chars seem enough to me.
         note = note[:150]
 
         await self.make_new_profile(ctx.author)
@@ -560,16 +541,15 @@ class Profile(commands.Cog):
             )
 
     @commands.hybrid_command(
-        aliases=["color", "spcolour", "spcolor", "setcolour", "setcolor"]
+        aliases=["color", "spcolour", "spcolor", "setcolour", "setcolor", "hex"]
     )
     @app_commands.guilds(*GuildIDs.ALL_GUILDS)
     @app_commands.describe(colour="The hex colour code for your smash profile.")
-    async def colour(self, ctx, colour: str):
-        """
-        Sets your embed colour on your smash profile.
+    async def colour(self, ctx: commands.Context, colour: str):
+        """Sets your embed colour on your smash profile.
         Use a hex colour code with a leading #.
         """
-        # hex colour codes are 7 digits long and start with #
+        # Hex colour codes are 7 digits long and start with #
         if not colour.startswith("#") or len(colour) != 7:
             await ctx.send(
                 f"Please choose a valid hex colour code. Example: `{self.bot.command_prefix}colour #8a0f84`"
@@ -601,9 +581,8 @@ class Profile(commands.Cog):
     @commands.hybrid_command()
     @app_commands.guilds(*GuildIDs.ALL_GUILDS)
     @app_commands.describe(character="The character you are looking for.")
-    async def players(self, ctx, *, character: str):
-        """
-        Looks up a character's players in the database.
+    async def players(self, ctx: commands.Context, *, character: str):
+        """Looks up a character's players in the database.
         Sorted by mains, secondaries and pockets.
         """
         matching_character = " ".join(self.match_character(character)[:1])
@@ -686,7 +665,6 @@ class Profile(commands.Cog):
     ):
         return await self.character_autocomplete(current)
 
-    # some basic error handling for the above
     @profile.error
     async def profile_error(self, ctx, error):
         if isinstance(error, commands.UserNotFound):

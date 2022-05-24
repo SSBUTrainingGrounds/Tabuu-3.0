@@ -4,6 +4,7 @@ from typing import Optional
 
 import aiosqlite
 import discord
+from discord import app_commands
 from discord.ext import commands
 
 import utils.check
@@ -12,17 +13,13 @@ from utils.time import convert_time
 
 
 class Mute(commands.Cog):
-    """
-    Contains the custom mute system for both of our servers.
-    """
+    """Contains the custom mute system."""
 
     def __init__(self, bot):
         self.bot = bot
 
     def get_muted_role(self, guild_id: int) -> Optional[int]:
-        """
-        Gets you the muted role of the server.
-        """
+        """Gets you the muted role of the server."""
         if guild_id == GuildIDs.TRAINING_GROUNDS:
             return TGRoleIDs.MUTED_ROLE
 
@@ -32,13 +29,12 @@ class Mute(commands.Cog):
         return None
 
     async def add_mute(self, member: discord.Member):
-        """
-        Adds the mute entry in the database,
+        """Adds the mute entry in the database,
         and tries to add the role in both servers.
         """
-        # checks if the user is already flagged as muted in the file
-        # if not, goes ahead and adds the mute.
-        # no reason to have someone in there multiple times
+        # Checks if the user is already flagged as muted in the file.
+        # If not, goes ahead and adds the mute.
+        # No reason to have someone in there multiple times.
         async with aiosqlite.connect("./db/database.db") as db:
             matching_user = await db.execute_fetchall(
                 """SELECT * FROM muted WHERE user_id = :user_id""",
@@ -53,7 +49,7 @@ class Mute(commands.Cog):
 
                 await db.commit()
 
-        # tries to add the muted roles in each server.
+        # Tries to add the muted roles in each server.
         for guild_id in GuildIDs.MOD_GUILDS:
             guild = self.bot.get_guild(guild_id)
             muted_role = discord.utils.get(
@@ -70,8 +66,7 @@ class Mute(commands.Cog):
                     )
 
     async def remove_mute(self, member: discord.Member):
-        """
-        Basically reverses the add_mute function.
+        """Basically reverses the add_mute function.
         Removes the muted entry from the database
         and tries to remove the role in both servers.
         """
@@ -83,7 +78,7 @@ class Mute(commands.Cog):
 
             await db.commit()
 
-        # tries to remove the muted roles in each server.
+        # Tries to remove the muted roles in each server.
         for guild_id in GuildIDs.MOD_GUILDS:
             guild = self.bot.get_guild(guild_id)
             muted_role = discord.utils.get(
@@ -100,9 +95,7 @@ class Mute(commands.Cog):
                     )
 
     async def add_timeout(self, member: discord.Member, time: datetime):
-        """
-        Tries to add the timeout on both servers.
-        """
+        """Tries to add the timeout on both servers."""
 
         for guild_id in GuildIDs.MOD_GUILDS:
             guild = self.bot.get_guild(guild_id)
@@ -116,15 +109,13 @@ class Mute(commands.Cog):
                     )
 
     async def remove_timeout(self, member: discord.Member):
-        """
-        Tries to remove the timeout on both servers.
-        """
+        """Tries to remove the timeout on both servers."""
 
         for guild_id in GuildIDs.MOD_GUILDS:
             guild = self.bot.get_guild(guild_id)
             if guild_member := guild.get_member(member.id):
                 try:
-                    # setting it to None will remove the timeout
+                    # Setting it to None will remove the timeout.
                     await guild_member.edit(timed_out_until=None)
                 except discord.HTTPException as exc:
                     logger = self.bot.get_logger("bot.mute")
@@ -132,20 +123,24 @@ class Mute(commands.Cog):
                         f"Tried to remove timeout in {guild.name} server but it failed: {exc}"
                     )
 
-    @commands.command()
+    @commands.hybrid_command()
+    @app_commands.guilds(*GuildIDs.ALL_GUILDS)
+    @app_commands.describe(
+        member="The member to mute.", reason="The reason for the mute."
+    )
+    @app_commands.default_permissions(administrator=True)
     @utils.check.is_moderator()
-    async def mute(self, ctx, member: discord.Member, *, reason: str):
-        """
-        Mutes a member in both servers indefinitely and DMs them the reason for it.
-        """
+    async def mute(self, ctx: commands.Context, member: discord.Member, *, reason: str):
+        """Mutes a member in all servers indefinitely.
+        Also tries to DM the member the reason for the mute."""
         async with aiosqlite.connect("./db/database.db") as db:
             matching_user = await db.execute_fetchall(
                 """SELECT * FROM muted WHERE user_id = :user_id""",
                 {"user_id": member.id},
             )
 
-        # we check again if the user is muted here because i dont want the user to get dm'd again if he already is muted
-        # didn't wanna put a separate dm function as well because the dm's change depending on what command calls it
+        # We check again if the user is muted here because i dont want the user to get dm'd again if he already is muted.
+        # Didn't wanna put a separate dm function as well because the dm's change depending on what command calls it.
         if len(matching_user) == 0:
             await self.add_mute(member)
             await ctx.send(f"{member.mention} was muted!")
@@ -164,12 +159,13 @@ class Mute(commands.Cog):
         else:
             await ctx.send("This user was already muted!")
 
-    @commands.command()
+    @commands.hybrid_command()
+    @app_commands.guilds(*GuildIDs.ALL_GUILDS)
+    @app_commands.describe(member="The member to unmute.")
+    @app_commands.default_permissions(administrator=True)
     @utils.check.is_moderator()
-    async def unmute(self, ctx, member: discord.Member):
-        """
-        Unmutes a member in both servers and notifies them via DM.
-        """
+    async def unmute(self, ctx: commands.Context, member: discord.Member):
+        """Unmutes a member in all servers and tries to notify them via DM."""
         async with aiosqlite.connect("./db/database.db") as db:
             matching_user = await db.execute_fetchall(
                 """SELECT * FROM muted WHERE user_id = :user_id""",
@@ -191,34 +187,45 @@ class Mute(commands.Cog):
         else:
             await ctx.send("This user was not muted!")
 
-    @commands.command()
+    @commands.hybrid_command()
+    @app_commands.guilds(*GuildIDs.ALL_GUILDS)
+    @app_commands.describe(
+        member="The member to mute.",
+        mute_time="How long the mute should last.",
+        reason="The reason for the mute.",
+    )
+    @app_commands.default_permissions(administrator=True)
     @utils.check.is_moderator()
     async def tempmute(
-        self, ctx, member: discord.Member, mute_time: str, *, reason: str
+        self,
+        ctx: commands.Context,
+        member: discord.Member,
+        mute_time: str,
+        *,
+        reason: str,
     ):
-        """
-        Mutes a member in both servers, waits the specified time and unmutes them again.
-        """
-        # converts the input into the seconds, and also a human-readable-string
+        """Mutes a member in both servers, waits for a duration and unmutes them again."""
+        # Converts the input into the seconds, and also a human-readable-string.
         seconds, time_muted = convert_time(mute_time)
 
-        # just checking the duration is not at a crazy high/low value
+        # Just checking the duration is not at a crazy high/low value.
         if seconds < 30:
             await ctx.send("Duration is too short! Minimum duration is 30 seconds.")
             return
 
+        # This is one day.
         if seconds > 86401:
             await ctx.send("Duration is too long! Maximum duration is 1 day.")
             return
 
-        # now this is basically just "%mute, wait specified time, %unmute" but automated into one command
+        # Now this is basically just "%mute, wait specified time, %unmute" but automated into one command.
         async with aiosqlite.connect("./db/database.db") as db:
             matching_user = await db.execute_fetchall(
                 """SELECT * FROM muted WHERE user_id = :user_id""",
                 {"user_id": member.id},
             )
 
-        # the mute block from %mute, with the inclusion of time_muted
+        # The mute block from %mute, with the inclusion of time_muted.
         if len(matching_user) == 0:
             await self.add_mute(member)
             await ctx.send(f"{member.mention} was muted for *{time_muted}*!")
@@ -238,18 +245,17 @@ class Mute(commands.Cog):
             await ctx.send("This user is already muted!")
             return
 
-        # waits the specified time
         await asyncio.sleep(seconds)
 
-        # need to refresh the contents of the database
+        # Need to refresh the contents of the database.
         async with aiosqlite.connect("./db/database.db") as db:
             matching_user = await db.execute_fetchall(
                 """SELECT * FROM muted WHERE user_id = :user_id""",
                 {"user_id": member.id},
             )
 
-        # the unmute block from %unmute,
-        # no need for another unmute confirmation if the user was unmuted before manually
+        # The unmute block from %unmute,
+        # no need for another unmute confirmation if the user was unmuted before manually.
         if len(matching_user) != 0:
             await self.remove_mute(member)
             await ctx.send(f"{member.mention} was automatically unmuted!")
@@ -263,17 +269,26 @@ class Mute(commands.Cog):
                     f"Tried to message temp unmute message to {str(member)}, but it failed: {exc}"
                 )
 
-    @commands.command()
+    @commands.hybrid_command()
+    @app_commands.guilds(*GuildIDs.ALL_GUILDS)
+    @app_commands.describe(
+        member="The member to time out.",
+        mute_time="How long the time out should last.",
+        reason="The reason for the time out.",
+    )
+    @app_commands.default_permissions(administrator=True)
     @utils.check.is_moderator()
     async def timeout(
-        self, ctx, member: discord.Member, mute_time: str, *, reason: str
+        self,
+        ctx: commands.Context,
+        member: discord.Member,
+        mute_time: str,
+        *,
+        reason: str,
     ):
-        """
-        Times out a member with the built in timeout function.
-        Specify a time and a reason.
-        The reason will get DM'd to the member.
-        """
-        # converts the time again, we dont need the read_time string though
+        """Times out a member for a specified amount of time.
+        Very similar to the mute command, but with the built in time out function."""
+        # Converts the time again, we dont need the read_time string though.
         seconds, _ = convert_time(mute_time)
         if seconds > 2419199:
             await ctx.send(
@@ -281,13 +296,13 @@ class Mute(commands.Cog):
             )
             return
 
-        # gets the time for the timeout, needs to be a dt object
+        # Gets the time for the timeout, needs to be a dt object.
         timeout_dt = discord.utils.utcnow() + timedelta(seconds=seconds)
-        # timezone aware dt object for sending out
+        # Timezone aware dt object for sending out.
         aware_dt = discord.utils.format_dt(timeout_dt, style="f")
 
         if member.is_timed_out():
-            # if the member is already on timeout, we modify the message sent
+            # If the member is already on timeout, we modify the message sent.
             if member.timed_out_until < timeout_dt:
                 message = (
                     f"The timeout of {member.mention} got prolonged until {aware_dt}."
@@ -315,13 +330,14 @@ class Mute(commands.Cog):
 
         await ctx.send(message)
 
-    @commands.command(aliases=["untimeout"])
+    @commands.hybrid_command(aliases=["untimeout"])
+    @app_commands.guilds(*GuildIDs.ALL_GUILDS)
+    @app_commands.describe(member="The member to remove the time out from.")
+    @app_commands.default_permissions(administrator=True)
     @utils.check.is_moderator()
-    async def removetimeout(self, ctx, member: discord.Member):
-        """
-        Removes a timeout from a member and notifies the member.
-        """
-        # we check first if the member is on timeout
+    async def removetimeout(self, ctx: commands.Context, member: discord.Member):
+        """Removes a timeout from a member."""
+        # We check first if the member is on timeout.
         if not member.is_timed_out():
             await ctx.send(f"{member.mention} is not on timeout!")
             return
@@ -340,7 +356,6 @@ class Mute(commands.Cog):
 
         await ctx.send(f"Removed the timeout of {member.mention}")
 
-    # error handling for the mute commands
     @mute.error
     async def mute_error(self, ctx, error):
         if isinstance(error, commands.MissingRequiredArgument):

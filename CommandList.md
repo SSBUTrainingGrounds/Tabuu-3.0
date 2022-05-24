@@ -142,7 +142,7 @@ Everything else should be fairly self-explanatory.
   - Example: `%editrole name @Admin New Admin Role Name`  
   
 - **%forcedeleteprofile** `<@user>`  
-  - Info: **Moderator only.** Deletes the profile of the mentioned User.  
+  - Info: **Slash version available. Moderator only.** Deletes the profile of the mentioned User.  
   - Example: `%forcedeleteprofile @ExampleUser`  
   
 - **%forcereportmatch** `<@winner> <@loser>`  
@@ -208,7 +208,7 @@ Everything else should be fairly self-explanatory.
   - Example: `%mp4 woosh`  
   
 - **%mute** `<@member> <reason>`  
-  - Info: **Moderator only.** Mutes a Member in both servers. The reason will get DM'd to the Member, if the bot can DM the Member.  
+  - Info: **Slash version available. Moderator only.** Mutes a Member in both servers. The reason will get DM'd to the Member, if the bot can DM the Member.  
   - Example: `%mute @ExampleUser what an idiot`  
   
 - **%newrolemenu** `<message ID> <emoji> <role>`  
@@ -286,7 +286,7 @@ Everything else should be fairly self-explanatory.
   - Example: `%removerole @ExampleUser first class`  
   
 - **%removetimeout** `<@member>`  
-  - Info: **Moderator only.** Removes a timeout from a Member. Mention the Member or use Member ID.  
+  - Info: **Slash version available. Moderator only.** Removes a timeout from a Member. Mention the Member or use Member ID.  
   - Example: `%removetimeout @ExampleUser`  
   - Aliases: untimeout  
   
@@ -376,7 +376,7 @@ Everything else should be fairly self-explanatory.
   - Aliases: smashtag, sptag, settag  
   
 - **%tempmute** `<@member> <time> <reason>`  
-  - Info: **Moderator only.** Mutes a Member in both servers for the specified time, in a format with a number and the duration. Do not use spaces inbetween multiple times. Minimum time is 30 seconds, maximum is 1 day. Mention the Member or use Member ID. The reason will get DM'd to the muted person, if the bot can DM the Member.  
+  - Info: **Slash version available. Moderator only.** Mutes a Member in both servers for the specified time, in a format with a number and the duration. Do not use spaces inbetween multiple times. Minimum time is 30 seconds, maximum is 1 day. Mention the Member or use Member ID. The reason will get DM'd to the muted person, if the bot can DM the Member.  
   - Example: `%tempmute @ExampleUser 12h30mins what an idiot`  
   
 - **%tictactoe** `<@member>`  
@@ -389,7 +389,7 @@ Everything else should be fairly self-explanatory.
   - Aliases: currenttime  
   
 - **%timeout** `<@member> <time> <reason>`  
-  - Info: **Moderator only.** Times out a Member for the specified time and tries to DM them the reason. Maximum time is 28 days - 1 second. Mention the Member or use Member ID. The reason will get DM'd to the muted person, if the bot can DM the Member. Uses the same time converter as tempmute and reminders, in a format with a number and the duration. Do not use spaces inbetween multiple times.  
+  - Info: **Slash version available. Moderator only.** Times out a Member for the specified time and tries to DM them the reason. Maximum time is 28 days - 1 second. Mention the Member or use Member ID. The reason will get DM'd to the muted person, if the bot can DM the Member. Uses the same time converter as tempmute and reminders, in a format with a number and the duration. Do not use spaces inbetween multiple times.  
   - Example: `%timeout @ExampleUser 12h30mins what an idiot`  
   
 - **%translate** `<message>`  
@@ -401,7 +401,7 @@ Everything else should be fairly self-explanatory.
   - Example: `%unban @ExampleUser`  
   
 - **%unmute** `<@member>`  
-  - Info: **Moderator only.** Unmutes a Member in both servers. Please use this in all cases to unmute someone. Mention the Member or use Member ID.  
+  - Info: **Slash version available. Moderator only.** Unmutes a Member in both servers. Please use this in all cases to unmute someone. Mention the Member or use Member ID.  
   - Example: `%unmute @ExampleUser`  
   
 - **%updatelevel** `<@member: Optional>`  
