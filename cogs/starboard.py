@@ -43,14 +43,23 @@ class Starboard(commands.Cog):
         except discord.errors.NotFound:
             return
 
-    @commands.command()
+    @commands.hybrid_command()
+    @app_commands.guilds(*GuildIDs.ALL_GUILDS)
+    @app_commands.describe(emoji="The new emoji for the starboard.")
+    @app_commands.default_permissions(administrator=True)
     @utils.check.is_moderator()
     async def starboardemoji(self, ctx: commands.Context, emoji: str):
         """Sets the Starboard Emoji.
         The bot does need access to this Emoji.
         """
+        if ctx.interaction:
+            await ctx.defer()
+            message = await ctx.interaction.original_message()
+        else:
+            message = ctx.message
+
         try:
-            await ctx.message.add_reaction(emoji)
+            await message.add_reaction(emoji)
         except discord.HTTPException:
             await ctx.send("Please enter a valid emoji.")
             return
