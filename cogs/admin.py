@@ -1,5 +1,5 @@
 import asyncio
-from typing import Union
+from typing import Optional, Union
 
 import discord
 from discord import app_commands
@@ -243,12 +243,12 @@ class Admin(commands.Cog):
         await member.remove_roles(role)
         await ctx.send(f"{member.mention} no longer has the {role} role.")
 
-    @commands.group()
+    @commands.hybrid_group()
+    @app_commands.guilds(*GuildIDs.ALL_GUILDS)
+    @app_commands.default_permissions(administrator=True)
     @utils.check.is_moderator()
     async def editrole(self, ctx: commands.Context):
-        """
-        Lists the group commands for editing a role.
-        """
+        """Lists the group commands for editing a role."""
         if ctx.invoked_subcommand:
             return
 
@@ -264,31 +264,38 @@ class Admin(commands.Cog):
         await ctx.send(embed=embed)
 
     @editrole.command(name="name")
+    @app_commands.guilds(*GuildIDs.ALL_GUILDS)
+    @app_commands.describe(
+        role="The role to edit the name of.", name="The new name of the role."
+    )
+    @app_commands.default_permissions(administrator=True)
     @utils.check.is_moderator()
     async def editrole_name(
         self, ctx: commands.Context, role: discord.Role, *, name: str
     ):
-        """
-        Edits the name of a role.
-        """
+        """Edits the name of a role."""
         old_role_name = role.name
 
-        # unfortunately we have to handle the Forbidden error here,
+        # Unfortunately we have to handle the Forbidden error here,
         # since the error handler will not handle it easily.
         try:
             await role.edit(name=name)
-            await ctx.send(f"Changed name of {old_role_name} to {role.name}.")
+            await ctx.send(f"Changed name of {old_role_name} to {name}.")
         except discord.errors.Forbidden:
             await ctx.send("I do not have the required permissions to edit this role.")
 
     @editrole.command(name="colour", aliases=["color"])
+    @app_commands.guilds(*GuildIDs.ALL_GUILDS)
+    @app_commands.describe(
+        role="The role to edit the colour of.",
+        hex_colour="The new colour, in the hex format.",
+    )
+    @app_commands.default_permissions(administrator=True)
     @utils.check.is_moderator()
     async def editrole_colour(
         self, ctx: commands.Context, role: discord.Role, hex_colour: str
     ):
-        """
-        Edits the colour of a role, use a hex colour code.
-        """
+        """Edits the colour of a role, use a hex colour code."""
         # hex colour codes are 7 digits long and start with #
         if not hex_colour.startswith("#") or len(hex_colour) != 7:
             await ctx.send(
@@ -320,14 +327,31 @@ class Admin(commands.Cog):
         self,
         ctx: commands.Context,
         role: discord.Role,
-        emoji: Union[discord.Emoji, str] = None,
+        emoji: str = None,
+        attachment: Optional[discord.Attachment] = None,
     ):
-        """
-        Edits the role icon with an emoji or an attachment.
-        """
-        # role icons can be either emojis or images
-        # if none of these are specified, we remove the icon
-        if not emoji and not ctx.message.attachments:
+        """Edits the role icon with an emoji or an attachment."""
+
+        await ctx.defer()
+
+        async def apply_icon(asset: Union[discord.Emoji, discord.Attachment]):
+            """This function reads the asset as a byte-like object
+            and tries to insert that as the role icon.
+            """
+            try:
+                asset_icon = await asset.read()
+                await role.edit(display_icon=asset_icon)
+                await ctx.send(
+                    f"Edited the display icon of {role.name} to {asset.url} ."
+                )
+            # The normal Missing Permissions thing doesnt work here,
+            # since this could raise a variety of errors.
+            except (discord.errors.Forbidden, discord.errors.HTTPException) as exc:
+                await ctx.send(f"Something went wrong:\n`{exc}`")
+
+        # Role icons can be either emojis or images,
+        # if none of these are specified, we remove the icon.
+        if not emoji and not attachment:
             try:
                 await role.edit(display_icon=None)
                 await ctx.send(f"Removed the display icon of {role.name}.")
@@ -337,53 +361,41 @@ class Admin(commands.Cog):
                 )
             return
 
-        async def apply_icon(asset: Union[discord.Emoji, discord.Attachment]):
-            """
-            This function reads the asset as a byte-like object
-            and tries to insert that as the role icon.
-            """
-            try:
-                asset_icon = await asset.read()
-                await role.edit(display_icon=asset_icon)
+        # First we check if an Attachment is supplied.
+        if attachment:
+            if not attachment.url.endswith((".jpg", ".jpeg", ".png")):
                 await ctx.send(
-                    f"Edited the display icon of {role.name} to {asset.url} ."
+                    "Please either specify an emoji or attach an image to use as a role icon."
                 )
-            # the normal Missing Permissions thing doesnt work here,
-            # since this could raise a variety of errors.
-            except (discord.errors.Forbidden, discord.errors.HTTPException) as exc:
-                await ctx.send(f"Something went wrong:\n`{exc}`")
-
-        if emoji:
-            # we first need to check for a custom emoji
-            if isinstance(emoji, discord.Emoji):
-                await apply_icon(emoji)
                 return
+            await apply_icon(attachment)
+            return
 
-            # or else if it is a regular emoji
+        # After that we check for an Emoji.
+        emoji_converter = commands.EmojiConverter()
+        try:
+            emoji = await emoji_converter.convert(ctx, emoji)
+            await apply_icon(emoji)
+        except commands.EmojiNotFound:
+            # We then check if it is a regular emoji.
             try:
                 await role.edit(display_icon=emoji)
                 await ctx.send(f"Edited the display icon of {role.name} to {emoji}.")
             except (discord.errors.Forbidden, discord.errors.HTTPException) as exc:
                 await ctx.send(f"Something went wrong:\n`{exc}`")
-            return
-
-        # we check if the attachment its a supported icon type
-        if not ctx.message.attachments[0].url.endswith((".jpg", ".jpeg", ".png")):
-            await ctx.send(
-                "Please either specify an emoji or attach an image to use as a role icon."
-            )
-            return
-
-        await apply_icon(ctx.message.attachments[0])
 
     @editrole.command(name="mentionable", aliases=["mention"])
+    @app_commands.guilds(*GuildIDs.ALL_GUILDS)
+    @app_commands.describe(
+        role="The role to edit the mentionable status of.",
+        mentionable="The new mentionable status (True/False).",
+    )
+    @app_commands.default_permissions(administrator=True)
     @utils.check.is_moderator()
     async def editrole_mentionable(
         self, ctx: commands.Context, role: discord.Role, mentionable: bool
     ):
-        """
-        Makes the role mentionable or unmentionable. Use a boolean type.
-        """
+        """Makes the role mentionable or unmentionable. Use a boolean type."""
         try:
             await role.edit(mentionable=mentionable)
             await ctx.send(f"Set {role.name} mentionable status to: {mentionable}.")
