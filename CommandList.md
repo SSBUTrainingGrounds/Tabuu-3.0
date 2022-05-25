@@ -104,7 +104,7 @@ Everything else should be fairly self-explanatory.
   - Aliases: delreminder, rmreminder, delreminders, deletereminders  
   
 - **%deleterolemenu** `<message ID>`  
-  - Info: **Moderator only.** Deletes a Role menu completely.  
+  - Info: **Slash version available. Moderator only.** Deletes a Role menu completely.  
   - Example: `%deleterolemenu 858117781375418389`  
   
 - **%deletewarn** `<@member> <warn_id>`  
@@ -196,7 +196,7 @@ Everything else should be fairly self-explanatory.
   - Aliases: main, setmain, spmains, profilemains  
   
 - **%modifyrolemenu** `<message ID> <exclusive: Optional> <Role(s): Optional>`  
-  - Info: **Moderator only.** Modifies a role menu with special properties. Exclusive is a boolean(True/False) value which specifies if a Member is able to get 1 role (True) or all roles (False) from this role menu. The role(s) set a requirement so that a Member needs one of these roles to get any role of this role menu. Mention the role or use role ID. Both arguments are optional, if left out both default to False/None.  
+  - Info: **Slash version available. Moderator only.** Modifies a role menu with special properties. Exclusive is a boolean(True/False) value which specifies if a Member is able to get 1 role (True) or all roles (False) from this role menu. The role(s) set a requirement so that a Member needs one of these roles to get any role of this role menu. Mention the role or use role ID. Both arguments are optional, if left out both default to False/None.  
   - Example: `%modifyrolemenu 858117781375418389 True @Singles Winner`  
   
 - **%modmail** `<your message>`  
@@ -212,7 +212,7 @@ Everything else should be fairly self-explanatory.
   - Example: `%mute @ExampleUser what an idiot`  
   
 - **%newrolemenu** `<message ID> <emoji> <role>`  
-  - Info: **Moderator only.** Creates a new entry for a role menu. Mention the Role or use Role ID and make sure the Bot has access to this emoji.  
+  - Info: **Slash version available. Moderator only.** Creates a new entry for a role menu. Mention the Role or use Role ID and make sure the Bot has access to this emoji.  
   - Example: `%newrolemenu 858117781375418389 🥰 @Server Events`  
   
 - **%note** `<note: Optional>`  

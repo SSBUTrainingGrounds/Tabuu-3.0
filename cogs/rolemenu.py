@@ -15,11 +15,21 @@ class Rolemenu(commands.Cog):
     def __init__(self, bot):
         self.bot = bot
 
-    @commands.command()
+    @commands.hybrid_command()
+    @app_commands.guilds(*GuildIDs.ALL_GUILDS)
+    @app_commands.describe(
+        message="The message of the role menu. Make sure to be in the same channel as the message.",
+        emoji="The emoji for the role menu entry.",
+        role="The role the user is recieving.",
+    )
+    @app_commands.default_permissions(administrator=True)
     @utils.check.is_moderator()
-    async def newrolemenu(self, ctx, message: int, emoji: str, role: discord.Role):
+    async def newrolemenu(
+        self, ctx: commands.Context, message: str, emoji: str, role: discord.Role
+    ):
         """Creates a brand new role menu."""
         # Makes sure the message and emoji are valid.
+
         try:
             reactionmessage = await ctx.fetch_message(message)
             await reactionmessage.add_reaction(emoji)
@@ -27,7 +37,8 @@ class Rolemenu(commands.Cog):
         except discord.HTTPException:
             await ctx.send(
                 "Either the message ID is invalid or I don't have access to this emoji. "
-                "Also make sure the message is in the same channel as this one."
+                "Also make sure the message is in the same channel as this one.",
+                ephemeral=True,
             )
             return
 
@@ -61,24 +72,38 @@ class Rolemenu(commands.Cog):
             await db.commit()
 
         await ctx.send(
-            f"Added an entry for Message ID #{message}, Emoji {emoji}, and Role {role.name}"
+            f"Added an entry for Message ID #{message}, Emoji {emoji}, and Role {role.name}",
+            ephemeral=True,
         )
 
-    @commands.command()
+    @commands.hybrid_command()
+    @app_commands.guilds(*GuildIDs.ALL_GUILDS)
+    @app_commands.describe(
+        message="The message of the role menu.",
+        exclusive="If you want the role menu to only give out one role.",
+        role_requirements="The role(s) you need to use the role menu. Separate the roles by spaces.",
+    )
+    @app_commands.default_permissions(administrator=True)
     @utils.check.is_moderator()
     async def modifyrolemenu(
         self,
-        ctx,
-        message: int,
+        ctx: commands.Context,
+        message: str,
         exclusive: bool = False,
-        rolereqs: commands.Greedy[discord.Role] = None,
+        *,
+        role_requirements: str = None,
     ):
         """Modifies a role menu with either a role requirement, or makes it "exclusive".
         Which means that a user can only have 1 of those roles at once.
         """
 
+        role_converter = commands.RoleConverter()
+
         # If there are rolereqs supplied, gets every role in there.
-        if rolereqs is not None:
+        if role_requirements:
+            rolereqs = role_requirements.split(" ")
+            rolereqs = [await role_converter.convert(ctx, role) for role in rolereqs]
+
             rolereq_ids = []
             rolereq_names = []
 
@@ -101,7 +126,9 @@ class Rolemenu(commands.Cog):
             )
 
             if len(rolemenu_entries) == 0:
-                await ctx.send("I didn't find an entry for this message.")
+                await ctx.send(
+                    "I didn't find an entry for this message.", ephemeral=True
+                )
                 return
 
             await db.execute(
@@ -117,12 +144,35 @@ class Rolemenu(commands.Cog):
 
         await ctx.send(
             f"I have set the Role requirement to {rolereq_name_store} "
-            f"and the Exclusive requirement to {exclusive} for the Role menu message ID {message}."
+            f"and the Exclusive requirement to {exclusive} for the Role menu message ID {message}.",
+            ephemeral=True,
         )
 
-    @commands.command()
+    @modifyrolemenu.autocomplete("message")
+    async def modifyrolemenu_autocomplete(
+        self, interaction: discord.Interaction, current: str
+    ):
+        async with aiosqlite.connect("./db/database.db") as db:
+            message_id = await db.execute_fetchall(
+                """SELECT message_id FROM reactrole"""
+            )
+
+        message_ids = [str(id[0]) for id in list(set(message_id))]
+
+        choices = [
+            app_commands.Choice(name=m_id, value=m_id)
+            for m_id in message_ids
+            if current in m_id
+        ]
+
+        return choices[:25]
+
+    @commands.hybrid_command()
+    @app_commands.guilds(*GuildIDs.ALL_GUILDS)
+    @app_commands.describe(message="The message of the role menu you want to delete.")
+    @app_commands.default_permissions(administrator=True)
     @utils.check.is_moderator()
-    async def deleterolemenu(self, ctx, message: int):
+    async def deleterolemenu(self, ctx: commands.Context, message: str):
         """Completely deletes a role menu entry from the database."""
 
         async with aiosqlite.connect("./db/database.db") as db:
@@ -144,11 +194,30 @@ class Rolemenu(commands.Cog):
 
         await ctx.send(f"Deleted every entry for Message ID #{message}.")
 
+    @deleterolemenu.autocomplete("message")
+    async def deleterolemenu_autocomplete(
+        self, interaction: discord.Interaction, current: str
+    ):
+        async with aiosqlite.connect("./db/database.db") as db:
+            message_id = await db.execute_fetchall(
+                """SELECT message_id FROM reactrole"""
+            )
+
+        message_ids = [str(id[0]) for id in list(set(message_id))]
+
+        choices = [
+            app_commands.Choice(name=m_id, value=m_id)
+            for m_id in message_ids
+            if current in m_id
+        ]
+
+        return choices[:25]
+
     @commands.hybrid_command()
     @app_commands.guilds(*GuildIDs.ALL_GUILDS)
     @app_commands.default_permissions(administrator=True)
     @utils.check.is_moderator()
-    async def geteveryrolemenu(self, ctx):
+    async def geteveryrolemenu(self, ctx: commands.Context):
         """Lists every currently active role menu."""
         async with aiosqlite.connect("./db/database.db") as db:
             rolemenu_entries = await db.execute_fetchall(
@@ -249,7 +318,7 @@ class Rolemenu(commands.Cog):
                         try:
                             await payload.member.send(
                                 f"The role {wanted_role.name} was not added to you "
-                                "due to not having one or more of the following roles:"
+                                "due to not having one or more of the following roles: "
                                 f"{', '.join([missing_role.name for missing_role in roles_required])}.\n\n"
                                 f"Check <#{TGChannelIDs.RULES_CHANNEL}> for information "
                                 f"or inquire in <#{TGChannelIDs.HELP_CHANNEL}> if you cannot find the details on the required roles.",
