@@ -315,7 +315,7 @@ Everything else should be fairly self-explanatory.
   - Aliases: rockpaperscissors, rochambeau, roshambo  
   
 - **%say** `<channel> <message>`  
-  - Info: **Admin Only.** Repeats the given Message in the given Text Channel.  
+  - Info: **Slash version available. Admin Only.** Repeats the given Message in the given Text Channel, Thread or replies to a message. If you want to reply to a message in another channel, use the ChannelID-MessageID syntax or the link to the message.  
   - Example: `%say #announcements Important Announcement`  
   
 - **%secondaries** `<secondary1, secondary2,..: Optional>`  

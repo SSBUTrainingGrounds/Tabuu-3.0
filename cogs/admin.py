@@ -412,20 +412,41 @@ class Admin(commands.Cog):
             f"Changed the display name of {discord.utils.escape_markdown(str(member))} to `{name}`."
         )
 
-    @commands.command()
-    @commands.has_permissions(administrator=True)
+    @commands.hybrid_command()
+    @app_commands.guilds(*GuildIDs.ALL_GUILDS)
+    @app_commands.describe(
+        messageable="Where to send the message/reply to (Channel, Thread, Message).",
+        message="The message I will send.",
+    )
+    @app_commands.default_permissions(administrator=True)
+    @utils.check.is_moderator()
     async def say(
         self,
         ctx: commands.Context,
-        channel: Union[discord.TextChannel, discord.Thread, discord.Message],
+        messageable: str,
         *,
         message: str,
     ):
         """Repeats a message in a given channel or thread, or replies to a message."""
-        if isinstance(channel, discord.Message):
-            await channel.reply(message)
+        destination = None
+
+        # There is probably a better way to do this with slash commands,
+        # but since neither Links nor other forms of valid IDs have any of those chars in it we can remove those
+        # to be able to send to channels even if the user supplies the channel as #Example Channel.
+        # With normal commands we could just use a Union Converter and save us the headache.
+        messageable = messageable.strip("<>#")
+
+        if messageable.isnumeric():
+            destination = ctx.guild.get_channel_or_thread(int(messageable))
+
+        if not destination:
+            message_converter = commands.MessageConverter()
+            destination = await message_converter.convert(ctx, messageable)
+            await destination.reply(message)
         else:
-            await channel.send(message)
+            await destination.send(message)
+
+        await ctx.send("Message sent!", ephemeral=True)
 
     # Error handling for the commands above.
     # They all are fairly similar
@@ -628,10 +649,12 @@ class Admin(commands.Cog):
             await ctx.send("Nice try, but you don't have the permissions to do that!")
         elif isinstance(error, commands.MissingRequiredArgument):
             await ctx.send("Please specify a destination and a message to repeat.")
-        elif isinstance(error, commands.BadUnionArgument):
-            await ctx.send(
-                "Please specify a valid channel, thread or message to reply to."
-            )
+        elif isinstance(error, commands.MessageNotFound):
+            await ctx.send("Please make sure to input a valid Message ID or Link.")
+        # elif isinstance(
+        #     error, (commands.CommandInvokeError, commands.HybridCommandError)
+        # ):
+        #     await ctx.send("Please input a valid Channel, Thread or Message ID.")
         else:
             raise error
 
