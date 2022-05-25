@@ -651,10 +651,10 @@ class Admin(commands.Cog):
             await ctx.send("Please specify a destination and a message to repeat.")
         elif isinstance(error, commands.MessageNotFound):
             await ctx.send("Please make sure to input a valid Message ID or Link.")
-        # elif isinstance(
-        #     error, (commands.CommandInvokeError, commands.HybridCommandError)
-        # ):
-        #     await ctx.send("Please input a valid Channel, Thread or Message ID.")
+        elif isinstance(
+            error, (commands.CommandInvokeError, commands.HybridCommandError)
+        ):
+            await ctx.send("Please input a valid Channel, Thread or Message ID.")
         else:
             raise error
 
