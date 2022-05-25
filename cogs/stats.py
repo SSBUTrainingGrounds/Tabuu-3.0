@@ -41,21 +41,35 @@ class Stats(commands.Cog):
 
             await db.commit()
 
-    @commands.command(aliases=["addbadge"])
+    @commands.hybrid_command(aliases=["addbadge"])
+    @app_commands.guilds(*GuildIDs.ALL_GUILDS)
+    @app_commands.describe(
+        user="The user to add the badges to.", badges="The badge(s) to add."
+    )
+    @app_commands.default_permissions(administrator=True)
     @utils.check.is_moderator()
     async def addbadges(
-        self, ctx: commands.Context, user: discord.User, *badge_list: str
+        self, ctx: commands.Context, user: discord.User, *, badges: str
     ):
         """Adds multiple emoji badges to a user.
         Emojis must be a default emoji or a custom emoji the bot can use.
         """
+
+        if ctx.interaction:
+            await ctx.defer()
+            message = await ctx.interaction.original_message()
+        else:
+            message = ctx.message
+
+        badge_list = badges.split(" ")
+
         if not badge_list:
             await ctx.send("Please specify the badge(s) you want to add.")
             return
 
         for badge in badge_list:
             try:
-                await ctx.message.add_reaction(badge)
+                await message.add_reaction(badge)
             except discord.errors.HTTPException:
                 await ctx.send("Please use only valid emojis as badges!")
                 return
@@ -65,21 +79,23 @@ class Stats(commands.Cog):
         added_badges = []
 
         async with aiosqlite.connect("./db/database.db") as db:
-            badges = await db.execute_fetchall(
+            user_badges = await db.execute_fetchall(
                 """SELECT badges FROM userbadges WHERE :user_id = user_id""",
                 {"user_id": user.id},
             )
 
-            badges = badges[0][0].split(" ")
+            user_badges = user_badges[0][0].split(" ")
 
-            added_badges.extend(badge for badge in badge_list if badge not in badges)
-            badges = badges + added_badges
+            added_badges.extend(
+                badge for badge in badge_list if badge not in user_badges
+            )
+            user_badges = user_badges + added_badges
 
-            badges = " ".join(badges)
+            user_badges = " ".join(user_badges)
 
             await db.execute(
                 """UPDATE userbadges SET badges = :badges WHERE user_id = :user_id""",
-                {"badges": badges, "user_id": user.id},
+                {"badges": user_badges, "user_id": user.id},
             )
 
             await db.commit()

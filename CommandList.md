@@ -25,7 +25,7 @@ Everything else should be fairly self-explanatory.
   - Example: `%8ball Is Tabuu 3.0 the best bot out there?`  
   
 - **%addbadges** `<@user> <emojis>`  
-  - Info: **Moderator only.** Adds one or multiple Badges to a User. Mention the User or use User ID, for the badges they all need to be valid emojis that the bot can use.  
+  - Info: **Slash version available. Moderator only.** Adds one or multiple Badges to a User. Mention the User or use User ID, for the badges they all need to be valid emojis that the bot can use.  
   - Example: `%addbadges @ExampleUser :Example1: :Example2:`  
   - Aliases: addbadge  
   
