@@ -4,8 +4,7 @@ import utils.logger
 
 
 async def setup_db(filepath: str = "./db/database.db"):
-    """
-    Sets up the database with the required tables.
+    """Sets up the database with the required tables.
     Only really needed for first-time setup, or when we add a table.
     """
     async with aiosqlite.connect(filepath) as db:

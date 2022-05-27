@@ -6,13 +6,12 @@ from stringmatch import Match
 
 
 def search_role(guild: discord.Guild, input_role: str) -> Optional[discord.Role]:
-    """
-    Searches all of the guilds roles for the given input role.
+    """Searches all of the guilds roles for the given input role.
     First we convert a possible role mention into the raw role ID.
     Then we look if the input matches the ID of any of the guilds roles.
     If that fails, we search the guilds roles for the closest match of the name using the stringmatch library.
     """
-    # we get rid of the junk that comes with mentioning a role
+    # We get rid of the junk that comes with mentioning a role.
     unwanted = ["<", "@", ">", "&"]
     for i in unwanted:
         input_role = input_role.replace(i, "")
@@ -24,9 +23,9 @@ def search_role(guild: discord.Guild, input_role: str) -> Optional[discord.Role]
     try:
         role = discord.utils.get(guild.roles, id=int(input_role))
 
-        # if the role is None we just search for it below.
-        # this will happen if the input is an integer, but not a role ID.
-        # like when you would search for a role named "100".
+        # If the role is None we just search for it below.
+        # This will happen if the input is an integer, but not a role ID.
+        # Like when you would search for a role named "100".
         if not role:
             raise ValueError
 
@@ -40,8 +39,7 @@ def search_role(guild: discord.Guild, input_role: str) -> Optional[discord.Role]
 def autocomplete_choices(
     current: str, available_choices: list[str]
 ) -> list[app_commands.Choice]:
-    """
-    Returns a list of the first 25 autocomplete choices for the given current string
+    """Returns a list of the first 25 autocomplete choices for the given current string
     and the choices supplied. Used primarily in autocompletion for slash commands.
     """
     match = Match(ignore_case=True, include_partial=True)

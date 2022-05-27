@@ -4,10 +4,9 @@ from zoneinfo import ZoneInfo
 
 
 def convert_to_utc(dtime: datetime.time, tz: str) -> datetime.time:
-    """
-    Converts the time from a given timezone to the UTC time.
+    """Converts the time from a given timezone to the UTC time.
     We have to use this since timed tasks for some reason do not work with tzinfo.
-    I don't know why since the docs say it should work but it just straight up does not work.
+    I don't know why since the docs say it should work but it just does not work for me.
     That's why we have to do ourselves.
     """
     offset = datetime.datetime.now(ZoneInfo(tz)).utcoffset()
@@ -16,14 +15,11 @@ def convert_to_utc(dtime: datetime.time, tz: str) -> datetime.time:
 
 
 def append_readable_time(readable_time: str, time: int, duration: str) -> str:
-    """
-    Appends to the readable_time string with the specified time and duration.
-    """
+    """Appends to the readable_time string with the specified time and duration."""
 
-    # if the string is empty
     if readable_time:
-        # checks if its just one or multiple for proper wording
-        # luckily the -s ending works out for every case
+        # Checks if its just one or multiple for proper wording,
+        # luckily the -s ending works out for every case.
         return (
             f"{readable_time}, {time} {duration}"
             if time == 1
@@ -34,13 +30,12 @@ def append_readable_time(readable_time: str, time: int, duration: str) -> str:
 
 
 def convert_time(input_time: str) -> tuple[int, str]:
-    """
-    Converts the given input into raw seconds, plus a readable string.
+    """Converts the given input into raw seconds, plus a readable string.
     Searches for matches using regex with commonly used names and abbreviations.
     Input does need to be in order.
     """
 
-    # matching the input into the appropriate group
+    # Matching the input into the appropriate group.
     compiled = re.compile(
         r"(\s?)(?:(?P<days>[0-9]{1,5})(\s?)(?:days?|d))?(\s?(,|and)?)"
         r"(\s?)(?:(?P<hours>[0-9]{1,5})(\s?)(?:hours?|hrs?|h))?(\s?(,|and)?)"
@@ -54,16 +49,16 @@ def convert_time(input_time: str) -> tuple[int, str]:
 
     match = compiled.fullmatch(input_time)
 
-    # if no match is found, we raise a ValueError
+    # If no match is found, we raise a ValueError.
     if not match:
         raise ValueError("Invalid input! Please use a number followed by a duration.")
 
-    # getting a dict of the match
+    # Getting a dict of the match.
     time_dict = match.groupdict(default="0")
 
-    # extracting the values for each entry
-    # checks if the user hasnt entered anything for the value,
-    # or if they entered "0" manually.
+    # Extracting the values for each entry.
+    # Checks if the user hasnt entered anything for the value,
+    # or if they entered "0" manually. Who knows what the user will do.
     days = time_dict.get("days")
     if days != "0":
         total_seconds += int(days) * 60 * 60 * 24

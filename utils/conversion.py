@@ -2,12 +2,11 @@ import re
 
 
 def convert_input(conversion_input: str) -> str:
-    """
-    Converts your input between metric and imperial, and the other way around.
+    """Converts your input between metric and imperial, and the other way around.
     Works for most commonly used measurements for distance, speed, temperatures, weight and so on.
     Gets the first float in the input and looks for the first matching string, then converts the input.
     """
-    # this block somehow gets the first floating point number or normal int found. no clue, i dont understand regex
+    # This block gets the first floating point number or normal int found.
     rx = re.compile(
         r"[-+]? (?: (?: \d* \. \d+ ) | (?: \d+ \.? ) )(?: [Ee] [+-]? \d+ ) ?",
         re.VERBOSE,
@@ -15,14 +14,14 @@ def convert_input(conversion_input: str) -> str:
     nums = rx.findall(conversion_input)
     number = float(nums[0])
 
-    # this block here gets you all the words in the input in a list, to compare those to the lists below
+    # This block here gets you all the words in the input in a list, to compare those to the lists below.
     conversion_input = conversion_input.lower()
     conversion_input = "".join(
         [i for i in conversion_input if not i.isdigit() and i not in ("+", "-", ".")]
     )
     conversion_input = conversion_input.split()
 
-    # massive dictionary of converting the input to the equivalent
+    # Massive dictionary of converting the input to the equivalent.
     conversion_dict = {
         ("miles", "mi", "mile"): Conversion().miles_to_km,
         ("foot", "feet", "ft", "'"): Conversion().feet_to_meter,
@@ -89,9 +88,7 @@ def convert_input(conversion_input: str) -> str:
 
 
 class Conversion:
-    """
-    The conversion functions, shamelessly copied.
-    """
+    """The actual conversion functions."""
 
     def km_to_miles(self, km: float):
         return f"`{km} km` is equal to `{round((km * 0.6214), 2)} miles`."

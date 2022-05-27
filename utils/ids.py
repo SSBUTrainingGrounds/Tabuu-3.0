@@ -1,104 +1,81 @@
-# this is the place where the unique IDs are stored.
-# change the values as you wish, but please keep the names of the constants.
-# also, if you plan on only having one channel in a tuple, you need to add a comma after the only value so it gets recognised properly.
+# Here is the place where the unique IDs are stored,
+# change them around as you wish, but importantly keep the names and the types.
+# Using Classes as Namespaces, who cares.
 import discord
 
 
 class GuildNames:
-    """
-    Contains strings for the Server names.
-    """
+    """Contains strings for the Server names."""
 
-    # the training grounds server, the "main" server
     TRAINING_GROUNDS = "SSBU Training Grounds"
-    # abbreviation for the server
+    # Just an abbreviation, used in some places.
     TG = "TG"
-    # battlegrounds is the smaller spin-off server
     BATTLEGROUNDS = "SSBU Battlegrounds"
     BG = "BG"
 
 
 class GuildIDs:
-    """
-    The unique Server IDs.
-    """
+    """The unique Server IDs."""
 
-    # the guild id's of the servers
     TRAINING_GROUNDS = 739299507795132486
     BATTLEGROUNDS = 915395890775216188
-    # this is done for application commands
-    # we need a list of guild objects
+    # This is done for application commands, we need a list of guild objects.
     ALL_GUILDS = [discord.Object(id=TRAINING_GROUNDS), discord.Object(id=BATTLEGROUNDS)]
-    # the list of guilds where mutes/timeouts etc. carry over.
-    # this is its own list, since you might want to add the bot to guilds where mutes do not apply.
+    # The list of guilds where mutes/timeouts etc. carry over.
+    # This is its own list, since you might want to add the bot to guilds where mutes do not apply.
     MOD_GUILDS = [TRAINING_GROUNDS, BATTLEGROUNDS]
 
 
 class AdminVars:
-    """
-    Admin specific strings, like the Server Owner and Head Moderators.
-    """
+    """Admin specific strings, like the Server Owner and Head Moderators."""
 
-    # big daddy
+    # Big daddy.
     GROUNDS_KEEPER = "Tabuu#0720"
-    # used in the warn/mute/kick messages, it says: "..contact {GROUNDS_GENERALS}", thats why its worded like that.
+    # Used in the warn/mute/kick messages, it says: "..contact {GROUNDS_GENERALS}", thats why its worded like that.
     GROUNDS_GENERALS = "Tabuu#0720, Phxenix#1104, Parz#5811, or Fahim#2800"
-    # google doc with ban records, leave it empty if you dont have one i guess
+    # Google doc with ban records, leave an empty string if you dont have one.
     BAN_RECORDS = "https://docs.google.com/spreadsheets/d/1EZhyKa69LWerQl0KxeVJZuLFFjBIywMRTNOPUUKyVCc/"
 
 
 class TournamentReminders:
-    """
-    Contains variables used in the Tournament Reminder Pings.
-    """
+    """Contains variables used in the Tournament Reminder Pings."""
 
-    # change this to False if you dont wanna get reminded
+    # Change this to False to disable pings.
     PING_ENABLED = True
-    # the timezone the other times are based on
+    # The timezone the other times are based on.
     TIMEZONE = "US/Eastern"
-    # the weekday as an int, keep in mind weeks start at 0 = Monday. which means that 4 = Friday
+    # The weekday as an int, keep in mind weeks start at 0 = Monday. Which means that 4 = Friday.
     SMASH_OVERSEAS_DAY = 4
-    # this needs to be set to 1 hour & 5 mins before smash overseas. which is at 2pm
+    # This is set to 1 hour & 5 mins before the tournaments.
     SMASH_OVERSEAS_HOUR = 12
     SMASH_OVERSEAS_MINUTE = 55
-    # same here, 5 = saturday
+
     TRIALS_OF_SMASH_DAY = 5
-    # trials of smash is at 7pm EDT/EST
     TRIALS_OF_SMASH_HOUR = 17
     TRIALS_OF_SMASH_MINUTE = 55
-    # pings to remind the design team for the graphics, arbitrary time and day
-    # chose sundays at the same time of smash overseas
+
     DESIGN_TEAM_DAY = 6
     DESIGN_TEAM_HOUR = 12
     DESIGN_TEAM_MINUTE = 55
 
 
 class TGChannelIDs:
-    """
-    Contains Channel IDs used throughout the code, specific to the Training Grounds Server.
-    """
+    """Contains Channel IDs used throughout the code, specific to the Training Grounds Server."""
 
-    # general chat
     GENERAL_CHANNEL = 739299507937738849
-    # rules and info
     RULES_CHANNEL = 739299507937738843
-    # help chat
     HELP_CHANNEL = 739299507937738847
-    # the general voice chat
     GENERAL_VOICE_CHAT = 765625841861394442
-    # the announcements channel
     ANNOUNCEMENTS_CHANNEL = 739299507937738844
-    # channel for our streamers
+    # Private channels for our Teams.
     STREAM_TEAM = 766721811962396672
-    # channel for our tournament officials
     TOURNAMENT_TEAM = 812433498013958205
-    # channel for our designers
     DESIGN_TEAM = 762475241514991687
-    # the channel for the logs
+    # Channel for general logs.
     LOGCHANNEL = 739299509670248504
-    # log channel specifically for warnings
+    # Channel for logging warnings specifically.
     INFRACTION_LOGS = 785970832572678194
-    # the channels where the invite link filtering doesnt check
+    # The channels where the invite link filtering doesn't check.
     INVITE_LINK_WHITELIST = (
         739299509670248502,
         739299508902559811,
@@ -106,62 +83,50 @@ class TGChannelIDs:
         739299508197917060,
         739299509670248505,
     )
-    # the starboard channel
+    # Channel where starboard messages get posted.
     STARBOARD_CHANNEL = 788921409648066610
-    # the channels where the bot checks for reactions to put on the starboard
+    # The channels where the bot checks for reactions to put on the starboard.
     STARBOARD_LISTENING_CHANNELS = (783120161992605706,)
-    # channel to post modmails in
+    # Channel to post modmails in.
     MODMAIL_CHANNEL = 806860630073409567
 
 
 class TGArenaChannelIDs:
-    """
-    Contains just the IDs of the Matchmaking Channels on the Training Grounds Server.
-    These should always be a tuple, even if there is only one entry.
-    """
+    """Contains just the IDs of the Matchmaking Channels on the Training Grounds Server."""
 
-    # the normal arenas
+    # Normal arenas, like #arena-1, etc.
     PUBLIC_ARENAS = (739299508403437626, 739299508403437627, 742190378051960932)
-    # private arenas, like tgl arena
+    # Private arenas, like #champions-arena, etc.
     PRIVATE_ARENAS = (
         801176498274172950,
         764882596118790155,
         739299509670248503,
         831673163812569108,
     )
-    # ranked matchmaking arenas
+    # Ranked arenas, like #ranked-matchmaking-1 etc.
     RANKED_ARENAS = (835582101926969344, 835582155446681620, 836018137119850557)
 
 
 class BGChannelIDs:
-    """
-    Contains Channel IDs used throughout the code, specific to the Battlegrounds Server.
-    """
+    """Contains Channel IDs used throughout the code, specific to the Battlegrounds Server."""
 
-    # off-topic channel on bg
     OFF_TOPIC_CHANNEL = 915395890775216191
-    # logchannel for bg
     LOGCHANNEL = 923018569128763482
-    # rules and info
     RULES_CHANNEL = 923018112729759794
 
 
 class TGRoleIDs:
-    """
-    Contains the Role IDs used throughout the code, specific to the Training Grounds Server.
-    """
+    """Contains the Role IDs used throughout the code, specific to the Training Grounds Server."""
 
-    # the grounds warrior role
     MOD_ROLE = 739299507816366106
-    # muted role on tg
     MUTED_ROLE = 739391329779581008
-    # the role you get when you join the general VC
+    # The role you get when you join the General VC.
     VOICE_ROLE = 824258210101198889
-    # role server boosters get automatically
+    # Role for Server Boosters.
     BOOSTER_ROLE = 739344833738571868
-    # the role for premium members
+    # Role for Premium Members of the Server.
     PREMIUM_ROLE = 943261906238603264
-    # the colour roles, reserved for server boosters
+    # The colour roles, reserved for server boosters.
     COLOUR_ROLES = (
         774290821842862120,
         774290823340359721,
@@ -173,24 +138,19 @@ class TGRoleIDs:
         794726234231013437,
         794726235518795797,
     )
-    # role for our streamers
+    # Team roles.
     STREAMER_ROLE = 752291084058755192
-    # role for tournament officials
     TOURNAMENT_OFFICIAL_ROLE = 739299507816366104
-    # role for our designers
     DESIGN_TEAM_ROLE = 801640022423371776
-    # role for promoters
     PROMOTER_ROLE = 739299507799326847
 
 
 class TGLevelRoleIDs:
-    """
-    Contains only the Level Role IDs, which are used to hand out Level Roles according to the Mee6 API.
-    """
+    """Contains only the Level Role IDs, which are used to hand out Level Roles according to the Mee6 API."""
 
-    # the default level 0 role you get when you join tg
+    # The default role you recieve when joining the server.
     RECRUIT_ROLE = 739299507799326843
-    # roles you get when you reach X level
+    # Roles you get when you reach X level.
     LEVEL_10_ROLE = 827473860936990730
     LEVEL_25_ROLE = 827473868766707762
     LEVEL_50_ROLE = 827473874413289484
@@ -199,15 +159,13 @@ class TGLevelRoleIDs:
 
 
 class TGMatchmakingRoleIDs:
-    """
-    Contains the Matchmaking Role IDs, ranked and unranked.
-    """
+    """Contains the Matchmaking Role IDs, ranked and unranked."""
 
-    # the normal matchmaking roles
+    # Normal Matchmaking roles.
     SINGLES_ROLE = 739299507799326842
     DOUBLES_ROLE = 739299507799326841
     FUNNIES_ROLE = 739299507795132495
-    # the ranked matchmaking roles
+    # Ranked matchmaking roles.
     ELO_800_ROLE = 835559992965988373
     ELO_950_ROLE = 835559996221554728
     ELO_1050_ROLE = 835560000658341888
@@ -217,24 +175,18 @@ class TGMatchmakingRoleIDs:
 
 
 class BGRoleIDs:
-    """
-    Contains the Role IDs used throughout the code, specific to the Battlegrounds Server.
-    """
+    """Contains the Role IDs used throughout the code, specific to the Battlegrounds Server."""
 
-    # mod role
     MOD_ROLE = 915402610926825553
-    # the muted role
     MUTED_ROLE = 928985750505140264
-    # the default role you get when you join bg
+    # The default role you recieve when joining the server.
     TRAVELLER_ROLE = 915403426811244585
 
 
 class Emojis:
-    """
-    Contains some Custom Emojis.
-    """
+    """Contains some Custom Emojis."""
 
-    # a dictionary of emoji/role pairs for profile badges
+    # Emoji/role pairs for profile badges.
     PROFILE_BADGES = {
         "<a:tg_Singles_Winner:955967054878478367>": 739299507816366102,
         "<a:tg_Doubles_Winner:955968025570447460>": 739299507816366101,
@@ -245,7 +197,7 @@ class Emojis:
         "<a:tg_TGL_MVP:959178568640905316>": 933441986583740456,
     }
 
-    # win/lose emojis for rankstats
-    # if you dont want any, just do W & L
+    # Win/lose emojis for rankstats.
+    # If you dont want any, just use "W" & "L".
     WIN_EMOJI = "<:rs_W:956192092454023198>"
     LOSE_EMOJI = "<:rs_L:956193883098853507>"
