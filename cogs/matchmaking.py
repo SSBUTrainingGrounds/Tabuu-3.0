@@ -9,17 +9,14 @@ from utils.ids import GuildIDs, TGArenaChannelIDs, TGMatchmakingRoleIDs
 
 
 class Matchmaking(commands.Cog):
-    """
-    Contains the Unranked portion of our matchmaking system.
-    """
+    """Contains the Unranked portion of our matchmaking system."""
 
     def __init__(self, bot):
         self.bot = bot
 
     def store_ping(self, ctx, mm_type: str, timestamp: float):
-        """
-        Saves a Matchmaking Ping of any unranked type in the according file.
-        """
+        """Saves a Matchmaking Ping of any unranked type in the according file."""
+
         with open(rf"./json/{mm_type}.json", "r", encoding="utf-8") as f:
             user_pings = json.load(f)
 
@@ -30,9 +27,8 @@ class Matchmaking(commands.Cog):
             json.dump(user_pings, f, indent=4)
 
     def delete_ping(self, ctx, mm_type: str):
-        """
-        Deletes a Matchmaking Ping of any unranked type from the according file.
-        """
+        """Deletes a Matchmaking Ping of any unranked type from the according file."""
+
         with open(rf"./json/{mm_type}.json", "r", encoding="utf-8") as f:
             user_pings = json.load(f)
 
@@ -48,10 +44,10 @@ class Matchmaking(commands.Cog):
             json.dump(user_pings, f, indent=4)
 
     def get_recent_pings(self, mm_type: str, timestamp: float) -> str:
-        """
-        Gets a list with every Ping saved.
+        """Gets a list with every Ping saved.
         As long as the ping is not older than 30 Minutes.
         """
+
         with open(rf"./json/{mm_type}.json", "r", encoding="utf-8") as f:
             user_pings = json.load(f)
 
@@ -80,9 +76,8 @@ class Matchmaking(commands.Cog):
     @commands.cooldown(1, 600, commands.BucketType.user)
     @app_commands.guilds(*GuildIDs.ALL_GUILDS)
     async def singles(self, ctx):
-        """
-        Used for 1v1 Matchmaking with competitive rules.
-        """
+        """Used for 1v1 Matchmaking with competitive rules."""
+
         timestamp = discord.utils.utcnow().timestamp()
         singles_role = discord.utils.get(
             ctx.guild.roles, id=TGMatchmakingRoleIDs.SINGLES_ROLE
@@ -140,8 +135,8 @@ class Matchmaking(commands.Cog):
         if not isinstance(error, commands.CommandOnCooldown):
             raise error
 
-        # triggers when you're on cooldown, lists out the recent pings.
-        # same for every other type below.
+        # Triggers when you're on cooldown, lists out the recent pings.
+        # Same for every other type below.
         timestamp = discord.utils.utcnow().timestamp()
         if (
             ctx.message.channel.id in TGArenaChannelIDs.PUBLIC_ARENAS
@@ -167,9 +162,8 @@ class Matchmaking(commands.Cog):
     @commands.cooldown(1, 600, commands.BucketType.user)
     @app_commands.guilds(*GuildIDs.ALL_GUILDS)
     async def doubles(self, ctx):
-        """
-        Used for 2v2 Matchmaking.
-        """
+        """Used for 2v2 Matchmaking."""
+
         timestamp = discord.utils.utcnow().timestamp()
         doubles_role = discord.utils.get(
             ctx.guild.roles, id=TGMatchmakingRoleIDs.DOUBLES_ROLE
@@ -255,9 +249,8 @@ class Matchmaking(commands.Cog):
         message="Optional message, for example the ruleset you want to use."
     )
     async def funnies(self, ctx, *, message: str = None):
-        """
-        Used for 1v1 Matchmaking with non-competitive rules.
-        """
+        """Used for 1v1 Matchmaking with non-competitive rules."""
+
         timestamp = discord.utils.utcnow().timestamp()
         funnies_role = discord.utils.get(
             ctx.guild.roles, id=TGMatchmakingRoleIDs.FUNNIES_ROLE

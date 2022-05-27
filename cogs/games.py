@@ -10,9 +10,7 @@ from utils.ids import GuildIDs
 
 
 class RpsButtons(discord.ui.View):
-    """
-    Contains the RPS Game Buttons.
-    """
+    """Contains the RPS Game Buttons."""
 
     def __init__(self, author: discord.Member, member: discord.Member):
         super().__init__(timeout=60)
@@ -22,14 +20,13 @@ class RpsButtons(discord.ui.View):
         self.memberchoice = None
         self.message = None
 
+    # Not sure why the Rock Emoji fails to display here, it does display properly on Discord.
     @discord.ui.button(label="Rock", emoji="🪨", style=discord.ButtonStyle.gray)
     async def rock(self, interaction: discord.Interaction, button: discord.ui.Button):
-        """
-        Registers the author and user input for Rock.
+        """Registers the author and user input for Rock.
         Stops if both parties made a choice.
-        I dont know why the Rock Emoji doesnt display properly here btw,
-        it does on Discord.
         """
+
         await interaction.response.send_message("You chose Rock!", ephemeral=True)
         if interaction.user.id == self.author.id:
             self.authorchoice = "Rock"
@@ -40,8 +37,7 @@ class RpsButtons(discord.ui.View):
 
     @discord.ui.button(label="Paper", emoji="📝", style=discord.ButtonStyle.gray)
     async def paper(self, interaction: discord.Interaction, button: discord.ui.Button):
-        """
-        Registers the author and user input for Paper.
+        """Registers the author and user input for Paper.
         Stops if both parties made a choice.
         """
         await interaction.response.send_message("You chose Paper!", ephemeral=True)
@@ -58,8 +54,7 @@ class RpsButtons(discord.ui.View):
         interaction: discord.Interaction,
         button: discord.ui.Button,
     ):
-        """
-        Registers the author and user input for Scissors.
+        """Registers the author and user input for Scissors.
         Stops if both parties made a choice.
         """
         await interaction.response.send_message("You chose Scissors!", ephemeral=True)
@@ -71,11 +66,11 @@ class RpsButtons(discord.ui.View):
             self.stop()
 
     async def interaction_check(self, interaction: discord.Interaction):
-        # basically ignores every other member except the author and mentioned member
+        # Ignores every other member except the author and mentioned member.
         return interaction.user in (self.member, self.author)
 
     async def on_timeout(self):
-        # if the match didnt go through as planned
+        # If the match didnt go through as planned.
         if self.authorchoice is None and self.memberchoice is None:
             await self.message.reply(
                 "Match timed out! Both parties took too long to pick a choice!"
@@ -91,9 +86,7 @@ class RpsButtons(discord.ui.View):
 
 
 class TicTacToeButtons(discord.ui.Button["TicTacToeGame"]):
-    """
-    Contains the TicTacToe Buttons.
-    """
+    """Contains the TicTacToe Buttons."""
 
     def __init__(self, button_pos: int):
         super().__init__(
@@ -108,9 +101,7 @@ class TicTacToeButtons(discord.ui.Button["TicTacToeGame"]):
 
 
 class TicTacToeGame(discord.ui.View):
-    """
-    Contains the TicTacToe Game Logic.
-    """
+    """Contains the TicTacToe Game Logic."""
 
     def __init__(self, author: discord.Member, member: discord.Member):
         super().__init__(timeout=60)
@@ -118,16 +109,15 @@ class TicTacToeGame(discord.ui.View):
         self.member = member
         self.turn = author
         self.message = None
-        # initialises the board
+        # Initialises the board.
         self.board = [0, 0, 0, 0, 0, 0, 0, 0, 0]
-        # adds all of the buttons
+        # Adds all of the buttons.
         for i in range(9):
             self.add_item(TicTacToeButtons(i))
 
     def check_for_winner(self, board: list[int]):
-        """
-        Checks if there is a winner, a tie or if the game is still going on.
-        """
+        """Checks if the game is over and the outcome of the game."""
+
         winning_combinations = [
             (0, 1, 2),
             (3, 4, 5),
@@ -139,7 +129,7 @@ class TicTacToeGame(discord.ui.View):
             (2, 4, 6),
         ]
 
-        # checks for the winner and returns it, if found
+        # Checks for the winner and returns it, if found.
         for combination in winning_combinations:
             winning_list = [board[position] for position in combination]
 
@@ -149,16 +139,16 @@ class TicTacToeGame(discord.ui.View):
             if winning_list == [2, 2, 2]:
                 return self.member
 
-        # if theres a tie we return false
+        # If theres a tie we return false.
         if 0 not in board:
             return False
 
+        # If the game is ongoing, we return None.
         return None
 
     async def game_ending(self, interaction: discord.Interaction):
-        """
-        Handles the game ending for us.
-        """
+        """Handles the game ending for us."""
+
         winner = self.check_for_winner(self.board)
 
         if winner is not None:
@@ -176,9 +166,8 @@ class TicTacToeGame(discord.ui.View):
         button_id: int,
         interaction: discord.Interaction,
     ):
-        """
-        The logic for one turn.
-        """
+        """The logic for one turn."""
+
         if interaction.user.id == self.author.id:
             self.board[button_id] = 1
             button.emoji = "❌"
@@ -200,10 +189,10 @@ class TicTacToeGame(discord.ui.View):
         )
 
     async def interaction_check(self, interaction: discord.Interaction):
-        # checks if the user is in the game
+        # Checks if the user is in the game.
         if interaction.user not in (self.member, self.author):
             return False
-        # checks if its your turn
+        # Checks if its your turn.
         if interaction.user == self.author and self.turn == self.author:
             self.turn = self.member
             return True
@@ -229,7 +218,7 @@ class BlackJackButtons(discord.ui.View):
         self.turn = author
         self.message = None
 
-    # all of the possible cards
+    # All of the possible cards.
     card_faces = [
         "Ace",
         "2",
@@ -257,8 +246,8 @@ class BlackJackButtons(discord.ui.View):
 
         card = random.choice(card_deck)
 
-        # checks if the card is already present in one hand, if so repeats the process
-        # i read that in real life blackjack is played with like 8 decks at once
+        # Checks if the card is already present in one hand, if so repeats the process.
+        # I read that in real life blackjack is played with like 8 decks at once,
         # so this really isnt even needed
         if card[0] in self.author_hand[0] or card[0] in self.member_hand[0]:
             try:
@@ -268,7 +257,7 @@ class BlackJackButtons(discord.ui.View):
                 return
 
         if self.turn == self.author:
-            # if the card is an ace, checks if it should be worth 11 or 1
+            # If the card is an ace, checks if it should be worth 11 or 1.
             if card[1] == 1 and self.author_hand[1] <= 10:
                 card[1] = 11
             self.author_hand[0].append(card[0])
@@ -280,14 +269,14 @@ class BlackJackButtons(discord.ui.View):
             self.member_hand[1] += card[1]
 
     def get_winner(self):
-        # checks for values greater than 21
+        # Checks for values greater than 21.
         if self.author_hand[1] > 21 >= self.member_hand[1]:
             return self.member
 
         if self.member_hand[1] > 21 >= self.author_hand[1]:
             return self.author
 
-        # checks for draws
+        # Checks for draws.
         if self.member_hand[1] == self.author_hand[1]:
             return None
 
@@ -308,9 +297,8 @@ class BlackJackButtons(discord.ui.View):
         label="Draw a Card", emoji="🃏", style=discord.ButtonStyle.blurple
     )
     async def draw(self, interaction: discord.Interaction, button: discord.ui.Button):
-        """
-        Draws another card and checks if the players turn is over.
-        """
+        """Draws another card and checks if the players turn is over."""
+
         self.draw_card()
 
         if self.turn == self.author:
@@ -333,9 +321,8 @@ class BlackJackButtons(discord.ui.View):
 
     @discord.ui.button(label="Fold", emoji="❌", style=discord.ButtonStyle.red)
     async def fold(self, interaction: discord.Interaction, button: discord.ui.Button):
-        """
-        Folds and switches the turn, or exits the game.
-        """
+        """Folds and switches the turn, or exits the game."""
+
         if self.turn == self.author:
             self.folded.append(self.author)
             self.turn = self.member
@@ -369,9 +356,7 @@ class BlackJackButtons(discord.ui.View):
 
 
 class _2048Buttons(discord.ui.Button["_2048Game"]):
-    """
-    The actual buttons that are used as game tiles.
-    """
+    """The actual buttons that are used as game tiles."""
 
     def __init__(self, button_pos: int, label: str):
         super().__init__(
@@ -381,14 +366,12 @@ class _2048Buttons(discord.ui.Button["_2048Game"]):
         )
         self.button_pos = button_pos
         self.disabled = True
-        # we need to track the column of the button ourselves.
+        # We need to track the column of the button ourselves.
         self.column = button_pos % 4
 
 
 class _2048Game(discord.ui.View):
-    """
-    Contains the logic for the game.
-    """
+    """Contains the logic for the game."""
 
     def __init__(self, player):
         super().__init__(timeout=60)
@@ -397,30 +380,29 @@ class _2048Game(discord.ui.View):
         self.score = 0
         for i in range(16):
             self.add_item(_2048Buttons(i, self.empty_label))
-        # only the game buttons, without the menu ones.
+        # Only the game buttons, without the menu ones.
         self.game_tiles = [button for button in self.children if not button.emoji]
-        # the game starts off with 2 tiles set to "2".
+        # The game starts off with 2 tiles set to "2".
         for _ in range(2):
             self.spawn_new_tile()
 
-    # a zero-width space character.
+    # A zero-width space character.
     empty_label = "\u200b"
 
     @discord.ui.button(
         label=empty_label, emoji="⬅️", style=discord.ButtonStyle.blurple, row=4
     )
     async def left(self, interaction: discord.Interaction, button: discord.Button):
-        """
-        Shifts the game tiles to the left.
-        """
+        """Shifts the game tiles to the left."""
+
         tiles = []
         for i in range(4):
             row = [button for button in self.game_tiles if button.row == i]
-            # for left and for up we have to reverse the row/column.
+            # For left and for up we have to reverse the row/column.
             row.reverse()
             tiles.extend([row])
 
-        # also we need to call the turn in reverse so it merges correctly.
+        # Also we need to call the turn in reverse so it merges correctly.
         self.turn(tiles, reverse=True)
 
         await interaction.response.edit_message(
@@ -431,9 +413,8 @@ class _2048Game(discord.ui.View):
         label=empty_label, emoji="⬆️", style=discord.ButtonStyle.blurple, row=4
     )
     async def up(self, interaction: discord.Interaction, button: discord.Button):
-        """
-        Shifts the game tiles up.
-        """
+        """Shifts the game tiles up."""
+
         tiles = []
         for i in range(4):
             column = [button for button in self.game_tiles if button.column == i]
@@ -450,9 +431,8 @@ class _2048Game(discord.ui.View):
         label=empty_label, emoji="⬇️", style=discord.ButtonStyle.blurple, row=4
     )
     async def down(self, interaction: discord.Interaction, button: discord.Button):
-        """
-        Shifts the game tiles down.
-        """
+        """Shifts the game tiles down."""
+
         tiles = []
         for i in range(4):
             column = [button for button in self.game_tiles if button.column == i]
@@ -468,9 +448,8 @@ class _2048Game(discord.ui.View):
         label=empty_label, emoji="➡️", style=discord.ButtonStyle.blurple, row=4
     )
     async def right(self, interaction: discord.Interaction, button: discord.Button):
-        """
-        Shifts the game tiles to the right.
-        """
+        """Shifts the game tiles to the right."""
+
         tiles = []
         for i in range(4):
             row = [button for button in self.game_tiles if button.row == i]
@@ -486,19 +465,17 @@ class _2048Game(discord.ui.View):
         label="Quit Game", emoji="❌", style=discord.ButtonStyle.red, row=4
     )
     async def quit(self, interaction: discord.Interaction, button: discord.Button):
-        """
-        Exits the game immediately.
-        """
+        """Exits the game immediately."""
+
         self.stop()
-        # we edit the message with the same content because otherwise
+        # We edit the message with the same content because otherwise
         # the user would get the interaction failed message.
         await interaction.response.edit_message(
             content=f"{interaction.user.mention}'s score: {self.score}", view=self
         )
 
     def spawn_new_tile(self) -> Optional[_2048Buttons]:
-        """
-        Spawns a new random tile with 90% of the tile being worth 2
+        """Spawns a new random tile with 90% of the tile being worth 2
         and 10% of it being worth 4, and colours it green.
         """
         if empty_tiles := [
@@ -506,31 +483,30 @@ class _2048Game(discord.ui.View):
         ]:
             chosen_tile = random.choice(empty_tiles)
             chosen_tile.label = random.choices(["2", "4"], weights=[0.9, 0.1], k=1)[0]
-            # colouring a new tile green so you can see it easier.
+            # Colouring a new tile green so you can see it easier.
             chosen_tile.style = discord.ButtonStyle.green
             return chosen_tile
         return None
 
     def merge_tiles(self, tiles: list[_2048Buttons], reverse: bool = False) -> list:
-        """
-        Merges every tile along the same row/column.
+        """Merges every tile along the same row/column.
         Does it up to 3 times.
         """
         merges = []
-        # we reverse the list, so that the last elements get merged first,
+        # We reverse the list, so that the last elements get merged first,
         # like in the real game.
         tiles.reverse()
 
         for i in range(len(tiles) - 1):
-            # checks if the labels match and if the tile has not already been merged.
+            # Checks if the labels match and if the tile has not already been merged.
             if (
                 tiles[i].label != self.empty_label
                 and tiles[i].label == tiles[i + 1].label
             ) and (tiles[i + int(reverse)] not in merges):
                 combined_score = int(tiles[i].label) + int(tiles[i + 1].label)
-                # if the order of tiles is reversed, we have to reverse the logic,
+                # If the order of tiles is reversed, we have to reverse the logic,
                 # so that the tiles are merged in the right order.
-                # otherwise they could be merged multple times.
+                # Otherwise they could be merged multple times.
                 if reverse:
                     tiles[i].label = str(combined_score)
                     tiles[i + 1].label = self.empty_label
@@ -546,8 +522,7 @@ class _2048Game(discord.ui.View):
         return merges
 
     def shift_tiles(self, tiles: list[_2048Buttons]) -> list:
-        """
-        Shifts every tile along the same row/column.
+        """Shifts every tile along the same row/column.
         Does it up to 3 times.
         """
         shifts = []
@@ -566,10 +541,9 @@ class _2048Game(discord.ui.View):
         return shifts
 
     def turn(self, tiles: list[list[_2048Buttons]], reverse: bool = False):
-        """
-        The logic for one turn.
-        """
-        # colouring every tile back to gray first.
+        """The logic for one turn."""
+
+        # Colouring every tile back to gray first.
         for tile_list in tiles:
             for tile in tile_list:
                 if tile.style != discord.ButtonStyle.gray:
@@ -579,8 +553,8 @@ class _2048Game(discord.ui.View):
         for tile_list in tiles:
             moves_made.extend(self.shift_tiles(tile_list))
 
-            # we merge the tiles, then check again for any shifts possible.
-            # we only want to merge once per turn though.
+            # We merge the tiles, then check again for any shifts possible.
+            # We only want to merge once per turn though.
             moves_made.extend(self.merge_tiles(tile_list, reverse))
 
             moves_made.extend(self.shift_tiles(tile_list))
@@ -599,8 +573,7 @@ class _2048Game(discord.ui.View):
         return self.empty_label not in [button.label for button in self.game_tiles]
 
     def check_for_possible_moves(self) -> bool:
-        """
-        Checks if any moves could be executed right now.
+        """Checks if any moves could be executed right now.
         Only gets called when the board is full. If there are no moves,
         and the board is full, the game is over.
         """
@@ -616,48 +589,43 @@ class _2048Game(discord.ui.View):
         return False
 
     def end_turn(self, moves_made: list[_2048Buttons]):
-        """
-        Ends your turn and checks for a game over.
-        """
-        # the game ends if either the player reached the 2048 tile,
+        """Ends your turn and checks for a game over."""
+        # The game ends if either the player reached the 2048 tile,
         # or if no new tiles can be spawned and the board is full.
         if self.check_for_win():
             self.stop()
-        # if the board wouldnt change when you move, you dont get a new tile,
+        # If the board wouldnt change when you move, you dont get a new tile,
         # just like in the real game.
         elif moves_made:
             self.spawn_new_tile()
-        # if there are no possible moves, and the board is full, we end the game.
+        # If there are no possible moves, and the board is full, we end the game.
         elif self.check_if_full():
             if not self.check_for_possible_moves():
                 self.stop()
-        # if there are no moves made but moves possible, we just do nothing.
+        # If there are no moves made but possible moves left, we just do nothing.
 
     async def interaction_check(self, interaction: discord.Interaction):
         return self.player == interaction.user
 
 
 class Games(commands.Cog):
-    """
-    Contains the commands to execute the Games.
-    """
+    """Contains the commands to execute the Games."""
 
     def __init__(self, bot):
         self.bot = bot
 
-    # never heard of those alternate names but wikipedia says they exist so might as well add them
+    # Never heard of those alternate names but wikipedia says they exist so might as well add them.
     @commands.hybrid_command(aliases=["rockpaperscissors", "rochambeau", "roshambo"])
     @app_commands.guilds(*GuildIDs.ALL_GUILDS)
     @app_commands.describe(member="The member to play against.")
     async def rps(self, ctx, member: discord.Member = None):
-        """
-        Plays a Game of Rock, Paper, Scissors with a mentioned user.
+        """Plays a Game of Rock, Paper, Scissors with a mentioned user.
         Or the bot, if you do not mention a user.
         """
         if member is None:
             member = self.bot.user
 
-        # basic checks for users
+        # Basic checks for users.
         if member == ctx.author:
             await ctx.send("Please don't play matches with yourself.")
             return
@@ -674,16 +642,16 @@ class Games(commands.Cog):
             view=view,
         )
 
-        # if the bot plays it just chooses randomly
+        # If the bot plays it just chooses randomly.
         if member.id == self.bot.user.id:
             view.memberchoice = random.choice(["Rock", "Paper", "Scissors"])
 
-        # waits for the button to stop or timeout
+        # Waits for the button to stop or timeout.
         await view.wait()
 
-        # checks the results
-        # if its the same we can just call it off here,
-        # need a check if one of the responses is not none for the error message below
+        # Checks the results.
+        # If its the same we can just call it off here,
+        # need a check if one of the responses is not none for the error message below.
         if view.authorchoice == view.memberchoice and view.authorchoice is not None:
             await view.message.reply(
                 f"{ctx.author.mention} chose {view.authorchoice}!\n"
@@ -704,7 +672,8 @@ class Games(commands.Cog):
             f"**The winner is: {member.mention}!**"
         )
 
-        # since draws are already ruled out the rest of the logic isnt too bad, still a whole lot of elif statements though
+        # Since draws are already ruled out the rest of the logic isnt too bad,
+        # still a whole lot of elif statements though.
         if view.authorchoice == "Rock":
             if view.memberchoice == "Paper":
                 await view.message.reply(member_winner_message)
@@ -727,10 +696,8 @@ class Games(commands.Cog):
     @app_commands.guilds(*GuildIDs.ALL_GUILDS)
     @app_commands.describe(member="The member to play against.")
     async def tictactoe(self, ctx, member: discord.Member):
-        """
-        Starts a game of Tic Tac Toe vs another User.
-        """
-        # basic checks for users
+        """Starts a game of Tic Tac Toe vs another User."""
+        # Basic checks for users.
         if member == ctx.author:
             await ctx.send("Please don't play matches with yourself.")
             return
@@ -740,7 +707,7 @@ class Games(commands.Cog):
             return
 
         view = TicTacToeGame(ctx.author, member)
-        # we reply to that message in the timeout event
+        # We reply to that message in the timeout event.
         view.message = await ctx.send(
             f"{ctx.author.mention}: ❌\n{member.mention}: ⭕\n\n{ctx.author.mention}'s Turn:",
             view=view,
@@ -750,9 +717,8 @@ class Games(commands.Cog):
     @app_commands.guilds(*GuildIDs.ALL_GUILDS)
     @app_commands.describe(member="The member to play against.")
     async def blackjack(self, ctx, member: discord.Member):
-        """
-        Starts a game of Blackjack vs another User.
-        """
+        """Starts a game of Blackjack vs another User."""
+
         if member == ctx.author:
             await ctx.send("Please don't play matches with yourself.")
             return
@@ -771,9 +737,8 @@ class Games(commands.Cog):
     @commands.hybrid_command(name="2048")
     @app_commands.guilds(*GuildIDs.ALL_GUILDS)
     async def _2048(self, ctx):
-        """
-        Starts a game of 2048.
-        """
+        """Starts a game of 2048."""
+
         view = _2048Game(ctx.author)
         await ctx.send(f"{ctx.author.mention}'s score: {view.score}", view=view)
 
@@ -793,16 +758,15 @@ class Games(commands.Cog):
                 f"Final score: {view.score}"
             )
 
-        # we have 15 minutes to reply to the message,
+        # We have 15 minutes to reply to the message,
         # if the game goes on for longer, which is a common possibility,
         # we cant reply to it anymore, which i would prefer but oh well.
         try:
             await ctx.reply(message)
         except discord.HTTPException:
-            # we wanna mention the user if we cant reply
+            # We wanna mention the user if we cant reply.
             await ctx.send(f"{ctx.author.mention} {message}")
 
-    # basic error handling
     @rps.error
     async def rps_error(self, ctx, error):
         if isinstance(

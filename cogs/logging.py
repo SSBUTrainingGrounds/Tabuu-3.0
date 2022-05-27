@@ -9,17 +9,14 @@ from utils.ids import BGChannelIDs, GuildIDs, TGChannelIDs
 
 
 class Logging(commands.Cog):
-    """
-    Logs every little user update or message update into the logs channel.
-    """
+    """Logs every little user update or message update into the logs channel."""
 
     def __init__(self, bot):
         self.bot = bot
 
     def get_logchannel(self, guild_id: int) -> Optional[int]:
-        """
-        Gets you the correct Log Channel ID.
-        """
+        """Gets you the correct Log Channel ID."""
+
         if guild_id == GuildIDs.TRAINING_GROUNDS:
             return TGChannelIDs.LOGCHANNEL
 
@@ -30,7 +27,7 @@ class Logging(commands.Cog):
 
     @commands.Cog.listener()
     async def on_user_update(self, before: discord.User, after: discord.User):
-        # username change
+        # Username change.
         if before.name != after.name:
             embed = discord.Embed(
                 title="**✏️ Username changed ✏️**",
@@ -41,14 +38,14 @@ class Logging(commands.Cog):
                 name=f"{str(after)} ({after.id})", icon_url=after.display_avatar.url
             )
             embed.timestamp = discord.utils.utcnow()
-            # we send the embed in every server that we have in common with the user
-            # if the bot is in another server without log channels,
-            # this would throw an error so we check with the walrus operator
+            # We send the embed in every server that we have in common with the user.
+            # If the bot is in another server without log channels,
+            # this would throw an error so we check with the walrus operator.
             for server in after.mutual_guilds:
                 if logs := self.bot.get_channel(self.get_logchannel(server.id)):
                     await logs.send(embed=embed)
 
-        # discriminator change
+        # Discriminator change.
         if before.discriminator != after.discriminator:
             embed = discord.Embed(
                 title="**✏️ Discriminator changed ✏️**",
@@ -63,7 +60,7 @@ class Logging(commands.Cog):
                 if logs := self.bot.get_channel(self.get_logchannel(server.id)):
                     await logs.send(embed=embed)
 
-        # avatar change
+        # Avatar change.
         if before.display_avatar.url != after.display_avatar.url:
             embed = discord.Embed(
                 title="**📷 Avatar changed 📷**",
@@ -82,7 +79,7 @@ class Logging(commands.Cog):
 
     @commands.Cog.listener()
     async def on_member_update(self, before: discord.Member, after: discord.Member):
-        # if someone changes their nickname on this server
+        # If someone changes their nickname on this server.
         if before.display_name != after.display_name:
             embed = discord.Embed(
                 title="**✏️ Nickname changed ✏️**",
@@ -96,9 +93,9 @@ class Logging(commands.Cog):
             if logs := self.bot.get_channel(self.get_logchannel(before.guild.id)):
                 await logs.send(embed=embed)
 
-        # roles change
+        # Roles change.
         if before.roles != after.roles:
-            # user gains a role
+            # User gains a role.
             if len(before.roles) < len(after.roles):
                 new_role = next(
                     role for role in after.roles if role not in before.roles
@@ -115,7 +112,7 @@ class Logging(commands.Cog):
                 if logs := self.bot.get_channel(self.get_logchannel(before.guild.id)):
                     await logs.send(embed=embed)
 
-            # user loses a role
+            # User loses a role.
             if len(before.roles) > len(after.roles):
                 old_role = next(
                     role for role in before.roles if role not in after.roles
@@ -149,10 +146,10 @@ class Logging(commands.Cog):
 
     @commands.Cog.listener()
     async def on_member_remove(self, member: discord.Member):
-        # @everyone is considered a role too, so we remove that from the list
+        # @everyone is considered a role too, so we remove that from the list.
         everyonerole = discord.utils.get(member.guild.roles, name="@everyone")
         roles = [role.mention for role in member.roles if role is not everyonerole]
-        # users may leave without a role to their name (except @everyone i guess)
+        # Users may leave without a role to their name (except @everyone i guess)
         role_description = f"{' '.join(roles)}" if roles else "No roles"
 
         embed = discord.Embed(
@@ -169,29 +166,29 @@ class Logging(commands.Cog):
 
     @commands.Cog.listener()
     async def on_message_edit(self, before: discord.Message, after: discord.Message):
-        # dont want dms to be included, same in the below listeners
+        # Dont want dms to be included, same in the below listeners.
         if not after.guild:
             return
 
-        # also dont care about bot message edits
+        # Also dont care about bot message edits.
         if after.author.bot:
             return
 
-        # sometimes the message content may be the same, so we skip that, too
+        # Sometimes the message content may be the same, so we skip that, too.
         if before.content == after.content:
             return
 
-        # discord released an update where they allow nitro users to send messages with up to 4000 chars in them
-        # but an embed can only have 6000 chars in them
-        # so we need to add in a check to not get dumb errors.
-        # a description fits 4096 chars, so we cap it off at 2k each.
-        # 2000 chars is still the limit for non-nitro users so it should be fine.
+        # Discord released an update where they allow nitro users to send messages with up to 4000 chars in them,
+        # but an embed can only have 6000 chars in them.
+        # So we need to add in a check to not get dumb errors.
+        # A description fits 4096 chars, so we cap it off at 2k each.
+        # 2000 chars is still the limit for non-nitro users so it should be mostly fine.
         if len(after.content[2000:]) > 0:
             after.content = "Content is too large to fit in a single embed."
         if len(before.content[2000:]) > 0:
             before.content = "Content is too large to fit in a single embed."
 
-        # if you send an empty message and then edit it (like when you upload pics), the before field cannot be empty
+        # If you send an empty message and then edit it (like when you upload pics), the before field cannot be empty.
         if len(before.content) == 0:
             before.content = "\u200b"
 
@@ -233,15 +230,14 @@ class Logging(commands.Cog):
         embed.add_field(name="Message ID:", value=message.id)
         embed.timestamp = discord.utils.utcnow()
 
-        # as far as i can tell, the maximum message possible with 4k chars + 10 attachments + 1 sticker
+        # As far as i can tell, the maximum message possible with 4k chars + 10 attachments + 1 sticker
         # just barely fits in one embed, the limit for embeds are 6k chars total.
-        # so we might wanna keep watching this in case of errors.
+        # So we might wanna keep watching this in case of errors.
         if logs := self.bot.get_channel(self.get_logchannel(message.guild.id)):
             await logs.send(embed=embed)
 
     @commands.Cog.listener()
     async def on_bulk_message_delete(self, messages: list[discord.Message]):
-        # defines the embed
         embed = discord.Embed(
             title=f"**❌ Bulk message deletion in {messages[0].channel.name}! ❌**",
             description=f"{len(messages)} messages were deleted!",
@@ -253,7 +249,7 @@ class Logging(commands.Cog):
         )
         embed.timestamp = discord.utils.utcnow()
 
-        # creates the file with the deleted messages
+        # Creates the file with the deleted messages.
         message_list = [
             f"{str(message.author)} said at {message.created_at.replace(microsecond=0)} UTC: \n"
             f"{message.content}\n\n"
@@ -264,8 +260,8 @@ class Logging(commands.Cog):
         f = discord.File(buffer, filename="deleted_messages.txt")
 
         if logs := self.bot.get_channel(self.get_logchannel(messages[0].guild.id)):
-            # the file could theoratically be too large to send, the limit is 8MB.
-            # realistically we will never, ever hit this
+            # The file could theoratically be too large to send, the limit is 8MB.
+            # Realistically we will never, ever hit this.
             try:
                 await logs.send(embed=embed, file=f)
             except discord.HTTPException:
@@ -397,7 +393,7 @@ class Logging(commands.Cog):
     async def on_guild_channel_update(
         self, before: discord.abc.GuildChannel, after: discord.abc.GuildChannel
     ):
-        # we just log those two here, since the other stuff doesnt make much sense to log, imo.
+        # We just log those two here, since the other stuff doesnt make much sense to log, imo.
         # position would get very spammy and permissions are hard to display in an embed.
         if before.name != after.name:
             embed = discord.Embed(
@@ -678,7 +674,7 @@ class Logging(commands.Cog):
 
     @commands.Cog.listener()
     async def on_thread_update(self, before: discord.Thread, after: discord.Thread):
-        # this event doesnt seem to fire if the thread gets unarchived
+        # This event doesnt seem to fire if the thread gets un-archived,
         # so we only log it when a thread gets archived, and not the other way around.
         if not before.archived and after.archived:
             embed = discord.Embed(

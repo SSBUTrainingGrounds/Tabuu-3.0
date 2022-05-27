@@ -8,8 +8,7 @@ from utils.ids import GuildIDs
 
 
 class Funcommands(commands.Cog):
-    """
-    Contains the "funny" commands.
+    """Contains the "funny" commands.
     They all pretty much just trigger random responses.
     """
 
@@ -19,9 +18,8 @@ class Funcommands(commands.Cog):
     @commands.hybrid_command(aliases=["uwu"])
     @app_commands.guilds(*GuildIDs.ALL_GUILDS)
     async def tabuwu(self, ctx):
-        """
-        Well...
-        """
+        """Well..."""
+
         messages = [
             "Stop this, you're making a fool of yourself",
             "Take a break from the internet",
@@ -32,9 +30,8 @@ class Funcommands(commands.Cog):
     @commands.hybrid_command(aliases=["tabuujoke"])
     @app_commands.guilds(*GuildIDs.ALL_GUILDS)
     async def joke(self, ctx):
-        """
-        Jokes. May or may not make you laugh.
-        """
+        """Jokes. May or may not make you laugh."""
+
         messages = [
             "I invented a new word! Plagiarism!",
             "?v cloud bair",
@@ -59,9 +56,8 @@ class Funcommands(commands.Cog):
     @commands.hybrid_command()
     @app_commands.guilds(*GuildIDs.ALL_GUILDS)
     async def randomquote(self, ctx):
-        """
-        Some quotes.
-        """
+        """Some quotes."""
+
         messages = [
             "\"Life isn't about waiting for the storm to pass. It's about learning to dance in the rain\" ~ (UNKNOWN)",
             '"The difference between stupidity and genius is that genius has its limits" ~ Albert Einstein',
@@ -71,9 +67,8 @@ class Funcommands(commands.Cog):
     @commands.hybrid_command()
     @app_commands.guilds(*GuildIDs.ALL_GUILDS)
     async def pickmeup(self, ctx):
-        """
-        Some uplifting stuff.
-        """
+        """Some uplifting stuff."""
+
         messages = [
             "You are beautiful",
             "You got this! Don't give up, I believe in you.",
@@ -85,9 +80,8 @@ class Funcommands(commands.Cog):
     @commands.hybrid_command()
     @app_commands.guilds(*GuildIDs.ALL_GUILDS)
     async def wisdom(self, ctx):
-        """
-        Some wisdom.
-        """
+        """Some wisdom."""
+
         messages = [
             '"Everything around you that you call life was made up by people that were no smarter than you, and you can change it. '
             'You can influence it. You can build your own things that other people can use." - Steve Jobs',
@@ -99,9 +93,8 @@ class Funcommands(commands.Cog):
     @commands.hybrid_command()
     @app_commands.guilds(*GuildIDs.ALL_GUILDS)
     async def boo(self, ctx):
-        """
-        Scary stuff.
-        """
+        """Scary stuff."""
+
         messages = [
             "Looking for a scare, huh... TAXES Oooooh very scary!",
             "Looking for a scare, huh... ARMORED SMASH ATTACKS Oooooh so scary!",
@@ -114,9 +107,8 @@ class Funcommands(commands.Cog):
     @commands.hybrid_command()
     @app_commands.guilds(*GuildIDs.ALL_GUILDS)
     async def john(self, ctx):
-        """
-        Random excuse why you lost the last Game of Smash.
-        """
+        """Random excuse why you lost the last Game of Smash."""
+
         messages = [
             "I only lost cause my router called me mean names",
             "I only lost cause I dont care for this stupid game anymore",
@@ -140,9 +132,8 @@ class Funcommands(commands.Cog):
     @commands.hybrid_command()
     @app_commands.guilds(*GuildIDs.ALL_GUILDS)
     async def hypemeup(self, ctx):
-        """
-        Hypes you up for the next Game of Smash.
-        """
+        """Hypes you up for the next Game of Smash."""
+
         messages = [
             "Whose better than you? \nNobody. That's who.",
             "This is your day to shine!",
@@ -163,9 +154,8 @@ class Funcommands(commands.Cog):
     @app_commands.guilds(*GuildIDs.ALL_GUILDS)
     @app_commands.describe(question="Your question to the magic 8ball.")
     async def _8ball(self, ctx, *, question: str = None):
-        """
-        Ask the magic 8ball.
-        """
+        """Ask the magic 8ball."""
+
         if question is None:
             await ctx.send("Please input a question for the magic 8-ball.")
             return
@@ -199,7 +189,8 @@ class Funcommands(commands.Cog):
             await ctx.send(
                 f"{ctx.author.mention} asked: `{question}`:\n{random.choice(messages)}"
             )
-        # this is in the case if a user inputs a question with more than 2000 chars in length, the bot cant respond with the question.
+        # This is in the case if a user inputs a question with more than 2000 chars in length,
+        # the bot cant respond with the question.
         except discord.HTTPException:
             await ctx.send(random.choice(messages))
 
@@ -207,9 +198,8 @@ class Funcommands(commands.Cog):
     @app_commands.guilds(*GuildIDs.ALL_GUILDS)
     @app_commands.describe(question="Your question.")
     async def who(self, ctx, *, question: str = None):
-        """
-        Returns a random online member of the server as a response.
-        """
+        """Returns a random online member of the server as a response."""
+
         if ctx.guild is None:
             await ctx.send("You cannot use this command in my DM channel.")
             return
@@ -220,7 +210,7 @@ class Funcommands(commands.Cog):
 
         question = discord.utils.remove_markdown(question)
 
-        # only gets online members
+        # Only gets online members.
         online_members = [
             member
             for member in ctx.guild.members

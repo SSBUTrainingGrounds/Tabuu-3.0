@@ -11,9 +11,7 @@ from utils.ids import GuildIDs
 
 
 class Usercommands(commands.Cog):
-    """
-    Mostly contains various commands which did not fit with the others.
-    """
+    """Mostly contains various commands which did not fit with the other cogs."""
 
     def __init__(self, bot):
         self.bot = bot
@@ -21,39 +19,35 @@ class Usercommands(commands.Cog):
     @commands.hybrid_command()
     @app_commands.guilds(*GuildIDs.ALL_GUILDS)
     async def ping(self, ctx):
-        """
-        Gets you the ping of the bot in milliseconds.
-        """
+        """Gets you the ping of the bot."""
+
         pingtime = self.bot.latency * 1000
         await ctx.send(f"Ping: {round(pingtime)}ms")
 
     @commands.hybrid_command(aliases=["coinflip", "flipcoin", "flip"])
     @app_commands.guilds(*GuildIDs.ALL_GUILDS)
     async def coin(self, ctx):
-        """
-        Tosses a coin.
-        """
+        """Tosses a coin."""
+
         coin = ["Coin toss: **Heads!**", "Coin toss: **Tails!**"]
         await ctx.send(random.choice(coin))
 
     @commands.hybrid_command()
     @app_commands.guilds(*GuildIDs.ALL_GUILDS)
     async def stagelist(self, ctx):
-        """
-        Picture with our stagelist on it.
+        """Picture with our stagelist on it.
         We dont send a link because that could change over time.
         An image saved locally is just more reliable.
-        Although it is around 700kb big and we do have to send it every time.
         """
+
         await ctx.send(file=discord.File(r"./files/stagelist.png"))
 
     @commands.hybrid_command(aliases=["r"])
     @app_commands.guilds(*GuildIDs.ALL_GUILDS)
     @app_commands.describe(dice="The dice to roll, in NdN format. Example: 2d20")
     async def roll(self, ctx, dice: str):
-        """
-        A dice roll, in NdN format.
-        """
+        """A dice roll, in NdN format."""
+
         try:
             amount, sides = map(int, dice.split("d"))
         except ValueError:
@@ -84,9 +78,8 @@ class Usercommands(commands.Cog):
     @app_commands.guilds(*GuildIDs.ALL_GUILDS)
     @app_commands.describe(count="The number to count down from.")
     async def countdown(self, ctx, count: int):
-        """
-        Counts down from a number less than 50.
-        """
+        """Counts down from a number less than 50."""
+
         if count > 50:
             await ctx.send("Maximum limit is 50.")
             return
@@ -116,9 +109,8 @@ class Usercommands(commands.Cog):
     @app_commands.guilds(*GuildIDs.ALL_GUILDS)
     @app_commands.describe(member="The member you want to see the avatar of.")
     async def avatar(self, ctx, member: discord.Member = None):
-        """
-        Gets you the avatar of a mentioned member, or yourself.
-        """
+        """Gets you the avatar of a mentioned member, or yourself."""
+
         if member is None:
             member = ctx.author
         await ctx.send(member.display_avatar.url)
@@ -127,14 +119,13 @@ class Usercommands(commands.Cog):
     @app_commands.guilds(*GuildIDs.ALL_GUILDS)
     @app_commands.describe(member="The member you want to see the banner of.")
     async def banner(self, ctx, member: discord.Member = None):
-        """
-        Gets you the banner of a mentioned member, or yourself.
-        """
+        """Gets you the banner of a mentioned member, or yourself."""
+
         if member is None:
             member = ctx.author
-        # we have to fetch the user first for whatever reason
+        # We have to fetch the user first for whatever reason.
         user = await self.bot.fetch_user(member.id)
-        # if the user does not have a banner, we get an error referencing it
+        # If the user does not have a banner, we get an error referencing it.
         if user.banner:
             await ctx.send(user.banner.url)
         else:
@@ -146,30 +137,29 @@ class Usercommands(commands.Cog):
         question="Your question for the poll.",
     )
     async def poll(self, ctx: commands.Context, *, question: str):
-        """
-        Creates a new poll with 2 to 5 options.
+        """Creates a new poll with 2 to 5 options.
         Sends a button, which if you click it, opens a modal to submit the options.
         Afterwards sends out an embed with the poll and reacts with the reactions.
         """
 
-        # some basic check for ridiculous question lengths
+        # Some basic check for ridiculous question lengths.
         if len(question[250:]) > 0:
             await ctx.send("The maximum length for the question is 250 characters.")
             return
 
-        # for some fields we can only have a very short maximum
+        # For some fields we can only have a very short maximum,
         # however some questions are just longer than that.
-        # so we provide a shortened form for those fields.
+        # So we provide a shortened form for those fields.
         shortened_question = question
 
         if len(question[45:]) > 0:
             shortened_question = f"{question[:42]}..."
 
-        # the emojis which will be used for reacting to the poll message
+        # The emojis which will be used for reacting to the poll message.
         reactions = ["1️⃣", "2️⃣", "3️⃣", "4️⃣", "5️⃣", "6️⃣", "7️⃣", "8️⃣", "9️⃣", "🔟"]
 
-        # the modal for filling out the poll options.
-        # we define it in the function so we have access to the needed variables.
+        # The modal for filling out the poll options.
+        # We define it in the function so we have access to the needed variables.
         class PollOptions(discord.ui.Modal, title=shortened_question):
             def __init__(self):
                 super().__init__()
@@ -222,8 +212,8 @@ class Usercommands(commands.Cog):
                 for reaction in reactions[: len(options)]:
                     await embed_message.add_reaction(reaction)
 
-        # we can only send a modal through an interaction, so we need this middle step of creating a button.
-        # theoretically we only need this when you use a normal text based command,
+        # We can only send a modal through an interaction, so we need this middle step of creating a button.
+        # Theoretically we only need this when you use a normal text based command,
         # but to keep them both the same we just do it no matter what.
         class PollButton(discord.ui.View):
             def __init__(self):
@@ -245,7 +235,7 @@ class Usercommands(commands.Cog):
 
         await view.wait()
 
-        # cleaning up afterwards.
+        # Cleaning up afterwards.
         try:
             await button_message.delete()
             await ctx.message.delete()
@@ -256,12 +246,10 @@ class Usercommands(commands.Cog):
     @app_commands.guilds(*GuildIDs.ALL_GUILDS)
     @app_commands.describe(emoji="The emoji you want to see the stats of.")
     async def emoji(self, ctx, emoji: str):
-        """
-        Gives you information about an Emoji.
-        """
-        # since discord doesnt allow emojis as an argument,
+        """Gives you information about an Emoji."""
+        # Since discord doesnt allow emojis as an argument,
         # we convert it ourselves with the partial emoji converter.
-        # we are using the partial converter because the normal converter can only get
+        # We are using the partial converter because the normal converter can only get
         # emojis from the bots servers, and we want to be able to get every emoji.
         partial_converter = commands.PartialEmojiConverter()
         emoji = await partial_converter.convert(ctx, emoji)
@@ -281,8 +269,7 @@ class Usercommands(commands.Cog):
 
     @commands.command()
     async def sticker(self, ctx):
-        """
-        Gives you information about a Sticker.
+        """Gives you information about a Sticker.
         Note that Stickers work very differently from Emojis.
         They count as a message attachment, so we fetch the first of those.
         Also you cant send a message together with a Sticker on Mobile or with Slash Commands,
@@ -308,8 +295,7 @@ class Usercommands(commands.Cog):
         member="The member you want to see the current spotify listening status of."
     )
     async def spotify(self, ctx, member: discord.Member = None):
-        """
-        Posts the Spotify Song Link the member (or yourself) is listening to.
+        """Posts the Spotify Song Link the member (or yourself) is listening to.
         You need to enable the feature that displays the current Song as your Activity for this to work.
         Still is finicky on Mobile though.
         """
@@ -339,9 +325,8 @@ class Usercommands(commands.Cog):
     @commands.hybrid_command(aliases=["currenttime"])
     @app_commands.guilds(*GuildIDs.ALL_GUILDS)
     async def time(self, ctx):
-        """
-        Shows the current time as a timezone aware object.
-        """
+        """Shows the current time as a timezone aware object."""
+
         await ctx.send(
             f"The current time is: {discord.utils.format_dt(discord.utils.utcnow(), style='T')}"
         )
@@ -352,8 +337,7 @@ class Usercommands(commands.Cog):
         conversion_input="The input you want to convert to metric or imperial."
     )
     async def convert(self, ctx, *, conversion_input: str):
-        """
-        Converts your input between metric and imperial
+        """Converts your input between metric and imperial
         and the other way around.
         Works with most commonly used measurements.
         """
@@ -363,20 +347,19 @@ class Usercommands(commands.Cog):
     @app_commands.guilds(*GuildIDs.ALL_GUILDS)
     @app_commands.describe(message="The string or message to translate.")
     async def translate(self, ctx, *, message: str = None):
-        """
-        Translates a message from any language to english.
+        """Translates a message from any language to english.
         Specify a string to translate, or a message to translate by either using message ID/Link,
         or replying to a message.
         Attempts to guess the original language.
         """
-        # first we check if the user is replying to a message
+        # First we check if the user is replying to a message.
         if ctx.message.reference and not message:
             fetched_message = await ctx.channel.fetch_message(
                 ctx.message.reference.message_id
             )
             message = fetched_message.content
 
-        # similar to the emoji command, we have to use the converter ourselves here,
+        # Similar to the emoji command, we have to use the converter ourselves here,
         # instead of just typehinting a Union of Message and str and letting discord.py handle it.
         try:
             message_converter = commands.MessageConverter()
@@ -385,8 +368,8 @@ class Usercommands(commands.Cog):
         except commands.CommandError:
             pass
 
-        # checks if the message is empty if either the user failed to specify anything
-        # or if the message content of the message specified is empty
+        # Checks if the message is empty if either the user failed to specify anything,
+        # or if the message content of the message specified is empty.
         if not message:
             await ctx.send("You need to specify a message to translate!")
             return
@@ -405,7 +388,6 @@ class Usercommands(commands.Cog):
 
         await ctx.send(embed=embed)
 
-    # error handling for the above
     @avatar.error
     async def avatar_error(self, ctx, error):
         if isinstance(error, commands.MemberNotFound):

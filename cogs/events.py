@@ -20,8 +20,7 @@ from utils.ids import (
 
 
 class Events(commands.Cog):
-    """
-    Contains the event listeners, Welcome/Booster messages,
+    """Contains the event listeners, Welcome/Booster messages,
     Autorole, Status updates, Tournament Pings and so on.
     """
 
@@ -39,7 +38,7 @@ class Events(commands.Cog):
         self.tos_ping.cancel()
         self.dt_ping.cancel()
 
-    # status cycles through these, update these once in a while to keep it fresh
+    # Status cycles through these, update these once in a while to keep it fresh.
     status = cycle(
         [
             "type {prefix}help",
@@ -62,9 +61,7 @@ class Events(commands.Cog):
 
     @tasks.loop(seconds=600)
     async def change_status(self):
-        """
-        Changes the status every 10 Minutes.
-        """
+        """Changes the status every 10 Minutes."""
         await self.bot.change_presence(
             activity=discord.Game(
                 next(self.status).format(
@@ -91,10 +88,10 @@ class Events(commands.Cog):
             channel = self.bot.get_channel(TGChannelIDs.GENERAL_CHANNEL)
             rules = self.bot.get_channel(TGChannelIDs.RULES_CHANNEL)
 
-            # checking if the user is muted when he joins
+            # Checking if the user is muted when he joins.
             if len(matching_user) != 0:
-                # getting both the cadet role and the muted role
-                # since you dont really have to accept the rules if you come back muted
+                # Getting both the cadet role and the muted role
+                # since you dont really have to accept the rules if you come back muted.
                 muted_role = discord.utils.get(
                     member.guild.roles, id=TGRoleIDs.MUTED_ROLE
                 )
@@ -109,7 +106,7 @@ class Events(commands.Cog):
                 )
                 return
 
-            # if not this is the normal greeting
+            # If not this is the normal greeting.
             await channel.send(
                 f"{member.mention} has joined the ranks! What's shaking?\n"
                 f"Please take a look at the {rules.mention} channel for information about server events/functions!"
@@ -147,7 +144,7 @@ class Events(commands.Cog):
         before: discord.VoiceState,
         after: discord.VoiceState,
     ):
-        # adds/removes a VC role when you join/leave a VC channel
+        # Adds/removes a VC role when you join/leave a VC channel.
         voice_channel = TGChannelIDs.GENERAL_VOICE_CHAT
         if (
             (before.channel is None or before.channel.id != voice_channel)
@@ -175,23 +172,23 @@ class Events(commands.Cog):
 
     @commands.Cog.listener()
     async def on_member_update(self, before: discord.Member, after: discord.Member):
-        # for announcing boosts/premium memberships
+        # For announcing boosts/premium memberships.
         if len(before.roles) < len(after.roles):
             channel = self.bot.get_channel(TGChannelIDs.ANNOUNCEMENTS_CHANNEL)
 
             new_role = next(role for role in after.roles if role not in before.roles)
 
-            # for a new boost
+            # For a new boost.
             if new_role.id == TGRoleIDs.BOOSTER_ROLE:
                 await channel.send(f"{after.mention} has boosted the server! 🥳🎉")
 
-            # for when someone new subs to the premium thing
+            # For when someone new subs to the premium thing.
             if new_role.id == TGRoleIDs.PREMIUM_ROLE:
                 await channel.send(
                     f"{after.mention} is now a Premium Member of the server! 🥳🎉"
                 )
 
-        # we take away the colour roles if you stop boosting
+        # We also take away the colour roles if you stop boosting.
         if len(before.roles) > len(after.roles):
             old_role = next(role for role in before.roles if role not in after.roles)
 
@@ -204,8 +201,8 @@ class Events(commands.Cog):
                     except discord.HTTPException:
                         pass
 
-        # this here gives out the recruit role on a successful member screening,
-        # on join was terrible because of shitty android app
+        # This here gives out the recruit role on a successful member screening,
+        # on join was terrible because of the android app, for whatever reason.
         try:
             if before.bot or after.bot:
                 return
@@ -236,7 +233,7 @@ class Events(commands.Cog):
             async with aiosqlite.connect("./db/database.db") as db:
                 all_macros = await db.execute_fetchall("""SELECT name FROM macros""")
 
-            # appending all macro names to the list to get those too
+            # Appending all macro names to the list to get those too.
             command_list.extend(m[0] for m in all_macros)
 
             if ctx.invoked_with in command_list:
@@ -283,7 +280,7 @@ class Events(commands.Cog):
     async def on_socket_event_type(self, event_type: str):
         self.bot.events_listened_to += 1
 
-    # these just log when the bot loses/regains connection
+    # These just log when the bot loses/regains connection
     @commands.Cog.listener()
     async def on_connect(self):
         logger = self.bot.get_logger("bot.connection")
@@ -299,7 +296,7 @@ class Events(commands.Cog):
         logger = self.bot.get_logger("bot.connection")
         logger.info("Resumed connection to discord.")
 
-    # the times of the tournaments (or well 1 hour & 5 mins before it)
+    # The times of the tournaments (or well 1 hour & 5 mins before it).
     so_time = datetime.time(
         TournamentReminders.SMASH_OVERSEAS_HOUR,
         TournamentReminders.SMASH_OVERSEAS_MINUTE,
@@ -321,17 +318,17 @@ class Events(commands.Cog):
 
     @tasks.loop(time=utils.time.convert_to_utc(so_time, TournamentReminders.TIMEZONE))
     async def so_ping(self):
-        """
-        This and the tos_ping tasks remind the Tournament People 1 hour before our Tournaments.
-        I don't know why but we have to convert the Timezones ourselves, since the built-in method does not work for me.
+        """This and the tos_ping tasks remind the Tournament People 1 hour before our Tournaments.
+        I don't know why but we have to convert the Timezones ourselves,
+        but the built-in method will not work for me.
         """
         if not TournamentReminders.PING_ENABLED:
             return
 
-        # runs every day, checks if it is the desired day in that timezone (utc could be off)
-        # stops this task from running the hour after the desired time in that timezone.
-        # have to do this because otherwise it would run again
-        # if i were to restart the bot after the task has already been run
+        # Runs every day, checks if it is the desired day in that timezone (utc could be off).
+        # Stops this task from running the hour after the desired time in that timezone.
+        # Have to do this because otherwise it would run again
+        # if i were to restart the bot after the task has already been run.
         if (
             datetime.datetime.now(ZoneInfo(TournamentReminders.TIMEZONE)).weekday()
             == TournamentReminders.SMASH_OVERSEAS_DAY
@@ -385,10 +382,6 @@ class Events(commands.Cog):
 
     @tasks.loop(time=utils.time.convert_to_utc(dt_time, TournamentReminders.TIMEZONE))
     async def dt_ping(self):
-        """
-        This pings the design team sundays to start working on the tournament graphics
-        """
-
         if not TournamentReminders.PING_ENABLED:
             return
 

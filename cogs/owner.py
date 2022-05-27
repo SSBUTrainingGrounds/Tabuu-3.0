@@ -7,8 +7,7 @@ from utils.ids import GuildIDs
 
 
 class Owner(commands.Cog):
-    """
-    Contains commands that can only be used by the owner
+    """Contains commands that can only be used by the owner
     that relate to basic functionality of the bot.
     """
 
@@ -18,9 +17,8 @@ class Owner(commands.Cog):
     @commands.command(aliases=["sync", "syncommands"])
     @commands.is_owner()
     async def synccommands(self, ctx, target_guild: discord.Guild = None):
-        """
-        Syncs the locally added application commands to the discord client.
-        """
+        """Syncs the locally added application commands to the discord client."""
+
         initial_message = await ctx.send("Syncing Commands...")
 
         if target_guild is None:
@@ -52,14 +50,13 @@ class Owner(commands.Cog):
     @commands.command(aliases=["reloadcog"])
     @commands.is_owner()
     async def reloadcogs(self, ctx, *, cogs: str = None):
-        """
-        Command for manually reloading all cogs, so i dont have to restart the bot for every change.
+        """Command for manually reloading all cogs.
         Can only be used by the owner of the bot.
         """
         if cogs is None:
-            # if the user doesnt specify which cog to reload, we relaod them all.
-            # embeds can have up to 25 fields, we are at 21 cogs currently.
-            # need a different solution when we go over that
+            # If the user doesnt specify which cog to reload, we relaod them all.
+            # Embeds can have up to 25 fields, we are at 22 cogs currently.
+            # Need a different solution when we go over that.
             embed = discord.Embed(
                 title="Reloading cogs...", colour=discord.Colour.blue()
             )
@@ -102,7 +99,6 @@ class Owner(commands.Cog):
 
         await ctx.send(embed=embed)
 
-    # some error handling
     @reloadcogs.error
     async def reloadcogs_error(self, ctx, error):
         if isinstance(error, commands.NotOwner):

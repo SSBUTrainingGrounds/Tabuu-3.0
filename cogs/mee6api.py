@@ -13,8 +13,7 @@ mee6API = API(739299507795132486)
 
 
 class Mee6api(commands.Cog):
-    """
-    This class calls the Mee6 API, gets the Level of a User and assigns the Level Role to them.
+    """This class calls the Mee6 API, gets the Level of a User and assigns the Level Role to them.
     Both manually via a Command and automatically via a Task.
     """
 
@@ -29,8 +28,7 @@ class Mee6api(commands.Cog):
     async def update_level_role(
         self, member: discord.Member, level: int, guild: discord.Guild
     ) -> discord.Role:
-        """
-        Assigns you a new role depending on your level and removes all of the other ones.
+        """Assigns you a new role depending on your level and removes all of the other ones.
         Returns the new role.
         """
         rolegiven = None
@@ -45,9 +43,8 @@ class Mee6api(commands.Cog):
         levelroles = [defaultrole, level10, level25, level50, level75, level100]
 
         async def assign_level_role(assign_role: discord.Role) -> discord.Role:
-            """
-            Removes every other level role and assigns the correct one.
-            """
+            """Removes every other level role and assigns the correct one."""
+
             roles_to_remove = [role for role in levelroles if role is not assign_role]
             await member.remove_roles(*roles_to_remove)
             await member.add_roles(assign_role)
@@ -83,8 +80,7 @@ class Mee6api(commands.Cog):
     @app_commands.guilds(*GuildIDs.ALL_GUILDS)
     @app_commands.describe(member="The member you want to update the level role of.")
     async def updatelevel(self, ctx, member: discord.Member = None):
-        """
-        Updates your Level Role manually.
+        """Updates your Level Role manually.
         Can also be used on the behalf of other users.
         """
         if ctx.guild.id != GuildIDs.TRAINING_GROUNDS:
@@ -102,7 +98,7 @@ class Mee6api(commands.Cog):
             ctx.command.reset_cooldown(ctx)
             return
 
-        # sometimes the API can take a while to respond.
+        # Sometimes the API can take a while to respond.
         botmessage = await ctx.send("Please wait a few seconds...")
 
         userlevel = await mee6API.levels.get_user_level(member.id, dont_use_cache=True)
@@ -119,7 +115,6 @@ class Mee6api(commands.Cog):
                 f"and thus I have given you the {rolegiven} role."
             )
 
-    # generic error message
     @updatelevel.error
     async def updatelevel_error(self, ctx, error):
         if isinstance(error, commands.CommandOnCooldown):
@@ -145,8 +140,7 @@ class Mee6api(commands.Cog):
 
     @tasks.loop(hours=23)
     async def update_roles(self):
-        """
-        Updates the Level Roles of every User in the Server automatically, every 23 hours.
+        """Updates the Level Roles of every User in the Server automatically, every 23 hours.
         Pretty much the same as the Command above, with a few minor tweaks.
         Right now we have 4000 Members and this takes around 1:10 Minutes.
         We'll see how this scales in the future.
@@ -159,13 +153,13 @@ class Mee6api(commands.Cog):
 
         all_guild_member_ids = [guild_member.id for guild_member in guild.members]
 
-        # gets the correct amount of pages
+        # Gets the correct amount of pages.
         page_number = ceil(len(guild.members) / 100)
         for i in range(page_number):
             leaderboard_page = await mee6API.levels.get_leaderboard_page(i)
             for user in leaderboard_page["players"]:
-                # need to fetch the member, since get_member is unreliable.
-                # we only do this for members in the server and above level 10 though,
+                # Need to fetch the member, since get_member is unreliable.
+                # We only do this for members in the server and above level 10 though,
                 # otherwise this would take ages.
                 if int(user["id"]) in all_guild_member_ids and user["level"] >= 10:
                     member = await guild.fetch_member(user["id"])

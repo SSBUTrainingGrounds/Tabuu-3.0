@@ -12,9 +12,7 @@ from utils.time import convert_time
 
 
 class Reminder(commands.Cog):
-    """
-    Contains the reminder functions and everything associated with them.
-    """
+    """Contains the reminder functions and everything associated with them."""
 
     def __init__(self, bot):
         self.bot = bot
@@ -27,8 +25,7 @@ class Reminder(commands.Cog):
     async def notify_user(
         self, user_id: int, channel_id: int, message: str, read_time: str
     ):
-        """
-        Notifies the user when their reminder expires.
+        """Notifies the user when their reminder expires.
         First we try in the channel, then their DMs.
         """
         logger = self.bot.get_logger("bot.reminder")
@@ -38,12 +35,12 @@ class Reminder(commands.Cog):
             await channel.send(
                 f"<@!{user_id}>, you wanted me to remind you of `{message}`, {read_time} ago."
             )
-            # the channel could get deleted in the meantime,
-            # or something else can prevent us having access
+            # The channel could get deleted in the meantime,
+            # or something else can prevent us having access.
         except discord.HTTPException:
-            # unfortunately we need a second try/except block because
+            # Unfortunately we need a second try/except block because
             # people can block your bot and this would throw an error otherwise,
-            # and we dont wanna interrupt the loop
+            # and we dont wanna interrupt the loop.
             try:
                 member = await self.bot.fetch_user(user_id)
                 await member.send(
@@ -60,9 +57,8 @@ class Reminder(commands.Cog):
         reminder_message="The message you want me to remind you of.",
     )
     async def reminder(self, ctx, time: str, *, reminder_message: str):
-        """
-        Saves a new reminder.
-        """
+        """Saves a new reminder."""
+
         seconds, reminder_time = convert_time(time)
 
         if seconds < 30:
@@ -70,22 +66,22 @@ class Reminder(commands.Cog):
                 "Duration is too short! I'm sure you can remember that yourself."
             )
             return
-        # 90 days, maybe increase it to 1 year in the future, idk
+        # 90 days, maybe increase it to 1 year in the future, not sure yet.
         if seconds > 7776000:
             await ctx.send(
                 "Duration is too long! Maximum duration is 90 days from now."
             )
             return
 
-        # i think 200 chars is enough for a reminder message,
-        # have to keep discord max message length in mind for viewreminders
+        # I think 200 chars is enough for a reminder message,
+        # have to keep discord max message length in mind for viewreminders.
         if len(reminder_message[200:]) > 0:
             reminder_message = reminder_message[:200]
 
         reminder_message = discord.utils.remove_markdown(reminder_message)
 
-        # if the duration is fairly short, i wont bother writing it to the file,
-        # a sleep statement will do
+        # If the duration is fairly short, i wont bother writing it to the file,
+        # a sleep statement will do.
         if seconds < 299:
             message_dt = datetime.datetime.fromtimestamp(
                 discord.utils.utcnow().timestamp() + seconds
@@ -101,7 +97,7 @@ class Reminder(commands.Cog):
             await ctx.send(
                 f"{ctx.author.mention}, you wanted me to remind you of `{reminder_message}`, {reminder_time} ago."
             )
-        # otherwise it will get saved in the file
+        # Otherwise it will get saved in the file.
         else:
             reminder_id = random.randint(1000000, 9999999)
             reminder_date = int(discord.utils.utcnow().timestamp() + seconds)
@@ -147,16 +143,16 @@ class Reminder(commands.Cog):
         reminder_list = []
 
         for reminder in user_reminders:
-            # the underscores are user id, channel id and read_time
+            # The underscores are user id, channel id and read_time.
             (_, reminder_id, _, date, _, message) = reminder
 
             dt_now = discord.utils.utcnow().timestamp()
             timediff = str(datetime.timedelta(seconds=date - dt_now)).split(
                 ".", maxsplit=1
             )[0]
-            # in an unfortunate case of timing, a user could view their reminder
+            # In an unfortunate case of timing, a user could view their reminder
             # when it already "expired" but the loop has not checked yet.
-            # this here prevents a dumb number displaying
+            # this here prevents a negative number displaying.
             if (date - dt_now) <= 30:
                 timediff = "Less than a minute..."
             reminder_list.append(
@@ -168,10 +164,10 @@ class Reminder(commands.Cog):
 
         try:
             await ctx.send(f"Here are your active reminders:\n{''.join(reminder_list)}")
-        # if the message is too long, this error gets triggered
+        # If the message is too long, this error gets triggered.
         except discord.errors.HTTPException:
-            # should be max ~300 chars per reminder so we can fit in 6 in the worst case.
-            # discord message char limit being at 2000
+            # Should be max ~300 chars per reminder so we can fit in 6 in the worst case.
+            # Discord message char limit being at 2000.
             shortened_reminder_list = reminder_list[:6]
             await ctx.send(
                 f"Your reminders are too long to list in a single message. "
@@ -184,9 +180,8 @@ class Reminder(commands.Cog):
     @app_commands.guilds(*GuildIDs.ALL_GUILDS)
     @app_commands.describe(reminder_id="The ID of the reminder you want to delete.")
     async def deletereminder(self, ctx, reminder_id: str):
-        """
-        Deletes a reminder of yours.
-        """
+        """Deletes a reminder of yours."""
+
         async with aiosqlite.connect("./db/database.db") as db:
             matching_reminder = await db.execute_fetchall(
                 """SELECT * FROM reminder WHERE user_id = :user_id AND reminder_id = :reminder_id""",
@@ -220,7 +215,7 @@ class Reminder(commands.Cog):
 
         reminder_ids = [str(reminder[0]) for reminder in user_reminders]
 
-        # we dont really need the fuzzy search here, this is all just numbers
+        # We dont really need the fuzzy search here, this is all just numbers.
         choices = [
             app_commands.Choice(name=reminder_name, value=reminder_name)
             for reminder_name in reminder_ids
@@ -231,8 +226,7 @@ class Reminder(commands.Cog):
 
     @tasks.loop(seconds=60)
     async def reminder_loop(self):
-        """
-        Checks every minute if a reminder has passed.
+        """Checks every minute if a reminder has passed.
         If that is the case, notifies the user and deletes the reminder.
         """
         logger = self.bot.get_logger("bot.reminder")
@@ -265,7 +259,6 @@ class Reminder(commands.Cog):
     async def before_reminder_loop(self):
         await self.bot.wait_until_ready()
 
-    # error handling
     @reminder.error
     async def reminder_error(self, ctx, error):
         if isinstance(error, commands.MissingRequiredArgument):
