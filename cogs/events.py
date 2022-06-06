@@ -395,9 +395,10 @@ class Events(commands.Cog):
             guild = self.bot.get_guild(GuildIDs.TRAINING_GROUNDS)
             design_channel = self.bot.get_channel(TGChannelIDs.DESIGN_TEAM)
             design_role = discord.utils.get(guild.roles, id=TGRoleIDs.DESIGN_TEAM_ROLE)
+            trial_role = discord.utils.get(guild.roles, id=TGRoleIDs.TRIAL_DESIGN_ROLE)
 
             await design_channel.send(
-                f"{design_role.mention} Reminder that it is time to get to work on SO/ToS graphics! "
+                f"{design_role.mention} & {trial_role.mention} Reminder that it is time to get to work on SO/ToS graphics! "
                 "Who is able to take one or both?\n(Assuming alts have already been collected.)"
             )
 
