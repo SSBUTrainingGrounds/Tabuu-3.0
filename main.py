@@ -1,7 +1,7 @@
 # Tabuu 3.0
 # by Phxenix for SSBU Training Grounds
-# Version: 9.15.1
-# Last Changes: 24 May 2022
+# Version: 9.15.2
+# Last Changes: 16 June 2022
 # Contact me on Discord: Phxenix#1104
 
 import os
@@ -24,18 +24,12 @@ class Tabuu3(commands.Bot):
         )
 
         # To be used in the stats command.
-        self.version_number = "9.15.1"
+        self.version_number = "9.15.2"
         self.commands_ran = 0
         self.events_listened_to = 0
 
         # A check to make sure persistent buttons do not get added twice.
         self.modmail_button_added = None
-
-    async def start(self, *args, **kwargs):
-        with open(r"./files/token.txt", encoding="utf-8") as f:
-            token = f.readline()
-
-        await super().start(token=token, *args, **kwargs)
 
     async def setup_hook(self):
         # We need to set up some stuff at startup.
@@ -50,11 +44,6 @@ class Tabuu3(commands.Bot):
         # Just attaching it to the bot so we dont have to import it everywhere.
         return utils.logger.get_logger(name)
 
-    async def close(self):
-        # Closing the connection on bot shutdown.
-        # This is more of a placeholder for now.
-        await super().close()
-
     async def on_ready(self):
         print(
             f"Lookin' good, connected as: {str(bot.user)}, at: {discord.utils.utcnow().strftime('%d-%m-%Y %H:%M:%S')} UTC"
@@ -63,4 +52,8 @@ class Tabuu3(commands.Bot):
 
 bot = Tabuu3()
 
-bot.run()
+with open(r"./files/token.txt", encoding="utf-8") as f:
+    token = f.readline()
+
+# We have our own logger, so we disable the default one.
+bot.run(token, log_handler=None)

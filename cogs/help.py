@@ -431,7 +431,12 @@ class Help(commands.Cog):
         else:
             embed.add_field(name="Names:", value=cmd.name, inline=False)
 
-        # Cant do cmd.can_run here, since we do not have access to context in a slash command.
+        ctx: commands.Context = await self.bot.get_context(interaction)
+        try:
+            await cmd.can_run(ctx)
+            embed.add_field(name="Usable by you:", value="Yes", inline=False)
+        except commands.CommandError as exc:
+            embed.add_field(name="Usable by you:", value=f"No:\n{exc}", inline=False)
 
         embed.add_field(
             name="\u200b",

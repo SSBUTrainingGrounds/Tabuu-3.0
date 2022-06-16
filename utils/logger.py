@@ -19,6 +19,15 @@ def create_logger():
 
     logger.addHandler(handler)
 
+    # We also log the really critical stuff to the console, for more visibility.
+    console_log = logging.StreamHandler()
+    console_log.setLevel(logging.ERROR)
+    console_log.setFormatter(
+        logging.Formatter("%(asctime)s:%(levelname)s:%(name)s: %(message)s")
+    )
+
+    logger.addHandler(console_log)
+
 
 def get_logger(name: str) -> logging.Logger:
     """Gets you a descendant of the discord logger.
