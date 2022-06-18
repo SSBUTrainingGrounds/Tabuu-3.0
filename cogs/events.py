@@ -289,7 +289,7 @@ class Events(commands.Cog):
     @commands.Cog.listener()
     async def on_disconnect(self):
         logger = self.bot.get_logger("bot.connection")
-        logger.error("Lost connection to discord.")
+        logger.warning("Lost connection to discord.")
 
     @commands.Cog.listener()
     async def on_resumed(self):
