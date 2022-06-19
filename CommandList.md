@@ -195,6 +195,10 @@ Everything else should be fairly self-explanatory.
   - Example: `%mains incin, wii fit, 4e, paisy`  
   - Aliases: main, setmain, spmains, profilemains  
   
+- **%memory** `<@member>`  
+  - Info: **Slash version available.** Plays a game of memory with the mentioned user.  
+  - Example: `%memory @ExampleUser`  
+  
 - **%modifyrolemenu** `<message ID> <exclusive: Optional> <Role(s): Optional>`  
   - Info: **Slash version available. Moderator only.** Modifies a role menu with special properties. Exclusive is a boolean(True/False) value which specifies if a Member is able to get 1 role (True) or all roles (False) from this role menu. The role(s) set a requirement so that a Member needs one of these roles to get any role of this role menu. Mention the role or use role ID. Both arguments are optional, if left out both default to False/None.  
   - Example: `%modifyrolemenu 858117781375418389 True @Singles Winner`  

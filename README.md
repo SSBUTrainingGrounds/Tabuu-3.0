@@ -22,6 +22,7 @@ Made by Phxenix#1104. If you have any questions feel free to contact me on Disco
 - Player Profiles for Smash Ultimate
 - Special User Badges
 - Persistent Reminders
+- Small PvP Games such as Blackjack and more
 - Lots of other useful General User Commands
 - Lots of other not-so-useful General User Commands
 

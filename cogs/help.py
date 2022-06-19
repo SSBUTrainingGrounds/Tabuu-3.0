@@ -207,6 +207,7 @@ class Responses(discord.ui.Select):
 ```{self.prefix}rps <@user>``` - Plays a match of Rock, Paper, Scissors with the mentioned user.
 ```{self.prefix}tictactoe <@user>``` - Plays a match of Tic Tac Toe with the mentioned user.
 ```{self.prefix}blackjack <@user>``` - Plays a match of Blackjack with the mentioned user.
+```{self.prefix}memory <@user>``` - Plays a game of Memory with the mentioned user.
 ```{self.prefix}2048``` - Plays a match of 2048.
     """,
             )
