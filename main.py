@@ -1,7 +1,7 @@
 # Tabuu 3.0
 # by Phxenix for SSBU Training Grounds
-# Version: 9.17.0
-# Last Changes: 20 June 2022
+# Version: 9.17.1
+# Last Changes: 21 June 2022
 # Contact me on Discord: Phxenix#1104
 
 import os
@@ -16,15 +16,16 @@ import utils.sqlite
 class Tabuu3(commands.Bot):
     def __init__(self):
         super().__init__(
-            # Do not pass in multiple prefixes, or use when_mentioned_or,
-            # this would break macros and other display related stuff.
             command_prefix="%",
             intents=discord.Intents.all(),
             status=discord.Status.online,
         )
 
+        # The main prefix, used for listening to macros and display purposes mainly.
+        self.main_prefix = "%"
+
         # To be used in the stats command.
-        self.version_number = "9.17.0"
+        self.version_number = "9.17.1"
         self.commands_ran = 0
         self.events_listened_to = 0
 

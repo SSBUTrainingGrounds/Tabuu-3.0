@@ -67,7 +67,7 @@ class Events(commands.Cog):
                 next(self.status).format(
                     members=len(set(self.bot.get_all_members())),
                     version=self.bot.version_number,
-                    prefix=self.bot.command_prefix,
+                    prefix=self.bot.main_prefix,
                 )
             )
         )
@@ -223,7 +223,7 @@ class Events(commands.Cog):
     async def on_command_error(self, ctx, error):
         logger = self.bot.get_logger("bot.commands")
         logger.warning(
-            f"Command triggered an Error: {self.bot.command_prefix}{ctx.invoked_with} "
+            f"Command triggered an Error: {ctx.prefix}{ctx.invoked_with} "
             f"(invoked by {str(ctx.author)}) - Error message: {error}"
         )
 
@@ -245,13 +245,13 @@ class Events(commands.Cog):
             ):
                 await ctx.send(
                     "I could not find this command. "
-                    f"Did you mean `{self.bot.command_prefix}{command_match}`?\n"
-                    f"Type `{self.bot.command_prefix}help` for all available commands."
+                    f"Did you mean `{ctx.prefix}{command_match}`?\n"
+                    f"Type `{ctx.prefix}help` for all available commands."
                 )
             else:
                 await ctx.send(
                     "I could not find this command.\n"
-                    f"Type `{self.bot.command_prefix}help` for all available commands."
+                    f"Type `{ctx.prefix}help` for all available commands."
                 )
         elif ctx.command.has_error_handler() is False:
             raise error
@@ -260,7 +260,7 @@ class Events(commands.Cog):
     async def on_command_completion(self, ctx):
         logger = self.bot.get_logger("bot.commands")
         logger.info(
-            f"Command successfully ran: {self.bot.command_prefix}{ctx.invoked_with} "
+            f"Command successfully ran: {ctx.prefix}{ctx.invoked_with} "
             f"(invoked by {str(ctx.author)})"
         )
 

@@ -123,7 +123,7 @@ class Reminder(commands.Cog):
             await ctx.send(
                 f"{ctx.author.mention}, I will remind you about `{reminder_message}` in {reminder_time}! "
                 f"({discord.utils.format_dt(message_dt, style='f')})\n"
-                f"View all of your active reminders with `{self.bot.command_prefix}viewreminders`"
+                f"View all of your active reminders with `{ctx.prefix}viewreminders`"
             )
 
     @commands.hybrid_command(
@@ -191,7 +191,7 @@ class Reminder(commands.Cog):
             if len(matching_reminder) == 0:
                 await ctx.send(
                     "I could not find any reminder with this ID. \n"
-                    f"View all of your active reminders with `{self.bot.command_prefix}viewreminders`"
+                    f"View all of your active reminders with `{ctx.prefix}viewreminders`"
                 )
                 return
 
@@ -270,7 +270,7 @@ class Reminder(commands.Cog):
         ):
             await ctx.send(
                 "Invalid time format! Please use a number followed by d/h/m/s for days/hours/minutes/seconds.\n"
-                f"Example: `{self.bot.command_prefix}reminder 1h20m your message here`"
+                f"Example: `{ctx.prefix}reminder 1h20m your message here`"
             )
         else:
             raise error
@@ -289,7 +289,7 @@ class Reminder(commands.Cog):
         if isinstance(error, commands.MissingRequiredArgument):
             await ctx.send(
                 "You need to specify which reminder to delete. "
-                f"View all of your active reminders with `{self.bot.command_prefix}viewreminders`"
+                f"View all of your active reminders with `{ctx.prefix}viewreminders`"
             )
         elif isinstance(
             error, (commands.CommandInvokeError, commands.HybridCommandError)

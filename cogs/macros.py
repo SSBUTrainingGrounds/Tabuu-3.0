@@ -108,8 +108,8 @@ class Macros(commands.Cog):
                 name = name[0]
                 if (
                     len(message.content.split()) == 1
-                    and message.content == (f"{self.bot.command_prefix}{name}")
-                    or message.content.startswith(f"{self.bot.command_prefix}{name} ")
+                    and message.content == (f"{self.bot.main_prefix}{name}")
+                    or message.content.startswith(f"{self.bot.main_prefix}{name} ")
                 ):
                     matching_macro = await db.execute_fetchall(
                         """SELECT payload FROM macros WHERE name = :name""",
@@ -182,7 +182,7 @@ class Macros(commands.Cog):
             macro_names = [m[0] for m in macro_list]
             await ctx.send(
                 "The registered macros are:\n"
-                f"`{self.bot.command_prefix}{f', {self.bot.command_prefix}'.join(macro_names)}`"
+                f"`{self.bot.main_prefix}{f', {self.bot.main_prefix}'.join(macro_names)}`"
             )
             return
 
@@ -194,7 +194,7 @@ class Macros(commands.Cog):
         # If the macro does not exist we want some kind of error message for the user.
         if len(matching_macro) == 0:
             await ctx.send(
-                f"I could not find this macro. List all macros with `{self.bot.command_prefix}macros`."
+                f"I could not find this macro. List all macros with `{self.bot.main_prefix}macros`."
             )
             return
 
@@ -203,7 +203,7 @@ class Macros(commands.Cog):
         embed = discord.Embed(
             title="Macro info",
             color=0x007377,
-            description=f"**Name:** {self.bot.command_prefix}{name}\n**Uses:** {uses}\n"
+            description=f"**Name:** {self.bot.main_prefix}{name}\n**Uses:** {uses}\n"
             f"**Author:**<@{author_id}>\n**Output:**\n{payload}\n",
         )
 

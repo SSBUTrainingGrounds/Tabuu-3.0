@@ -381,7 +381,7 @@ class Rolemenu(commands.Cog):
         ):
             await ctx.send(
                 "Something was not recognized properly. The syntax for this command is: \n"
-                f"`{self.bot.command_prefix}newrolemenu <message_id> <emoji> <role>`"
+                f"`{ctx.prefix}newrolemenu <message_id> <emoji> <role>`"
             )
         else:
             raise error

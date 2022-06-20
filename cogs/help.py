@@ -303,7 +303,7 @@ class CustomHelp(commands.HelpCommand):
 
         embed.add_field(
             name="\u200b",
-            value=f"[Overview: `{self.context.bot.command_prefix}help` or visit my GitHub.]"
+            value=f"[Overview: `{self.context.prefix}help` or visit my GitHub.]"
             "(https://github.com/atomflunder/Tabuu-3.0-Bot/blob/main/CommandList.md)",
             inline=False,
         )
@@ -320,7 +320,7 @@ class CustomHelp(commands.HelpCommand):
         channel = self.get_destination()
         await channel.send(
             "Here are the available subcommands:",
-            view=DropdownHelp(self.context.bot.command_prefix),
+            view=DropdownHelp(self.context.prefix),
         )
 
     async def send_cog_help(self, cog: commands.Cog):
@@ -379,10 +379,12 @@ class Help(commands.Cog):
         This shouldn't be a problem since I will always make them a priority over slash commands.
         Slash commands will ideally only mimic the behaviour of the text based commands, as close as possible.
         """
+        ctx: commands.Context = await self.bot.get_context(interaction)
+
         if not command:
             await interaction.response.send_message(
                 "Here are the available subcommands:",
-                view=DropdownHelp(self.bot.command_prefix),
+                view=DropdownHelp(ctx.prefix),
             )
             return
 
@@ -406,7 +408,7 @@ class Help(commands.Cog):
         if cmd.parent:
             command_full_name = f"{cmd.full_parent_name} {command_full_name}"
 
-        full_command = f"{self.bot.command_prefix}{command_full_name} {cmd.signature}"
+        full_command = f"{ctx.prefix}{command_full_name} {cmd.signature}"
 
         # Unfortunately we need to construct our own embed,
         # since a lot of the stuff used is exclusive to the HelpCommand class
@@ -433,7 +435,6 @@ class Help(commands.Cog):
         else:
             embed.add_field(name="Names:", value=cmd.name, inline=False)
 
-        ctx: commands.Context = await self.bot.get_context(interaction)
         try:
             await cmd.can_run(ctx)
             embed.add_field(name="Usable by you:", value="Yes", inline=False)
@@ -442,7 +443,7 @@ class Help(commands.Cog):
 
         embed.add_field(
             name="\u200b",
-            value=f"[Overview: `{self.bot.command_prefix}help` or visit my GitHub.]"
+            value=f"[Overview: `{ctx.prefix}help` or visit my GitHub.]"
             "(https://github.com/atomflunder/Tabuu-3.0-Bot/blob/main/CommandList.md)",
             inline=False,
         )

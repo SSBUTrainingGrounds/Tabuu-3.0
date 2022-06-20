@@ -52,8 +52,7 @@ class Usercommands(commands.Cog):
             amount, sides = map(int, dice.split("d"))
         except ValueError:
             await ctx.send(
-                f"Wrong format!\n"
-                f"Try something like: `{self.bot.command_prefix}roll 1d100`"
+                f"Wrong format!\n" f"Try something like: `{ctx.prefix}roll 1d100`"
             )
             return
 
@@ -407,7 +406,7 @@ class Usercommands(commands.Cog):
         if isinstance(error, (commands.MissingRequiredArgument, commands.BadArgument)):
             await ctx.send(
                 "Please provide a question for your poll.\n"
-                f"Example: `{self.bot.command_prefix}poll What is your favourite colour?`"
+                f"Example: `{ctx.prefix}poll What is your favourite colour?`"
             )
         else:
             raise error
@@ -416,8 +415,7 @@ class Usercommands(commands.Cog):
     async def roll_error(self, ctx, error):
         if isinstance(error, commands.MissingRequiredArgument):
             await ctx.send(
-                "Wrong format!\n"
-                f"Try something like: `{self.bot.command_prefix}roll 1d100`"
+                "Wrong format!\n" f"Try something like: `{ctx.prefix}roll 1d100`"
             )
         else:
             raise error

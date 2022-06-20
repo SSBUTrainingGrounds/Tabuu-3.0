@@ -254,10 +254,10 @@ class Admin(commands.Cog):
 
         embed = discord.Embed(
             title="Available subcommands:",
-            description=f"`{self.bot.command_prefix}editrole name <role> <new name>`\n"
-            f"`{self.bot.command_prefix}editrole colour <role> <hex colour>`\n"
-            f"`{self.bot.command_prefix}editrole icon <role> <emoji/attachment>`\n"
-            f"`{self.bot.command_prefix}editrole mentionable <role> <True/False>`\n",
+            description=f"`{ctx.prefix}editrole name <role> <new name>`\n"
+            f"`{ctx.prefix}editrole colour <role> <hex colour>`\n"
+            f"`{ctx.prefix}editrole icon <role> <emoji/attachment>`\n"
+            f"`{ctx.prefix}editrole mentionable <role> <True/False>`\n",
             colour=0x007377,
         )
         embed.set_thumbnail(url=self.bot.user.display_avatar.url)
@@ -300,7 +300,7 @@ class Admin(commands.Cog):
         if not hex_colour.startswith("#") or len(hex_colour) != 7:
             await ctx.send(
                 "Please choose a valid hex colour code. "
-                f"Example: `{self.bot.command_prefix}editrole colour role #8a0f84`"
+                f"Example: `{ctx.prefix}editrole colour role #8a0f84`"
             )
             return
 
@@ -311,7 +311,7 @@ class Admin(commands.Cog):
         except ValueError:
             await ctx.send(
                 "Please choose a valid hex colour code. "
-                f"Example: `{self.bot.command_prefix}editrole colour role #8a0f84`"
+                f"Example: `{ctx.prefix}editrole colour role #8a0f84`"
             )
             return
 

@@ -476,7 +476,7 @@ class Profile(commands.Cog):
         # Double checking if the input got matched and is not None.
         if region and region not in self.region_dict:
             await ctx.send(
-                f"Please choose a valid region. Example: `{self.bot.command_prefix}region Europe`"
+                f"Please choose a valid region. Example: `{ctx.prefix}region Europe`"
             )
             return
 
@@ -552,7 +552,7 @@ class Profile(commands.Cog):
         # Hex colour codes are 7 digits long and start with #
         if not colour.startswith("#") or len(colour) != 7:
             await ctx.send(
-                f"Please choose a valid hex colour code. Example: `{self.bot.command_prefix}colour #8a0f84`"
+                f"Please choose a valid hex colour code. Example: `{ctx.prefix}colour #8a0f84`"
             )
             return
 
@@ -562,7 +562,7 @@ class Profile(commands.Cog):
             hex_colour = int(colour, 16)
         except ValueError:
             await ctx.send(
-                f"Please choose a valid hex colour code. Example: `{self.bot.command_prefix}colour #8a0f84`"
+                f"Please choose a valid hex colour code. Example: `{ctx.prefix}colour #8a0f84`"
             )
             return
 
@@ -654,7 +654,7 @@ class Profile(commands.Cog):
         )
 
         embed.set_footer(
-            text=f"To see the individual profiles: {self.bot.command_prefix}profile <player>"
+            text=f"To see the individual profiles: {ctx.prefix}profile <player>"
         )
 
         await ctx.send(embed=embed)
@@ -691,7 +691,7 @@ class Profile(commands.Cog):
     async def colour_error(self, ctx, error):
         if isinstance(error, commands.MissingRequiredArgument):
             await ctx.send(
-                f"Please choose a valid hex colour code. Example: `{self.bot.command_prefix}colour #8a0f84`"
+                f"Please choose a valid hex colour code. Example: `{ctx.prefix}colour #8a0f84`"
             )
         else:
             raise error
