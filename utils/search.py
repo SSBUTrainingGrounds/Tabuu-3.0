@@ -18,7 +18,7 @@ def search_role(guild: discord.Guild, input_role: str) -> Optional[discord.Role]
 
     all_roles = [role.name for role in guild.roles]
 
-    match = Match(ignore_case=True, include_partial=True)
+    match = Match(ignore_case=True, include_partial=True, latinise=True)
 
     try:
         role = discord.utils.get(guild.roles, id=int(input_role))
@@ -42,7 +42,7 @@ def autocomplete_choices(
     """Returns a list of the first 25 autocomplete choices for the given current string
     and the choices supplied. Used primarily in autocompletion for slash commands.
     """
-    match = Match(ignore_case=True, include_partial=True)
+    match = Match(ignore_case=True, include_partial=True, latinise=True)
 
     matching_choices = []
 
