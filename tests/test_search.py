@@ -45,6 +45,4 @@ class TestSearch(unittest.TestCase):
             Choice(name="whatever", value="whatever"),
         ]
 
-        autocomplete_choices(query, available_choices)
-
         self.assertEqual(autocomplete_choices(query, available_choices), results)
