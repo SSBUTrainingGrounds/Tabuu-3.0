@@ -441,7 +441,7 @@ class Ranking(commands.Cog):
     @utils.check.is_moderator()
     @commands.cooldown(1, 41, commands.BucketType.user)
     async def forcereportmatch(
-        self, ctx, winner: discord.Member, loser: discord.Member
+        self, ctx: commands.Context, winner: discord.Member, loser: discord.Member
     ):
         """Forcefully reports a match, in case someone abandons it or fails to report."""
 

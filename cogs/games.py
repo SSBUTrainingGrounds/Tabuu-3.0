@@ -949,7 +949,7 @@ class Games(commands.Cog):
     @commands.hybrid_command(aliases=["rockpaperscissors", "rochambeau", "roshambo"])
     @app_commands.guilds(*GuildIDs.ALL_GUILDS)
     @app_commands.describe(member="The member to play against.")
-    async def rps(self, ctx, member: discord.Member = None):
+    async def rps(self, ctx: commands.Context, member: discord.Member = None):
         """Plays a Game of Rock, Paper, Scissors with a mentioned user.
         Or the bot, if you do not mention a user.
         """
@@ -1026,7 +1026,7 @@ class Games(commands.Cog):
     @commands.hybrid_command(aliases=["ttt"])
     @app_commands.guilds(*GuildIDs.ALL_GUILDS)
     @app_commands.describe(member="The member to play against.")
-    async def tictactoe(self, ctx, member: discord.Member):
+    async def tictactoe(self, ctx: commands.Context, member: discord.Member):
         """Starts a game of Tic Tac Toe vs another User."""
         # Basic checks for users.
         if member == ctx.author:
@@ -1047,7 +1047,7 @@ class Games(commands.Cog):
     @commands.hybrid_command(aliases=["21", "vingtetun", "vingtun"])
     @app_commands.guilds(*GuildIDs.ALL_GUILDS)
     @app_commands.describe(member="The member to play against.")
-    async def blackjack(self, ctx, member: discord.Member):
+    async def blackjack(self, ctx: commands.Context, member: discord.Member):
         """Starts a game of Blackjack vs another User."""
 
         if member == ctx.author:
@@ -1067,7 +1067,7 @@ class Games(commands.Cog):
 
     @commands.hybrid_command(name="2048")
     @app_commands.guilds(*GuildIDs.ALL_GUILDS)
-    async def _2048(self, ctx):
+    async def _2048(self, ctx: commands.Context):
         """Starts a game of 2048."""
 
         view = _2048Game(ctx.author)

@@ -202,7 +202,7 @@ class Profile(commands.Cog):
 
     @commands.hybrid_command()
     @app_commands.guilds(*GuildIDs.ALL_GUILDS)
-    async def deleteprofile(self, ctx):
+    async def deleteprofile(self, ctx: commands.Context):
         """Deletes your profile."""
         async with aiosqlite.connect("./db/database.db") as db:
             matching_user = await db.execute_fetchall(

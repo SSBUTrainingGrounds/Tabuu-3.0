@@ -17,7 +17,7 @@ class Funcommands(commands.Cog):
 
     @commands.hybrid_command(aliases=["uwu"])
     @app_commands.guilds(*GuildIDs.ALL_GUILDS)
-    async def tabuwu(self, ctx):
+    async def tabuwu(self, ctx: commands.Context):
         """Well..."""
 
         messages = [
@@ -29,7 +29,7 @@ class Funcommands(commands.Cog):
 
     @commands.hybrid_command(aliases=["tabuujoke"])
     @app_commands.guilds(*GuildIDs.ALL_GUILDS)
-    async def joke(self, ctx):
+    async def joke(self, ctx: commands.Context):
         """Jokes. May or may not make you laugh."""
 
         messages = [
@@ -55,7 +55,7 @@ class Funcommands(commands.Cog):
 
     @commands.hybrid_command()
     @app_commands.guilds(*GuildIDs.ALL_GUILDS)
-    async def randomquote(self, ctx):
+    async def randomquote(self, ctx: commands.Context):
         """Some quotes."""
 
         messages = [
@@ -66,7 +66,7 @@ class Funcommands(commands.Cog):
 
     @commands.hybrid_command()
     @app_commands.guilds(*GuildIDs.ALL_GUILDS)
-    async def pickmeup(self, ctx):
+    async def pickmeup(self, ctx: commands.Context):
         """Some uplifting stuff."""
 
         messages = [
@@ -79,7 +79,7 @@ class Funcommands(commands.Cog):
 
     @commands.hybrid_command()
     @app_commands.guilds(*GuildIDs.ALL_GUILDS)
-    async def wisdom(self, ctx):
+    async def wisdom(self, ctx: commands.Context):
         """Some wisdom."""
 
         messages = [
@@ -92,7 +92,7 @@ class Funcommands(commands.Cog):
 
     @commands.hybrid_command()
     @app_commands.guilds(*GuildIDs.ALL_GUILDS)
-    async def boo(self, ctx):
+    async def boo(self, ctx: commands.Context):
         """Scary stuff."""
 
         messages = [
@@ -106,7 +106,7 @@ class Funcommands(commands.Cog):
 
     @commands.hybrid_command()
     @app_commands.guilds(*GuildIDs.ALL_GUILDS)
-    async def john(self, ctx):
+    async def john(self, ctx: commands.Context):
         """Random excuse why you lost the last Game of Smash."""
 
         messages = [
@@ -131,7 +131,7 @@ class Funcommands(commands.Cog):
 
     @commands.hybrid_command()
     @app_commands.guilds(*GuildIDs.ALL_GUILDS)
-    async def hypemeup(self, ctx):
+    async def hypemeup(self, ctx: commands.Context):
         """Hypes you up for the next Game of Smash."""
 
         messages = [
@@ -153,7 +153,7 @@ class Funcommands(commands.Cog):
     @commands.hybrid_command(name="8ball")
     @app_commands.guilds(*GuildIDs.ALL_GUILDS)
     @app_commands.describe(question="Your question to the magic 8ball.")
-    async def _8ball(self, ctx, *, question: str = None):
+    async def _8ball(self, ctx: commands.Context, *, question: str = None):
         """Ask the magic 8ball."""
 
         if question is None:
@@ -197,7 +197,7 @@ class Funcommands(commands.Cog):
     @commands.hybrid_command()
     @app_commands.guilds(*GuildIDs.ALL_GUILDS)
     @app_commands.describe(question="Your question.")
-    async def who(self, ctx, *, question: str = None):
+    async def who(self, ctx: commands.Context, *, question: str = None):
         """Returns a random online member of the server as a response."""
 
         if ctx.guild is None:

@@ -56,7 +56,9 @@ class Reminder(commands.Cog):
         time="The time when you want me to remind you.",
         reminder_message="The message you want me to remind you of.",
     )
-    async def reminder(self, ctx, time: str, *, reminder_message: str):
+    async def reminder(
+        self, ctx: commands.Context, time: str, *, reminder_message: str
+    ):
         """Saves a new reminder."""
 
         seconds, reminder_time = convert_time(time)
@@ -130,7 +132,7 @@ class Reminder(commands.Cog):
         aliases=["reminders", "myreminders", "viewreminder", "listreminders"]
     )
     @app_commands.guilds(*GuildIDs.ALL_GUILDS)
-    async def viewreminders(self, ctx):
+    async def viewreminders(self, ctx: commands.Context):
         """
         Displays your active reminders.
         """
@@ -179,7 +181,7 @@ class Reminder(commands.Cog):
     )
     @app_commands.guilds(*GuildIDs.ALL_GUILDS)
     @app_commands.describe(reminder_id="The ID of the reminder you want to delete.")
-    async def deletereminder(self, ctx, reminder_id: str):
+    async def deletereminder(self, ctx: commands.Context, reminder_id: str):
         """Deletes a reminder of yours."""
 
         async with aiosqlite.connect("./db/database.db") as db:

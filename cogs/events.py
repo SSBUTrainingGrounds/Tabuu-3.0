@@ -220,7 +220,9 @@ class Events(commands.Cog):
             pass
 
     @commands.Cog.listener()
-    async def on_command_error(self, ctx, error):
+    async def on_command_error(
+        self, ctx: commands.Context, error: commands.CommandError
+    ):
         logger = self.bot.get_logger("bot.commands")
         logger.warning(
             f"Command triggered an Error: {ctx.prefix}{ctx.invoked_with} "
@@ -239,7 +241,7 @@ class Events(commands.Cog):
             if ctx.invoked_with in command_list:
                 return
 
-            match = Match(ignore_case=True)
+            match = Match(ignore_case=True, include_partial=True, latinise=True)
             if command_match := match.get_best_match(
                 ctx.invoked_with, command_list, score=30
             ):
@@ -257,7 +259,7 @@ class Events(commands.Cog):
             raise error
 
     @commands.Cog.listener()
-    async def on_command_completion(self, ctx):
+    async def on_command_completion(self, ctx: commands.Context):
         logger = self.bot.get_logger("bot.commands")
         logger.info(
             f"Command successfully ran: {ctx.prefix}{ctx.invoked_with} "
@@ -265,7 +267,7 @@ class Events(commands.Cog):
         )
 
     @commands.Cog.listener()
-    async def on_command(self, ctx):
+    async def on_command(self, ctx: commands.Context):
         self.bot.commands_ran += 1
 
     @commands.Cog.listener()

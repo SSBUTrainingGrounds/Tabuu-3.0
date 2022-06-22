@@ -18,7 +18,7 @@ class Usercommands(commands.Cog):
 
     @commands.hybrid_command()
     @app_commands.guilds(*GuildIDs.ALL_GUILDS)
-    async def ping(self, ctx):
+    async def ping(self, ctx: commands.Context):
         """Gets you the ping of the bot."""
 
         pingtime = self.bot.latency * 1000
@@ -26,7 +26,7 @@ class Usercommands(commands.Cog):
 
     @commands.hybrid_command(aliases=["coinflip", "flipcoin", "flip"])
     @app_commands.guilds(*GuildIDs.ALL_GUILDS)
-    async def coin(self, ctx):
+    async def coin(self, ctx: commands.Context):
         """Tosses a coin."""
 
         coin = ["Coin toss: **Heads!**", "Coin toss: **Tails!**"]
@@ -34,7 +34,7 @@ class Usercommands(commands.Cog):
 
     @commands.hybrid_command()
     @app_commands.guilds(*GuildIDs.ALL_GUILDS)
-    async def stagelist(self, ctx):
+    async def stagelist(self, ctx: commands.Context):
         """Picture with our stagelist on it.
         We dont send a link because that could change over time.
         An image saved locally is just more reliable.
@@ -45,7 +45,7 @@ class Usercommands(commands.Cog):
     @commands.hybrid_command(aliases=["r"])
     @app_commands.guilds(*GuildIDs.ALL_GUILDS)
     @app_commands.describe(dice="The dice to roll, in NdN format. Example: 2d20")
-    async def roll(self, ctx, dice: str):
+    async def roll(self, ctx: commands.Context, dice: str):
         """A dice roll, in NdN format."""
 
         try:
@@ -76,7 +76,7 @@ class Usercommands(commands.Cog):
     @commands.hybrid_command()
     @app_commands.guilds(*GuildIDs.ALL_GUILDS)
     @app_commands.describe(count="The number to count down from.")
-    async def countdown(self, ctx, count: int):
+    async def countdown(self, ctx: commands.Context, count: int):
         """Counts down from a number less than 50."""
 
         if count > 50:
@@ -107,7 +107,7 @@ class Usercommands(commands.Cog):
     @commands.hybrid_command(aliases=["icon"])
     @app_commands.guilds(*GuildIDs.ALL_GUILDS)
     @app_commands.describe(member="The member you want to see the avatar of.")
-    async def avatar(self, ctx, member: discord.Member = None):
+    async def avatar(self, ctx: commands.Context, member: discord.Member = None):
         """Gets you the avatar of a mentioned member, or yourself."""
 
         if member is None:
@@ -117,7 +117,7 @@ class Usercommands(commands.Cog):
     @commands.hybrid_command()
     @app_commands.guilds(*GuildIDs.ALL_GUILDS)
     @app_commands.describe(member="The member you want to see the banner of.")
-    async def banner(self, ctx, member: discord.Member = None):
+    async def banner(self, ctx: commands.Context, member: discord.Member = None):
         """Gets you the banner of a mentioned member, or yourself."""
 
         if member is None:
@@ -244,7 +244,7 @@ class Usercommands(commands.Cog):
     @commands.hybrid_command(aliases=["emote"])
     @app_commands.guilds(*GuildIDs.ALL_GUILDS)
     @app_commands.describe(emoji="The emoji you want to see the stats of.")
-    async def emoji(self, ctx, emoji: str):
+    async def emoji(self, ctx: commands.Context, emoji: str):
         """Gives you information about an Emoji."""
         # Since discord doesnt allow emojis as an argument,
         # we convert it ourselves with the partial emoji converter.
@@ -267,7 +267,7 @@ class Usercommands(commands.Cog):
         await ctx.send(embed=embed)
 
     @commands.command()
-    async def sticker(self, ctx):
+    async def sticker(self, ctx: commands.Context):
         """Gives you information about a Sticker.
         Note that Stickers work very differently from Emojis.
         They count as a message attachment, so we fetch the first of those.
@@ -293,7 +293,7 @@ class Usercommands(commands.Cog):
     @app_commands.describe(
         member="The member you want to see the current spotify listening status of."
     )
-    async def spotify(self, ctx, member: discord.Member = None):
+    async def spotify(self, ctx: commands.Context, member: discord.Member = None):
         """Posts the Spotify Song Link the member (or yourself) is listening to.
         You need to enable the feature that displays the current Song as your Activity for this to work.
         Still is finicky on Mobile though.
@@ -323,7 +323,7 @@ class Usercommands(commands.Cog):
 
     @commands.hybrid_command(aliases=["currenttime"])
     @app_commands.guilds(*GuildIDs.ALL_GUILDS)
-    async def time(self, ctx):
+    async def time(self, ctx: commands.Context):
         """Shows the current time as a timezone aware object."""
 
         await ctx.send(
@@ -335,7 +335,7 @@ class Usercommands(commands.Cog):
     @app_commands.describe(
         conversion_input="The input you want to convert to metric or imperial."
     )
-    async def convert(self, ctx, *, conversion_input: str):
+    async def convert(self, ctx: commands.Context, *, conversion_input: str):
         """Converts your input between metric and imperial
         and the other way around.
         Works with most commonly used measurements.
@@ -345,7 +345,7 @@ class Usercommands(commands.Cog):
     @commands.hybrid_command()
     @app_commands.guilds(*GuildIDs.ALL_GUILDS)
     @app_commands.describe(message="The string or message to translate.")
-    async def translate(self, ctx, *, message: str = None):
+    async def translate(self, ctx: commands.Context, *, message: str = None):
         """Translates a message from any language to english.
         Specify a string to translate, or a message to translate by either using message ID/Link,
         or replying to a message.

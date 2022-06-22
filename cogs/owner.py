@@ -16,7 +16,9 @@ class Owner(commands.Cog):
 
     @commands.command(aliases=["sync", "syncommands"])
     @commands.is_owner()
-    async def synccommands(self, ctx, target_guild: discord.Guild = None):
+    async def synccommands(
+        self, ctx: commands.Context, target_guild: discord.Guild = None
+    ):
         """Syncs the locally added application commands to the discord client."""
 
         initial_message = await ctx.send("Syncing Commands...")
@@ -49,7 +51,7 @@ class Owner(commands.Cog):
 
     @commands.command(aliases=["reloadcog"])
     @commands.is_owner()
-    async def reloadcogs(self, ctx, *, cogs: str = None):
+    async def reloadcogs(self, ctx: commands.Context, *, cogs: str = None):
         """Command for manually reloading all cogs.
         Can only be used by the owner of the bot.
         """

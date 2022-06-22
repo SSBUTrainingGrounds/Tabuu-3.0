@@ -79,7 +79,7 @@ class Mee6api(commands.Cog):
     @commands.cooldown(1, 300, commands.BucketType.user)
     @app_commands.guilds(*GuildIDs.ALL_GUILDS)
     @app_commands.describe(member="The member you want to update the level role of.")
-    async def updatelevel(self, ctx, member: discord.Member = None):
+    async def updatelevel(self, ctx: commands.Context, member: discord.Member = None):
         """Updates your Level Role manually.
         Can also be used on the behalf of other users.
         """
