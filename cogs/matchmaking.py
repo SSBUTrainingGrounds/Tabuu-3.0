@@ -14,7 +14,7 @@ class Matchmaking(commands.Cog):
     def __init__(self, bot):
         self.bot = bot
 
-    def store_ping(self, ctx, mm_type: str, timestamp: float):
+    def store_ping(self, ctx: commands.Context, mm_type: str, timestamp: float):
         """Saves a Matchmaking Ping of any unranked type in the according file."""
 
         with open(rf"./json/{mm_type}.json", "r", encoding="utf-8") as f:
@@ -26,7 +26,7 @@ class Matchmaking(commands.Cog):
         with open(rf"./json/{mm_type}.json", "w", encoding="utf-8") as f:
             json.dump(user_pings, f, indent=4)
 
-    def delete_ping(self, ctx, mm_type: str):
+    def delete_ping(self, ctx: commands.Context, mm_type: str):
         """Deletes a Matchmaking Ping of any unranked type from the according file."""
 
         with open(rf"./json/{mm_type}.json", "r", encoding="utf-8") as f:
@@ -75,7 +75,7 @@ class Matchmaking(commands.Cog):
     )
     @commands.cooldown(1, 600, commands.BucketType.user)
     @app_commands.guilds(*GuildIDs.ALL_GUILDS)
-    async def singles(self, ctx):
+    async def singles(self, ctx: commands.Context):
         """Used for 1v1 Matchmaking with competitive rules."""
 
         timestamp = discord.utils.utcnow().timestamp()
@@ -94,7 +94,13 @@ class Matchmaking(commands.Cog):
                 colour=discord.Colour.dark_red(),
             )
 
-            mm_message = await ctx.send(
+            # Role mentions dont ping in an interaction response, so if the user uses the slash command version of this command
+            # we first need to acknowledge the interaction in some way and then send a followup message into the channel.
+            # This is the same for the other matchmaking types below and also for the ranked matchmaking.
+            if ctx.interaction:
+                await ctx.send("Processing request...", ephemeral=True)
+
+            mm_message = await ctx.channel.send(
                 f"{ctx.author.mention} is looking for {singles_role.mention} games!",
                 embed=embed,
             )
@@ -120,14 +126,19 @@ class Matchmaking(commands.Cog):
                 colour=discord.Colour.dark_red(),
             )
 
-            await ctx.send(
+            if ctx.interaction:
+                await ctx.send("Processing request...", ephemeral=True)
+
+            await ctx.channel.send(
                 f"{ctx.author.mention} is looking for {singles_role.mention} games!\n"
                 "Here are the most recent Singles pings in our open arenas:",
                 embed=embed,
             )
 
         else:
-            await ctx.send("Please only use this command in our arena channels!")
+            await ctx.send(
+                "Please only use this command in our arena channels!", ephemeral=True
+            )
             ctx.command.reset_cooldown(ctx)
 
     @singles.error
@@ -156,12 +167,14 @@ class Matchmaking(commands.Cog):
                 embed=embed,
             )
         else:
-            await ctx.send("Please only use this command in our arena channels!")
+            await ctx.send(
+                "Please only use this command in our arena channels!", ephemeral=True
+            )
 
     @commands.hybrid_command(aliases=["matchmakingdoubles", "mmdoubles", "Doubles"])
     @commands.cooldown(1, 600, commands.BucketType.user)
     @app_commands.guilds(*GuildIDs.ALL_GUILDS)
-    async def doubles(self, ctx):
+    async def doubles(self, ctx: commands.Context):
         """Used for 2v2 Matchmaking."""
 
         timestamp = discord.utils.utcnow().timestamp()
@@ -180,7 +193,10 @@ class Matchmaking(commands.Cog):
                 colour=discord.Colour.dark_blue(),
             )
 
-            mm_message = await ctx.send(
+            if ctx.interaction:
+                await ctx.send("Processing request...", ephemeral=True)
+
+            mm_message = await ctx.channel.send(
                 f"{ctx.author.mention} is looking for {doubles_role.mention} games!",
                 embed=embed,
             )
@@ -206,14 +222,19 @@ class Matchmaking(commands.Cog):
                 colour=discord.Colour.dark_blue(),
             )
 
-            await ctx.send(
+            if ctx.interaction:
+                await ctx.send("Processing request...", ephemeral=True)
+
+            await ctx.channel.send(
                 f"{ctx.author.mention} is looking for {doubles_role.mention} games!\n"
                 "Here are the most recent Doubles pings in our open arenas:",
                 embed=embed,
             )
 
         else:
-            await ctx.send("Please only use this command in our arena channels!")
+            await ctx.send(
+                "Please only use this command in our arena channels!", ephemeral=True
+            )
             ctx.command.reset_cooldown(ctx)
 
     @doubles.error
@@ -240,7 +261,9 @@ class Matchmaking(commands.Cog):
                 embed=embed,
             )
         else:
-            await ctx.send("Please only use this command in our arena channels!")
+            await ctx.send(
+                "Please only use this command in our arena channels!", ephemeral=True
+            )
 
     @commands.hybrid_command(aliases=["matchmakingfunnies", "mmfunnies", "Funnies"])
     @commands.cooldown(1, 600, commands.BucketType.user)
@@ -248,7 +271,7 @@ class Matchmaking(commands.Cog):
     @app_commands.describe(
         message="Optional message, for example the ruleset you want to use."
     )
-    async def funnies(self, ctx, *, message: str = None):
+    async def funnies(self, ctx: commands.Context, *, message: str = None):
         """Used for 1v1 Matchmaking with non-competitive rules."""
 
         timestamp = discord.utils.utcnow().timestamp()
@@ -257,7 +280,9 @@ class Matchmaking(commands.Cog):
         )
 
         if message:
-            message = discord.utils.remove_markdown(message[:100])
+            message = f"`{discord.utils.remove_markdown(message[:100])}`"
+        else:
+            message = "\u200b"
 
         if ctx.message.channel.id in TGArenaChannelIDs.PUBLIC_ARENAS:
             self.store_ping(ctx, "funnies", timestamp)
@@ -270,16 +295,13 @@ class Matchmaking(commands.Cog):
                 colour=discord.Colour.green(),
             )
 
-            if message:
-                mm_message = await ctx.send(
-                    f"{ctx.author.mention} is looking for {funnies_role.mention} games: `{message}`",
-                    embed=embed,
-                )
-            else:
-                mm_message = await ctx.send(
-                    f"{ctx.author.mention} is looking for {funnies_role.mention} games!",
-                    embed=embed,
-                )
+            if ctx.interaction:
+                await ctx.send("Processing request...", ephemeral=True)
+
+            mm_message = await ctx.channel.send(
+                f"{ctx.author.mention} is looking for {funnies_role.mention} games: {message}",
+                embed=embed,
+            )
 
             mm_thread = await mm_message.create_thread(
                 name=f"Funnies Arena of {ctx.author.name}", auto_archive_duration=60
@@ -303,22 +325,19 @@ class Matchmaking(commands.Cog):
                 colour=discord.Colour.green(),
             )
 
-            if message:
-                await ctx.send(
-                    f"{ctx.author.mention} is looking for {funnies_role.mention} games: `{message}`\n"
-                    "Here are the most recent Funnies pings in our open arenas:",
-                    embed=embed,
-                )
+            if ctx.interaction:
+                await ctx.send("Processing request...", ephemeral=True)
 
-            else:
-                await ctx.send(
-                    f"{ctx.author.mention} is looking for {funnies_role.mention} games!\n"
-                    "Here are the most recent Funnies pings in our open arenas:",
-                    embed=embed,
-                )
+            await ctx.channel.send(
+                f"{ctx.author.mention} is looking for {funnies_role.mention} games: {message}\n"
+                "Here are the most recent Funnies pings in our open arenas:",
+                embed=embed,
+            )
 
         else:
-            await ctx.send("Please only use this command in our arena channels!")
+            await ctx.send(
+                "Please only use this command in our arena channels!", ephemeral=True
+            )
             ctx.command.reset_cooldown(ctx)
 
     @funnies.error
@@ -345,7 +364,9 @@ class Matchmaking(commands.Cog):
                 embed=embed,
             )
         else:
-            await ctx.send("Please only use this command in our arena channels!")
+            await ctx.send(
+                "Please only use this command in our arena channels!", ephemeral=True
+            )
 
 
 async def setup(bot):

@@ -308,7 +308,8 @@ class Ranking(commands.Cog):
         """Used for 1v1 competitive ranked matchmaking."""
         if ctx.channel.id not in TGArenaChannelIDs.RANKED_ARENAS:
             await ctx.send(
-                "Please only use this command in the ranked matchmaking arenas."
+                "Please only use this command in the ranked matchmaking arenas.",
+                ephemeral=True,
             )
             ctx.command.reset_cooldown(ctx)
             return
@@ -336,7 +337,10 @@ class Ranking(commands.Cog):
             colour=discord.Colour.blue(),
         )
 
-        mm_message = await ctx.send(
+        if ctx.interaction:
+            await ctx.send("Processing request...", ephemeral=True)
+
+        mm_message = await ctx.channel.send(
             f"{ctx.author.mention} is looking for ranked matchmaking games! {pings}",
             embed=embed,
         )
@@ -636,7 +640,8 @@ class Ranking(commands.Cog):
         if isinstance(error, commands.CommandOnCooldown):
             if ctx.channel.id not in TGArenaChannelIDs.RANKED_ARENAS:
                 await ctx.send(
-                    "Please only use this command in the ranked matchmaking arenas."
+                    "Please only use this command in the ranked matchmaking arenas.",
+                    ephemeral=True,
                 )
                 return
 
