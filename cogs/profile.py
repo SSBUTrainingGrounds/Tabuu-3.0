@@ -103,7 +103,7 @@ class Profile(commands.Cog):
 
             await db.commit()
 
-    async def character_autocomplete(self, current: str) -> list[app_commands.Choice]:
+    def character_autocomplete(self, current: str) -> list[app_commands.Choice]:
         """Autocompletion for the Smash characters.
         We are using this for matching mains, secondaries and pockets.
         """
@@ -278,7 +278,7 @@ class Profile(commands.Cog):
 
     @mains.autocomplete("mains")
     async def mains_autocomplete(self, interaction: discord.Interaction, current: str):
-        return await self.character_autocomplete(current)
+        return self.character_autocomplete(current)
 
     @commands.hybrid_command(
         aliases=["secondary", "setsecondary", "spsecondaries", "profilesecondaries"]
@@ -313,7 +313,7 @@ class Profile(commands.Cog):
     async def secondaries_autocomplete(
         self, interaction: discord.Interaction, current: str
     ):
-        return await self.character_autocomplete(current)
+        return self.character_autocomplete(current)
 
     @commands.hybrid_command(
         aliases=["pocket", "setpocket", "sppockets", "profilepockets"]
@@ -348,7 +348,7 @@ class Profile(commands.Cog):
     async def pockets_autocomplete(
         self, interaction: discord.Interaction, current: str
     ):
-        return await self.character_autocomplete(current)
+        return self.character_autocomplete(current)
 
     @commands.hybrid_command(aliases=["smashtag", "sptag", "settag"])
     @app_commands.guilds(*GuildIDs.ALL_GUILDS)
@@ -663,7 +663,7 @@ class Profile(commands.Cog):
     async def players_autocomplete(
         self, interaction: discord.Interaction, current: str
     ):
-        return await self.character_autocomplete(current)
+        return self.character_autocomplete(current)
 
     @profile.error
     async def profile_error(self, ctx, error):
