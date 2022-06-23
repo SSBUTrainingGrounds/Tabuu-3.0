@@ -40,7 +40,7 @@ There are a few tools that are used in this repository to make your Python code 
 - [isort (Sorts your imports)](https://github.com/PyCQA/isort)
 
 I would recommend using these, not only for this project. Look around if there are any integrations of these tools for your IDE.  
-For this repository I am using black with default settings, isort with `--profile "black"` and flake8 with `--ignore=E501,W503`.  
+For this repository I am using black with default settings, isort with `--profile "black"` and flake8 with `--ignore=E501,W503,E203`.  
 If you truly want to check all the boxes, feel free to copy those settings.  
 
 **You do not meet one or more of these guidelines or are unsure of anything? Please, do not worry and submit your contribution anyways.  
