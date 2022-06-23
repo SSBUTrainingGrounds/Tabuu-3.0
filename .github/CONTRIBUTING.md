@@ -7,21 +7,21 @@ Follow your common sense and you will be fine.
 
 ## Code of conduct
 
-You can find the code of conduct [here](https://github.com/atomflunder/Tabuu-3.0-Bot/blob/main/.github/CODE_OF_CONDUCT.md).  
+You can find the code of conduct [here](https://github.com/atomflunder/Tabuu-3.0/blob/main/.github/CODE_OF_CONDUCT.md).  
 Generally speaking, the rules of our [discord server](https://discord.gg/ssbutg) will also apply here.  
 
 ## Questions
 
-If you just need to ask a question, head over to the [GitHub Discussions Tab](https://github.com/atomflunder/Tabuu-3.0-Bot/discussions), join our [discord server](https://discord.gg/ssbutg) or send a DM to Phxenix#1104.  
+If you just need to ask a question, head over to the [GitHub Discussions Tab](https://github.com/atomflunder/Tabuu-3.0/discussions), join our [discord server](https://discord.gg/ssbutg) or send a DM to Phxenix#1104.  
 
 ## Getting started with contributing
 
-If you are just getting started, please read [the `README.md` on how to get the bot running in your environment](https://github.com/atomflunder/Tabuu-3.0-Bot#running-the-bot).  
+If you are just getting started, please read [the `README.md` on how to get the bot running in your environment](https://github.com/atomflunder/Tabuu-3.0#running-the-bot).  
 Generally speaking, some knowledge of Python, [discord.py](https://github.com/Rapptz/discord.py), and other tools used would be beneficial.
 
 ## Bug reports
 
-Feel free to report bugs on discord ([Contact methods above](https://github.com/atomflunder/Tabuu-3.0-Bot/blob/main/.github/CONTRIBUTING.md#questions)), or head over to the [GitHub Issues Tab](https://github.com/atomflunder/Tabuu-3.0-Bot/issues) and fill out a new bug report.
+Feel free to report bugs on discord ([Contact methods above](https://github.com/atomflunder/Tabuu-3.0/blob/main/.github/CONTRIBUTING.md#questions)), or head over to the [GitHub Issues Tab](https://github.com/atomflunder/Tabuu-3.0/issues) and fill out a new bug report.
 Choose whatever works for you. Please be descriptive in your explanation of the bug and how to reproduce it. If any error occurs, be sure to include the **full** traceback.
 
 ## Pull requests
