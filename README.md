@@ -1,4 +1,4 @@
-# Tabuu-3.0-Bot  
+# Tabuu 3.0  
 
 [![Discord Server](https://discord.com/api/guilds/739299507795132486/embed.png)](https://discord.gg/ssbutg) [![Code style: black](https://img.shields.io/badge/code%20style-black-000000.svg)](https://github.com/psf/black)
 
