@@ -225,6 +225,11 @@ Every other command will be available as both a message- and slash-command.
   - Info: **Moderator only.** Mutes a Member in both servers. The reason will get DM'd to the Member, if the bot can DM the Member.  
   - Example: `%mute @ExampleUser what an idiot`  
   
+- **%names** `<@user>`  
+  - Info: **Moderator only.** Gets you the current and past names of a User.  
+  - Example: `%names @ExampleUser`  
+  - Aliases: nicknames, usernames, aliases  
+  
 - **%newrolemenu** `<message ID> <emoji> <role>`  
   - Info: **Moderator only.** Creates a new entry for a role menu. Mention the Role or use Role ID and make sure the Bot has access to this emoji.  
   - Example: `%newrolemenu 858117781375418389 🥰 @Server Events`  

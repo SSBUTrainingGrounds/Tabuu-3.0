@@ -1,6 +1,7 @@
 import asyncio
 from typing import Optional, Union
 
+import aiosqlite
 import discord
 from discord import app_commands
 from discord.ext import commands
@@ -460,6 +461,67 @@ class Admin(commands.Cog):
 
         await ctx.send("Message sent!", ephemeral=True)
 
+    @commands.hybrid_command(aliases=["nicknames", "usernames", "aliases"])
+    @app_commands.guilds(*GuildIDs.ALL_GUILDS)
+    @app_commands.describe(user="The user you want to see the last tracked names of.")
+    @app_commands.default_permissions(administrator=True)
+    @utils.check.is_moderator()
+    async def names(self, ctx: commands.Context, user: discord.User):
+        """Gets you the current and past names of a User."""
+        await ctx.defer()
+
+        # Getting the stored past user- and nicknames.
+        async with aiosqlite.connect("./db/database.db") as db:
+            usernames = await db.execute_fetchall(
+                """SELECT * FROM usernames WHERE user_id = :user_id""",
+                {"user_id": user.id},
+            )
+            nicknames = await db.execute_fetchall(
+                """SELECT * FROM nicknames WHERE user_id = :user_id""",
+                {"user_id": user.id},
+            )
+
+        user_embed = [
+            f"{discord.utils.escape_markdown(name)} - <t:{timestamp}:R>\n"
+            for _, name, timestamp in usernames
+        ]
+
+        nick_embed = []
+        for (_, name, guild_id, timestamp) in nicknames:
+            guild = self.bot.get_guild(guild_id)
+            guild_name = guild.name if guild else "Unknown Server"
+            nick_embed.append(
+                f"{discord.utils.escape_markdown(name)} - <t:{timestamp}:R> ({guild_name})\n"
+            )
+
+        # We want the most recent names to show up first.
+        user_embed.reverse()
+        nick_embed.reverse()
+
+        # Also getting the current nicknames.
+        current_nicknames = []
+        for guild in user.mutual_guilds:
+            member = guild.get_member(user.id)
+            if member and member.display_name != user.name:
+                current_nicknames.append(
+                    f"{discord.utils.escape_markdown(member.display_name)} ({guild.name})\n"
+                )
+
+        embed_desc = (
+            f"**Current Nicknames:** \n{''.join(current_nicknames) if current_nicknames else 'None'}\n\n"
+            f"**Last 5 Nicknames:** \n{''.join(nick_embed) if nick_embed else 'None'}\n\n"
+            f"**Last 5 Usernames:** \n{''.join(user_embed) if user_embed else 'None'}"
+        )
+
+        embed = discord.Embed(
+            title=f"Last Known Names of {str(user)} ({user.id})",
+            colour=0x007377,
+            description=embed_desc,
+        )
+        embed.set_thumbnail(url=user.display_avatar.url)
+
+        await ctx.send(embed=embed)
+
     # Error handling for the commands above.
     # They all are fairly similar
     @kick.error
@@ -667,6 +729,17 @@ class Admin(commands.Cog):
             error, (commands.CommandInvokeError, commands.HybridCommandError)
         ):
             await ctx.send("Please input a valid Channel, Thread or Message ID.")
+        else:
+            raise error
+
+    @names.error
+    async def names_error(self, ctx, error):
+        if isinstance(error, commands.MissingPermissions):
+            await ctx.send("Nice try, but you don't have the permissions to do that!")
+        elif isinstance(
+            error, (commands.UserNotFound, commands.MissingRequiredArgument)
+        ):
+            await ctx.send("Please input a valid user!")
         else:
             raise error
 

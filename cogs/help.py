@@ -116,6 +116,7 @@ class Responses(discord.ui.Select):
 ```{self.prefix}modifyrolemenu <message ID> <exclusive> <role(s)>``` - Sets special permissions for a Role menu.
 ```{self.prefix}geteveryrolemenu``` - Gets you every role menu entry currently active.
 ```{self.prefix}rename <@user> <name>``` - Sets a new nickname for a user or removes it.
+```{self.prefix}names <@user>``` - Gets the current and past names of a user.
 ```{self.prefix}say <channel> <message>``` - Admin only, Repeats the message in the chnanel.
 ```{self.prefix}createmacro``` - Creates a new macro.
 ```{self.prefix}deletemacro <name>``` - Deletes a macro.

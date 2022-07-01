@@ -171,7 +171,53 @@ class Events(commands.Cog):
                 pass
 
     @commands.Cog.listener()
+    async def on_user_update(self, before: discord.User, after: discord.User):
+        # For tracking the last 5 username updates.
+        if before.name != after.name:
+            async with aiosqlite.connect("./db/database.db") as db:
+                await db.execute(
+                    """INSERT INTO usernames VALUES (:user_id, :old_name, :timestamp)""",
+                    {
+                        "user_id": before.id,
+                        "old_name": before.name,
+                        "timestamp": int(discord.utils.utcnow().timestamp()),
+                    },
+                )
+
+                # This will keep only the lastest 5 entries, in order to not flood the db too much.
+                # I think the timestamp + user id will be enough to identify a unique entry,
+                # not sure if you can even change your name twice in 1s, rate limit wise.
+                await db.execute(
+                    """DELETE FROM usernames WHERE user_id = :user_id AND timestamp NOT IN
+                    (SELECT timestamp FROM usernames WHERE user_id = :user_id ORDER BY timestamp DESC LIMIT 5)""",
+                    {"user_id": before.id},
+                )
+
+                await db.commit()
+
+    @commands.Cog.listener()
     async def on_member_update(self, before: discord.Member, after: discord.Member):
+        # For tracking the last 5 nickname updates.
+        if before.display_name not in [after.display_name, before.name]:
+            async with aiosqlite.connect("./db/database.db") as db:
+                await db.execute(
+                    """INSERT INTO nicknames VALUES (:user_id, :old_name, :guild_id, :timestamp)""",
+                    {
+                        "user_id": before.id,
+                        "old_name": before.display_name,
+                        "guild_id": before.guild.id,
+                        "timestamp": int(discord.utils.utcnow().timestamp()),
+                    },
+                )
+
+                await db.execute(
+                    """DELETE FROM nicknames WHERE user_id = :user_id AND timestamp NOT IN
+                    (SELECT timestamp FROM nicknames WHERE user_id = :user_id ORDER BY timestamp DESC LIMIT 5)""",
+                    {"user_id": before.id},
+                )
+
+                await db.commit()
+
         # For announcing boosts/premium memberships.
         if len(before.roles) < len(after.roles):
             channel = self.bot.get_channel(TGChannelIDs.ANNOUNCEMENTS_CHANNEL)

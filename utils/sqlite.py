@@ -79,8 +79,23 @@ async def setup_db(filepath: str = "./db/database.db"):
 
         await db.execute(
             """CREATE TABLE IF NOT EXISTS userbadges(
-            user_id INTEGER,
-            badges TEXT)"""
+                user_id INTEGER,
+                badges TEXT)"""
+        )
+
+        await db.execute(
+            """CREATE TABLE IF NOT EXISTS usernames(
+                user_id INTEGER,
+                old_name TEXT,
+                timestamp INTEGER)"""
+        )
+
+        await db.execute(
+            """CREATE TABLE IF NOT EXISTS nicknames(
+                user_id INTEGER,
+                old_name TEXT,
+                guild_id INTEGER,
+                timestamp INTEGER)"""
         )
 
         await db.commit()
