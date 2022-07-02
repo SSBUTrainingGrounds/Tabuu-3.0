@@ -126,6 +126,7 @@ class Responses(discord.ui.Select):
 ```{self.prefix}addbadges <@user> <emojis>``` - Adds badges to a user.
 ```{self.prefix}removebadge <@user> <emoji>``` - Removes one badge from a user.
 ```{self.prefix}clearbadges <@user>``` - Clears every badge from a user.
+```{self.prefix}setbadgeinfo <emoji> <message>``` - Adds new information about a badge.
 ```{self.prefix}syncbanlist``` - Syncs the ban list from main server to secondary server.
 ```{self.prefix}setupmodmailbutton``` - Sets up a new modmail button for the bot to listen to.
     """,
@@ -141,6 +142,7 @@ class Responses(discord.ui.Select):
 ```{self.prefix}roleinfo <role>``` - Displays Role info.
 ```{self.prefix}listrole <role>``` - Displays all the members with a certain Role.
 ```{self.prefix}userinfo <member>``` - Shows user info of a mentioned member.
+```{self.prefix}badgeinfo <emoji>``` - Shows information about a badge.
 ```{self.prefix}warns <@user>``` - Displays the number of warnings of a user.
 ```{self.prefix}server``` - Info about the server.
 ```{self.prefix}stats``` - Stats about the bot.

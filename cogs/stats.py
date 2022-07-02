@@ -174,6 +174,108 @@ class Stats(commands.Cog):
 
         await ctx.send(f"Cleared all badges from {user.mention}.")
 
+    @commands.hybrid_command()
+    @app_commands.guilds(*GuildIDs.ALL_GUILDS)
+    @app_commands.describe(
+        badge="The badge you want to add information about.",
+        info_text="The new information text for the badge.",
+    )
+    @app_commands.default_permissions(administrator=True)
+    @utils.check.is_moderator()
+    async def setbadgeinfo(
+        self, ctx: commands.Context, badge: str, *, info_text: str = None
+    ):
+        """Sets a new info text on a given badge."""
+        # We first check if its a valid emoji by just reacting to the message.
+        if ctx.interaction:
+            await ctx.defer()
+            message = await ctx.interaction.original_message()
+        else:
+            message = ctx.message
+
+        try:
+            await message.add_reaction(badge)
+        except discord.errors.HTTPException:
+            await ctx.send("Please use only valid emojis as badges!")
+            return
+
+        if not info_text:
+            async with aiosqlite.connect("./db/database.db") as db:
+                await db.execute(
+                    """DELETE FROM badgeinfo WHERE badge = :badge""", {"badge": badge}
+                )
+
+                await db.commit()
+
+            await ctx.send(f"Deleted the info text for {badge}.")
+            return
+
+        # 1000 characters seems like a good limit.
+        info_text = info_text[:1000]
+
+        async with aiosqlite.connect("./db/database.db") as db:
+            # We just delete the entry to make sure that no duplicates sneak in.
+            await db.execute(
+                """DELETE FROM badgeinfo WHERE badge = :badge""", {"badge": badge}
+            )
+
+            await db.execute(
+                """INSERT INTO badgeinfo (badge, info) VALUES (:badge, :info)""",
+                {"badge": badge, "info": info_text},
+            )
+
+            await db.commit()
+
+        await ctx.send(f"Updated badgeinfo of {badge} to: \n`{info_text}`")
+
+    @commands.hybrid_command()
+    @app_commands.guilds(*GuildIDs.ALL_GUILDS)
+    @app_commands.describe(badge="The badge you want to see the details of.")
+    async def badgeinfo(self, ctx: commands.Context, badge: str):
+        """Gets you information about a given badge."""
+        async with aiosqlite.connect("./db/database.db") as db:
+            matching_badge = await db.execute_fetchall(
+                """SELECT info FROM badgeinfo WHERE badge = :badge""", {"badge": badge}
+            )
+
+            matching_users = await db.execute_fetchall(
+                """SELECT user_id from userbadges WHERE INSTR(badges, :badge) > 0""",
+                {"badge": badge},
+            )
+
+        if len(matching_badge) == 0:
+            await ctx.send(
+                "I could not find a matching badge in the database! Make sure you have the right one."
+            )
+            return
+
+        embed = discord.Embed(title=f"Badgeinfo of {badge}", colour=0x007377)
+
+        # If its a custom emoji we set the embed thumbnail to the emoji url.
+        try:
+            emoji_converter = commands.PartialEmojiConverter()
+            emoji = await emoji_converter.convert(ctx, badge)
+
+            if not emoji:
+                raise commands.errors.EmojiNotFound
+
+            embed.set_thumbnail(url=emoji.url)
+        except (
+            commands.errors.PartialEmojiConversionFailure,
+            commands.errors.EmojiNotFound,
+        ):
+            pass
+
+        users = [f"<@{user_id[0]}>" for user_id in matching_users]
+
+        embed.add_field(name="Information:", value=matching_badge[0][0], inline=False)
+        embed.add_field(
+            name=f"Users with this badge ({len(users)}):",
+            value=f"{', '.join(users) if users else 'None'}",
+        )
+
+        await ctx.send(embed=embed)
+
     @commands.hybrid_command(aliases=["user", "user-info", "info"])
     @app_commands.guilds(*GuildIDs.ALL_GUILDS)
     @app_commands.describe(member="The member you want to get info about.")
@@ -540,6 +642,24 @@ Events parsed: {self.bot.events_listened_to}
             error, (commands.MissingRequiredArgument, commands.UserNotFound)
         ):
             await ctx.send("Please mention a valid user!")
+        else:
+            raise error
+
+    @setbadgeinfo.error
+    async def setbadgeinfo_error(self, ctx, error):
+        if isinstance(error, commands.MissingPermissions):
+            await ctx.send("Nice try, but you don't have the permissions to do that!")
+        elif isinstance(error, commands.MissingRequiredArgument):
+            await ctx.send("Please specify the badge and badge information!")
+        else:
+            raise error
+
+    @badgeinfo.error
+    async def badgeinfo_error(self, ctx, error):
+        if isinstance(error, commands.MissingRequiredArgument):
+            await ctx.send(
+                "Please specify the badge you want to see the information of!"
+            )
         else:
             raise error
 

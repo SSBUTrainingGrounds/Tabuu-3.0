@@ -2,7 +2,7 @@
 
 This here contains every command with a detailed explanation on how to use them. They are ordered alphabetically, search them with Ctrl+F.  
 
-Last updated: 23 June 2022  
+Last updated: 2 July 2022  
 
 ## Things to know before diving in
 
@@ -43,6 +43,10 @@ Every other command will be available as both a message- and slash-command.
   - Info: Gets you the avatar of a Member. Member argument is optional, if there is none, this gets your own avatar. Otherwise mention the Member or use Member ID.  
   - Example: `%avatar @ExampleUser`  
   - Aliases: icon  
+  
+- **%badgeinfo** `<emoji>`  
+  - Info: Shows you information about a badge.  
+  - Example: `%badgeinfo :Example1:`  
   
 - **%ban** `<@user> <reason>`  
   - Info: **Moderator only.** Bans a User. Mention the User or use User ID. You will be asked for confirmation before the User gets banned. The reason will get logged in Audit logs and also DM'd to the User, if the bot can DM the User.  
@@ -345,6 +349,10 @@ Every other command will be available as both a message- and slash-command.
 - **%server**  
   - Info: Gets you some information about the server, does not work in DMs for obvious reasons.  
   - Aliases: serverinfo  
+  
+- **%setbadgeinfo** `<emoji> <message: Optional>`  
+  - Info: Sets a new information text for a badge.
+  - Example: `%setbadgeinfo :Example1: This was awarded for being nice.`  
   
 - **%setupmodmailbutton**  
   - Info: **Moderator only. Slash version unavailable.** Sets up a new button to listen to, for creating modmail threads. Should really only be used once. Slash version unavailable deliberately because of that very reason.  
