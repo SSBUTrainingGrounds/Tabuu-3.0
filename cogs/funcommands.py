@@ -49,7 +49,10 @@ class Funcommands(commands.Cog):
             "Why did the chicken go to the seance? To get to the other side",
             "When does a joke become a dad joke? When the punchline becomes a parent",
             "I recently bought some perfume, but it didn't smell like anything. It made no scents.",
-            "How do you equip a frying pan ? You have to cast iron. You can use it to attack but you'll have to pass a skillet check.",
+            "Why does a clock break when it gets hungry? It goes back four seconds.",
+            "What's the problem with eating a clock? It's very time consuming!",
+            "I used to love my job collecting leaves. I was raking it in!",
+            "To the person who invented 0: Thanks for nothing!",
         ]
         await ctx.send(random.choice(messages))
 
@@ -73,6 +76,9 @@ class Funcommands(commands.Cog):
             "You are beautiful",
             "You got this! Don't give up, I believe in you.",
             "Watch this, you lovely user. It might help. https://www.youtube.com/watch?v=kGOQfLFzJj8",
+            "You have survived everything that you ever thought you wouldn't.",
+            "You're rad and we're glad you're here.",
+            "These feelings **will** pass.",
         ]
         item = random.choice(messages)
         await ctx.send(item)
