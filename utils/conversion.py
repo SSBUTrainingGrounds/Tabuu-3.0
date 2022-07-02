@@ -19,7 +19,7 @@ def convert_input(conversion_input: str) -> str:
     conversion_input = "".join(
         [i for i in conversion_input if not i.isdigit() and i not in ("+", "-", ".")]
     )
-    conversion_input = conversion_input.split()
+    conversion_input_list = conversion_input.split()
 
     # Massive dictionary of converting the input to the equivalent.
     conversion_dict = {
@@ -79,7 +79,7 @@ def convert_input(conversion_input: str) -> str:
         ): Conversion().ml_to_floz,
     }
 
-    for word in conversion_input:
+    for word in conversion_input_list:
         for units, func in conversion_dict.items():
             if word in units:
                 return func(number)

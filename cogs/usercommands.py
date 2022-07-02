@@ -63,14 +63,16 @@ class Usercommands(commands.Cog):
         if sides > 1000:
             await ctx.send("Too many sides!")
             return
-        for r in range(amount):
+
+        for _ in range(amount):
             x = random.randint(1, sides)
             results.append(x)
+
         if len(results) == 1:
-            await ctx.send(f"Rolling **1**-**{sides}** \nResult: **{results}**")
+            await ctx.send(f"Rolling **1**-**{sides}**:\nResult: **{results}**")
         else:
             await ctx.send(
-                f"Rolling **1**-**{sides}** **{r+1}** times \nResults: **{results}** \nTotal: **{sum(results)}**"
+                f"Rolling **1**-**{sides}** **{amount}** times:\nResults: **{results}** \nTotal: **{sum(results)}**"
             )
 
     @commands.hybrid_command()
@@ -251,19 +253,21 @@ class Usercommands(commands.Cog):
         # We are using the partial converter because the normal converter can only get
         # emojis from the bots servers, and we want to be able to get every emoji.
         partial_converter = commands.PartialEmojiConverter()
-        emoji = await partial_converter.convert(ctx, emoji)
+        emoji_converted: discord.PartialEmoji = await partial_converter.convert(
+            ctx, emoji
+        )
 
         embed = discord.Embed(
             title="Emoji Info",
             colour=discord.Colour.orange(),
             description=f"\
-**Url:** {emoji.url}\n\
-**Name:** {emoji.name}\n\
-**ID:** {emoji.id}\n\
-**Created at:** {discord.utils.format_dt(emoji.created_at, style='F')}\n\
+**Url:** {emoji_converted.url}\n\
+**Name:** {emoji_converted.name}\n\
+**ID:** {emoji_converted.id}\n\
+**Created at:** {discord.utils.format_dt(emoji_converted.created_at, style='F')}\n\
             ",
         )
-        embed.set_image(url=emoji.url)
+        embed.set_image(url=emoji_converted.url)
         await ctx.send(embed=embed)
 
     @commands.command()
