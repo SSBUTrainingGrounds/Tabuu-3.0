@@ -233,42 +233,52 @@ class Stats(commands.Cog):
     @app_commands.describe(badge="The badge you want to see the details of.")
     async def badgeinfo(self, ctx: commands.Context, badge: str):
         """Gets you information about a given badge."""
+        match = Match(latinise=True, ignore_case=True, include_partial=True)
+
         async with aiosqlite.connect("./db/database.db") as db:
-            matching_badge = await db.execute_fetchall(
-                """SELECT info FROM badgeinfo WHERE badge = :badge""", {"badge": badge}
+            # Searching for the matching badge, since our badges are mostly animated
+            # this would mean that otherwise only nitro users could search for them.
+            all_badges = await db.execute_fetchall("""SELECT badge FROM badgeinfo""")
+
+            matching_badge = match.get_best_match(
+                badge, [b[0] for b in all_badges], score=40
+            )
+
+            result_badge = await db.execute_fetchall(
+                """SELECT info FROM badgeinfo WHERE badge = :badge""",
+                {"badge": matching_badge},
             )
 
             matching_users = await db.execute_fetchall(
                 """SELECT user_id from userbadges WHERE INSTR(badges, :badge) > 0""",
-                {"badge": badge},
+                {"badge": matching_badge},
             )
 
-        if len(matching_badge) == 0:
+        if len(result_badge) == 0:
             await ctx.send(
                 "I could not find a matching badge in the database! Make sure you have the right one."
             )
             return
 
-        embed = discord.Embed(title=f"Badgeinfo of {badge}", colour=0x007377)
-
         # If its a custom emoji we set the embed thumbnail to the emoji url.
         try:
             emoji_converter = commands.PartialEmojiConverter()
-            emoji = await emoji_converter.convert(ctx, badge)
+            emoji = await emoji_converter.convert(ctx, matching_badge)
 
             if not emoji:
                 raise commands.errors.EmojiNotFound
 
+            embed = discord.Embed(title=f"Badgeinfo of {emoji}", colour=0x007377)
             embed.set_thumbnail(url=emoji.url)
         except (
             commands.errors.PartialEmojiConversionFailure,
             commands.errors.EmojiNotFound,
         ):
-            pass
+            embed = discord.Embed(title=f"Badgeinfo of {badge}", colour=0x007377)
 
         users = [f"<@{user_id[0]}>" for user_id in matching_users]
 
-        embed.add_field(name="Information:", value=matching_badge[0][0], inline=False)
+        embed.add_field(name="Information:", value=result_badge[0][0], inline=False)
         embed.add_field(
             name=f"Users with this badge ({len(users)}):",
             value=f"{', '.join(users) if users else 'None'}",
