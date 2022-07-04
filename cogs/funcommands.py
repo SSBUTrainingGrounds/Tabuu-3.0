@@ -53,6 +53,8 @@ class Funcommands(commands.Cog):
             "What's the problem with eating a clock? It's very time consuming!",
             "I used to love my job collecting leaves. I was raking it in!",
             "To the person who invented 0: Thanks for nothing!",
+            "What do you call a magic dog? A Labra-cadabra-dor.",
+            "Whats a windmill's favorite music? I don't know but it's a big metal fan.",
         ]
         await ctx.send(random.choice(messages))
 
