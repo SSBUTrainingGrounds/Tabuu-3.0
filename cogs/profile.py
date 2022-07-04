@@ -585,6 +585,10 @@ class Profile(commands.Cog):
         """Looks up a character's players in the database.
         Sorted by mains, secondaries and pockets.
         """
+        # This command can take a while, so this serves as an indicator that the bot is doing something.
+        # Also for the slash command version, this defers the interaction which is nice.
+        await ctx.typing()
+
         matching_character = " ".join(self.match_character(character)[:1])
 
         if not matching_character:
@@ -627,19 +631,39 @@ class Profile(commands.Cog):
                 title=f"{matching_character} Players:", colour=0x007377
             )
 
-        # An embed field can only hold 1k characters in it, so we need to cap the listings off at some point.
-        # If my calculations are correct they can each hold 45 players.
+        mains_list = []
+        # We have to cap it off at some point, I think 50 sounds pretty reasonable for our server.
+        for player in matching_mains[:50]:
+            # First we see if the user is in the cache.
+            user = self.bot.get_user(player[0])
+            # If not we have to fetch the user, this can take some time.
+            if not user:
+                user = await self.bot.fetch_user(player[0])
+            mains_list.append(discord.utils.escape_markdown(str(user)))
+
+        secondaries_list = []
+        for player in matching_secondaries[:50]:
+            user = self.bot.get_user(player[0])
+            if not user:
+                user = await self.bot.fetch_user(player[0])
+            secondaries_list.append(discord.utils.escape_markdown(str(user)))
+
+        pockets_list = []
+        for player in matching_pockets[:50]:
+            user = self.bot.get_user(player[0])
+            if not user:
+                user = await self.bot.fetch_user(player[0])
+            pockets_list.append(discord.utils.escape_markdown(str(user)))
+
         embed.add_field(
             name="Mains:",
-            value=", ".join([f"<@{pl[0]}>" for pl in matching_mains[:45]])
-            if matching_mains
-            else "None",
+            value=", ".join(mains_list)[:1000] if matching_mains else "None",
             inline=False,
         )
 
         embed.add_field(
             name="Secondaries:",
-            value=", ".join([f"<@{pl[0]}>" for pl in matching_secondaries[:45]])
+            value=", ".join(secondaries_list)[:1000]
             if matching_secondaries
             else "None",
             inline=False,
@@ -647,9 +671,7 @@ class Profile(commands.Cog):
 
         embed.add_field(
             name="Pockets:",
-            value=", ".join([f"<@{pl[0]}>" for pl in matching_pockets[:45]])
-            if matching_pockets
-            else "None",
+            value=", ".join(pockets_list)[:1000] if matching_pockets else "None",
             inline=False,
         )
 
