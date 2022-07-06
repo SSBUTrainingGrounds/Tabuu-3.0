@@ -160,6 +160,11 @@ Every other command will be available as both a message- and slash-command.
   - Example: `%forcereportmatch @Tabuu 3.0 @ExampleUser`  
   - Aliases: forcereportgame  
   
+- **%friendship** `<@user1> <@user2: Optional>`  
+  - Info: Gets the friendship status between two users, or yourself and another user.  
+  - Example: `%friendship @ExampleUser @OtherUser`  
+  - Aliases: ship, relationship  
+  
 - **%funnies** `<message: Optional>`  
   - Info: Pings the funnies role with an optional custom message and stores your ping for 30 Minutes. Also creates a thread and invites the user to it. Has a 10 minute cooldown and can only be used in our arena channels.  
   - Aliases: matchmakingfunnies, mmfunnies, Funnies  

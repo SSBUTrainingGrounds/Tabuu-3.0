@@ -1,4 +1,5 @@
 import random
+from math import floor
 
 import discord
 from discord import app_commands
@@ -231,6 +232,55 @@ class Funcommands(commands.Cog):
             )
         except discord.HTTPException:
             await ctx.send(discord.utils.escape_markdown(str(user)))
+
+    @commands.hybrid_command(aliases=["ship", "relationship"])
+    @app_commands.guilds(*GuildIDs.ALL_GUILDS)
+    @app_commands.describe(
+        user1="The first user.",
+        user2="The second user, leave empty to compare to yourself.",
+    )
+    async def friendship(
+        self, ctx: commands.Context, user1: discord.User, user2: discord.User = None
+    ):
+        """The friendship status between two users."""
+        if not user2:
+            user2 = ctx.author
+
+        # We dont just spit out a random number, this is highly scientific stuff.
+        rating = (user1.id + user2.id) % 100
+
+        # Always love yourself.
+        if user1 == user2:
+            rating = 100
+
+        message = ("█" * floor(rating / 5)).ljust(20, "░")
+
+        emojis = [
+            "😡",
+            "😠",
+            "🙄",
+            "😒",
+            "😐",
+            "🙂",
+            "😀",
+            "😄",
+            "😁",
+            "🥰",
+            "😍",
+        ]
+
+        await ctx.send(
+            f"The friendship status of {discord.utils.escape_markdown(user1.name)} "
+            f"and {discord.utils.escape_markdown(user2.name)} is...\n"
+            f"**{message} - {rating}%** {emojis[floor(rating / 10)] * 3}"
+        )
+
+    @friendship.error
+    async def friendship_error(self, ctx, error):
+        if isinstance(error, (commands.MissingRequiredArgument, commands.UserNotFound)):
+            await ctx.send("Please enter 1 or 2 valid Users!")
+        else:
+            raise error
 
 
 async def setup(bot):

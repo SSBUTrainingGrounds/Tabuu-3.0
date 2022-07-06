@@ -247,6 +247,7 @@ class Responses(discord.ui.Select):
 ```{self.prefix}hypemeup``` - Hypes you up before that next game of smash.
 ```{self.prefix}8ball <question>``` - Ask the magic 8-ball.
 ```{self.prefix}who <question>``` - Ask a question and get a random user in response.
+```{self.prefix}friendship <@user1> <@user2>``` - The friendship status between 2 users.
     """,
             )
 
