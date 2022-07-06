@@ -78,11 +78,12 @@ class Warn(commands.Cog):
 
         warns = len(user_warnings)
 
-        if warns > 6:
+        if warns > 4:
             try:
                 await member.send(
                     f"You have been automatically banned from the {guild.name} Server for reaching warning #***{warns}***.\n"
-                    f"Please contact {AdminVars.GROUNDS_KEEPER} for an appeal.\n{AdminVars.BAN_RECORDS}"
+                    f"Check here to see the earliest you are able to appeal your ban (if at all): <{AdminVars.BAN_RECORDS}>\n\n"
+                    f"Please use this form if you wish to appeal your ban: {AdminVars.APPEAL_FORM}"
                 )
             except discord.HTTPException as exc:
                 logger = self.bot.get_logger("bot.warn")
@@ -94,24 +95,8 @@ class Warn(commands.Cog):
                 f"{member.mention} has reached warning #{warns}. They have been automatically banned."
             )
             await member.ban(reason=f"Automatic ban for reaching {warns} warnings")
-        elif warns > 4:
-            try:
-                await member.send(
-                    f"You have been automatically kicked from the {guild.name} Server for reaching warning #***{warns}***.\n"
-                    f"If you would like to discuss your punishment, please contact {AdminVars.GROUNDS_GENERALS}."
-                )
-            except discord.HTTPException as exc:
-                logger = self.bot.get_logger("bot.warn")
-                logger.warning(
-                    f"Tried to message automatic kick reason to {str(member)}, but it failed: {exc}"
-                )
-
-            await channel.send(
-                f"{member.mention} has reached warning #{warns}. They have been automatically kicked."
-            )
-            await member.kick(reason=f"Automatic kick for reaching {warns} warnings")
         elif warns > 2:
-            await Mute.add_mute(self, member)
+            await Mute(self.bot).add_mute(member)
             await channel.send(
                 f"{member.mention} has reached warning #{warns}. They have been automatically muted."
             )

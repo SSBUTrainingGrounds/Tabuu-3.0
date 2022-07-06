@@ -29,12 +29,12 @@ class GuildIDs:
 class AdminVars:
     """Admin specific strings, like the Server Owner and Head Moderators."""
 
-    # Big daddy.
-    GROUNDS_KEEPER = "Tabuu#0720"
     # Used in the warn/mute/kick messages, it says: "..contact {GROUNDS_GENERALS}", thats why its worded like that.
     GROUNDS_GENERALS = "Tabuu#0720, Phxenix#1104, Parz#5811, or Fahim#2800"
     # Google doc with ban records, leave an empty string if you dont have one.
     BAN_RECORDS = "https://docs.google.com/spreadsheets/d/1EZhyKa69LWerQl0KxeVJZuLFFjBIywMRTNOPUUKyVCc/"
+    # Google form for ban appeals, this will get sent to users before they get banned so they know where to appeal.
+    APPEAL_FORM = "https://forms.gle/kLcpkenBDSWzCYq56"
 
 
 class TournamentReminders:
