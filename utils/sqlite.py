@@ -104,6 +104,15 @@ async def setup_db(filepath: str = "./db/database.db"):
                 timestamp INTEGER)"""
         )
 
+        await db.execute(
+            """CREATE TABLE IF NOT EXISTS notes(
+                note_id INTEGER,
+                user_id INTEGER,
+                timestamp INTEGER,
+                mod_id INTEGER,
+                note TEXT)"""
+        )
+
         await db.commit()
 
         logger = utils.logger.get_logger("bot.db")

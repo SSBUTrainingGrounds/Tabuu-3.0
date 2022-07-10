@@ -96,6 +96,7 @@ class Responses(discord.ui.Select):
 ```{self.prefix}warndetails <@user>``` - Shows detailed warnings of a user.
 ```{self.prefix}deletewarn <@user> <warn_id>``` - Deletes a specific warning.
 ```{self.prefix}clearwarns <@user>``` - Clears all the warnings of a user.
+```{self.prefix}modnote <action> <@user> <note>``` - Adds/Deletes or views the notes for a user.
     """,
             )
 

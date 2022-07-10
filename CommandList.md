@@ -222,6 +222,21 @@ Every other command will be available as both a message- and slash-command.
   - Info: **Moderator only.** Modifies a role menu with special properties. Exclusive is a boolean(True/False) value which specifies if a Member is able to get 1 role (True) or all roles (False) from this role menu. The role(s) set a requirement so that a Member needs one of these roles to get any role of this role menu. Mention the role or use role ID. Both arguments are optional, if left out both default to False/None.  
   - Example: `%modifyrolemenu 858117781375418389 True @Singles Winner`  
   
+- **%modnote**
+  - Info: **Slash version unavailable. Moderator only.** Group command that lists the subcommands and their usage. The available subcommands are: set, delete, view. No slash version because this only lists the other commands.  
+  
+- **%modnote delete** `<@user> <note_id>`  
+  - Info: **Moderator only.** Deletes a note from a user.  
+  - Example: `%modnote delete @ExampleUser 1234567`  
+  
+- **%modnote set** `<@user> <note>`  
+  - Info: **Moderator only.** Sets a new note for a user for the moderator team to view, up to 160 characters in length.  
+  - Example: `%modnote set @ExampleUser Might wanna keep looking at this guy.`  
+  
+- **%modnote view** `<@user>`  
+  - Info: **Moderator only.** Views every note set for a user.  
+  - Example: `%modnote view @ExampleUser`  
+  
 - **%modmail** `<your message>`  
   - Info: **Slash version unavailable.** Privately contact the moderator team of this server. Only works in the DM channel of Tabuu 3.0. Use this for reporting rule violations or feedback/suggestions for the Mod Team. You can attach any attachments to the message. Your Username will be visible to prevent abuse. Slash version unavailable because this command only works in DMs anyways, plus a "Contact the moderators" button is available.  
   - Example: `%modmail Hello, I think the moderator team has been doing an awful job lately.`  

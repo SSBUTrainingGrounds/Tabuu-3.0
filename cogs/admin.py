@@ -1,4 +1,5 @@
 import asyncio
+import random
 from typing import Optional, Union
 
 import aiosqlite
@@ -523,6 +524,125 @@ class Admin(commands.Cog):
 
         await ctx.send(embed=embed)
 
+    @commands.hybrid_group()
+    @app_commands.guilds(*GuildIDs.ALL_GUILDS)
+    @app_commands.default_permissions(administrator=True)
+    @utils.check.is_moderator()
+    async def modnote(self, ctx: commands.Context):
+        """Lists the group commands for setting and deleting notes."""
+        if ctx.invoked_subcommand:
+            return
+
+        embed = discord.Embed(
+            title="Available subcommands:",
+            description=f"`{ctx.prefix}modnote set <@user> <note>`\n"
+            f"`{ctx.prefix}modnote delete <@user> <note_id>`\n"
+            f"`{ctx.prefix}modnote view <@user>`\n",
+            colour=0x007377,
+        )
+        embed.set_thumbnail(url=self.bot.user.display_avatar.url)
+        await ctx.send(embed=embed)
+
+    @modnote.command(name="set")
+    @app_commands.guilds(*GuildIDs.ALL_GUILDS)
+    @app_commands.describe(
+        user="The user for which you want to set the note.",
+        note="The note of the user.",
+    )
+    @app_commands.default_permissions(administrator=True)
+    @utils.check.is_moderator()
+    async def modnote_set(
+        self, ctx: commands.Context, user: discord.User, *, note: str
+    ):
+        """Sets a note on a user visible for the staff team."""
+        note_id = random.randint(1000000, 9999999)
+        timestamp = int(discord.utils.utcnow().timestamp())
+        # Only getting the first 160 chars, should hopefully be enough.
+        # The maximum limit for an embed is 6000 characters,
+        # 160 + 80 (For the set by header) * 25 (Max number of embed fields) = 6000.
+        note = note[:160]
+
+        async with aiosqlite.connect("./db/database.db") as db:
+            await db.execute(
+                """INSERT INTO notes VALUES (:note_id, :user_id, :timestamp, :mod_id, :note)""",
+                {
+                    "note_id": note_id,
+                    "user_id": user.id,
+                    "timestamp": timestamp,
+                    "mod_id": ctx.author.id,
+                    "note": note,
+                },
+            )
+
+            await db.commit()
+
+        await ctx.send(
+            f"Set a new note (ID: `{note_id}`) for {user.mention} to:\n`{note}`"
+        )
+
+    @modnote.command(name="view")
+    @app_commands.guilds(*GuildIDs.ALL_GUILDS)
+    @app_commands.default_permissions(administrator=True)
+    @utils.check.is_moderator()
+    async def modnote_view(self, ctx: commands.Context, user: discord.User):
+        """Views all of the notes of a user."""
+        async with aiosqlite.connect("./db/database.db") as db:
+            user_notes = await db.execute_fetchall(
+                """SELECT * FROM notes WHERE user_id = :user_id""",
+                {"user_id": user.id},
+            )
+
+        if len(user_notes) == 0:
+            await ctx.send("This user does not have any notes set.")
+            return
+
+        embed = discord.Embed(
+            title=f"Saved notes for {str(user)} ({user.id})", colour=0x007377
+        )
+
+        # Only getting the last 25, because that is the max number of embed fields.
+        for (note_id, _, timestamp, mod_id, note) in reversed(user_notes[:25]):
+            embed.add_field(
+                name=f"ID: {note_id}",
+                value=f"**Set at: <t:{timestamp}:F> by: <@{mod_id}>\nContent:**\n{note}\n",
+                inline=False,
+            )
+
+        await ctx.send(embed=embed)
+
+    @modnote.command(name="delete")
+    @app_commands.guilds(*GuildIDs.ALL_GUILDS)
+    @app_commands.describe(
+        user="The user for which you want to delete a note from.",
+        note_id="The ID of the note you want to delete.",
+    )
+    @app_commands.default_permissions(administrator=True)
+    @utils.check.is_moderator()
+    async def modnote_delete(
+        self, ctx: commands.Context, user: discord.User, note_id: int
+    ):
+        """Deletes a moderator note from a user."""
+        async with aiosqlite.connect("./db/database.db") as db:
+            matching_note = await db.execute_fetchall(
+                """SELECT * FROM notes WHERE user_id = :user_id AND note_id = :note_id""",
+                {"user_id": user.id, "note_id": note_id},
+            )
+
+            if len(matching_note) == 0:
+                await ctx.send(
+                    "I could not find any note with this ID. \n"
+                    f"View all of the notes of a user with `{ctx.prefix}modnote view <@user>`"
+                )
+                return
+
+            await db.execute(
+                """DELETE FROM notes WHERE user_id = :user_id AND note_id = :note_id""",
+                {"user_id": user.id, "note_id": note_id},
+            )
+            await db.commit()
+
+        await ctx.send(f"Deleted note ID {note_id}.")
+
     # Error handling for the commands above.
     # They all are fairly similar
     @kick.error
@@ -735,6 +855,48 @@ class Admin(commands.Cog):
 
     @names.error
     async def names_error(self, ctx, error):
+        if isinstance(error, commands.MissingPermissions):
+            await ctx.send("Nice try, but you don't have the permissions to do that!")
+        elif isinstance(
+            error, (commands.UserNotFound, commands.MissingRequiredArgument)
+        ):
+            await ctx.send("Please input a valid user!")
+        else:
+            raise error
+
+    @modnote.error
+    async def modnote_error(self, ctx, error):
+        if isinstance(error, commands.MissingPermissions):
+            await ctx.send("Nice try, but you don't have the permissions to do that!")
+        else:
+            raise error
+
+    @modnote_set.error
+    async def modnote_set_error(self, ctx, error):
+        if isinstance(error, commands.MissingPermissions):
+            await ctx.send("Nice try, but you don't have the permissions to do that!")
+        elif isinstance(error, commands.UserNotFound):
+            await ctx.send("Please input a valid user!")
+        elif isinstance(error, commands.MissingRequiredArgument):
+            await ctx.send("Please input a user and a note!")
+        else:
+            raise error
+
+    @modnote_delete.error
+    async def modnote_delete_error(self, ctx, error):
+        if isinstance(error, commands.MissingPermissions):
+            await ctx.send("Nice try, but you don't have the permissions to do that!")
+        elif isinstance(error, commands.UserNotFound):
+            await ctx.send("Please input a valid user!")
+        elif isinstance(error, commands.MissingRequiredArgument):
+            await ctx.send("Please input a user and a note to delete!")
+        elif isinstance(error, commands.BadArgument):
+            await ctx.send("Please input a valid note ID!")
+        else:
+            raise error
+
+    @modnote_view.error
+    async def modnote_view_error(self, ctx, error):
         if isinstance(error, commands.MissingPermissions):
             await ctx.send("Nice try, but you don't have the permissions to do that!")
         elif isinstance(
