@@ -2,7 +2,7 @@
 
 This here contains every command with a detailed explanation on how to use them. They are ordered alphabetically, search them with Ctrl+F.  
 
-Last updated: 2 July 2022  
+Last updated: 11 July 2022  
 
 ## Things to know before diving in
 
@@ -196,6 +196,10 @@ Every other command will be available as both a message- and slash-command.
   - Info: Lists out every Member with a certain role. The bot first tries to use the Role ID or Role mention, after that it searches for the closest match for the role name.  
   - Example: `%listrole first class`  
   - Aliases: listroles  
+  
+- **%lookup** `<@user>`  
+  - Info: **Moderator only.** Looks up saved details about a user. Invokes the userinfo, warndetails, names, and modnotes view commands.  
+  - Example: `%lookup @ExampleUser`  
   
 - **%`<macro>`**  
   - Info: **Slash version(s) unavailable.** Invokes a macro command, list them all with `%macros`. Slash versions unavailable due to discord limitation.  
