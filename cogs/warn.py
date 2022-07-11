@@ -199,32 +199,25 @@ class Warn(commands.Cog):
             await ctx.send(f"{user.mention} doesn't have any active warnings (yet).")
             return
 
-        embed_list = []
+        embed = discord.Embed(
+            title=f"Active warnings for {str(user)} ({user.id}): {len(user_warnings)}",
+            colour=discord.Colour.red(),
+        )
+
+        # We can add 25 warnings to the embed, you get banned at 5.
         for i, warning in enumerate(user_warnings, start=1):
             # The first one is the user id, but we dont need it here.
             (_, warn_id, mod_id, reason, timestamp) = warning
+            if len(reason[150:]) > 0:
+                reason = f"{reason[:147]}..."
 
-            embed = discord.Embed(title=f"Warning #{i}", colour=discord.Colour.red())
-            embed.add_field(name="Moderator: ", value=f"<@{mod_id}>")
-            embed.add_field(name="Reason: ", value=f"{reason}")
-            embed.add_field(name="ID:", value=f"{warn_id}")
             embed.add_field(
-                name="Warning given out at:",
-                value=f"<t:{timestamp}:F>",
+                name=f"#{i} - ID: {warn_id}",
+                value=f"**Given by: <@{mod_id}> at <t:{timestamp}:F>\nReason:\n{reason}**",
+                inline=False,
             )
-            embed_list.append(embed)
 
-        # The maximum amount of embeds you can send is 10,
-        # we do ban people at 7 warnings but you never know what might happen.
-        try:
-            await ctx.send(
-                f"Active warnings for {user.mention}: {len(user_warnings)}",
-                embeds=embed_list,
-            )
-        except discord.HTTPException:
-            await ctx.send(
-                f"Active warnings for {user.mention}: {len(user_warnings)}\nCannot list warnings for this user!"
-            )
+        await ctx.send(embed=embed)
 
     @commands.hybrid_command()
     @app_commands.guilds(*GuildIDs.ALL_GUILDS)
