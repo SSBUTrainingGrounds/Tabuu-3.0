@@ -184,19 +184,19 @@ class Warn(commands.Cog):
 
     @commands.hybrid_command()
     @app_commands.guilds(*GuildIDs.ALL_GUILDS)
-    @app_commands.describe(member="The member to see the warn details of.")
+    @app_commands.describe(user="The member to see the warn details of.")
     @app_commands.default_permissions(administrator=True)
     @utils.check.is_moderator()
-    async def warndetails(self, ctx: commands.Context, member: discord.Member):
+    async def warndetails(self, ctx: commands.Context, user: discord.User):
         """Gets you the details of a Users warnings."""
         async with aiosqlite.connect("./db/database.db") as db:
             user_warnings = await db.execute_fetchall(
                 """SELECT * FROM warnings WHERE user_id = :user_id""",
-                {"user_id": member.id},
+                {"user_id": user.id},
             )
 
         if len(user_warnings) == 0:
-            await ctx.send(f"{member.mention} doesn't have any active warnings (yet).")
+            await ctx.send(f"{user.mention} doesn't have any active warnings (yet).")
             return
 
         embed_list = []
@@ -218,12 +218,12 @@ class Warn(commands.Cog):
         # we do ban people at 7 warnings but you never know what might happen.
         try:
             await ctx.send(
-                f"Active warnings for {member.mention}: {len(user_warnings)}",
+                f"Active warnings for {user.mention}: {len(user_warnings)}",
                 embeds=embed_list,
             )
         except discord.HTTPException:
             await ctx.send(
-                f"Active warnings for {member.mention}: {len(user_warnings)}\nCannot list warnings for this user!"
+                f"Active warnings for {user.mention}: {len(user_warnings)}\nCannot list warnings for this user!"
             )
 
     @commands.hybrid_command()

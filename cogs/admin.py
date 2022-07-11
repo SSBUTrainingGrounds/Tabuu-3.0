@@ -470,7 +470,9 @@ class Admin(commands.Cog):
     @utils.check.is_moderator()
     async def names(self, ctx: commands.Context, user: discord.User):
         """Gets you the current and past names of a User."""
-        await ctx.defer()
+        if user == self.bot.user:
+            await ctx.send("Cannot look up the name history for this user!")
+            return
 
         # Getting the stored past user- and nicknames.
         async with aiosqlite.connect("./db/database.db") as db:
@@ -642,6 +644,31 @@ class Admin(commands.Cog):
             await db.commit()
 
         await ctx.send(f"Deleted note ID {note_id}.")
+
+    @commands.hybrid_command()
+    @app_commands.guilds(*GuildIDs.ALL_GUILDS)
+    @app_commands.describe(user="The user you want to look up.")
+    @app_commands.default_permissions(administrator=True)
+    @utils.check.is_moderator()
+    async def lookup(self, ctx: commands.Context, user: discord.User):
+        """Looks up every little detail of a user.
+        Calls the userinfo, warndetails, names and modnote view commands."""
+        await ctx.send("Collecting information...")
+
+        # The userinfo command needs a server member.
+        if member := ctx.guild.get_member(user.id):
+            command = self.bot.get_command("userinfo")
+            await ctx.invoke(command, member)
+        else:
+            await ctx.send("Could not get user info as the user is not in this server.")
+
+        commands = [
+            self.bot.get_command("warndetails"),
+            self.bot.get_command("names"),
+            self.bot.get_command("modnote view"),
+        ]
+        for command in commands:
+            await ctx.invoke(command, user)
 
     # Error handling for the commands above.
     # They all are fairly similar
@@ -897,6 +924,17 @@ class Admin(commands.Cog):
 
     @modnote_view.error
     async def modnote_view_error(self, ctx, error):
+        if isinstance(error, commands.MissingPermissions):
+            await ctx.send("Nice try, but you don't have the permissions to do that!")
+        elif isinstance(
+            error, (commands.UserNotFound, commands.MissingRequiredArgument)
+        ):
+            await ctx.send("Please input a valid user!")
+        else:
+            raise error
+
+    @lookup.error
+    async def lookup_error(self, ctx, error):
         if isinstance(error, commands.MissingPermissions):
             await ctx.send("Nice try, but you don't have the permissions to do that!")
         elif isinstance(
