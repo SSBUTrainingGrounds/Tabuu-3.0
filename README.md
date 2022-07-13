@@ -68,4 +68,4 @@ A collection of the most important links, for quick access.
 - [Contributing guidelines](.github/CONTRIBUTING.md)
 - [Code of conduct](.github/CODE_OF_CONDUCT.md)
 - [License](/LICENSE)
-- [discord.py documentation](https://discordpy.readthedocs.io/en/master/)
+- [discord.py documentation](https://discordpy.readthedocs.io/en/latest/)
