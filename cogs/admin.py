@@ -8,8 +8,8 @@ from discord import app_commands
 from discord.ext import commands
 
 import utils.check
+import utils.search
 from utils.ids import AdminVars, GuildIDs, GuildNames
-from utils.search import search_role
 
 
 class Admin(commands.Cog):
@@ -217,34 +217,50 @@ class Admin(commands.Cog):
     @commands.hybrid_command()
     @app_commands.guilds(*GuildIDs.ALL_GUILDS)
     @app_commands.describe(
-        member="The member to add a role to.", input_role="The role to add."
+        member="The member to add a role to.", role="The role to add."
     )
     @app_commands.default_permissions(administrator=True)
     @utils.check.is_moderator()
     async def addrole(
-        self, ctx: commands.Context, member: discord.Member, *, input_role: str
+        self, ctx: commands.Context, member: discord.Member, *, role: str
     ):
         """Adds a role to a member."""
-        role = search_role(ctx.guild, input_role)
+        matching_role = utils.search.search_role(ctx.guild, role)
 
-        await member.add_roles(role)
-        await ctx.send(f"{member.mention} was given the {role} role.")
+        await member.add_roles(matching_role)
+        await ctx.send(f"{member.mention} was given the {matching_role} role.")
+
+    @addrole.autocomplete("role")
+    async def addrole_autocomplete(
+        self, interaction: discord.Interaction, current: str
+    ):
+        return utils.search.autocomplete_choices(
+            current, [role.name for role in interaction.guild.roles]
+        )
 
     @commands.hybrid_command()
     @app_commands.guilds(*GuildIDs.ALL_GUILDS)
     @app_commands.describe(
-        member="The member to remove a role from.", input_role="The role to remove."
+        member="The member to remove a role from.", role="The role to remove."
     )
     @app_commands.default_permissions(administrator=True)
     @utils.check.is_moderator()
     async def removerole(
-        self, ctx: commands.Context, member: discord.Member, *, input_role: str
+        self, ctx: commands.Context, member: discord.Member, *, role: str
     ):
         """Removes a role from a member."""
-        role = search_role(ctx.guild, input_role)
+        matching_role = utils.search.search_role(ctx.guild, role)
 
-        await member.remove_roles(role)
-        await ctx.send(f"{member.mention} no longer has the {role} role.")
+        await member.remove_roles(matching_role)
+        await ctx.send(f"{member.mention} no longer has the {matching_role} role.")
+
+    @removerole.autocomplete("role")
+    async def removerole_autocomplete(
+        self, interaction: discord.Interaction, current: str
+    ):
+        return utils.search.autocomplete_choices(
+            current, [role.name for role in interaction.guild.roles]
+        )
 
     @commands.hybrid_group()
     @app_commands.guilds(*GuildIDs.ALL_GUILDS)

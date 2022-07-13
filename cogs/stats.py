@@ -351,57 +351,72 @@ class Stats(commands.Cog):
     @commands.hybrid_command(aliases=["role"])
     @app_commands.guilds(*GuildIDs.ALL_GUILDS)
     @app_commands.describe(
-        input_role="The role you want to get info about. Matches to your closest input."
+        role="The role you want to get info about. Matches to your closest input."
     )
-    async def roleinfo(self, ctx: commands.Context, *, input_role: str):
+    async def roleinfo(self, ctx: commands.Context, *, role: str):
         """Basic information about a given role."""
-        role = utils.search.search_role(ctx.guild, input_role)
+        matching_role = utils.search.search_role(ctx.guild, role)
 
         embed = discord.Embed(
-            title=f"Roleinfo of {role.name} ({role.id})", colour=role.colour
+            title=f"Roleinfo of {matching_role.name} ({matching_role.id})",
+            colour=matching_role.colour,
         )
-        embed.add_field(name="Role Name:", value=role.mention, inline=True)
-        embed.add_field(name="Users with role:", value=len(role.members), inline=True)
+        embed.add_field(name="Role Name:", value=matching_role.mention, inline=True)
+        embed.add_field(
+            name="Users with role:", value=len(matching_role.members), inline=True
+        )
         embed.add_field(
             name="Created at:",
-            value=discord.utils.format_dt(role.created_at, style="F"),
+            value=discord.utils.format_dt(matching_role.created_at, style="F"),
         )
-        embed.add_field(name="Mentionable:", value=role.mentionable, inline=True)
-        embed.add_field(name="Displayed Seperately:", value=role.hoist, inline=True)
-        embed.add_field(name="Colour:", value=role.colour, inline=True)
+        embed.add_field(
+            name="Mentionable:", value=matching_role.mentionable, inline=True
+        )
+        embed.add_field(
+            name="Displayed Seperately:", value=matching_role.hoist, inline=True
+        )
+        embed.add_field(name="Colour:", value=matching_role.colour, inline=True)
 
-        if role.display_icon:
+        if matching_role.display_icon:
             # The display_icon could be an asset or a default emoji with the str type, so we have to check.
             # If its an asset, we display it in the thumbnail.
-            if isinstance(role.display_icon, discord.asset.Asset):
-                embed.set_thumbnail(url=role.display_icon.url)
+            if isinstance(matching_role.display_icon, discord.asset.Asset):
+                embed.set_thumbnail(url=matching_role.display_icon.url)
             # If its an emoji we add it as the 2nd field.
-            elif isinstance(role.display_icon, str):
+            elif isinstance(matching_role.display_icon, str):
                 embed.insert_field_at(
-                    1, name="Role Emoji:", value=role.display_icon, inline=True
+                    1, name="Role Emoji:", value=matching_role.display_icon, inline=True
                 )
 
         await ctx.send(embed=embed)
 
+    @roleinfo.autocomplete("role")
+    async def roleinfo_autocomplete(
+        self, interaction: discord.Interaction, current: str
+    ):
+        return utils.search.autocomplete_choices(
+            current, [role.name for role in interaction.guild.roles]
+        )
+
     @commands.hybrid_command(aliases=["listroles"])
     @app_commands.guilds(*GuildIDs.ALL_GUILDS)
     @app_commands.describe(
-        input_role="The role you want to get info about. Matches to your closest input."
+        role="The role you want to get info about. Matches to your closest input."
     )
-    async def listrole(self, ctx: commands.Context, *, input_role: str):
+    async def listrole(self, ctx: commands.Context, *, role: str):
         """Lists every member of a role.
         Well up to 60 members at least.
         """
-        role = utils.search.search_role(ctx.guild, input_role)
+        matching_role = utils.search.search_role(ctx.guild, role)
 
-        members = role.members
+        members = matching_role.members
         if len(members) > 60:
             await ctx.send(
-                f"Users with the {role} role ({len(role.members)}):\n`Too many users to list!`"
+                f"Users with the {matching_role} role ({len(matching_role.members)}):\n`Too many users to list!`"
             )
             return
         if len(members) == 0:
-            await ctx.send(f"No user currently has the {role} role!")
+            await ctx.send(f"No user currently has the {matching_role} role!")
             return
 
         memberlist = [
@@ -412,7 +427,15 @@ class Stats(commands.Cog):
         all_members = ", ".join(memberlist)
 
         await ctx.send(
-            f"Users with the {role} role ({len(role.members)}):\n{all_members}"
+            f"Users with the {matching_role} role ({len(matching_role.members)}):\n{all_members}"
+        )
+
+    @listrole.autocomplete("role")
+    async def listrole_autocomplete(
+        self, interaction: discord.Interaction, current: str
+    ):
+        return utils.search.autocomplete_choices(
+            current, [role.name for role in interaction.guild.roles]
         )
 
     @commands.hybrid_command(aliases=["serverinfo"])
