@@ -253,6 +253,30 @@ class Warn(commands.Cog):
 
         await ctx.send(f"Deleted warning {warn_id} for {member.mention}")
 
+    @deletewarn.autocomplete("warn_id")
+    async def deletewarn_autocomplete(
+        self, interaction: discord.Interaction, current: str
+    ):
+        if not interaction.namespace.member:
+            return []
+
+        async with aiosqlite.connect("./db/database.db") as db:
+            user_warnings = await db.execute_fetchall(
+                """SELECT warn_id FROM warnings WHERE user_id = :user_id""",
+                {"user_id": interaction.namespace.member.id},
+            )
+
+        warn_ids = [str(warn[0]) for warn in user_warnings]
+
+        # We dont really need the fuzzy search here, this is all just numbers.
+        choices = [
+            app_commands.Choice(name=warn_name, value=warn_name)
+            for warn_name in warn_ids
+            if current in warn_name
+        ]
+
+        return choices[:25]
+
     @tasks.loop(hours=24)
     async def warnloop(self):
         """This here checks if a warning is older than 30 days and has expired,

@@ -621,7 +621,7 @@ class Admin(commands.Cog):
     @app_commands.default_permissions(administrator=True)
     @utils.check.is_moderator()
     async def modnote_delete(
-        self, ctx: commands.Context, user: discord.User, note_id: int
+        self, ctx: commands.Context, user: discord.User, note_id: str
     ):
         """Deletes a moderator note from a user."""
         async with aiosqlite.connect("./db/database.db") as db:
@@ -644,6 +644,30 @@ class Admin(commands.Cog):
             await db.commit()
 
         await ctx.send(f"Deleted note ID {note_id}.")
+
+    @modnote_delete.autocomplete("note_id")
+    async def modnote_delete_autocomplete(
+        self, interaction: discord.Interaction, current: str
+    ):
+        if not interaction.namespace.user:
+            return []
+
+        async with aiosqlite.connect("./db/database.db") as db:
+            user_notes = await db.execute_fetchall(
+                """SELECT note_id FROM notes WHERE user_id = :user_id""",
+                {"user_id": interaction.namespace.user.id},
+            )
+
+        note_ids = [str(note[0]) for note in user_notes]
+
+        # We dont really need the fuzzy search here, this is all just numbers.
+        choices = [
+            app_commands.Choice(name=note_name, value=note_name)
+            for note_name in note_ids
+            if current in note_name
+        ]
+
+        return choices[:25]
 
     @commands.hybrid_command()
     @app_commands.guilds(*GuildIDs.ALL_GUILDS)
