@@ -15,7 +15,27 @@ class Rolemenu(commands.Cog):
     def __init__(self, bot):
         self.bot = bot
 
-    @commands.hybrid_command()
+    @commands.hybrid_group()
+    @app_commands.guilds(*GuildIDs.ALL_GUILDS)
+    @app_commands.default_permissions(administrator=True)
+    @utils.check.is_moderator()
+    async def rolemenu(self, ctx: commands.Context):
+        """Lists the group commands for the role menus."""
+        if ctx.invoked_subcommand:
+            return
+
+        embed = discord.Embed(
+            title="Available subcommands:",
+            description=f"`{ctx.prefix}rolemenu new <message> <emoji> <role>`\n"
+            f"`{ctx.prefix}rolemenu modify <message> <exclusive> <roles required>`\n"
+            f"`{ctx.prefix}rolemenu delete <message>`\n"
+            f"`{ctx.prefix}rolemenu get`\n",
+            colour=0x007377,
+        )
+        embed.set_thumbnail(url=self.bot.user.display_avatar.url)
+        await ctx.send(embed=embed)
+
+    @rolemenu.command(name="new")
     @app_commands.guilds(*GuildIDs.ALL_GUILDS)
     @app_commands.describe(
         message="The message of the role menu. Make sure to be in the same channel as the message.",
@@ -24,7 +44,7 @@ class Rolemenu(commands.Cog):
     )
     @app_commands.default_permissions(administrator=True)
     @utils.check.is_moderator()
-    async def newrolemenu(
+    async def rolemenu_new(
         self, ctx: commands.Context, message: str, emoji: str, role: discord.Role
     ):
         """Creates a brand new role menu."""
@@ -76,7 +96,7 @@ class Rolemenu(commands.Cog):
             ephemeral=True,
         )
 
-    @commands.hybrid_command()
+    @rolemenu.command(name="modify")
     @app_commands.guilds(*GuildIDs.ALL_GUILDS)
     @app_commands.describe(
         message="The message of the role menu.",
@@ -85,7 +105,7 @@ class Rolemenu(commands.Cog):
     )
     @app_commands.default_permissions(administrator=True)
     @utils.check.is_moderator()
-    async def modifyrolemenu(
+    async def rolemenu_modify(
         self,
         ctx: commands.Context,
         message: str,
@@ -148,7 +168,7 @@ class Rolemenu(commands.Cog):
             ephemeral=True,
         )
 
-    @modifyrolemenu.autocomplete("message")
+    @rolemenu_modify.autocomplete("message")
     async def modifyrolemenu_autocomplete(
         self, interaction: discord.Interaction, current: str
     ):
@@ -167,12 +187,12 @@ class Rolemenu(commands.Cog):
 
         return choices[:25]
 
-    @commands.hybrid_command()
+    @rolemenu.command(name="delete")
     @app_commands.guilds(*GuildIDs.ALL_GUILDS)
     @app_commands.describe(message="The message of the role menu you want to delete.")
     @app_commands.default_permissions(administrator=True)
     @utils.check.is_moderator()
-    async def deleterolemenu(self, ctx: commands.Context, message: str):
+    async def rolemenu_delete(self, ctx: commands.Context, message: str):
         """Completely deletes a role menu entry from the database."""
 
         async with aiosqlite.connect("./db/database.db") as db:
@@ -194,7 +214,7 @@ class Rolemenu(commands.Cog):
 
         await ctx.send(f"Deleted every entry for Message ID #{message}.")
 
-    @deleterolemenu.autocomplete("message")
+    @rolemenu_delete.autocomplete("message")
     async def deleterolemenu_autocomplete(
         self, interaction: discord.Interaction, current: str
     ):
@@ -213,11 +233,11 @@ class Rolemenu(commands.Cog):
 
         return choices[:25]
 
-    @commands.hybrid_command()
+    @rolemenu.command(name="get")
     @app_commands.guilds(*GuildIDs.ALL_GUILDS)
     @app_commands.default_permissions(administrator=True)
     @utils.check.is_moderator()
-    async def geteveryrolemenu(self, ctx: commands.Context):
+    async def rolemenu_get(self, ctx: commands.Context):
         """Lists every currently active role menu."""
         async with aiosqlite.connect("./db/database.db") as db:
             rolemenu_entries = await db.execute_fetchall(
@@ -372,8 +392,15 @@ class Rolemenu(commands.Cog):
                     payload.user_id
                 ).remove_roles(role_tbd)
 
-    @newrolemenu.error
-    async def newrolemenu_error(self, ctx, error):
+    @rolemenu.error
+    async def rolemenu_error(self, ctx, error):
+        if isinstance(error, commands.MissingPermissions):
+            await ctx.send("Nice try, but you don't have the permissions to do that!")
+        else:
+            raise error
+
+    @rolemenu_new.error
+    async def rolemenu_new_error(self, ctx, error):
         if isinstance(error, commands.MissingPermissions):
             await ctx.send("Nice try, but you don't have the permissions to do that!")
         elif isinstance(
@@ -386,8 +413,8 @@ class Rolemenu(commands.Cog):
         else:
             raise error
 
-    @deleterolemenu.error
-    async def deleterolemenu_error(self, ctx, error):
+    @rolemenu_delete.error
+    async def rolemenu_delete_error(self, ctx, error):
         if isinstance(error, commands.MissingPermissions):
             await ctx.send("Nice try, but you don't have the permissions to do that!")
         elif isinstance(
@@ -397,8 +424,8 @@ class Rolemenu(commands.Cog):
         else:
             raise error
 
-    @modifyrolemenu.error
-    async def modifyrolemenu_error(self, ctx, error):
+    @rolemenu_modify.error
+    async def rolemenu_modify_error(self, ctx, error):
         if isinstance(error, commands.MissingPermissions):
             await ctx.send("Nice try, but you don't have the permissions to do that!")
         elif isinstance(error, commands.RoleNotFound):
@@ -416,8 +443,8 @@ class Rolemenu(commands.Cog):
         else:
             raise error
 
-    @geteveryrolemenu.error
-    async def geteveryrolemenu_error(self, ctx, error):
+    @rolemenu_get.error
+    async def rolemenu_get_error(self, ctx, error):
         if isinstance(error, commands.MissingPermissions):
             await ctx.send("Nice try, but you don't have the permissions to do that!")
         else:

@@ -43,12 +43,30 @@ class Starboard(commands.Cog):
         except discord.errors.NotFound:
             return
 
-    @commands.hybrid_command()
+    @commands.hybrid_group()
+    @app_commands.guilds(*GuildIDs.ALL_GUILDS)
+    @app_commands.default_permissions(administrator=True)
+    @utils.check.is_moderator()
+    async def starboard(self, ctx: commands.Context):
+        """Lists the group commands for the starboard."""
+        if ctx.invoked_subcommand:
+            return
+
+        embed = discord.Embed(
+            title="Available subcommands:",
+            description=f"`{ctx.prefix}starboard emoji <emoji>`\n"
+            f"`{ctx.prefix}starboard threshold <number>`\n",
+            colour=0x007377,
+        )
+        embed.set_thumbnail(url=self.bot.user.display_avatar.url)
+        await ctx.send(embed=embed)
+
+    @starboard.command(name="emoji")
     @app_commands.guilds(*GuildIDs.ALL_GUILDS)
     @app_commands.describe(emoji="The new emoji for the starboard.")
     @app_commands.default_permissions(administrator=True)
     @utils.check.is_moderator()
-    async def starboardemoji(self, ctx: commands.Context, emoji: str):
+    async def starboard_emoji(self, ctx: commands.Context, emoji: str):
         """Sets the Starboard Emoji.
         The bot does need access to this Emoji.
         """
@@ -74,12 +92,12 @@ class Starboard(commands.Cog):
 
         await ctx.send(f"Changed the emoji to: `{emoji}`")
 
-    @commands.hybrid_command()
+    @starboard.command(name="threshold")
     @app_commands.guilds(*GuildIDs.ALL_GUILDS)
     @app_commands.describe(threshold="The new threshold for the starboard.")
     @app_commands.default_permissions(administrator=True)
     @utils.check.is_moderator()
-    async def starboardthreshold(self, ctx: commands.Context, threshold: int):
+    async def starboard_threshold(self, ctx: commands.Context, threshold: int):
         """Changes the Starboard threshold.
         This is the reactions needed for the bot to post the message to the starboard channel."""
         if threshold < 1:
@@ -223,8 +241,15 @@ class Starboard(commands.Cog):
                     await self.update_starboard_message(reaction, matching_entry[0][0])
                     return
 
-    @starboardemoji.error
-    async def starboardemoji_error(self, ctx, error):
+    @starboard.error
+    async def starboard_error(self, ctx, error):
+        if isinstance(error, commands.MissingPermissions):
+            await ctx.send("Nice try, but you don't have the permissions to do that!")
+        else:
+            raise error
+
+    @starboard_emoji.error
+    async def starboard_emoji_error(self, ctx, error):
         if isinstance(error, commands.MissingPermissions):
             await ctx.send("Nice try, but you don't have the permissions to do that!")
         elif isinstance(error, commands.MissingRequiredArgument):
@@ -234,8 +259,8 @@ class Starboard(commands.Cog):
         else:
             raise error
 
-    @starboardthreshold.error
-    async def starboardthreshold_error(self, ctx, error):
+    @starboard_threshold.error
+    async def starboard_threshold_error(self, ctx, error):
         if isinstance(error, commands.MissingPermissions):
             await ctx.send("Nice try, but you don't have the permissions to do that!")
         elif isinstance(error, commands.MissingRequiredArgument):

@@ -30,11 +30,6 @@ Every other command will be available as both a message- and slash-command.
   - Info: Ask a question and you get a random response from the magic 8-ball.  
   - Example: `%8ball Is Tabuu 3.0 the best bot out there?`  
   
-- **%addbadges** `<@user> <emojis>`  
-  - Info: **Moderator only.** Adds one or multiple Badges to a User. Mention the User or use User ID, for the badges they all need to be valid emojis that the bot can use.  
-  - Example: `%addbadges @ExampleUser :Example1: :Example2:`  
-  - Aliases: addbadge  
-  
 - **%addrole** `<@member> <role>`  
   - Info: **Moderator only.** Adds a Role to a Member. Mention the Member or use Member ID, for the Role the bot first tries to use the Role ID or Role mention, after that it searches for the closest match for the role name.  
   - Example: `%addrole @ExampleUser first class`  
@@ -43,6 +38,25 @@ Every other command will be available as both a message- and slash-command.
   - Info: Gets you the avatar of a Member. Member argument is optional, if there is none, this gets your own avatar. Otherwise mention the Member or use Member ID.  
   - Example: `%avatar @ExampleUser`  
   - Aliases: icon  
+  
+- **%badge**
+  - Info: **Slash version unavailable. Moderator only.** Group command that lists the subcommands and their usage. The available properties to edit are: add, remove, clear, setinfo. No slash version because this only lists the other commands.  
+
+- **%badge add** `<@user> <emojis>`  
+  - Info: **Moderator only.** Adds one or multiple Badges to a User. Mention the User or use User ID, for the badges they all need to be valid emojis that the bot can use.  
+  - Example: `%badge add @ExampleUser :Example1: :Example2:`  
+  
+- **%badge clear** `<@user>`  
+  - Info: **Moderator only.** Clears all Badges from a User. Mention the User or use User ID.  
+  - Example: `%badge clear @ExampleUser`  
+  
+- **%badge remove** `<@user> <emoji>`  
+  - Info: **Moderator only.** Removes one Badge from a User. Mention the User or use User ID. Will check before if the User actually has the Badge in question.  
+  - Example: `%badge remove @ExampleUser :Example1:`  
+  
+- **%badge setinfo** `<emoji> <message: Optional>`  
+  - Info: Sets a new information text for a badge.
+  - Example: `%badge setinfo :Example1: This was awarded for being nice.`  
   
 - **%badgeinfo** `<emoji>`  
   - Info: Shows you information about a badge.  
@@ -67,10 +81,6 @@ Every other command will be available as both a message- and slash-command.
 - **%clear** `<amount: Optional>`  
   - Info: **Moderator only.** Deletes the last X+1 messages in the current channel. Defaults to 1 if you do not specify an amount.  
   - Example: `%clear 10`  
-  
-- **%clearbadges** `<@user>`  
-  - Info: **Moderator only.** Clears all Badges from a User. Mention the User or use User ID.  
-  - Example: `%clearbadges @ExampleUser`  
   
 - **%clearmmpings**  
   - Info: **Moderator only.** Clears all matchmaking pings.  
@@ -112,10 +122,6 @@ Every other command will be available as both a message- and slash-command.
   - Info: Deletes a reminder of yours by the reminder ID. View the reminder IDs with `%viewreminders`.  
   - Example: `%deletereminder 1234567`  
   - Aliases: delreminder, rmreminder, delreminders, deletereminders  
-  
-- **%deleterolemenu** `<message ID>`  
-  - Info: **Moderator only.** Deletes a Role menu completely.  
-  - Example: `%deleterolemenu 858117781375418389`  
   
 - **%deletewarn** `<@member> <warn_id>`  
   - Info: **Moderator only.** Deletes a warning by the warning ID. View the warnings of a member with `%warndetails`. Mention the Member or use Member ID.  
@@ -169,9 +175,6 @@ Every other command will be available as both a message- and slash-command.
   - Info: Pings the funnies role with an optional custom message and stores your ping for 30 Minutes. Also creates a thread and invites the user to it. Has a 10 minute cooldown and can only be used in our arena channels.  
   - Aliases: matchmakingfunnies, mmfunnies, Funnies  
   
-- **%geteveryrolemenu**  
-  - Info: **Moderator only.** Gets you every role menu entry currently saved.  
-  
 - **%help** `<command: Optional>`  
   - Info: Shows you Info about a specified command. If you do not specify a command you will get the help menu, which is broken into a dropdown cause there were too many commands to list. Available dropdowns are: Moderation, Admin Utility, Info, Matchmaking, Profile, Utility, Miscellaneous, and Fun. The text-based version will show you if you can run this command, the slash based version cannot do so due of a discord limitation.  
   
@@ -222,10 +225,6 @@ Every other command will be available as both a message- and slash-command.
   - Info: Plays a game of Minesweeper with 2-12 Mines, by default 5 Mines.  
   - Example: `%minesweeper 10`  
   
-- **%modifyrolemenu** `<message ID> <exclusive: Optional> <Role(s): Optional>`  
-  - Info: **Moderator only.** Modifies a role menu with special properties. Exclusive is a boolean(True/False) value which specifies if a Member is able to get 1 role (True) or all roles (False) from this role menu. The role(s) set a requirement so that a Member needs one of these roles to get any role of this role menu. Mention the role or use role ID. Both arguments are optional, if left out both default to False/None.  
-  - Example: `%modifyrolemenu 858117781375418389 True @Singles Winner`  
-  
 - **%modnote**
   - Info: **Slash version unavailable. Moderator only.** Group command that lists the subcommands and their usage. The available subcommands are: set, delete, view. No slash version because this only lists the other commands.  
   
@@ -257,10 +256,6 @@ Every other command will be available as both a message- and slash-command.
   - Info: **Moderator only.** Gets you the current and past names of a User.  
   - Example: `%names @ExampleUser`  
   - Aliases: nicknames, usernames, aliases  
-  
-- **%newrolemenu** `<message ID> <emoji> <role>`  
-  - Info: **Moderator only.** Creates a new entry for a role menu. Mention the Role or use Role ID and make sure the Bot has access to this emoji.  
-  - Example: `%newrolemenu 858117781375418389 🥰 @Server Events`  
   
 - **%note** `<note: Optional>`  
   - Info: Sets your note on your profile, up to 150 characters long. Leave it blank to delete the note.  
@@ -323,11 +318,6 @@ Every other command will be available as both a message- and slash-command.
   - Example: `%reminder 12h30mins get that thing done you wanted to get done`  
   - Aliases: remindme, newreminder, newremindme  
   
-- **%removebadge** `<@user> <emoji>`  
-  - Info: **Moderator only.** Removes one Badge from a User. Mention the User or use User ID. Will check before if the User actually has the Badge in question.  
-  - Example: `%removebadge @ExampleUser :Example1:`  
-  - Aliases: removebadges  
-  
 - **%removerole** `<@member> <role>`  
   - Info: **Moderator only.** Removes a role from a Member. Mention the Member or use Member ID, for the Role the bot first tries to use the Role ID or Role mention, after that it searches for the closest match for the role name.  
   - Example: `%removerole @ExampleUser first class`  
@@ -350,6 +340,24 @@ Every other command will be available as both a message- and slash-command.
   - Info: Gets you information about a role. The bot first tries to use the Role ID or Role mention, after that it searches for the closest match for the role name.  
   - Example: `%roleinfo first class`  
   - Aliases: role  
+  
+- **%rolemenu**
+  - Info: **Slash version unavailable. Moderator only.** Group command that lists the subcommands and their usage. The available properties to edit are: new, delete, modify, get. No slash version because this only lists the other commands.  
+  
+- **%rolemenu delete** `<message ID>`  
+  - Info: **Moderator only.** Deletes a Role menu completely.  
+  - Example: `%rolemenu delete 858117781375418389`  
+  
+- **%rolemenu get**  
+  - Info: **Moderator only.** Gets you every role menu entry currently saved.  
+  
+- **%rolemenu modify** `<message ID> <exclusive: Optional> <Role(s): Optional>`  
+  - Info: **Moderator only.** Modifies a role menu with special properties. Exclusive is a boolean(True/False) value which specifies if a Member is able to get 1 role (True) or all roles (False) from this role menu. The role(s) set a requirement so that a Member needs one of these roles to get any role of this role menu. Mention the role or use role ID. Both arguments are optional, if left out both default to False/None.  
+  - Example: `%rolemenu modify 858117781375418389 True @Singles Winner`  
+  
+- **%rolemenu new** `<message ID> <emoji> <role>`  
+  - Info: **Moderator only.** Creates a new entry for a role menu. Mention the Role or use Role ID and make sure the Bot has access to this emoji.  
+  - Example: `%rolemenu new 858117781375418389 🥰 @Server Events`  
   
 - **%roll** `<NdN>`  
   - Info: Rolls a dice. N are two numbers, first the number of dice then the amount of sides for the dice.  
@@ -374,10 +382,6 @@ Every other command will be available as both a message- and slash-command.
   - Info: Gets you some information about the server, does not work in DMs for obvious reasons.  
   - Aliases: serverinfo  
   
-- **%setbadgeinfo** `<emoji> <message: Optional>`  
-  - Info: Sets a new information text for a badge.
-  - Example: `%setbadgeinfo :Example1: This was awarded for being nice.`  
-  
 - **%setupmodmailbutton**  
   - Info: **Moderator only. Slash version unavailable.** Sets up a new button to listen to, for creating modmail threads. Should really only be used once. Slash version unavailable deliberately because of that very reason.  
   
@@ -392,13 +396,16 @@ Every other command will be available as both a message- and slash-command.
 - **%stagelist**  
   - Info: Posts our version of the legal stages.  
   
-- **%starboardemoji** `<emoji>`  
-  - Info: **Moderator only.** Changes the emoji used in our starboard.  
-  - Example: `%starboardemoji :BowserFail:`  
+- **%starboard**
+  - Info: **Slash version unavailable. Moderator only.** Group command that lists the subcommands and their usage. The available properties to edit are: emoji, threshold. No slash version because this only lists the other commands.  
   
-- **%starboardthreshold** `<number>`  
+- **%starboard emoji** `<emoji>`  
+  - Info: **Moderator only.** Changes the emoji used in our starboard.  
+  - Example: `%starboard emoji :BowserFail:`  
+  
+- **%starboard threshold** `<number>`  
   - Info: **Moderator only.** Changes the threshold for messages to appear on our starboard.  
-  - Example: `%starboardthreshold 5`  
+  - Example: `%starboard threshold 5`  
   
 - **%stats**  
   - Info: Gets you various stats about this bot.  

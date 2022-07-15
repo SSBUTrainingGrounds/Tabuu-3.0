@@ -96,7 +96,9 @@ class Responses(discord.ui.Select):
 ```{self.prefix}warndetails <@user>``` - Shows detailed warnings of a user.
 ```{self.prefix}deletewarn <@user> <warn_id>``` - Deletes a specific warning.
 ```{self.prefix}clearwarns <@user>``` - Clears all the warnings of a user.
-```{self.prefix}modnote <action> <@user> <note>``` - Adds/Deletes or views the notes for a user.
+```{self.prefix}modnote set <@user> <note>``` - Sets a new note for moderators to view.
+```{self.prefix}modnote view <@user>``` - Views all modnotes for a user.
+```{self.prefix}modnote delete <@user> <note_id>``` - Deletes a modnote from a user.
 ```{self.prefix}lookup <@user>``` - Looks up every little detail of a user.
     """,
             )
@@ -113,22 +115,22 @@ class Responses(discord.ui.Select):
 ```{self.prefix}records``` - Shows ban records.
 ```{self.prefix}forcereportmatch <@winner> <@loser>``` - If someone abandons a ranked match.
 ```{self.prefix}leaderboard``` - Leaderboards of ranked matchmaking.
-```{self.prefix}newrolemenu <message ID> <emoji> <role>``` - Adds an entry for a role menu.
-```{self.prefix}deleterolemenu <message ID>``` - Deletes every entry for a Message with a role menu.
-```{self.prefix}modifyrolemenu <message ID> <exclusive> <role(s)>``` - Sets special permissions for a Role menu.
-```{self.prefix}geteveryrolemenu``` - Gets you every role menu entry currently active.
+```{self.prefix}rolemenu new <message ID> <emoji> <role>``` - Adds an entry for a role menu.
+```{self.prefix}rolemenu delete <message ID>``` - Deletes every entry for a Message with a role menu.
+```{self.prefix}rolemenu modify <message ID> <exclusive> <role(s)>``` - Sets special permissions for a Role menu.
+```{self.prefix}rolemenu get``` - Gets you every role menu entry currently active.
 ```{self.prefix}rename <@user> <name>``` - Sets a new nickname for a user or removes it.
 ```{self.prefix}names <@user>``` - Gets the current and past names of a user.
 ```{self.prefix}say <channel> <message>``` - Admin only, Repeats the message in the chnanel.
 ```{self.prefix}createmacro``` - Creates a new macro.
 ```{self.prefix}deletemacro <name>``` - Deletes a macro.
-```{self.prefix}starboardemoji <emoji>``` - Changes the emoji used for the starboard.
-```{self.prefix}starboardthreshold <number>``` - Changes the threshold used for the starboard.
+```{self.prefix}starboard emoji <emoji>``` - Changes the emoji used for the starboard.
+```{self.prefix}starboard threshold <number>``` - Changes the threshold used for the starboard.
 ```{self.prefix}forcedeleteprofile <@user>``` - Deletes the profile of a user.
-```{self.prefix}addbadges <@user> <emojis>``` - Adds badges to a user.
-```{self.prefix}removebadge <@user> <emoji>``` - Removes one badge from a user.
-```{self.prefix}clearbadges <@user>``` - Clears every badge from a user.
-```{self.prefix}setbadgeinfo <emoji> <message>``` - Adds new information about a badge.
+```{self.prefix}badge add <@user> <emojis>``` - Adds badges to a user.
+```{self.prefix}badge remove <@user> <emoji>``` - Removes one badge from a user.
+```{self.prefix}badge clear <@user>``` - Clears every badge from a user.
+```{self.prefix}badge setinfo <emoji> <message>``` - Adds new information about a badge.
 ```{self.prefix}syncbanlist``` - Syncs the ban list from main server to secondary server.
 ```{self.prefix}setupmodmailbutton``` - Sets up a new modmail button for the bot to listen to.
     """,
