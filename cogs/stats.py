@@ -250,6 +250,23 @@ class Stats(commands.Cog):
         async with aiosqlite.connect("./db/database.db") as db:
             macro_list = await db.execute_fetchall("""SELECT name FROM macros""")
 
+        # This also walks through the subcommands of each group command .get_commands() would miss those.
+        slash_commands = sum(
+            len(
+                list(
+                    self.bot.tree.walk_commands(
+                        guild=ctx.guild, type=discord.AppCommandType(i)
+                    )
+                )
+            )
+            # Each type of command, 1 = slash command, 2 = user command, 3 = context menu command.
+            # We dont have any user commands and only one context command
+            # but this might change in the future, you never know.
+            for i in range(1, 4)
+        )
+
+        message_commands = len(list(self.bot.walk_commands()))
+
         # We use codeblocks with yml syntax highlighting
         # just cause it looks nice, in my opinion.
         # Well at least it does on desktop.
@@ -280,8 +297,8 @@ RAM Usage: {ram_used}GB/{ram_total}GB ({ram_percent}%)
 
         listeners_description = f"""
 ```yml
-Number of Message Commands: {(len(self.bot.commands) + len(macro_list))}
-Number of Application Commands: {len(self.bot.tree.get_commands(guild=ctx.guild, type=None))}
+Number of Message Commands: {message_commands + len(macro_list)}
+Number of Application Commands: {slash_commands}
 Number of Events: {len(self.bot.extra_events)}
 ```
         """
