@@ -276,7 +276,9 @@ class Events(commands.Cog):
         )
 
         if isinstance(error, commands.CommandNotFound):
-            command_list = [command.name for command in self.bot.commands]
+            command_list = [
+                command.qualified_name for command in self.bot.walk_commands()
+            ]
 
             async with aiosqlite.connect("./db/database.db") as db:
                 all_macros = await db.execute_fetchall("""SELECT name FROM macros""")
