@@ -213,7 +213,7 @@ class Warn(commands.Cog):
 
             embed.add_field(
                 name=f"#{i} - ID: {warn_id}",
-                value=f"**Given by: <@{mod_id}> at <t:{timestamp}:F>\nReason:\n{reason}**",
+                value=f"**Given by: <@{mod_id}> at <t:{timestamp}:F>\nReason:**\n{reason}",
                 inline=False,
             )
 
