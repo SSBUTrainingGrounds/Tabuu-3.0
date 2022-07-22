@@ -265,7 +265,7 @@ class Responses(discord.ui.Select):
         embed.add_field(
             name="\u200b",
             value=f"[Details: `{self.prefix}help <command>` or visit my GitHub.]"
-            "(https://github.com/atomflunder/Tabuu-3.0/blob/main/CommandList.md)",
+            "(https://github.com/SSBUTrainingGrounds/Tabuu-3.0)",
             inline=False,
         )
 
@@ -312,7 +312,7 @@ class CustomHelp(commands.HelpCommand):
         embed.add_field(
             name="\u200b",
             value=f"[Overview: `{self.context.prefix}help` or visit my GitHub.]"
-            "(https://github.com/atomflunder/Tabuu-3.0/blob/main/CommandList.md)",
+            "(https://github.com/SSBUTrainingGrounds/Tabuu-3.0)",
             inline=False,
         )
 
@@ -452,7 +452,7 @@ class Help(commands.Cog):
         embed.add_field(
             name="\u200b",
             value=f"[Overview: `{ctx.prefix}help` or visit my GitHub.]"
-            "(https://github.com/atomflunder/Tabuu-3.0/blob/main/CommandList.md)",
+            "(https://github.com/SSBUTrainingGrounds/Tabuu-3.0)",
             inline=False,
         )
 
