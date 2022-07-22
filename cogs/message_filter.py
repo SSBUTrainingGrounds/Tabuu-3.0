@@ -38,9 +38,13 @@ class MessageFilter(commands.Cog):
         # Searches for invite links, no need for regex as there are a million ways to disguise invite links anyways.
         # This is just a basic filter which is not designed to stop 100% of invite links coming in
         if (
-            "discord.gg" in message.content
-            or "discordapp.com/invite" in message.content
-        ) and message.guild.id == GuildIDs.TRAINING_GROUNDS:
+            (
+                "discord.gg" in message.content
+                or "discordapp.com/invite" in message.content
+            )
+            and message.guild.id == GuildIDs.TRAINING_GROUNDS
+            and isinstance(message.author, discord.Member)
+        ):
             guild = self.bot.get_guild(GuildIDs.TRAINING_GROUNDS)
             mod_role = discord.utils.get(guild.roles, id=TGRoleIDs.MOD_ROLE)
             promoter_role = discord.utils.get(guild.roles, id=TGRoleIDs.PROMOTER_ROLE)
