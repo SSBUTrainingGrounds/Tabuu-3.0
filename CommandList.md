@@ -55,7 +55,7 @@ Every other command will be available as both a message- and slash-command.
   - Example: `%badge remove @ExampleUser :Example1:`  
   
 - **%badge setinfo** `<emoji> <message: Optional>`  
-  - Info: Sets a new information text for a badge.
+  - Info: **Moderator only.** Sets a new information text for a badge.
   - Example: `%badge setinfo :Example1: This was awarded for being nice.`  
   
 - **%badgeinfo** `<emoji>`  
