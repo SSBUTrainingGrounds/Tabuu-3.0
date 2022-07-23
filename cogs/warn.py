@@ -14,17 +14,17 @@ from utils.ids import AdminVars, GuildIDs, TGChannelIDs
 class Warn(commands.Cog):
     """Contains our custom warning system."""
 
-    def __init__(self, bot):
+    def __init__(self, bot: commands.Bot) -> None:
         self.bot = bot
 
         self.warnloop.start()
 
-    def cog_unload(self):
+    def cog_unload(self) -> None:
         self.warnloop.cancel()
 
     async def add_warn(
         self, author: discord.Member, member: discord.Member, reason: str
-    ):
+    ) -> None:
         """Adds a warning to the database.
         Also logs it to our infraction-logs channel.
         """
@@ -57,7 +57,7 @@ class Warn(commands.Cog):
 
     async def check_warn_count(
         self, guild: discord.Guild, channel: discord.TextChannel, member: discord.Member
-    ):
+    ) -> None:
         """Checks the amount of warnings a user has and executes the according action.
 
         3 warnings:
@@ -119,7 +119,9 @@ class Warn(commands.Cog):
     )
     @app_commands.default_permissions(administrator=True)
     @utils.check.is_moderator()
-    async def warn(self, ctx: commands.Context, member: discord.Member, *, reason: str):
+    async def warn(
+        self, ctx: commands.Context, member: discord.Member, *, reason: str
+    ) -> None:
         """Warns a user."""
         if member.bot:
             await ctx.send("You can't warn bots, silly.")
@@ -148,7 +150,7 @@ class Warn(commands.Cog):
     @commands.hybrid_command(aliases=["warnings", "infractions"])
     @app_commands.guilds(*GuildIDs.ALL_GUILDS)
     @app_commands.describe(member="The member you want to check the warning count of.")
-    async def warns(self, ctx: commands.Context, member: discord.Member = None):
+    async def warns(self, ctx: commands.Context, member: discord.Member = None) -> None:
         """Checks the warning count of a user, or yourself."""
         if member is None:
             member = ctx.author
@@ -171,7 +173,7 @@ class Warn(commands.Cog):
     @app_commands.describe(member="The member to remove all warnings from.")
     @app_commands.default_permissions(administrator=True)
     @utils.check.is_moderator()
-    async def clearwarns(self, ctx: commands.Context, member: discord.Member):
+    async def clearwarns(self, ctx: commands.Context, member: discord.Member) -> None:
         """Deletes all warnings of a user from the database."""
         async with aiosqlite.connect("./db/database.db") as db:
             await db.execute(
@@ -187,7 +189,7 @@ class Warn(commands.Cog):
     @app_commands.describe(user="The member to see the warn details of.")
     @app_commands.default_permissions(administrator=True)
     @utils.check.is_moderator()
-    async def warndetails(self, ctx: commands.Context, user: discord.User):
+    async def warndetails(self, ctx: commands.Context, user: discord.User) -> None:
         """Gets you the details of a Users warnings."""
         async with aiosqlite.connect("./db/database.db") as db:
             user_warnings = await db.execute_fetchall(
@@ -229,7 +231,7 @@ class Warn(commands.Cog):
     @utils.check.is_moderator()
     async def deletewarn(
         self, ctx: commands.Context, member: discord.Member, warn_id: str
-    ):
+    ) -> None:
         """Deletes a specific warning of a user, by the randomly generated warning ID.
         Use warndetails to see these warning IDs.
         """
@@ -256,7 +258,7 @@ class Warn(commands.Cog):
     @deletewarn.autocomplete("warn_id")
     async def deletewarn_autocomplete(
         self, interaction: discord.Interaction, current: str
-    ):
+    ) -> list[app_commands.Choice]:
         if not interaction.namespace.member:
             return []
 
@@ -278,7 +280,7 @@ class Warn(commands.Cog):
         return choices[:25]
 
     @tasks.loop(hours=24)
-    async def warnloop(self):
+    async def warnloop(self) -> None:
         """This here checks if a warning is older than 30 days and has expired,
         if that is the case, deletes the expired warnings.
         """
@@ -297,11 +299,13 @@ class Warn(commands.Cog):
         logger.info("Warnloop finished.")
 
     @warnloop.before_loop
-    async def before_warnloop(self):
+    async def before_warnloop(self) -> None:
         await self.bot.wait_until_ready()
 
     @warn.error
-    async def warn_error(self, ctx, error):
+    async def warn_error(
+        self, ctx: commands.Context, error: commands.CommandError
+    ) -> None:
         if isinstance(error, commands.MissingRequiredArgument):
             await ctx.send("You need to specify a member and a reason!")
         elif isinstance(error, commands.MemberNotFound):
@@ -312,14 +316,18 @@ class Warn(commands.Cog):
             raise error
 
     @warns.error
-    async def warns_error(self, ctx, error):
+    async def warns_error(
+        self, ctx: commands.Context, error: commands.CommandError
+    ) -> None:
         if isinstance(error, commands.MemberNotFound):
             await ctx.send("You need to mention a member, or just leave it blank.")
         else:
             raise error
 
     @clearwarns.error
-    async def clearwarns_error(self, ctx, error):
+    async def clearwarns_error(
+        self, ctx: commands.Context, error: commands.CommandError
+    ) -> None:
         if isinstance(error, commands.MissingRequiredArgument):
             await ctx.send("You need to mention a member!")
         elif isinstance(error, commands.MissingPermissions):
@@ -328,7 +336,9 @@ class Warn(commands.Cog):
             raise error
 
     @deletewarn.error
-    async def deletewarn_error(self, ctx, error):
+    async def deletewarn_error(
+        self, ctx: commands.Context, error: commands.CommandError
+    ) -> None:
         if isinstance(error, commands.MissingRequiredArgument):
             await ctx.send("You need to mention a member and specify a warn_id.")
         elif isinstance(error, commands.MemberNotFound):
@@ -339,7 +349,9 @@ class Warn(commands.Cog):
             raise error
 
     @warndetails.error
-    async def warndetails_error(self, ctx, error):
+    async def warndetails_error(
+        self, ctx: commands.Context, error: commands.CommandError
+    ) -> None:
         if isinstance(
             error, (commands.MissingRequiredArgument, commands.MemberNotFound)
         ):
@@ -350,6 +362,6 @@ class Warn(commands.Cog):
             raise error
 
 
-async def setup(bot):
+async def setup(bot) -> None:
     await bot.add_cog(Warn(bot))
     print("Warn cog loaded")

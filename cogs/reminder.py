@@ -14,7 +14,7 @@ from utils.time import convert_time
 class Reminder(commands.Cog):
     """Contains the reminder functions and everything associated with them."""
 
-    def __init__(self, bot):
+    def __init__(self, bot: commands.Bot) -> None:
         self.bot = bot
 
         self.reminder_loop.start()
@@ -24,7 +24,7 @@ class Reminder(commands.Cog):
 
     async def notify_user(
         self, user_id: int, channel_id: int, message: str, read_time: str
-    ):
+    ) -> None:
         """Notifies the user when their reminder expires.
         First we try in the channel, then their DMs.
         """
@@ -58,7 +58,7 @@ class Reminder(commands.Cog):
     )
     async def reminder(
         self, ctx: commands.Context, time: str, *, reminder_message: str
-    ):
+    ) -> None:
         """Saves a new reminder."""
 
         seconds, reminder_time = convert_time(time)
@@ -132,7 +132,7 @@ class Reminder(commands.Cog):
         aliases=["reminders", "myreminders", "viewreminder", "listreminders"]
     )
     @app_commands.guilds(*GuildIDs.ALL_GUILDS)
-    async def viewreminders(self, ctx: commands.Context):
+    async def viewreminders(self, ctx: commands.Context) -> None:
         """
         Displays your active reminders.
         """
@@ -181,7 +181,7 @@ class Reminder(commands.Cog):
     )
     @app_commands.guilds(*GuildIDs.ALL_GUILDS)
     @app_commands.describe(reminder_id="The ID of the reminder you want to delete.")
-    async def deletereminder(self, ctx: commands.Context, reminder_id: str):
+    async def deletereminder(self, ctx: commands.Context, reminder_id: str) -> None:
         """Deletes a reminder of yours."""
 
         async with aiosqlite.connect("./db/database.db") as db:
@@ -208,7 +208,7 @@ class Reminder(commands.Cog):
     @deletereminder.autocomplete("reminder_id")
     async def deletereminder_autocomplete(
         self, interaction: discord.Interaction, current: str
-    ):
+    ) -> list[app_commands.Choice]:
         async with aiosqlite.connect("./db/database.db") as db:
             user_reminders = await db.execute_fetchall(
                 """SELECT reminder_id FROM reminder WHERE user_id = :user_id""",
@@ -227,7 +227,7 @@ class Reminder(commands.Cog):
         return choices[:25]
 
     @tasks.loop(seconds=60)
-    async def reminder_loop(self):
+    async def reminder_loop(self) -> None:
         """Checks every minute if a reminder has passed.
         If that is the case, notifies the user and deletes the reminder.
         """
@@ -258,11 +258,13 @@ class Reminder(commands.Cog):
             await db.commit()
 
     @reminder_loop.before_loop
-    async def before_reminder_loop(self):
+    async def before_reminder_loop(self) -> None:
         await self.bot.wait_until_ready()
 
     @reminder.error
-    async def reminder_error(self, ctx, error):
+    async def reminder_error(
+        self, ctx: commands.Context, error: commands.CommandError
+    ) -> None:
         if isinstance(error, commands.MissingRequiredArgument):
             await ctx.send(
                 "You need to specify an amount of time and the reminder message!"
@@ -278,7 +280,9 @@ class Reminder(commands.Cog):
             raise error
 
     @viewreminders.error
-    async def viewreminders_error(self, ctx, error):
+    async def viewreminders_error(
+        self, ctx: commands.Context, error: commands.CommandError
+    ) -> None:
         if isinstance(
             error, (commands.CommandInvokeError, commands.HybridCommandError)
         ):
@@ -287,7 +291,9 @@ class Reminder(commands.Cog):
             raise error
 
     @deletereminder.error
-    async def deletereminder_error(self, ctx, error):
+    async def deletereminder_error(
+        self, ctx: commands.Context, error: commands.CommandError
+    ) -> None:
         if isinstance(error, commands.MissingRequiredArgument):
             await ctx.send(
                 "You need to specify which reminder to delete. "
@@ -301,6 +307,6 @@ class Reminder(commands.Cog):
             raise error
 
 
-async def setup(bot):
+async def setup(bot) -> None:
     await bot.add_cog(Reminder(bot))
     print("Reminder cog loaded")

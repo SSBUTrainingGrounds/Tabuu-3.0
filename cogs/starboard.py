@@ -16,7 +16,7 @@ class Starboard(commands.Cog):
     Currently we only use this for our Charity Events.
     """
 
-    def __init__(self, bot):
+    def __init__(self, bot: commands.Bot) -> None:
         self.bot = bot
 
     starboard_channel = TGChannelIDs.STARBOARD_CHANNEL
@@ -24,7 +24,7 @@ class Starboard(commands.Cog):
 
     async def update_starboard_message(
         self, reaction: discord.Reaction, message_id: int
-    ):
+    ) -> None:
         """Updates the starboard message with the new value for the
         reaction count whenever a reaction is removed or added.
         """
@@ -47,7 +47,7 @@ class Starboard(commands.Cog):
     @app_commands.guilds(*GuildIDs.ALL_GUILDS)
     @app_commands.default_permissions(administrator=True)
     @utils.check.is_moderator()
-    async def starboard(self, ctx: commands.Context):
+    async def starboard(self, ctx: commands.Context) -> None:
         """Lists the group commands for the starboard."""
         if ctx.invoked_subcommand:
             return
@@ -66,7 +66,7 @@ class Starboard(commands.Cog):
     @app_commands.describe(emoji="The new emoji for the starboard.")
     @app_commands.default_permissions(administrator=True)
     @utils.check.is_moderator()
-    async def starboard_emoji(self, ctx: commands.Context, emoji: str):
+    async def starboard_emoji(self, ctx: commands.Context, emoji: str) -> None:
         """Sets the Starboard Emoji.
         The bot does need access to this Emoji.
         """
@@ -97,7 +97,7 @@ class Starboard(commands.Cog):
     @app_commands.describe(threshold="The new threshold for the starboard.")
     @app_commands.default_permissions(administrator=True)
     @utils.check.is_moderator()
-    async def starboard_threshold(self, ctx: commands.Context, threshold: int):
+    async def starboard_threshold(self, ctx: commands.Context, threshold: int) -> None:
         """Changes the Starboard threshold.
         This is the reactions needed for the bot to post the message to the starboard channel."""
         if threshold < 1:
@@ -115,7 +115,9 @@ class Starboard(commands.Cog):
         await ctx.send(f"Changed the threshold to: `{threshold}`")
 
     @commands.Cog.listener()
-    async def on_raw_reaction_add(self, payload: discord.RawReactionActionEvent):
+    async def on_raw_reaction_add(
+        self, payload: discord.RawReactionActionEvent
+    ) -> None:
         # The listener for reactions for the starboard.
         # First we check if the reaction happened in the right channel.
         if payload.channel_id not in self.listening_channels:
@@ -199,7 +201,9 @@ class Starboard(commands.Cog):
                     await db.commit()
 
     @commands.Cog.listener()
-    async def on_raw_reaction_remove(self, payload: discord.RawReactionActionEvent):
+    async def on_raw_reaction_remove(
+        self, payload: discord.RawReactionActionEvent
+    ) -> None:
         # If the amount of reactions to a starboard message decrease,
         # we also wanna update the message then.
         if payload.channel_id not in self.listening_channels:
@@ -242,14 +246,18 @@ class Starboard(commands.Cog):
                     return
 
     @starboard.error
-    async def starboard_error(self, ctx, error):
+    async def starboard_error(
+        self, ctx: commands.Context, error: commands.CommandError
+    ) -> None:
         if isinstance(error, commands.MissingPermissions):
             await ctx.send("Nice try, but you don't have the permissions to do that!")
         else:
             raise error
 
     @starboard_emoji.error
-    async def starboard_emoji_error(self, ctx, error):
+    async def starboard_emoji_error(
+        self, ctx: commands.Context, error: commands.CommandError
+    ) -> None:
         if isinstance(error, commands.MissingPermissions):
             await ctx.send("Nice try, but you don't have the permissions to do that!")
         elif isinstance(error, commands.MissingRequiredArgument):
@@ -260,7 +268,9 @@ class Starboard(commands.Cog):
             raise error
 
     @starboard_threshold.error
-    async def starboard_threshold_error(self, ctx, error):
+    async def starboard_threshold_error(
+        self, ctx: commands.Context, error: commands.CommandError
+    ) -> None:
         if isinstance(error, commands.MissingPermissions):
             await ctx.send("Nice try, but you don't have the permissions to do that!")
         elif isinstance(error, commands.MissingRequiredArgument):
@@ -273,6 +283,6 @@ class Starboard(commands.Cog):
             raise error
 
 
-async def setup(bot):
+async def setup(bot) -> None:
     await bot.add_cog(Starboard(bot))
     print("Starboard cog loaded")

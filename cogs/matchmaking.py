@@ -11,10 +11,10 @@ from utils.ids import GuildIDs, TGArenaChannelIDs, TGMatchmakingRoleIDs
 class Matchmaking(commands.Cog):
     """Contains the Unranked portion of our matchmaking system."""
 
-    def __init__(self, bot):
+    def __init__(self, bot: commands.Bot) -> None:
         self.bot = bot
 
-    def store_ping(self, ctx: commands.Context, mm_type: str, timestamp: float):
+    def store_ping(self, ctx: commands.Context, mm_type: str, timestamp: float) -> None:
         """Saves a Matchmaking Ping of any unranked type in the according file."""
 
         with open(rf"./json/{mm_type}.json", "r", encoding="utf-8") as f:
@@ -26,7 +26,7 @@ class Matchmaking(commands.Cog):
         with open(rf"./json/{mm_type}.json", "w", encoding="utf-8") as f:
             json.dump(user_pings, f, indent=4)
 
-    def delete_ping(self, ctx: commands.Context, mm_type: str):
+    def delete_ping(self, ctx: commands.Context, mm_type: str) -> None:
         """Deletes a Matchmaking Ping of any unranked type from the according file."""
 
         with open(rf"./json/{mm_type}.json", "r", encoding="utf-8") as f:
@@ -75,7 +75,7 @@ class Matchmaking(commands.Cog):
     )
     @commands.cooldown(1, 600, commands.BucketType.user)
     @app_commands.guilds(*GuildIDs.ALL_GUILDS)
-    async def singles(self, ctx: commands.Context):
+    async def singles(self, ctx: commands.Context) -> None:
         """Used for 1v1 Matchmaking with competitive rules."""
 
         timestamp = discord.utils.utcnow().timestamp()
@@ -142,7 +142,9 @@ class Matchmaking(commands.Cog):
             ctx.command.reset_cooldown(ctx)
 
     @singles.error
-    async def singles_error(self, ctx, error):
+    async def singles_error(
+        self, ctx: commands.Context, error: commands.CommandError
+    ) -> None:
         if not isinstance(error, commands.CommandOnCooldown):
             raise error
 
@@ -174,7 +176,7 @@ class Matchmaking(commands.Cog):
     @commands.hybrid_command(aliases=["matchmakingdoubles", "mmdoubles", "Doubles"])
     @commands.cooldown(1, 600, commands.BucketType.user)
     @app_commands.guilds(*GuildIDs.ALL_GUILDS)
-    async def doubles(self, ctx: commands.Context):
+    async def doubles(self, ctx: commands.Context) -> None:
         """Used for 2v2 Matchmaking."""
 
         timestamp = discord.utils.utcnow().timestamp()
@@ -238,7 +240,9 @@ class Matchmaking(commands.Cog):
             ctx.command.reset_cooldown(ctx)
 
     @doubles.error
-    async def doubles_error(self, ctx, error):
+    async def doubles_error(
+        self, ctx: commands.Context, error: commands.CommandError
+    ) -> None:
         if not isinstance(error, commands.CommandOnCooldown):
             raise error
 
@@ -271,7 +275,7 @@ class Matchmaking(commands.Cog):
     @app_commands.describe(
         message="Optional message, for example the ruleset you want to use."
     )
-    async def funnies(self, ctx: commands.Context, *, message: str = None):
+    async def funnies(self, ctx: commands.Context, *, message: str = None) -> None:
         """Used for 1v1 Matchmaking with non-competitive rules."""
 
         timestamp = discord.utils.utcnow().timestamp()
@@ -341,7 +345,9 @@ class Matchmaking(commands.Cog):
             ctx.command.reset_cooldown(ctx)
 
     @funnies.error
-    async def funnies_error(self, ctx, error):
+    async def funnies_error(
+        self, ctx: commands.Context, error: commands.CommandError
+    ) -> None:
         if not isinstance(error, commands.CommandOnCooldown):
             raise error
 
@@ -369,6 +375,6 @@ class Matchmaking(commands.Cog):
             )
 
 
-async def setup(bot):
+async def setup(bot) -> None:
     await bot.add_cog(Matchmaking(bot))
     print("Matchmaking cog loaded")

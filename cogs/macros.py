@@ -9,7 +9,7 @@ from utils.ids import GuildIDs
 
 
 class MacroModal(discord.ui.Modal, title="Create a new macro"):
-    def __init__(self):
+    def __init__(self) -> None:
         super().__init__()
 
     name = discord.ui.TextInput(
@@ -26,7 +26,7 @@ class MacroModal(discord.ui.Modal, title="Create a new macro"):
         max_length=1500,
     )
 
-    async def on_submit(self, interaction: discord.Interaction):
+    async def on_submit(self, interaction: discord.Interaction) -> None:
         macro_name = self.name.value.lower()
 
         # list of every command together with the aliases registered.
@@ -72,7 +72,7 @@ class MacroModal(discord.ui.Modal, title="Create a new macro"):
 
 
 class MacroButton(discord.ui.View):
-    def __init__(self, author: discord.User):
+    def __init__(self, author: discord.User) -> None:
         self.author = author
         super().__init__(timeout=60)
 
@@ -85,7 +85,7 @@ class MacroButton(discord.ui.View):
         await interaction.response.send_modal(MacroModal())
         self.stop()
 
-    async def interaction_check(self, interaction: discord.Interaction):
+    async def interaction_check(self, interaction: discord.Interaction) -> bool:
         return interaction.user == self.author
 
 
@@ -94,11 +94,11 @@ class Macros(commands.Cog):
     As well as listening for them.
     """
 
-    def __init__(self, bot):
+    def __init__(self, bot: commands.Bot) -> None:
         self.bot = bot
 
     @commands.Cog.listener()
-    async def on_message(self, message: discord.Message):
+    async def on_message(self, message: discord.Message) -> None:
         # Listens for the macros.
         async with aiosqlite.connect("./db/database.db") as db:
             macro_names = await db.execute_fetchall("""SELECT name FROM macros""")
@@ -129,7 +129,7 @@ class Macros(commands.Cog):
     @app_commands.guilds(*GuildIDs.ALL_GUILDS)
     @app_commands.default_permissions(administrator=True)
     @utils.check.is_moderator()
-    async def createmacro(self, ctx: commands.Context):
+    async def createmacro(self, ctx: commands.Context) -> None:
         """Creates a new macro with the desired name and payload."""
         view = MacroButton(ctx.author)
 
@@ -140,7 +140,7 @@ class Macros(commands.Cog):
     @app_commands.describe(name="The name of the macro.")
     @app_commands.default_permissions(administrator=True)
     @utils.check.is_moderator()
-    async def deletemacro(self, ctx: commands.Context, name: str):
+    async def deletemacro(self, ctx: commands.Context, name: str) -> None:
         """Deletes a macro with the specified name."""
         async with aiosqlite.connect("./db/database.db") as db:
             macro_names = await db.execute_fetchall(
@@ -163,7 +163,7 @@ class Macros(commands.Cog):
     @deletemacro.autocomplete("name")
     async def deletemacro_autocomplete(
         self, interaction: discord.Interaction, current: str
-    ):
+    ) -> list[app_commands.Choice]:
         async with aiosqlite.connect("./db/database.db") as db:
             macros = await db.execute_fetchall("""SELECT name FROM macros""")
 
@@ -172,7 +172,7 @@ class Macros(commands.Cog):
     @commands.hybrid_command(aliases=["macros", "listmacros", "macrostats"])
     @app_commands.guilds(*GuildIDs.ALL_GUILDS)
     @app_commands.describe(macro="The macro you want to see the stats of.")
-    async def macro(self, ctx: commands.Context, *, macro: str = None):
+    async def macro(self, ctx: commands.Context, *, macro: str = None) -> None:
         """Gives you detailed information about a macro, or lists every macro saved."""
         if macro is None:
             async with aiosqlite.connect("./db/database.db") as db:
@@ -210,14 +210,16 @@ class Macros(commands.Cog):
         await ctx.send(embed=embed)
 
     @macro.autocomplete("macro")
-    async def macro_autocomplete(self, interaction: discord.Interaction, current: str):
+    async def macro_autocomplete(
+        self, interaction: discord.Interaction, current: str
+    ) -> list[app_commands.Choice]:
         async with aiosqlite.connect("./db/database.db") as db:
             macros = await db.execute_fetchall("""SELECT name FROM macros""")
 
         return utils.search.autocomplete_choices(current, [m[0] for m in macros])
 
     @createmacro.error
-    async def createmacro_error(self, ctx, error):
+    async def createmacro_error(self, ctx, error) -> None:
         if isinstance(error, commands.MissingPermissions):
             await ctx.send("Nice try, but you don't have the permissions to do that!")
         elif isinstance(error, commands.MissingRequiredArgument):
@@ -234,7 +236,7 @@ class Macros(commands.Cog):
             raise error
 
     @deletemacro.error
-    async def deletemacro_error(self, ctx, error):
+    async def deletemacro_error(self, ctx, error) -> None:
         if isinstance(error, commands.MissingPermissions):
             await ctx.send("Nice try, but you don't have the permissions to do that!")
         elif isinstance(error, commands.MissingRequiredArgument):
@@ -243,6 +245,6 @@ class Macros(commands.Cog):
             raise error
 
 
-async def setup(bot):
+async def setup(bot) -> None:
     await bot.add_cog(Macros(bot))
     print("Macros cog loaded")

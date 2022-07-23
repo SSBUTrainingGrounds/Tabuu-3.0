@@ -12,10 +12,10 @@ from utils.ids import GuildIDs
 class Badge(commands.Cog):
     """Contains commands related to the user badge system."""
 
-    def __init__(self, bot):
+    def __init__(self, bot: commands.Bot) -> None:
         self.bot = bot
 
-    async def new_profile(self, user: discord.User):
+    async def new_profile(self, user: discord.User) -> None:
         """Creates a new userbadges profile entry, if the user is not found in the database."""
         async with aiosqlite.connect("./db/database.db") as db:
             matching_users = await db.execute_fetchall(
@@ -37,7 +37,7 @@ class Badge(commands.Cog):
     @app_commands.guilds(*GuildIDs.ALL_GUILDS)
     @app_commands.default_permissions(administrator=True)
     @utils.check.is_moderator()
-    async def badge(self, ctx: commands.Context):
+    async def badge(self, ctx: commands.Context) -> None:
         """Lists the group commands for the badge related commands.
         Excludes %badgeinfo because that is a freely available command,
         without admin privileges needed."""
@@ -64,7 +64,7 @@ class Badge(commands.Cog):
     @utils.check.is_moderator()
     async def badge_add(
         self, ctx: commands.Context, user: discord.User, *, badges: str
-    ):
+    ) -> None:
         """Adds multiple emoji badges to a user.
         Emojis must be a default emoji or a custom emoji the bot can use.
         """
@@ -123,7 +123,9 @@ class Badge(commands.Cog):
     )
     @app_commands.default_permissions(administrator=True)
     @utils.check.is_moderator()
-    async def badge_remove(self, ctx: commands.Context, user: discord.User, badge: str):
+    async def badge_remove(
+        self, ctx: commands.Context, user: discord.User, badge: str
+    ) -> None:
         """Removes a badge from a user."""
         # No emoji check here, since the bot could lose access in the meantime.
         # Also it doesnt really work with slash commands anyways.
@@ -167,7 +169,7 @@ class Badge(commands.Cog):
     @app_commands.describe(user="The user to remove all badges from.")
     @app_commands.default_permissions(administrator=True)
     @utils.check.is_moderator()
-    async def badge_clear(self, ctx: commands.Context, user: discord.User):
+    async def badge_clear(self, ctx: commands.Context, user: discord.User) -> None:
         """Removes all badges from a user."""
         async with aiosqlite.connect("./db/database.db") as db:
             matching_users = await db.execute_fetchall(
@@ -198,7 +200,7 @@ class Badge(commands.Cog):
     @utils.check.is_moderator()
     async def badge_setinfo(
         self, ctx: commands.Context, badge: str, *, info_text: str = None
-    ):
+    ) -> None:
         """Sets a new info text on a given badge."""
         # We first check if its a valid emoji by just reacting to the message.
         if ctx.interaction:
@@ -245,7 +247,7 @@ class Badge(commands.Cog):
     @commands.hybrid_command()
     @app_commands.guilds(*GuildIDs.ALL_GUILDS)
     @app_commands.describe(badge="The badge you want to see the details of.")
-    async def badgeinfo(self, ctx: commands.Context, badge: str):
+    async def badgeinfo(self, ctx: commands.Context, badge: str) -> None:
         """Gets you information about a given badge."""
         match = Match(latinise=True, ignore_case=True, include_partial=True)
 
@@ -301,7 +303,9 @@ class Badge(commands.Cog):
         await ctx.send(embed=embed)
 
     @badge_add.error
-    async def badge_add_error(self, ctx, error):
+    async def badge_add_error(
+        self, ctx: commands.Context, error: commands.CommandError
+    ) -> None:
         if isinstance(error, commands.MissingPermissions):
             await ctx.send("Nice try, but you don't have the permissions to do that!")
         elif isinstance(error, commands.MissingRequiredArgument):
@@ -312,7 +316,9 @@ class Badge(commands.Cog):
             raise error
 
     @badge_remove.error
-    async def badge_remove_error(self, ctx, error):
+    async def badge_remove_error(
+        self, ctx: commands.Context, error: commands.CommandError
+    ) -> None:
         if isinstance(error, commands.MissingPermissions):
             await ctx.send("Nice try, but you don't have the permissions to do that!")
         elif isinstance(error, commands.MissingRequiredArgument):
@@ -323,7 +329,9 @@ class Badge(commands.Cog):
             raise error
 
     @badge_clear.error
-    async def badge_clear_error(self, ctx, error):
+    async def badge_clear_error(
+        self, ctx: commands.Context, error: commands.CommandError
+    ) -> None:
         if isinstance(error, commands.MissingPermissions):
             await ctx.send("Nice try, but you don't have the permissions to do that!")
         elif isinstance(
@@ -334,7 +342,9 @@ class Badge(commands.Cog):
             raise error
 
     @badge_setinfo.error
-    async def badge_setinfo_error(self, ctx, error):
+    async def badge_setinfo_error(
+        self, ctx: commands.Context, error: commands.CommandError
+    ) -> None:
         if isinstance(error, commands.MissingPermissions):
             await ctx.send("Nice try, but you don't have the permissions to do that!")
         elif isinstance(error, commands.MissingRequiredArgument):
@@ -343,7 +353,9 @@ class Badge(commands.Cog):
             raise error
 
     @badgeinfo.error
-    async def badgeinfo_error(self, ctx, error):
+    async def badgeinfo_error(
+        self, ctx: commands.Context, error: commands.CommandError
+    ) -> None:
         if isinstance(error, commands.MissingRequiredArgument):
             await ctx.send(
                 "Please specify the badge you want to see the information of!"
@@ -352,6 +364,6 @@ class Badge(commands.Cog):
             raise error
 
 
-async def setup(bot):
+async def setup(bot) -> None:
     await bot.add_cog(Badge(bot))
     print("Badge cog loaded")

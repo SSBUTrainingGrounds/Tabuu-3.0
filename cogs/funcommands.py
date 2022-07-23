@@ -13,12 +13,12 @@ class Funcommands(commands.Cog):
     They all pretty much just trigger random responses.
     """
 
-    def __init__(self, bot):
+    def __init__(self, bot: commands.Bot) -> None:
         self.bot = bot
 
     @commands.hybrid_command(aliases=["uwu"])
     @app_commands.guilds(*GuildIDs.ALL_GUILDS)
-    async def tabuwu(self, ctx: commands.Context):
+    async def tabuwu(self, ctx: commands.Context) -> None:
         """Well..."""
 
         messages = [
@@ -30,7 +30,7 @@ class Funcommands(commands.Cog):
 
     @commands.hybrid_command(aliases=["tabuujoke"])
     @app_commands.guilds(*GuildIDs.ALL_GUILDS)
-    async def joke(self, ctx: commands.Context):
+    async def joke(self, ctx: commands.Context) -> None:
         """Jokes. May or may not make you laugh."""
 
         messages = [
@@ -61,7 +61,7 @@ class Funcommands(commands.Cog):
 
     @commands.hybrid_command()
     @app_commands.guilds(*GuildIDs.ALL_GUILDS)
-    async def randomquote(self, ctx: commands.Context):
+    async def randomquote(self, ctx: commands.Context) -> None:
         """Some quotes."""
 
         messages = [
@@ -72,7 +72,7 @@ class Funcommands(commands.Cog):
 
     @commands.hybrid_command()
     @app_commands.guilds(*GuildIDs.ALL_GUILDS)
-    async def pickmeup(self, ctx: commands.Context):
+    async def pickmeup(self, ctx: commands.Context) -> None:
         """Some uplifting stuff."""
 
         messages = [
@@ -81,14 +81,13 @@ class Funcommands(commands.Cog):
             "Watch this, you lovely user. It might help. https://www.youtube.com/watch?v=kGOQfLFzJj8",
             "You have survived everything that you ever thought you wouldn't.",
             "You're rad and we're glad you're here.",
-            "These feelings **will** pass.",
         ]
         item = random.choice(messages)
         await ctx.send(item)
 
     @commands.hybrid_command()
     @app_commands.guilds(*GuildIDs.ALL_GUILDS)
-    async def wisdom(self, ctx: commands.Context):
+    async def wisdom(self, ctx: commands.Context) -> None:
         """Some wisdom."""
 
         messages = [
@@ -101,7 +100,7 @@ class Funcommands(commands.Cog):
 
     @commands.hybrid_command()
     @app_commands.guilds(*GuildIDs.ALL_GUILDS)
-    async def boo(self, ctx: commands.Context):
+    async def boo(self, ctx: commands.Context) -> None:
         """Scary stuff."""
 
         messages = [
@@ -115,7 +114,7 @@ class Funcommands(commands.Cog):
 
     @commands.hybrid_command()
     @app_commands.guilds(*GuildIDs.ALL_GUILDS)
-    async def john(self, ctx: commands.Context):
+    async def john(self, ctx: commands.Context) -> None:
         """Random excuse why you lost the last Game of Smash."""
 
         messages = [
@@ -140,7 +139,7 @@ class Funcommands(commands.Cog):
 
     @commands.hybrid_command()
     @app_commands.guilds(*GuildIDs.ALL_GUILDS)
-    async def hypemeup(self, ctx: commands.Context):
+    async def hypemeup(self, ctx: commands.Context) -> None:
         """Hypes you up for the next Game of Smash."""
 
         messages = [
@@ -162,7 +161,7 @@ class Funcommands(commands.Cog):
     @commands.hybrid_command(name="8ball")
     @app_commands.guilds(*GuildIDs.ALL_GUILDS)
     @app_commands.describe(question="Your question to the magic 8ball.")
-    async def _8ball(self, ctx: commands.Context, *, question: str = None):
+    async def _8ball(self, ctx: commands.Context, *, question: str = None) -> None:
         """Ask the magic 8ball."""
 
         if question is None:
@@ -206,7 +205,7 @@ class Funcommands(commands.Cog):
     @commands.hybrid_command()
     @app_commands.guilds(*GuildIDs.ALL_GUILDS)
     @app_commands.describe(question="Your question.")
-    async def who(self, ctx: commands.Context, *, question: str = None):
+    async def who(self, ctx: commands.Context, *, question: str = None) -> None:
         """Returns a random online member of the server as a response."""
 
         if ctx.guild is None:
@@ -241,7 +240,7 @@ class Funcommands(commands.Cog):
     )
     async def friendship(
         self, ctx: commands.Context, user1: discord.User, user2: discord.User = None
-    ):
+    ) -> None:
         """The friendship status between two users."""
         if not user2:
             user2 = ctx.author
@@ -276,13 +275,15 @@ class Funcommands(commands.Cog):
         )
 
     @friendship.error
-    async def friendship_error(self, ctx, error):
+    async def friendship_error(
+        self, ctx: commands.Context, error: commands.CommandError
+    ) -> None:
         if isinstance(error, (commands.MissingRequiredArgument, commands.UserNotFound)):
             await ctx.send("Please enter 1 or 2 valid Users!")
         else:
             raise error
 
 
-async def setup(bot):
+async def setup(bot) -> None:
     await bot.add_cog(Funcommands(bot))
     print("Funcommands cog loaded")

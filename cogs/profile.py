@@ -13,7 +13,7 @@ from utils.ids import Emojis, GuildIDs
 class Profile(commands.Cog):
     """Contains the profile command and everything associated with it."""
 
-    def __init__(self, bot):
+    def __init__(self, bot: commands.Bot) -> None:
         self.bot = bot
 
     def match_character(self, profile_input: str) -> list[str]:
@@ -76,7 +76,7 @@ class Profile(commands.Cog):
 
         return badges
 
-    async def make_new_profile(self, user: discord.User):
+    async def make_new_profile(self, user: discord.User) -> None:
         """Creates a new profile for the user, if the user does not already have a profile set up."""
         async with aiosqlite.connect("./db/database.db") as db:
             matching_profile = await db.execute_fetchall(
@@ -153,7 +153,7 @@ class Profile(commands.Cog):
     @commands.hybrid_command(aliases=["smashprofile", "profileinfo"])
     @app_commands.guilds(*GuildIDs.ALL_GUILDS)
     @app_commands.describe(user="The user you want to see the profile of.")
-    async def profile(self, ctx: commands.Context, user: discord.User = None):
+    async def profile(self, ctx: commands.Context, user: discord.User = None) -> None:
         """Returns the profile of a user, or yourself if you do not specify a user."""
         if user is None:
             user = ctx.author
@@ -202,7 +202,7 @@ class Profile(commands.Cog):
 
     @commands.hybrid_command()
     @app_commands.guilds(*GuildIDs.ALL_GUILDS)
-    async def deleteprofile(self, ctx: commands.Context):
+    async def deleteprofile(self, ctx: commands.Context) -> None:
         """Deletes your profile."""
         async with aiosqlite.connect("./db/database.db") as db:
             matching_user = await db.execute_fetchall(
@@ -227,7 +227,9 @@ class Profile(commands.Cog):
     @app_commands.guilds(*GuildIDs.ALL_GUILDS)
     @app_commands.default_permissions(administrator=True)
     @utils.check.is_moderator()
-    async def forcedeleteprofile(self, ctx: commands.Context, user: discord.User):
+    async def forcedeleteprofile(
+        self, ctx: commands.Context, user: discord.User
+    ) -> None:
         """Deletes the profile of another user, just in case."""
         async with aiosqlite.connect("./db/database.db") as db:
             matching_user = await db.execute_fetchall(
@@ -253,7 +255,7 @@ class Profile(commands.Cog):
     @commands.hybrid_command(aliases=["main", "setmain", "spmains", "profilemains"])
     @app_commands.guilds(*GuildIDs.ALL_GUILDS)
     @app_commands.describe(mains="Your mains, separated by commas.")
-    async def mains(self, ctx: commands.Context, *, mains: str = None):
+    async def mains(self, ctx: commands.Context, *, mains: str = None) -> None:
         """Sets your mains on your smash profile.
         Separates the input by commas, and then matches with names, nicknames and fighter numbers.
         Echoes have an *e* behind their fighter number.
@@ -277,7 +279,9 @@ class Profile(commands.Cog):
             await ctx.send(f"{ctx.author.mention}, I have set your mains to: {chars}")
 
     @mains.autocomplete("mains")
-    async def mains_autocomplete(self, interaction: discord.Interaction, current: str):
+    async def mains_autocomplete(
+        self, interaction: discord.Interaction, current: str
+    ) -> list[app_commands.Choice]:
         return self.character_autocomplete(current)
 
     @commands.hybrid_command(
@@ -285,7 +289,9 @@ class Profile(commands.Cog):
     )
     @app_commands.guilds(*GuildIDs.ALL_GUILDS)
     @app_commands.describe(secondaries="Your secondaries, separated by commas.")
-    async def secondaries(self, ctx: commands.Context, *, secondaries: str = None):
+    async def secondaries(
+        self, ctx: commands.Context, *, secondaries: str = None
+    ) -> None:
         """Sets your secondaries on your smash profile.
         Separates the input by commas, and then matches with names, nicknames and fighter numbers.
         Echoes have an *e* behind their fighter number.
@@ -312,7 +318,7 @@ class Profile(commands.Cog):
     @secondaries.autocomplete("secondaries")
     async def secondaries_autocomplete(
         self, interaction: discord.Interaction, current: str
-    ):
+    ) -> list[app_commands.Choice]:
         return self.character_autocomplete(current)
 
     @commands.hybrid_command(
@@ -320,7 +326,7 @@ class Profile(commands.Cog):
     )
     @app_commands.guilds(*GuildIDs.ALL_GUILDS)
     @app_commands.describe(pockets="Your pockets, separated by commas.")
-    async def pockets(self, ctx: commands.Context, *, pockets: str = None):
+    async def pockets(self, ctx: commands.Context, *, pockets: str = None) -> None:
         """Sets your pockets on your smash profile.
         Separates the input by commas, and then matches with names, nicknames and fighter numbers.
         Echoes have an *e* behind their fighter number.
@@ -347,13 +353,13 @@ class Profile(commands.Cog):
     @pockets.autocomplete("pockets")
     async def pockets_autocomplete(
         self, interaction: discord.Interaction, current: str
-    ):
+    ) -> list[app_commands.Choice]:
         return self.character_autocomplete(current)
 
     @commands.hybrid_command(aliases=["smashtag", "sptag", "settag"])
     @app_commands.guilds(*GuildIDs.ALL_GUILDS)
     @app_commands.describe(tag="Your tag.")
-    async def tag(self, ctx: commands.Context, *, tag: str = None):
+    async def tag(self, ctx: commands.Context, *, tag: str = None) -> None:
         """Sets your tag on your smash profile.
         Up to 30 characters long.
         """
@@ -460,7 +466,7 @@ class Profile(commands.Cog):
     @commands.hybrid_command(aliases=["setregion", "spregion", "country"])
     @app_commands.guilds(*GuildIDs.ALL_GUILDS)
     @app_commands.describe(region="Your region you want to display on your profile.")
-    async def region(self, ctx: commands.Context, *, region: str = None):
+    async def region(self, ctx: commands.Context, *, region: str = None) -> None:
         """Sets your region on your smash profile.
         Matches to commonly used regions, which are:
         North America, NA East, NA West, NA South, South America, Europe, Asia, Africa, Oceania.
@@ -498,7 +504,9 @@ class Profile(commands.Cog):
             )
 
     @region.autocomplete("region")
-    async def region_autocomplete(self, interaction: discord.Interaction, current: str):
+    async def region_autocomplete(
+        self, interaction: discord.Interaction, current: str
+    ) -> list[app_commands.Choice]:
         valid_regions = list(self.region_dict.keys())
 
         # Again, dont really need custom search here, these are just some very basic regions.
@@ -513,7 +521,7 @@ class Profile(commands.Cog):
     @commands.hybrid_command(aliases=["setnote", "spnote"])
     @app_commands.guilds(*GuildIDs.ALL_GUILDS)
     @app_commands.describe(note="Your note you want to display on your profile.")
-    async def note(self, ctx: commands.Context, *, note: str = None):
+    async def note(self, ctx: commands.Context, *, note: str = None) -> None:
         """Sets your note on your smash profile.
         Up to 150 characters long.
         """
@@ -545,7 +553,7 @@ class Profile(commands.Cog):
     )
     @app_commands.guilds(*GuildIDs.ALL_GUILDS)
     @app_commands.describe(colour="The hex colour code for your smash profile.")
-    async def colour(self, ctx: commands.Context, colour: str):
+    async def colour(self, ctx: commands.Context, colour: str) -> None:
         """Sets your embed colour on your smash profile.
         Use a hex colour code with a leading #.
         """
@@ -581,7 +589,7 @@ class Profile(commands.Cog):
     @commands.hybrid_command()
     @app_commands.guilds(*GuildIDs.ALL_GUILDS)
     @app_commands.describe(character="The character you are looking for.")
-    async def players(self, ctx: commands.Context, *, character: str):
+    async def players(self, ctx: commands.Context, *, character: str) -> None:
         """Looks up a character's players in the database.
         Sorted by mains, secondaries and pockets.
         """
@@ -684,11 +692,13 @@ class Profile(commands.Cog):
     @players.autocomplete("character")
     async def players_autocomplete(
         self, interaction: discord.Interaction, current: str
-    ):
+    ) -> list[app_commands.Choice]:
         return self.character_autocomplete(current)
 
     @profile.error
-    async def profile_error(self, ctx, error):
+    async def profile_error(
+        self, ctx: commands.Context, error: commands.CommandError
+    ) -> None:
         if isinstance(error, commands.UserNotFound):
             await ctx.send(
                 "I couldn't find this user, make sure you have the right one or just leave it blank."
@@ -697,7 +707,9 @@ class Profile(commands.Cog):
             raise error
 
     @forcedeleteprofile.error
-    async def forcedeleteprofile_error(self, ctx, error):
+    async def forcedeleteprofile_error(
+        self, ctx: commands.Context, error: commands.CommandError
+    ) -> None:
         if isinstance(error, commands.MissingPermissions):
             await ctx.send("Nice try, but you don't have the permissions to do that!")
         elif isinstance(error, commands.MissingRequiredArgument):
@@ -710,7 +722,9 @@ class Profile(commands.Cog):
             raise error
 
     @colour.error
-    async def colour_error(self, ctx, error):
+    async def colour_error(
+        self, ctx: commands.Context, error: commands.CommandError
+    ) -> None:
         if isinstance(error, commands.MissingRequiredArgument):
             await ctx.send(
                 f"Please choose a valid hex colour code. Example: `{ctx.prefix}colour #8a0f84`"
@@ -719,7 +733,9 @@ class Profile(commands.Cog):
             raise error
 
     @players.error
-    async def players_error(self, ctx, error):
+    async def players_error(
+        self, ctx: commands.Context, error: commands.CommandError
+    ) -> None:
         if isinstance(error, commands.MissingRequiredArgument):
             await ctx.send(
                 "Please input the character you want to look up players for."
@@ -728,6 +744,6 @@ class Profile(commands.Cog):
             raise error
 
 
-async def setup(bot):
+async def setup(bot) -> None:
     await bot.add_cog(Profile(bot))
     print("Profile cog loaded")

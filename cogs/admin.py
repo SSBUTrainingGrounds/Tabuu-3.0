@@ -15,7 +15,7 @@ from utils.ids import AdminVars, GuildIDs, GuildNames
 class Admin(commands.Cog):
     """Contains most general purpose Admin Commands."""
 
-    def __init__(self, bot):
+    def __init__(self, bot: commands.Bot) -> None:
         self.bot = bot
 
     @commands.hybrid_command()
@@ -23,7 +23,7 @@ class Admin(commands.Cog):
     @app_commands.describe(amount="The amount of messages to delete.")
     @app_commands.default_permissions(administrator=True)
     @utils.check.is_moderator()
-    async def clear(self, ctx: commands.Context, amount: int = 1):
+    async def clear(self, ctx: commands.Context, amount: int = 1) -> None:
         """Clears the last X messages from the channel the command is used in.
         If you do not specify an amount it defaults to 1.
         """
@@ -45,7 +45,9 @@ class Admin(commands.Cog):
     @app_commands.describe(user="The user to ban.", reason="The reason for the ban.")
     @app_commands.default_permissions(administrator=True)
     @utils.check.is_moderator()
-    async def ban(self, ctx: commands.Context, user: discord.User, *, reason: str):
+    async def ban(
+        self, ctx: commands.Context, user: discord.User, *, reason: str
+    ) -> None:
         """Bans a user from the current server.
         Asks you for confirmation beforehand.
         Tries to DM the user the reasoning along with the ban records.
@@ -109,7 +111,7 @@ class Admin(commands.Cog):
     @app_commands.describe(user="The user to unban.")
     @app_commands.default_permissions(administrator=True)
     @utils.check.is_moderator()
-    async def unban(self, ctx: commands.Context, user: discord.User):
+    async def unban(self, ctx: commands.Context, user: discord.User) -> None:
         """Removes the ban of a user from the current server."""
         await ctx.guild.unban(user)
         await ctx.send(f"{user.mention} has been unbanned!")
@@ -159,7 +161,9 @@ class Admin(commands.Cog):
     )
     @app_commands.default_permissions(administrator=True)
     @utils.check.is_moderator()
-    async def kick(self, ctx: commands.Context, member: discord.Member, *, reason: str):
+    async def kick(
+        self, ctx: commands.Context, member: discord.Member, *, reason: str
+    ) -> None:
         """Bans a user from the current server.
         Asks you for confirmation beforehand.
         Tries to DM the user the reasoning, similar to the ban command.
@@ -223,7 +227,7 @@ class Admin(commands.Cog):
     @utils.check.is_moderator()
     async def addrole(
         self, ctx: commands.Context, member: discord.Member, *, role: str
-    ):
+    ) -> None:
         """Adds a role to a member."""
         matching_role = utils.search.search_role(ctx.guild, role)
 
@@ -247,7 +251,7 @@ class Admin(commands.Cog):
     @utils.check.is_moderator()
     async def removerole(
         self, ctx: commands.Context, member: discord.Member, *, role: str
-    ):
+    ) -> None:
         """Removes a role from a member."""
         matching_role = utils.search.search_role(ctx.guild, role)
 
@@ -257,7 +261,7 @@ class Admin(commands.Cog):
     @removerole.autocomplete("role")
     async def removerole_autocomplete(
         self, interaction: discord.Interaction, current: str
-    ):
+    ) -> list[app_commands.Choice]:
         return utils.search.autocomplete_choices(
             current, [role.name for role in interaction.guild.roles]
         )
@@ -266,7 +270,7 @@ class Admin(commands.Cog):
     @app_commands.guilds(*GuildIDs.ALL_GUILDS)
     @app_commands.default_permissions(administrator=True)
     @utils.check.is_moderator()
-    async def editrole(self, ctx: commands.Context):
+    async def editrole(self, ctx: commands.Context) -> None:
         """Lists the group commands for editing a role."""
         if ctx.invoked_subcommand:
             return
@@ -291,7 +295,7 @@ class Admin(commands.Cog):
     @utils.check.is_moderator()
     async def editrole_name(
         self, ctx: commands.Context, role: discord.Role, *, name: str
-    ):
+    ) -> None:
         """Edits the name of a role."""
         old_role_name = role.name
 
@@ -313,7 +317,7 @@ class Admin(commands.Cog):
     @utils.check.is_moderator()
     async def editrole_colour(
         self, ctx: commands.Context, role: discord.Role, hex_colour: str
-    ):
+    ) -> None:
         """Edits the colour of a role, use a hex colour code."""
         # hex colour codes are 7 digits long and start with #
         if not hex_colour.startswith("#") or len(hex_colour) != 7:
@@ -348,7 +352,7 @@ class Admin(commands.Cog):
         role: discord.Role,
         emoji: str = None,
         attachment: Optional[discord.Attachment] = None,
-    ):
+    ) -> None:
         """Edits the role icon with an emoji or an attachment."""
 
         await ctx.defer()
@@ -413,7 +417,7 @@ class Admin(commands.Cog):
     @utils.check.is_moderator()
     async def editrole_mentionable(
         self, ctx: commands.Context, role: discord.Role, mentionable: bool
-    ):
+    ) -> None:
         """Makes the role mentionable or unmentionable. Use a boolean type."""
         try:
             await role.edit(mentionable=mentionable)
@@ -436,7 +440,7 @@ class Admin(commands.Cog):
     @utils.check.is_moderator()
     async def rename(
         self, ctx: commands.Context, member: discord.Member, *, name: str = None
-    ):
+    ) -> None:
         """Renames a member to the specified name."""
         await member.edit(nick=name)
         await ctx.send(
@@ -457,7 +461,7 @@ class Admin(commands.Cog):
         messageable: str,
         *,
         message: str,
-    ):
+    ) -> None:
         """Repeats a message in a given channel or thread, or replies to a message."""
         destination = None
 
@@ -484,7 +488,7 @@ class Admin(commands.Cog):
     @app_commands.describe(user="The user you want to see the last tracked names of.")
     @app_commands.default_permissions(administrator=True)
     @utils.check.is_moderator()
-    async def names(self, ctx: commands.Context, user: discord.User):
+    async def names(self, ctx: commands.Context, user: discord.User) -> None:
         """Gets you the current and past names of a User."""
         if user == self.bot.user:
             await ctx.send("Cannot look up the name history for this user!")
@@ -546,7 +550,7 @@ class Admin(commands.Cog):
     @app_commands.guilds(*GuildIDs.ALL_GUILDS)
     @app_commands.default_permissions(administrator=True)
     @utils.check.is_moderator()
-    async def modnote(self, ctx: commands.Context):
+    async def modnote(self, ctx: commands.Context) -> None:
         """Lists the group commands for setting and deleting notes."""
         if ctx.invoked_subcommand:
             return
@@ -571,7 +575,7 @@ class Admin(commands.Cog):
     @utils.check.is_moderator()
     async def modnote_set(
         self, ctx: commands.Context, user: discord.User, *, note: str
-    ):
+    ) -> None:
         """Sets a note on a user visible for the staff team."""
         note_id = random.randint(1000000, 9999999)
         timestamp = int(discord.utils.utcnow().timestamp())
@@ -602,7 +606,7 @@ class Admin(commands.Cog):
     @app_commands.guilds(*GuildIDs.ALL_GUILDS)
     @app_commands.default_permissions(administrator=True)
     @utils.check.is_moderator()
-    async def modnote_view(self, ctx: commands.Context, user: discord.User):
+    async def modnote_view(self, ctx: commands.Context, user: discord.User) -> None:
         """Views all of the notes of a user."""
         async with aiosqlite.connect("./db/database.db") as db:
             user_notes = await db.execute_fetchall(
@@ -638,7 +642,7 @@ class Admin(commands.Cog):
     @utils.check.is_moderator()
     async def modnote_delete(
         self, ctx: commands.Context, user: discord.User, note_id: str
-    ):
+    ) -> None:
         """Deletes a moderator note from a user."""
         async with aiosqlite.connect("./db/database.db") as db:
             matching_note = await db.execute_fetchall(
@@ -664,7 +668,7 @@ class Admin(commands.Cog):
     @modnote_delete.autocomplete("note_id")
     async def modnote_delete_autocomplete(
         self, interaction: discord.Interaction, current: str
-    ):
+    ) -> list[app_commands.Choice]:
         if not interaction.namespace.user:
             return []
 
@@ -690,7 +694,7 @@ class Admin(commands.Cog):
     @app_commands.describe(user="The user you want to look up.")
     @app_commands.default_permissions(administrator=True)
     @utils.check.is_moderator()
-    async def lookup(self, ctx: commands.Context, user: discord.User):
+    async def lookup(self, ctx: commands.Context, user: discord.User) -> None:
         """Looks up every little detail of a user.
         Calls the userinfo, warndetails, names and modnote view commands."""
         await ctx.send("Collecting information...")
@@ -713,7 +717,9 @@ class Admin(commands.Cog):
     # Error handling for the commands above.
     # They all are fairly similar
     @kick.error
-    async def kick_error(self, ctx, error):
+    async def kick_error(
+        self, ctx: commands.Context, error: commands.CommandError
+    ) -> None:
         if isinstance(error, commands.MissingRequiredArgument):
             await ctx.send("You need to specify a reason for the kick!")
         elif isinstance(error, commands.MemberNotFound):
@@ -730,7 +736,9 @@ class Admin(commands.Cog):
             raise error
 
     @ban.error
-    async def ban_error(self, ctx, error):
+    async def ban_error(
+        self, ctx: commands.Context, error: commands.CommandError
+    ) -> None:
         if isinstance(error, commands.MissingRequiredArgument):
             await ctx.send("You need to specify a member and a reason for the ban!")
         elif isinstance(error, commands.UserNotFound):
@@ -747,7 +755,9 @@ class Admin(commands.Cog):
             raise error
 
     @unban.error
-    async def unban_error(self, ctx, error):
+    async def unban_error(
+        self, ctx: commands.Context, error: commands.CommandError
+    ) -> None:
         if isinstance(error, commands.MissingRequiredArgument):
             await ctx.send("You need to specify a member to unban.")
         elif isinstance(error, commands.MissingPermissions):
@@ -764,14 +774,18 @@ class Admin(commands.Cog):
             raise error
 
     @syncbanlist.error
-    async def syncbanlist_error(self, ctx, error):
+    async def syncbanlist_error(
+        self, ctx: commands.Context, error: commands.CommandError
+    ) -> None:
         if isinstance(error, commands.MissingPermissions):
             await ctx.send("Nice try, but you don't have the permissions to do that!")
         else:
             raise error
 
     @addrole.error
-    async def addrole_error(self, ctx, error):
+    async def addrole_error(
+        self, ctx: commands.Context, error: commands.CommandError
+    ) -> None:
         if isinstance(error, commands.MissingRequiredArgument):
             await ctx.send("You need to specify a member and a role!")
         elif isinstance(error, commands.MemberNotFound):
@@ -791,7 +805,9 @@ class Admin(commands.Cog):
             raise error
 
     @removerole.error
-    async def removerole_error(self, ctx, error):
+    async def removerole_error(
+        self, ctx: commands.Context, error: commands.CommandError
+    ) -> None:
         if isinstance(error, commands.MissingRequiredArgument):
             await ctx.send("You need to specify a member and a role!")
         elif isinstance(error, commands.MemberNotFound):
@@ -811,14 +827,18 @@ class Admin(commands.Cog):
             raise error
 
     @editrole.error
-    async def editrole_error(self, ctx, error):
+    async def editrole_error(
+        self, ctx: commands.Context, error: commands.CommandError
+    ) -> None:
         if isinstance(error, commands.MissingPermissions):
             await ctx.send("Nice try, but you don't have the permissions to do that!")
         else:
             raise error
 
     @editrole_name.error
-    async def editrole_name_error(self, ctx, error):
+    async def editrole_name_error(
+        self, ctx: commands.Context, error: commands.CommandError
+    ) -> None:
         if isinstance(error, commands.MissingPermissions):
             await ctx.send("Nice try, but you don't have the permissions to do that!")
         elif isinstance(error, commands.RoleNotFound):
@@ -833,7 +853,9 @@ class Admin(commands.Cog):
             raise error
 
     @editrole_colour.error
-    async def editrole_colour_error(self, ctx, error):
+    async def editrole_colour_error(
+        self, ctx: commands.Context, error: commands.CommandError
+    ) -> None:
         if isinstance(error, commands.MissingPermissions):
             await ctx.send("Nice try, but you don't have the permissions to do that!")
         elif isinstance(error, commands.RoleNotFound):
@@ -844,7 +866,9 @@ class Admin(commands.Cog):
             raise error
 
     @editrole_icon.error
-    async def editrole_icon_error(self, ctx, error):
+    async def editrole_icon_error(
+        self, ctx: commands.Context, error: commands.CommandError
+    ) -> None:
         if isinstance(error, commands.MissingPermissions):
             await ctx.send("Nice try, but you don't have the permissions to do that!")
         elif isinstance(error, commands.RoleNotFound):
@@ -855,7 +879,9 @@ class Admin(commands.Cog):
             raise error
 
     @editrole_mentionable.error
-    async def editrole_mentionable_error(self, ctx, error):
+    async def editrole_mentionable_error(
+        self, ctx: commands.Context, error: commands.CommandError
+    ) -> None:
         if isinstance(error, commands.MissingPermissions):
             await ctx.send("Nice try, but you don't have the permissions to do that!")
         elif isinstance(error, commands.RoleNotFound):
@@ -868,7 +894,9 @@ class Admin(commands.Cog):
             raise error
 
     @clear.error
-    async def clear_error(self, ctx, error):
+    async def clear_error(
+        self, ctx: commands.Context, error: commands.CommandError
+    ) -> None:
         if isinstance(error, commands.MissingPermissions):
             await ctx.send("Nice try, but you don't have the permissions to do that!")
         elif isinstance(error, commands.BadArgument):
@@ -884,14 +912,18 @@ class Admin(commands.Cog):
             raise error
 
     @records.error
-    async def records_error(self, ctx, error):
+    async def records_error(
+        self, ctx: commands.Context, error: commands.CommandError
+    ) -> None:
         if isinstance(error, commands.MissingPermissions):
             await ctx.send("Nice try, but you don't have the permissions to do that!")
         else:
             raise error
 
     @rename.error
-    async def rename_error(self, ctx, error):
+    async def rename_error(
+        self, ctx: commands.Context, error: commands.CommandError
+    ) -> None:
         if isinstance(error, commands.MissingPermissions):
             await ctx.send("Nice try, but you don't have the permissions to do that!")
         elif isinstance(error, commands.MemberNotFound):
@@ -906,7 +938,9 @@ class Admin(commands.Cog):
             raise error
 
     @say.error
-    async def say_error(self, ctx, error):
+    async def say_error(
+        self, ctx: commands.Context, error: commands.CommandError
+    ) -> None:
         if isinstance(error, commands.MissingPermissions):
             await ctx.send("Nice try, but you don't have the permissions to do that!")
         elif isinstance(error, commands.MissingRequiredArgument):
@@ -921,7 +955,9 @@ class Admin(commands.Cog):
             raise error
 
     @names.error
-    async def names_error(self, ctx, error):
+    async def names_error(
+        self, ctx: commands.Context, error: commands.CommandError
+    ) -> None:
         if isinstance(error, commands.MissingPermissions):
             await ctx.send("Nice try, but you don't have the permissions to do that!")
         elif isinstance(
@@ -932,14 +968,18 @@ class Admin(commands.Cog):
             raise error
 
     @modnote.error
-    async def modnote_error(self, ctx, error):
+    async def modnote_error(
+        self, ctx: commands.Context, error: commands.CommandError
+    ) -> None:
         if isinstance(error, commands.MissingPermissions):
             await ctx.send("Nice try, but you don't have the permissions to do that!")
         else:
             raise error
 
     @modnote_set.error
-    async def modnote_set_error(self, ctx, error):
+    async def modnote_set_error(
+        self, ctx: commands.Context, error: commands.CommandError
+    ) -> None:
         if isinstance(error, commands.MissingPermissions):
             await ctx.send("Nice try, but you don't have the permissions to do that!")
         elif isinstance(error, commands.UserNotFound):
@@ -950,7 +990,9 @@ class Admin(commands.Cog):
             raise error
 
     @modnote_delete.error
-    async def modnote_delete_error(self, ctx, error):
+    async def modnote_delete_error(
+        self, ctx: commands.Context, error: commands.CommandError
+    ) -> None:
         if isinstance(error, commands.MissingPermissions):
             await ctx.send("Nice try, but you don't have the permissions to do that!")
         elif isinstance(error, commands.UserNotFound):
@@ -963,7 +1005,9 @@ class Admin(commands.Cog):
             raise error
 
     @modnote_view.error
-    async def modnote_view_error(self, ctx, error):
+    async def modnote_view_error(
+        self, ctx: commands.Context, error: commands.CommandError
+    ) -> None:
         if isinstance(error, commands.MissingPermissions):
             await ctx.send("Nice try, but you don't have the permissions to do that!")
         elif isinstance(
@@ -974,7 +1018,9 @@ class Admin(commands.Cog):
             raise error
 
     @lookup.error
-    async def lookup_error(self, ctx, error):
+    async def lookup_error(
+        self, ctx: commands.Context, error: commands.CommandError
+    ) -> None:
         if isinstance(error, commands.MissingPermissions):
             await ctx.send("Nice try, but you don't have the permissions to do that!")
         elif isinstance(
@@ -985,6 +1031,6 @@ class Admin(commands.Cog):
             raise error
 
 
-async def setup(bot):
+async def setup(bot) -> None:
     await bot.add_cog(Admin(bot))
     print("Admin cog loaded")

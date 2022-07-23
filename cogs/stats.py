@@ -20,13 +20,15 @@ class Stats(commands.Cog):
     User stats, Bot stats, Server stats, Role stats, you name it.
     """
 
-    def __init__(self, bot):
+    def __init__(self, bot: commands.Bot) -> None:
         self.bot = bot
 
     @commands.hybrid_command(aliases=["user", "user-info", "info"])
     @app_commands.guilds(*GuildIDs.ALL_GUILDS)
     @app_commands.describe(member="The member you want to get info about.")
-    async def userinfo(self, ctx: commands.Context, member: discord.Member = None):
+    async def userinfo(
+        self, ctx: commands.Context, member: discord.Member = None
+    ) -> None:
         """Some information about a given user, or yourself."""
         if member is None:
             member = ctx.author
@@ -90,7 +92,7 @@ class Stats(commands.Cog):
     @app_commands.describe(
         role="The role you want to get info about. Matches to your closest input."
     )
-    async def roleinfo(self, ctx: commands.Context, *, role: str):
+    async def roleinfo(self, ctx: commands.Context, *, role: str) -> None:
         """Basic information about a given role."""
         matching_role = utils.search.search_role(ctx.guild, role)
 
@@ -130,7 +132,7 @@ class Stats(commands.Cog):
     @roleinfo.autocomplete("role")
     async def roleinfo_autocomplete(
         self, interaction: discord.Interaction, current: str
-    ):
+    ) -> list[app_commands.Choice]:
         return utils.search.autocomplete_choices(
             current, [role.name for role in interaction.guild.roles]
         )
@@ -140,7 +142,7 @@ class Stats(commands.Cog):
     @app_commands.describe(
         role="The role you want to get info about. Matches to your closest input."
     )
-    async def listrole(self, ctx: commands.Context, *, role: str):
+    async def listrole(self, ctx: commands.Context, *, role: str) -> None:
         """Lists every member of a role.
         Well up to 60 members at least.
         """
@@ -170,14 +172,14 @@ class Stats(commands.Cog):
     @listrole.autocomplete("role")
     async def listrole_autocomplete(
         self, interaction: discord.Interaction, current: str
-    ):
+    ) -> list[app_commands.Choice]:
         return utils.search.autocomplete_choices(
             current, [role.name for role in interaction.guild.roles]
         )
 
     @commands.hybrid_command(aliases=["serverinfo"])
     @app_commands.guilds(*GuildIDs.ALL_GUILDS)
-    async def server(self, ctx: commands.Context):
+    async def server(self, ctx: commands.Context) -> None:
         """Various information about the server."""
         if not ctx.guild:
             await ctx.send("This command is only available on servers.")
@@ -237,7 +239,7 @@ class Stats(commands.Cog):
 
     @commands.hybrid_command(aliases=["botstats"])
     @app_commands.guilds(*GuildIDs.ALL_GUILDS)
-    async def stats(self, ctx: commands.Context):
+    async def stats(self, ctx: commands.Context) -> None:
         """Statistics and information about this bot."""
         proc = psutil.Process(os.getpid())
         uptime_seconds = time.time() - proc.create_time()
@@ -367,7 +369,7 @@ Events parsed: {self.bot.events_listened_to}
     @commands.hybrid_command()
     @app_commands.guilds(*GuildIDs.ALL_GUILDS)
     @app_commands.describe(move="The move you want get the mana cost for.")
-    async def mp4(self, ctx: commands.Context, *, move: str = None):
+    async def mp4(self, ctx: commands.Context, *, move: str = None) -> None:
         """Gives you the amount of mana used for any of Hero's moves."""
         if not move:
             await ctx.send(
@@ -394,20 +396,26 @@ Events parsed: {self.bot.events_listened_to}
             await ctx.send("Please input a valid move!")
 
     @mp4.autocomplete("move")
-    async def mp4_autocomplete(self, interaction: discord.Interaction, current: str):
+    async def mp4_autocomplete(
+        self, interaction: discord.Interaction, current: str
+    ) -> list[app_commands.Choice]:
         return utils.search.autocomplete_choices(
             current, [m.title() for m in self.mana_dict]
         )
 
     @userinfo.error
-    async def userinfo_error(self, ctx, error):
+    async def userinfo_error(
+        self, ctx: commands.Context, error: commands.CommandError
+    ) -> None:
         if isinstance(error, commands.MemberNotFound):
             await ctx.send("You need to mention a member, or just leave it blank.")
         else:
             raise error
 
     @listrole.error
-    async def listrole_error(self, ctx, error):
+    async def listrole_error(
+        self, ctx: commands.Context, error: commands.CommandError
+    ) -> None:
         if isinstance(error, commands.RoleNotFound):
             await ctx.send("You need to name a valid role!")
         elif isinstance(error, commands.MissingPermissions):
@@ -423,7 +431,9 @@ Events parsed: {self.bot.events_listened_to}
             raise error
 
     @roleinfo.error
-    async def roleinfo_error(self, ctx, error):
+    async def roleinfo_error(
+        self, ctx: commands.Context, error: commands.CommandError
+    ) -> None:
         if isinstance(error, commands.RoleNotFound):
             await ctx.send("You need to name a valid role!")
         elif isinstance(error, commands.MissingPermissions):
@@ -439,6 +449,6 @@ Events parsed: {self.bot.events_listened_to}
             raise error
 
 
-async def setup(bot):
+async def setup(bot) -> None:
     await bot.add_cog(Stats(bot))
     print("Stats cog loaded")

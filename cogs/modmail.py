@@ -10,7 +10,7 @@ from utils.ids import GuildIDs, TGChannelIDs, TGRoleIDs
 class ConfirmationButtons(discord.ui.View):
     """The buttons for confirming/cancelling the request."""
 
-    def __init__(self, member: discord.Member = None):
+    def __init__(self, member: discord.Member = None) -> None:
         super().__init__()
 
         self.confirm = None
@@ -22,7 +22,7 @@ class ConfirmationButtons(discord.ui.View):
         self,
         interaction: discord.Interaction,
         button: discord.ui.Button,
-    ):
+    ) -> None:
         self.confirm = True
         self.clear_items()
         await interaction.response.edit_message(content="Creating Thread...", view=self)
@@ -33,13 +33,13 @@ class ConfirmationButtons(discord.ui.View):
         self,
         interaction: discord.Interaction,
         button: discord.ui.Button,
-    ):
+    ) -> None:
         self.confirm = False
         self.clear_items()
         await interaction.response.edit_message(content="Request Cancelled.", view=self)
         self.stop()
 
-    async def interaction_check(self, interaction: discord.Interaction):
+    async def interaction_check(self, interaction: discord.Interaction) -> bool:
         # We make sure its the right member thats pressing the button.
         # Not really needed since the message is ephemeral anyways.
         return interaction.user == self.member
@@ -51,7 +51,7 @@ class ModmailButton(discord.ui.View):
     since it is ideally only used one time and always does the same thing.
     """
 
-    def __init__(self):
+    def __init__(self) -> None:
         super().__init__(timeout=None)
 
     @discord.ui.button(
@@ -64,7 +64,7 @@ class ModmailButton(discord.ui.View):
         self,
         interaction: discord.Interaction,
         button: discord.ui.Button,
-    ):
+    ) -> None:
 
         view = ConfirmationButtons(interaction.user)
 
@@ -120,7 +120,9 @@ class ModmailButton(discord.ui.View):
 
 
 @app_commands.context_menu(name="Report This Message")
-async def report_message(interaction: discord.Interaction, message: discord.Message):
+async def report_message(
+    interaction: discord.Interaction, message: discord.Message
+) -> None:
     """Context menu command for reporting a message to the moderator team.
     Context menu commands unfortunately cannot be inside of a Cog, so we define it here.
     """
@@ -164,7 +166,7 @@ async def report_message(interaction: discord.Interaction, message: discord.Mess
 class Modmail(commands.Cog):
     """Contains the "new", modmail thread setup and also the "old" modmail command."""
 
-    def __init__(self, bot):
+    def __init__(self, bot: commands.Bot) -> None:
         self.bot = bot
 
         # We have to add the context command manually.
@@ -173,7 +175,7 @@ class Modmail(commands.Cog):
         )
 
     @commands.Cog.listener()
-    async def on_ready(self):
+    async def on_ready(self) -> None:
         # Adds the modmail button if it hasnt already.
         # On_ready gets called multiple times, so the check is needed.
         if not self.bot.modmail_button_added:
@@ -182,7 +184,7 @@ class Modmail(commands.Cog):
 
     @commands.command()
     @utils.check.is_moderator()
-    async def setupmodmailbutton(self, ctx: commands.Context):
+    async def setupmodmailbutton(self, ctx: commands.Context) -> None:
         """Sets up a persistent button for Modmail.
         Should really only be used one time.
         """
@@ -192,7 +194,7 @@ class Modmail(commands.Cog):
         )
 
     @commands.command()
-    async def modmail(self, ctx: commands.Context, *, args: str):
+    async def modmail(self, ctx: commands.Context, *, args: str) -> None:
         """Very basic one-way modmail system.
         Only works in the Bots DMs.
         """
@@ -232,14 +234,18 @@ class Modmail(commands.Cog):
             )
 
     @setupmodmailbutton.error
-    async def setupmodmailbutton_error(self, ctx, error):
+    async def setupmodmailbutton_error(
+        self, ctx: commands.Context, error: commands.CommandError
+    ) -> None:
         if isinstance(error, commands.MissingPermissions):
             await ctx.send("Nice try, but you don't have the permissions to do that!")
         else:
             raise error
 
     @modmail.error
-    async def modmail_error(self, ctx, error):
+    async def modmail_error(
+        self, ctx: commands.Context, error: commands.CommandError
+    ) -> None:
         if isinstance(error, commands.MissingRequiredArgument):
             await ctx.send(
                 "Please provide a message to the moderators. It should look something like:\n"
@@ -249,6 +255,6 @@ class Modmail(commands.Cog):
             raise error
 
 
-async def setup(bot):
+async def setup(bot) -> None:
     await bot.add_cog(Modmail(bot))
     print("Modmail cog loaded")

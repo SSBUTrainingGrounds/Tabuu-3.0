@@ -13,7 +13,7 @@ class Responses(discord.ui.Select):
     Every command is explained in here.
     """
 
-    def __init__(self, prefix: str):
+    def __init__(self, prefix: str) -> None:
         # We dont have access to the bot prefix here,
         # So we have to pass it in manually.
         self.prefix = prefix
@@ -75,7 +75,7 @@ class Responses(discord.ui.Select):
             options=options,
         )
 
-    async def callback(self, interaction: discord.Interaction):
+    async def callback(self, interaction: discord.Interaction) -> None:
         if self.values[0] == "Moderation Commands":
             embed = discord.Embed(
                 title="🕵️Moderation Commands🕵️",
@@ -275,7 +275,7 @@ class Responses(discord.ui.Select):
 class DropdownHelp(discord.ui.View):
     """Adds the Items to the Dropdown."""
 
-    def __init__(self, prefix: str):
+    def __init__(self, prefix: str) -> None:
         self.prefix = prefix
         super().__init__()
 
@@ -283,7 +283,9 @@ class DropdownHelp(discord.ui.View):
 
 
 class CustomHelp(commands.HelpCommand):
-    async def help_embed(self, command: Union[commands.Command, commands.Group]):
+    async def help_embed(
+        self, command: Union[commands.Command, commands.Group]
+    ) -> discord.Embed:
         """Creates a help embed with useful information.
         Luckily most things work for both commands and groups.
         """
@@ -318,7 +320,7 @@ class CustomHelp(commands.HelpCommand):
 
         return embed
 
-    async def send_bot_help(self, mapping):
+    async def send_bot_help(self, mapping) -> None:
         """Sends you the dropdown with every command and explanation on how to use it.
         The user can choose which dropdown they wanna see,
         it is intentionally grouped different than in our cogs.
@@ -331,7 +333,7 @@ class CustomHelp(commands.HelpCommand):
             view=DropdownHelp(self.context.prefix),
         )
 
-    async def send_cog_help(self, cog: commands.Cog):
+    async def send_cog_help(self, cog: commands.Cog) -> None:
         """We dont really want to send out anything here,
         since we grouped the commands above a lot differently than the cogs would.
         So instead we just send out the command not found error,
@@ -340,14 +342,14 @@ class CustomHelp(commands.HelpCommand):
         """
         await self.send_error_message(self.command_not_found(cog.qualified_name))
 
-    async def send_command_help(self, command: commands.Command):
+    async def send_command_help(self, command: commands.Command) -> None:
         """Sends you specific help information about a command."""
         embed = await self.help_embed(command)
 
         channel = self.get_destination()
         await channel.send(embed=embed)
 
-    async def send_group_help(self, group: commands.Group):
+    async def send_group_help(self, group: commands.Group) -> None:
         """Sends you help information for grouped commands."""
         command_names = [command.name for command in group.commands]
 
@@ -365,7 +367,7 @@ class CustomHelp(commands.HelpCommand):
 
 
 class Help(commands.Cog):
-    def __init__(self, bot):
+    def __init__(self, bot: commands.Bot) -> None:
         self.bot = bot
 
         help_command = CustomHelp()
@@ -378,7 +380,7 @@ class Help(commands.Cog):
     )
     @app_commands.guilds(*GuildIDs.ALL_GUILDS)
     @app_commands.describe(command="The optional command you need help with.")
-    async def help(self, interaction: discord.Interaction, command: str = None):
+    async def help(self, interaction: discord.Interaction, command: str = None) -> None:
         """The help command, but replicated as a slash command, mostly.
         We cannot use command.can_run here, since we cannot get the context from an interaction.
         The rest is replicated as close as possible.
@@ -461,7 +463,7 @@ class Help(commands.Cog):
     @help.autocomplete("command")
     async def command_autocomplete(
         self, interaction: discord.Interaction, current: str
-    ):
+    ) -> list[app_commands.Choice]:
         command_list = []
         for cmd in self.bot.commands:
             if isinstance(cmd, commands.Group):
@@ -471,6 +473,6 @@ class Help(commands.Cog):
         return utils.search.autocomplete_choices(current, command_list)
 
 
-async def setup(bot):
+async def setup(bot) -> None:
     await bot.add_cog(Help(bot))
     print("Help cog loaded")

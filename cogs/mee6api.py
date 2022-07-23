@@ -17,12 +17,12 @@ class Mee6api(commands.Cog):
     Both manually via a Command and automatically via a Task.
     """
 
-    def __init__(self, bot):
+    def __init__(self, bot: commands.Bot) -> None:
         self.bot = bot
 
         self.update_roles.start()
 
-    def cog_unload(self):
+    def cog_unload(self) -> None:
         self.update_roles.cancel()
 
     async def update_level_role(
@@ -79,7 +79,9 @@ class Mee6api(commands.Cog):
     @commands.cooldown(1, 300, commands.BucketType.user)
     @app_commands.guilds(*GuildIDs.ALL_GUILDS)
     @app_commands.describe(member="The member you want to update the level role of.")
-    async def updatelevel(self, ctx: commands.Context, member: discord.Member = None):
+    async def updatelevel(
+        self, ctx: commands.Context, member: discord.Member = None
+    ) -> None:
         """Updates your Level Role manually.
         Can also be used on the behalf of other users.
         """
@@ -116,7 +118,9 @@ class Mee6api(commands.Cog):
             )
 
     @updatelevel.error
-    async def updatelevel_error(self, ctx, error):
+    async def updatelevel_error(
+        self, ctx: commands.Context, error: commands.CommandError
+    ) -> None:
         if isinstance(error, commands.CommandOnCooldown):
             await ctx.send(
                 f"{ctx.author.mention}, you are on cooldown for another "
@@ -139,7 +143,7 @@ class Mee6api(commands.Cog):
             raise error
 
     @tasks.loop(hours=23)
-    async def update_roles(self):
+    async def update_roles(self) -> None:
         """Updates the Level Roles of every User in the Server automatically, every 23 hours.
         Pretty much the same as the Command above, with a few minor tweaks.
         Right now we have 4000 Members and this takes around 1:10 Minutes.
@@ -168,10 +172,10 @@ class Mee6api(commands.Cog):
         logger.info("Successfully updated level roles!")
 
     @update_roles.before_loop
-    async def before_update_roles(self):
+    async def before_update_roles(self) -> None:
         await self.bot.wait_until_ready()
 
 
-async def setup(bot):
+async def setup(bot) -> None:
     await bot.add_cog(Mee6api(bot))
     print("Mee6api cog loaded")

@@ -24,7 +24,7 @@ class Events(commands.Cog):
     Autorole, Status updates, Tournament Pings and so on.
     """
 
-    def __init__(self, bot):
+    def __init__(self, bot: commands.Bot) -> None:
         self.bot = bot
 
         self.change_status.start()
@@ -60,7 +60,7 @@ class Events(commands.Cog):
     )
 
     @tasks.loop(seconds=600)
-    async def change_status(self):
+    async def change_status(self) -> None:
         """Changes the status every 10 Minutes."""
         await self.bot.change_presence(
             activity=discord.Game(
@@ -73,11 +73,11 @@ class Events(commands.Cog):
         )
 
     @change_status.before_loop
-    async def before_change_status(self):
+    async def before_change_status(self) -> None:
         await self.bot.wait_until_ready()
 
     @commands.Cog.listener()
-    async def on_member_join(self, member: discord.Member):
+    async def on_member_join(self, member: discord.Member) -> None:
         async with aiosqlite.connect("./db/database.db") as db:
             matching_user = await db.execute_fetchall(
                 """SELECT * FROM muted WHERE user_id = :user_id""",
@@ -143,7 +143,7 @@ class Events(commands.Cog):
         member: discord.Member,
         before: discord.VoiceState,
         after: discord.VoiceState,
-    ):
+    ) -> None:
         # Adds/removes a VC role when you join/leave a VC channel.
         voice_channel = TGChannelIDs.GENERAL_VOICE_CHAT
         if (
@@ -171,7 +171,7 @@ class Events(commands.Cog):
                 pass
 
     @commands.Cog.listener()
-    async def on_user_update(self, before: discord.User, after: discord.User):
+    async def on_user_update(self, before: discord.User, after: discord.User) -> None:
         # For tracking the last 5 username updates.
         if before.name != after.name:
             async with aiosqlite.connect("./db/database.db") as db:
@@ -196,7 +196,9 @@ class Events(commands.Cog):
                 await db.commit()
 
     @commands.Cog.listener()
-    async def on_member_update(self, before: discord.Member, after: discord.Member):
+    async def on_member_update(
+        self, before: discord.Member, after: discord.Member
+    ) -> None:
         # For tracking the last 5 nickname updates.
         if before.display_name not in [after.display_name, before.name]:
             async with aiosqlite.connect("./db/database.db") as db:
@@ -268,7 +270,7 @@ class Events(commands.Cog):
     @commands.Cog.listener()
     async def on_command_error(
         self, ctx: commands.Context, error: commands.CommandError
-    ):
+    ) -> None:
         logger = self.bot.get_logger("bot.commands")
         logger.warning(
             f"Command triggered an Error: {ctx.prefix}{ctx.invoked_with} "
@@ -307,7 +309,7 @@ class Events(commands.Cog):
             raise error
 
     @commands.Cog.listener()
-    async def on_command_completion(self, ctx: commands.Context):
+    async def on_command_completion(self, ctx: commands.Context) -> None:
         logger = self.bot.get_logger("bot.commands")
         logger.info(
             f"Command successfully ran: {ctx.prefix}{ctx.invoked_with} "
@@ -315,7 +317,7 @@ class Events(commands.Cog):
         )
 
     @commands.Cog.listener()
-    async def on_command(self, ctx: commands.Context):
+    async def on_command(self, ctx: commands.Context) -> None:
         self.bot.commands_ran += 1
 
     @commands.Cog.listener()
@@ -327,22 +329,22 @@ class Events(commands.Cog):
         self.bot.commands_ran += 1
 
     @commands.Cog.listener()
-    async def on_socket_event_type(self, event_type: str):
+    async def on_socket_event_type(self, event_type: str) -> None:
         self.bot.events_listened_to += 1
 
     # These just log when the bot loses/regains connection
     @commands.Cog.listener()
-    async def on_connect(self):
+    async def on_connect(self) -> None:
         logger = self.bot.get_logger("bot.connection")
         logger.info("Connected to discord.")
 
     @commands.Cog.listener()
-    async def on_disconnect(self):
+    async def on_disconnect(self) -> None:
         logger = self.bot.get_logger("bot.connection")
         logger.warning("Lost connection to discord.")
 
     @commands.Cog.listener()
-    async def on_resumed(self):
+    async def on_resumed(self) -> None:
         logger = self.bot.get_logger("bot.connection")
         logger.info("Resumed connection to discord.")
 
@@ -367,7 +369,7 @@ class Events(commands.Cog):
     )
 
     @tasks.loop(time=utils.time.convert_to_utc(so_time, TournamentReminders.TIMEZONE))
-    async def so_ping(self):
+    async def so_ping(self) -> None:
         """This and the tos_ping tasks remind the Tournament People 1 hour before our Tournaments.
         I don't know why but we have to convert the Timezones ourselves,
         but the built-in method will not work for me.
@@ -403,7 +405,7 @@ class Events(commands.Cog):
             )
 
     @tasks.loop(time=utils.time.convert_to_utc(tos_time, TournamentReminders.TIMEZONE))
-    async def tos_ping(self):
+    async def tos_ping(self) -> None:
         if not TournamentReminders.PING_ENABLED:
             return
 
@@ -431,7 +433,7 @@ class Events(commands.Cog):
             )
 
     @tasks.loop(time=utils.time.convert_to_utc(dt_time, TournamentReminders.TIMEZONE))
-    async def dt_ping(self):
+    async def dt_ping(self) -> None:
         if not TournamentReminders.PING_ENABLED:
             return
 
@@ -453,18 +455,18 @@ class Events(commands.Cog):
             )
 
     @so_ping.before_loop
-    async def before_so_ping(self):
+    async def before_so_ping(self) -> None:
         await self.bot.wait_until_ready()
 
     @tos_ping.before_loop
-    async def before_tos_ping(self):
+    async def before_tos_ping(self) -> None:
         await self.bot.wait_until_ready()
 
     @dt_ping.before_loop
-    async def before_dt_ping(self):
+    async def before_dt_ping(self) -> None:
         await self.bot.wait_until_ready()
 
 
-async def setup(bot):
+async def setup(bot) -> None:
     await bot.add_cog(Events(bot))
     print("Events cog loaded")

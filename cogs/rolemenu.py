@@ -12,14 +12,14 @@ class Rolemenu(commands.Cog):
     As well as the listeners to add/remove these roles accordingly.
     """
 
-    def __init__(self, bot):
+    def __init__(self, bot: commands.Bot) -> None:
         self.bot = bot
 
     @commands.hybrid_group()
     @app_commands.guilds(*GuildIDs.ALL_GUILDS)
     @app_commands.default_permissions(administrator=True)
     @utils.check.is_moderator()
-    async def rolemenu(self, ctx: commands.Context):
+    async def rolemenu(self, ctx: commands.Context) -> None:
         """Lists the group commands for the role menus."""
         if ctx.invoked_subcommand:
             return
@@ -46,7 +46,7 @@ class Rolemenu(commands.Cog):
     @utils.check.is_moderator()
     async def rolemenu_new(
         self, ctx: commands.Context, message: str, emoji: str, role: discord.Role
-    ):
+    ) -> None:
         """Creates a brand new role menu."""
         # Makes sure the message and emoji are valid.
 
@@ -112,7 +112,7 @@ class Rolemenu(commands.Cog):
         exclusive: bool = False,
         *,
         role_requirements: str = None,
-    ):
+    ) -> None:
         """Modifies a role menu with either a role requirement, or makes it "exclusive".
         Which means that a user can only have 1 of those roles at once.
         """
@@ -171,7 +171,7 @@ class Rolemenu(commands.Cog):
     @rolemenu_modify.autocomplete("message")
     async def modifyrolemenu_autocomplete(
         self, interaction: discord.Interaction, current: str
-    ):
+    ) -> list[app_commands.Choice]:
         async with aiosqlite.connect("./db/database.db") as db:
             message_id = await db.execute_fetchall(
                 """SELECT message_id FROM reactrole"""
@@ -192,7 +192,7 @@ class Rolemenu(commands.Cog):
     @app_commands.describe(message="The message of the role menu you want to delete.")
     @app_commands.default_permissions(administrator=True)
     @utils.check.is_moderator()
-    async def rolemenu_delete(self, ctx: commands.Context, message: str):
+    async def rolemenu_delete(self, ctx: commands.Context, message: str) -> None:
         """Completely deletes a role menu entry from the database."""
 
         async with aiosqlite.connect("./db/database.db") as db:
@@ -217,7 +217,7 @@ class Rolemenu(commands.Cog):
     @rolemenu_delete.autocomplete("message")
     async def deleterolemenu_autocomplete(
         self, interaction: discord.Interaction, current: str
-    ):
+    ) -> list[app_commands.Choice]:
         async with aiosqlite.connect("./db/database.db") as db:
             message_id = await db.execute_fetchall(
                 """SELECT message_id FROM reactrole"""
@@ -237,7 +237,7 @@ class Rolemenu(commands.Cog):
     @app_commands.guilds(*GuildIDs.ALL_GUILDS)
     @app_commands.default_permissions(administrator=True)
     @utils.check.is_moderator()
-    async def rolemenu_get(self, ctx: commands.Context):
+    async def rolemenu_get(self, ctx: commands.Context) -> None:
         """Lists every currently active role menu."""
         async with aiosqlite.connect("./db/database.db") as db:
             rolemenu_entries = await db.execute_fetchall(
@@ -289,7 +289,9 @@ class Rolemenu(commands.Cog):
             await ctx.send("Error! Too many entries to list!")
 
     @commands.Cog.listener()
-    async def on_raw_reaction_add(self, payload: discord.RawReactionActionEvent):
+    async def on_raw_reaction_add(
+        self, payload: discord.RawReactionActionEvent
+    ) -> None:
         # The listener to actually add the correct role on a raw reaction event.
         # Also does the checking for the special properties.
 
@@ -365,7 +367,9 @@ class Rolemenu(commands.Cog):
                 await payload.member.add_roles(role_tbd)
 
     @commands.Cog.listener()
-    async def on_raw_reaction_remove(self, payload: discord.RawReactionActionEvent):
+    async def on_raw_reaction_remove(
+        self, payload: discord.RawReactionActionEvent
+    ) -> None:
         # The listener to remove the correct role on a raw reaction remove event.
         # Does not need any additional checking.
         async with aiosqlite.connect("./db/database.db") as db:
@@ -393,14 +397,18 @@ class Rolemenu(commands.Cog):
                 ).remove_roles(role_tbd)
 
     @rolemenu.error
-    async def rolemenu_error(self, ctx, error):
+    async def rolemenu_error(
+        self, ctx: commands.Context, error: commands.CommandError
+    ) -> None:
         if isinstance(error, commands.MissingPermissions):
             await ctx.send("Nice try, but you don't have the permissions to do that!")
         else:
             raise error
 
     @rolemenu_new.error
-    async def rolemenu_new_error(self, ctx, error):
+    async def rolemenu_new_error(
+        self, ctx: commands.Context, error: commands.CommandError
+    ) -> None:
         if isinstance(error, commands.MissingPermissions):
             await ctx.send("Nice try, but you don't have the permissions to do that!")
         elif isinstance(
@@ -414,7 +422,9 @@ class Rolemenu(commands.Cog):
             raise error
 
     @rolemenu_delete.error
-    async def rolemenu_delete_error(self, ctx, error):
+    async def rolemenu_delete_error(
+        self, ctx: commands.Context, error: commands.CommandError
+    ) -> None:
         if isinstance(error, commands.MissingPermissions):
             await ctx.send("Nice try, but you don't have the permissions to do that!")
         elif isinstance(
@@ -425,7 +435,9 @@ class Rolemenu(commands.Cog):
             raise error
 
     @rolemenu_modify.error
-    async def rolemenu_modify_error(self, ctx, error):
+    async def rolemenu_modify_error(
+        self, ctx: commands.Context, error: commands.CommandError
+    ) -> None:
         if isinstance(error, commands.MissingPermissions):
             await ctx.send("Nice try, but you don't have the permissions to do that!")
         elif isinstance(error, commands.RoleNotFound):
@@ -444,13 +456,15 @@ class Rolemenu(commands.Cog):
             raise error
 
     @rolemenu_get.error
-    async def rolemenu_get_error(self, ctx, error):
+    async def rolemenu_get_error(
+        self, ctx: commands.Context, error: commands.CommandError
+    ) -> None:
         if isinstance(error, commands.MissingPermissions):
             await ctx.send("Nice try, but you don't have the permissions to do that!")
         else:
             raise error
 
 
-async def setup(bot):
+async def setup(bot) -> None:
     await bot.add_cog(Rolemenu(bot))
     print("Rolemenu cog loaded")

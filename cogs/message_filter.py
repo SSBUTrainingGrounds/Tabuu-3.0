@@ -21,11 +21,11 @@ class MessageFilter(commands.Cog):
     the possibility to blacklist certain words.
     """
 
-    def __init__(self, bot):
+    def __init__(self, bot: commands.Bot) -> None:
         self.bot = bot
 
     @commands.Cog.listener()
-    async def on_message(self, message: discord.Message):
+    async def on_message(self, message: discord.Message) -> None:
         # Dont want any recursive stuff to happen,
         # so any messages from tabuu 3.0 wont get checked, just in case.
         if message.author == self.bot.user:
@@ -122,6 +122,6 @@ class MessageFilter(commands.Cog):
                 break
 
 
-async def setup(bot):
+async def setup(bot) -> None:
     await bot.add_cog(MessageFilter(bot))
     print("Message Filter cog loaded")

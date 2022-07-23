@@ -15,7 +15,7 @@ from utils.time import convert_time
 class Mute(commands.Cog):
     """Contains the custom mute system."""
 
-    def __init__(self, bot):
+    def __init__(self, bot: commands.Bot) -> None:
         self.bot = bot
 
     def get_muted_role(self, guild_id: int) -> Optional[int]:
@@ -28,7 +28,7 @@ class Mute(commands.Cog):
 
         return None
 
-    async def add_mute(self, member: discord.Member):
+    async def add_mute(self, member: discord.Member) -> None:
         """Adds the mute entry in the database,
         and tries to add the role in both servers.
         """
@@ -65,7 +65,7 @@ class Mute(commands.Cog):
                         f"Tried to add muted role in {guild.name} server but it failed: {exc}"
                     )
 
-    async def remove_mute(self, member: discord.Member):
+    async def remove_mute(self, member: discord.Member) -> None:
         """Basically reverses the add_mute function.
         Removes the muted entry from the database
         and tries to remove the role in both servers.
@@ -94,7 +94,7 @@ class Mute(commands.Cog):
                         f"Tried to remove muted role in {guild.name} server but it failed: {exc}"
                     )
 
-    async def add_timeout(self, member: discord.Member, time: datetime):
+    async def add_timeout(self, member: discord.Member, time: datetime) -> None:
         """Tries to add the timeout on both servers."""
 
         for guild_id in GuildIDs.MOD_GUILDS:
@@ -108,7 +108,7 @@ class Mute(commands.Cog):
                         f"Tried to add timeout in {guild.name} server but it failed: {exc}"
                     )
 
-    async def remove_timeout(self, member: discord.Member):
+    async def remove_timeout(self, member: discord.Member) -> None:
         """Tries to remove the timeout on both servers."""
 
         for guild_id in GuildIDs.MOD_GUILDS:
@@ -130,7 +130,9 @@ class Mute(commands.Cog):
     )
     @app_commands.default_permissions(administrator=True)
     @utils.check.is_moderator()
-    async def mute(self, ctx: commands.Context, member: discord.Member, *, reason: str):
+    async def mute(
+        self, ctx: commands.Context, member: discord.Member, *, reason: str
+    ) -> None:
         """Mutes a member in all servers indefinitely.
         Also tries to DM the member the reason for the mute."""
         async with aiosqlite.connect("./db/database.db") as db:
@@ -164,7 +166,7 @@ class Mute(commands.Cog):
     @app_commands.describe(member="The member to unmute.")
     @app_commands.default_permissions(administrator=True)
     @utils.check.is_moderator()
-    async def unmute(self, ctx: commands.Context, member: discord.Member):
+    async def unmute(self, ctx: commands.Context, member: discord.Member) -> None:
         """Unmutes a member in all servers and tries to notify them via DM."""
         async with aiosqlite.connect("./db/database.db") as db:
             matching_user = await db.execute_fetchall(
@@ -203,7 +205,7 @@ class Mute(commands.Cog):
         mute_time: str,
         *,
         reason: str,
-    ):
+    ) -> None:
         """Mutes a member in both servers, waits for a duration and unmutes them again."""
         # Converts the input into the seconds, and also a human-readable-string.
         seconds, time_muted = convert_time(mute_time)
@@ -285,7 +287,7 @@ class Mute(commands.Cog):
         mute_time: str,
         *,
         reason: str,
-    ):
+    ) -> None:
         """Times out a member for a specified amount of time.
         Very similar to the mute command, but with the built in time out function."""
         # Converts the time again, we dont need the read_time string though.
@@ -335,7 +337,9 @@ class Mute(commands.Cog):
     @app_commands.describe(member="The member to remove the time out from.")
     @app_commands.default_permissions(administrator=True)
     @utils.check.is_moderator()
-    async def removetimeout(self, ctx: commands.Context, member: discord.Member):
+    async def removetimeout(
+        self, ctx: commands.Context, member: discord.Member
+    ) -> None:
         """Removes a timeout from a member."""
         # We check first if the member is on timeout.
         if not member.is_timed_out():
@@ -357,7 +361,9 @@ class Mute(commands.Cog):
         await ctx.send(f"Removed the timeout of {member.mention}")
 
     @mute.error
-    async def mute_error(self, ctx, error):
+    async def mute_error(
+        self, ctx: commands.Context, error: commands.CommandError
+    ) -> None:
         if isinstance(error, commands.MissingRequiredArgument):
             await ctx.send("You need to specify a reason for the mute!")
         elif isinstance(error, commands.MemberNotFound):
@@ -368,7 +374,9 @@ class Mute(commands.Cog):
             raise error
 
     @unmute.error
-    async def unmute_error(self, ctx, error):
+    async def unmute_error(
+        self, ctx: commands.Context, error: commands.CommandError
+    ) -> None:
         if isinstance(
             error, (commands.MissingRequiredArgument, commands.MemberNotFound)
         ):
@@ -379,7 +387,9 @@ class Mute(commands.Cog):
             raise error
 
     @tempmute.error
-    async def tempmute_error(self, ctx, error):
+    async def tempmute_error(
+        self, ctx: commands.Context, error: commands.CommandError
+    ) -> None:
         if isinstance(error, commands.MissingRequiredArgument):
             await ctx.send(
                 "You need to mention a member, an amount of time, and a reason!"
@@ -398,7 +408,9 @@ class Mute(commands.Cog):
             raise error
 
     @timeout.error
-    async def timeout_error(self, ctx, error):
+    async def timeout_error(
+        self, ctx: commands.Context, error: commands.CommandError
+    ) -> None:
         if isinstance(error, commands.MissingPermissions):
             await ctx.send("Nice try, but you don't have the permissions to do that!")
         elif isinstance(error, commands.MissingRequiredArgument):
@@ -416,7 +428,9 @@ class Mute(commands.Cog):
             raise error
 
     @removetimeout.error
-    async def removetimeout_error(self, ctx, error):
+    async def removetimeout_error(
+        self, ctx: commands.Context, error: commands.CommandError
+    ) -> None:
         if isinstance(error, commands.MissingPermissions):
             await ctx.send("Nice try, but you don't have the permissions to do that!")
         elif isinstance(
@@ -427,6 +441,6 @@ class Mute(commands.Cog):
             raise error
 
 
-async def setup(bot):
+async def setup(bot) -> None:
     await bot.add_cog(Mute(bot))
     print("Mute cog loaded")

@@ -16,7 +16,7 @@ class Pings(discord.ui.Select):
     Also contains the Recentpings command with the Dropdown Menu.
     """
 
-    def __init__(self):
+    def __init__(self) -> None:
         options = [
             discord.SelectOption(
                 label="Singles",
@@ -47,7 +47,7 @@ class Pings(discord.ui.Select):
             options=options,
         )
 
-    async def callback(self, interaction: discord.Interaction):
+    async def callback(self, interaction: discord.Interaction) -> None:
         if self.values[0] == "Singles":
             timestamp = discord.utils.utcnow().timestamp()
 
@@ -109,20 +109,22 @@ class Pings(discord.ui.Select):
 class DropdownPings(discord.ui.View):
     """Adds the items to the Dropdown menu."""
 
-    def __init__(self):
+    def __init__(self) -> None:
         super().__init__()
         self.add_item(Pings())
 
 
 class Matchmakingpings(commands.Cog):
-    def __init__(self, bot):
+    def __init__(self, bot: commands.Bot) -> None:
         self.bot = bot
 
         # Clears the Matchmaking Pings on Startup.
         self.clear_mmrequests()
 
     @commands.Cog.listener()
-    async def on_thread_update(self, before: discord.Thread, after: discord.Thread):
+    async def on_thread_update(
+        self, before: discord.Thread, after: discord.Thread
+    ) -> None:
         # If a matchmaking thread gets inactive, it gets deleted right away to clear space.
         if (
             before.archived is False
@@ -136,7 +138,7 @@ class Matchmakingpings(commands.Cog):
 
     @commands.hybrid_command()
     @app_commands.guilds(*GuildIDs.ALL_GUILDS)
-    async def recentpings(self, ctx: commands.Context):
+    async def recentpings(self, ctx: commands.Context) -> None:
         """Gets you a menu where you can see the recent pings of each Matchmaking Type."""
         await ctx.send("Here are all available ping types:", view=DropdownPings())
 
@@ -144,19 +146,21 @@ class Matchmakingpings(commands.Cog):
     @app_commands.guilds(*GuildIDs.ALL_GUILDS)
     @app_commands.default_permissions(administrator=True)
     @utils.check.is_moderator()
-    async def clearmmpings(self, ctx: commands.Context):
+    async def clearmmpings(self, ctx: commands.Context) -> None:
         """Clears the Matchmaking Pings manually."""
         self.clear_mmrequests()
         await ctx.send("Cleared the matchmaking pings!")
 
     @clearmmpings.error
-    async def clearmmpings_error(self, ctx, error):
+    async def clearmmpings_error(
+        self, ctx: commands.Context, error: commands.CommandError
+    ) -> None:
         if isinstance(error, commands.MissingPermissions):
             await ctx.send("Nice try, but you don't have the permissions to do that!")
         else:
             raise error
 
-    def clear_mmrequests(self):
+    def clear_mmrequests(self) -> None:
         """Clears every Matchmaking Ping in the Singles, Doubles, Funnies and Ranked Files."""
         logger = self.bot.get_logger("bot.mm")
         logger.info("Starting to delete pings in the matchmaking files...")
@@ -222,6 +226,6 @@ class Matchmakingpings(commands.Cog):
         logger.info("Ranked file cleared!")
 
 
-async def setup(bot):
+async def setup(bot) -> None:
     await bot.add_cog(Matchmakingpings(bot))
     print("Matchmakingpings cog loaded")

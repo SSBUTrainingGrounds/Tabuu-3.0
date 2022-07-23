@@ -3,7 +3,7 @@ import time
 from itertools import repeat
 from math import ceil, floor
 from random import shuffle
-from typing import Optional
+from typing import Optional, Union
 
 import discord
 from discord import app_commands
@@ -15,7 +15,7 @@ from utils.ids import GuildIDs
 class RpsButtons(discord.ui.View):
     """Contains the RPS Game Buttons."""
 
-    def __init__(self, author: discord.Member, member: discord.Member):
+    def __init__(self, author: discord.Member, member: discord.Member) -> None:
         super().__init__(timeout=60)
         self.author = author
         self.member = member
@@ -25,7 +25,9 @@ class RpsButtons(discord.ui.View):
 
     # Not sure why the Rock Emoji fails to display here, it does display properly on Discord.
     @discord.ui.button(label="Rock", emoji="🪨", style=discord.ButtonStyle.gray)
-    async def rock(self, interaction: discord.Interaction, button: discord.ui.Button):
+    async def rock(
+        self, interaction: discord.Interaction, button: discord.ui.Button
+    ) -> None:
         """Registers the author and user input for Rock.
         Stops if both parties made a choice.
         """
@@ -39,7 +41,9 @@ class RpsButtons(discord.ui.View):
             self.stop()
 
     @discord.ui.button(label="Paper", emoji="📝", style=discord.ButtonStyle.gray)
-    async def paper(self, interaction: discord.Interaction, button: discord.ui.Button):
+    async def paper(
+        self, interaction: discord.Interaction, button: discord.ui.Button
+    ) -> None:
         """Registers the author and user input for Paper.
         Stops if both parties made a choice.
         """
@@ -56,7 +60,7 @@ class RpsButtons(discord.ui.View):
         self,
         interaction: discord.Interaction,
         button: discord.ui.Button,
-    ):
+    ) -> None:
         """Registers the author and user input for Scissors.
         Stops if both parties made a choice.
         """
@@ -68,11 +72,11 @@ class RpsButtons(discord.ui.View):
         if self.authorchoice is not None and self.memberchoice is not None:
             self.stop()
 
-    async def interaction_check(self, interaction: discord.Interaction):
+    async def interaction_check(self, interaction: discord.Interaction) -> bool:
         # Ignores every other member except the author and mentioned member.
         return interaction.user in (self.member, self.author)
 
-    async def on_timeout(self):
+    async def on_timeout(self) -> None:
         # If the match didnt go through as planned.
         if self.authorchoice is None and self.memberchoice is None:
             await self.message.reply(
@@ -91,7 +95,7 @@ class RpsButtons(discord.ui.View):
 class TicTacToeButtons(discord.ui.Button["TicTacToeGame"]):
     """Contains the TicTacToe Buttons."""
 
-    def __init__(self, button_pos: int):
+    def __init__(self, button_pos: int) -> None:
         super().__init__(
             style=discord.ButtonStyle.gray,
             label="\u200b",
@@ -99,14 +103,14 @@ class TicTacToeButtons(discord.ui.Button["TicTacToeGame"]):
         )
         self.button_pos = button_pos
 
-    async def callback(self, interaction: discord.Interaction):
+    async def callback(self, interaction: discord.Interaction) -> None:
         await self.view.handle_turn(self, self.button_pos, interaction)
 
 
 class TicTacToeGame(discord.ui.View):
     """Contains the TicTacToe Game Logic."""
 
-    def __init__(self, author: discord.Member, member: discord.Member):
+    def __init__(self, author: discord.Member, member: discord.Member) -> None:
         super().__init__(timeout=60)
         self.author = author
         self.member = member
@@ -118,7 +122,9 @@ class TicTacToeGame(discord.ui.View):
         for i in range(9):
             self.add_item(TicTacToeButtons(i))
 
-    def check_for_winner(self, board: list[int]):
+    def check_for_winner(
+        self, board: list[int]
+    ) -> Optional[Union[discord.Member, bool]]:
         """Checks if the game is over and the outcome of the game."""
 
         winning_combinations = [
@@ -149,7 +155,7 @@ class TicTacToeGame(discord.ui.View):
         # If the game is ongoing, we return None.
         return None
 
-    async def game_ending(self, interaction: discord.Interaction):
+    async def game_ending(self, interaction: discord.Interaction) -> None:
         """Handles the game ending for us."""
 
         winner = self.check_for_winner(self.board)
@@ -168,7 +174,7 @@ class TicTacToeGame(discord.ui.View):
         button: discord.ui.Button,
         button_id: int,
         interaction: discord.Interaction,
-    ):
+    ) -> None:
         """The logic for one turn."""
 
         if interaction.user.id == self.author.id:
@@ -191,7 +197,7 @@ class TicTacToeGame(discord.ui.View):
             view=self,
         )
 
-    async def interaction_check(self, interaction: discord.Interaction):
+    async def interaction_check(self, interaction: discord.Interaction) -> bool:
         # Checks if the user is in the game.
         if interaction.user not in (self.member, self.author):
             return False
@@ -204,14 +210,14 @@ class TicTacToeGame(discord.ui.View):
             return True
         return False
 
-    async def on_timeout(self):
+    async def on_timeout(self) -> None:
         await self.message.reply(
             f"Match timed out! {self.turn.mention} took too long to pick something!"
         )
 
 
 class BlackJackButtons(discord.ui.View):
-    def __init__(self, author: discord.Member, member: discord.Member):
+    def __init__(self, author: discord.Member, member: discord.Member) -> None:
         super().__init__(timeout=60)
         self.author = author
         self.member = member
@@ -239,7 +245,7 @@ class BlackJackButtons(discord.ui.View):
     ]
     card_suites = ["♠️", "♦️", "♣️", "♥️"]
 
-    def draw_card(self):
+    def draw_card(self) -> None:
         card_deck = []
         for i, f in enumerate(self.card_faces):
             for s in self.card_suites:
@@ -271,7 +277,7 @@ class BlackJackButtons(discord.ui.View):
             self.member_hand[0].append(card[0])
             self.member_hand[1] += card[1]
 
-    def get_winner(self):
+    def get_winner(self) -> Optional[discord.Member]:
         # Checks for values greater than 21.
         if self.author_hand[1] > 21 >= self.member_hand[1]:
             return self.member
@@ -288,7 +294,7 @@ class BlackJackButtons(discord.ui.View):
 
         return self.member
 
-    async def end_game(self):
+    async def end_game(self) -> None:
         self.stop()
 
         if self.get_winner():
@@ -299,7 +305,9 @@ class BlackJackButtons(discord.ui.View):
     @discord.ui.button(
         label="Draw a Card", emoji="🃏", style=discord.ButtonStyle.blurple
     )
-    async def draw(self, interaction: discord.Interaction, button: discord.ui.Button):
+    async def draw(
+        self, interaction: discord.Interaction, button: discord.ui.Button
+    ) -> None:
         """Draws another card and checks if the players turn is over."""
 
         self.draw_card()
@@ -323,7 +331,9 @@ class BlackJackButtons(discord.ui.View):
         )
 
     @discord.ui.button(label="Fold", emoji="❌", style=discord.ButtonStyle.red)
-    async def fold(self, interaction: discord.Interaction, button: discord.ui.Button):
+    async def fold(
+        self, interaction: discord.Interaction, button: discord.ui.Button
+    ) -> None:
         """Folds and switches the turn, or exits the game."""
 
         if self.turn == self.author:
@@ -343,7 +353,7 @@ class BlackJackButtons(discord.ui.View):
             view=self,
         )
 
-    async def interaction_check(self, interaction: discord.Interaction):
+    async def interaction_check(self, interaction: discord.Interaction) -> bool:
         if interaction.user not in (self.author, self.member):
             return False
         if interaction.user == self.author and self.turn == self.author:
@@ -352,7 +362,7 @@ class BlackJackButtons(discord.ui.View):
             return True
         return False
 
-    async def on_timeout(self):
+    async def on_timeout(self) -> None:
         await self.message.reply(
             f"The match timed out! {self.turn.mention} took too long to pick a choice!"
         )
@@ -361,7 +371,7 @@ class BlackJackButtons(discord.ui.View):
 class _2048Buttons(discord.ui.Button["_2048Game"]):
     """The actual buttons that are used as game tiles."""
 
-    def __init__(self, button_pos: int, label: str):
+    def __init__(self, button_pos: int, label: str) -> None:
         super().__init__(
             style=discord.ButtonStyle.gray,
             label=label,
@@ -376,7 +386,7 @@ class _2048Buttons(discord.ui.Button["_2048Game"]):
 class _2048Game(discord.ui.View):
     """Contains the logic for the game."""
 
-    def __init__(self, player):
+    def __init__(self, player: Union[discord.User, discord.Member]) -> None:
         super().__init__(timeout=60)
         self.player = player
         self.win = False
@@ -395,7 +405,9 @@ class _2048Game(discord.ui.View):
     @discord.ui.button(
         label=empty_label, emoji="⬅️", style=discord.ButtonStyle.blurple, row=4
     )
-    async def left(self, interaction: discord.Interaction, button: discord.Button):
+    async def left(
+        self, interaction: discord.Interaction, button: discord.Button
+    ) -> None:
         """Shifts the game tiles to the left."""
 
         tiles = []
@@ -415,7 +427,9 @@ class _2048Game(discord.ui.View):
     @discord.ui.button(
         label=empty_label, emoji="⬆️", style=discord.ButtonStyle.blurple, row=4
     )
-    async def up(self, interaction: discord.Interaction, button: discord.Button):
+    async def up(
+        self, interaction: discord.Interaction, button: discord.Button
+    ) -> None:
         """Shifts the game tiles up."""
 
         tiles = []
@@ -433,7 +447,9 @@ class _2048Game(discord.ui.View):
     @discord.ui.button(
         label=empty_label, emoji="⬇️", style=discord.ButtonStyle.blurple, row=4
     )
-    async def down(self, interaction: discord.Interaction, button: discord.Button):
+    async def down(
+        self, interaction: discord.Interaction, button: discord.Button
+    ) -> None:
         """Shifts the game tiles down."""
 
         tiles = []
@@ -450,7 +466,9 @@ class _2048Game(discord.ui.View):
     @discord.ui.button(
         label=empty_label, emoji="➡️", style=discord.ButtonStyle.blurple, row=4
     )
-    async def right(self, interaction: discord.Interaction, button: discord.Button):
+    async def right(
+        self, interaction: discord.Interaction, button: discord.Button
+    ) -> None:
         """Shifts the game tiles to the right."""
 
         tiles = []
@@ -467,7 +485,9 @@ class _2048Game(discord.ui.View):
     @discord.ui.button(
         label="Quit Game", emoji="❌", style=discord.ButtonStyle.red, row=4
     )
-    async def quit(self, interaction: discord.Interaction, button: discord.Button):
+    async def quit(
+        self, interaction: discord.Interaction, button: discord.Button
+    ) -> None:
         """Exits the game immediately."""
 
         self.stop()
@@ -543,7 +563,7 @@ class _2048Game(discord.ui.View):
 
         return shifts
 
-    def turn(self, tiles: list[list[_2048Buttons]], reverse: bool = False):
+    def turn(self, tiles: list[list[_2048Buttons]], reverse: bool = False) -> None:
         """The logic for one turn."""
 
         # Colouring every tile back to gray first.
@@ -591,7 +611,7 @@ class _2048Game(discord.ui.View):
 
         return False
 
-    def end_turn(self, moves_made: list[_2048Buttons]):
+    def end_turn(self, moves_made: list[_2048Buttons]) -> None:
         """Ends your turn and checks for a game over."""
         # The game ends if either the player reached the 2048 tile,
         # or if no new tiles can be spawned and the board is full.
@@ -607,14 +627,14 @@ class _2048Game(discord.ui.View):
                 self.stop()
         # If there are no moves made but possible moves left, we just do nothing.
 
-    async def interaction_check(self, interaction: discord.Interaction):
+    async def interaction_check(self, interaction: discord.Interaction) -> bool:
         return self.player == interaction.user
 
 
 class MemoryButtons(discord.ui.Button["MemoryGame"]):
     """Contains Buttons for the Memory Game."""
 
-    def __init__(self, button_pos: int, hidden_emoji: str):
+    def __init__(self, button_pos: int, hidden_emoji: str) -> None:
         super().__init__(style=discord.ButtonStyle.gray, row=floor((button_pos) / 5))
         self.revealed: bool = False
 
@@ -628,14 +648,14 @@ class MemoryButtons(discord.ui.Button["MemoryGame"]):
         self.button_pos: int = button_pos
         self.hidden_emoji: str = hidden_emoji
 
-    async def callback(self, interaction: discord.Interaction):
+    async def callback(self, interaction: discord.Interaction) -> None:
         await self.view.handle_turn(self, interaction)
 
 
 class MemoryGame(discord.ui.View):
     """Contains the Game Logic for the Memory Game."""
 
-    def __init__(self, player1: discord.Member, player2: discord.Member):
+    def __init__(self, player1: discord.Member, player2: discord.Member) -> None:
         super().__init__(timeout=60)
         self.player1: discord.Member = player1
         self.player2: discord.Member = player2
@@ -675,7 +695,7 @@ class MemoryGame(discord.ui.View):
 
     async def handle_turn(
         self, button: discord.Button, interaction: discord.Interaction
-    ):
+    ) -> None:
         """Handles a turn in the memory game."""
         button.disabled = True
         button.emoji = button.hidden_emoji
@@ -720,7 +740,7 @@ class MemoryGame(discord.ui.View):
             view=self,
         )
 
-    def check_for_pair(self, emoji1: str, emoji2: str):
+    def check_for_pair(self, emoji1: str, emoji2: str) -> None:
         """Checks if the 2 emojis are the same and handles the result.
         If they are the same the player continues, otherwise we will switch turns."""
         if emoji1 == emoji2:
@@ -760,7 +780,7 @@ class MemoryGame(discord.ui.View):
         else:
             return (None, player1_count, player2_count)
 
-    async def interaction_check(self, interaction: discord.Interaction):
+    async def interaction_check(self, interaction: discord.Interaction) -> bool:
         # Checks if the user is in the game.
         if interaction.user not in (self.player1, self.player2):
             return False
@@ -769,7 +789,7 @@ class MemoryGame(discord.ui.View):
             return True
         return False
 
-    async def on_timeout(self):
+    async def on_timeout(self) -> None:
         await self.message.reply(
             f"The game timed out! {self.turn.mention} took too long to pick something!"
         )
@@ -778,20 +798,20 @@ class MemoryGame(discord.ui.View):
 class MinesweeperButtons(discord.ui.Button["MinesweeperGame"]):
     """Contains Buttons for the Memory Game."""
 
-    def __init__(self, button_pos: int):
+    def __init__(self, button_pos: int) -> None:
         super().__init__(style=discord.ButtonStyle.gray, row=floor((button_pos) / 5))
         self.label: str = "\u200b"
         self.column = button_pos % 5
         self.button_pos = button_pos
 
-    async def callback(self, interaction: discord.Interaction):
+    async def callback(self, interaction: discord.Interaction) -> None:
         await self.view.handle_turn(self, interaction)
 
 
 class MinesweeperGame(discord.ui.View):
     """Contains the logic for the game."""
 
-    def __init__(self, player: discord.Member, mine_count: int):
+    def __init__(self, player: discord.Member, mine_count: int) -> None:
         super().__init__(timeout=60)
         self.player: discord.Member = player
         # The dimensions of the board.
@@ -812,7 +832,7 @@ class MinesweeperGame(discord.ui.View):
 
     async def handle_turn(
         self, button: discord.Button, interaction: discord.Interaction
-    ):
+    ) -> None:
         """Handles clicking on a Square in the Minesweeper Game."""
         self.first_turn(button.button_pos)
 
@@ -878,7 +898,7 @@ class MinesweeperGame(discord.ui.View):
         adjacent_cells = self.get_adjacent_cells(row, column)
         return sum(bool(self.mines_list[cell.button_pos]) for cell in adjacent_cells)
 
-    def open_cell(self, cell: discord.Button):
+    def open_cell(self, cell: discord.Button) -> None:
         """Opens a cell."""
         # We return if the cell is already opened, for opening the mines recursively.
         if cell.disabled:
@@ -891,7 +911,7 @@ class MinesweeperGame(discord.ui.View):
 
     def open_adjacent_cells(
         self, cell: discord.Button, bomb_count: int, row: int, column: int
-    ):
+    ) -> None:
         """Opens every adjacent cell if the adjacent Bomb Count is 0."""
         if bomb_count != 0:
             return
@@ -911,7 +931,7 @@ class MinesweeperGame(discord.ui.View):
             for cell in self.children
         )
 
-    def first_turn(self, button_pos: int):
+    def first_turn(self, button_pos: int) -> None:
         """If its the first cell you click, we want the user to always hit a 0."""
         # If a cell is already disabled, it is not the first turn anymore.
         for cell in self.children:
@@ -930,10 +950,10 @@ class MinesweeperGame(discord.ui.View):
 
             shuffle(self.mines_list)
 
-    async def interaction_check(self, interaction: discord.Interaction):
+    async def interaction_check(self, interaction: discord.Interaction) -> bool:
         return interaction.user == self.player
 
-    async def on_timeout(self):
+    async def on_timeout(self) -> None:
         await self.message.reply(
             f"The game timed out! {self.player.mention} took too long to pick something!"
         )
@@ -942,14 +962,14 @@ class MinesweeperGame(discord.ui.View):
 class Games(commands.Cog):
     """Contains the commands to execute the Games."""
 
-    def __init__(self, bot):
+    def __init__(self, bot: commands.Bot) -> None:
         self.bot = bot
 
     # Never heard of those alternate names but wikipedia says they exist so might as well add them.
     @commands.hybrid_command(aliases=["rockpaperscissors", "rochambeau", "roshambo"])
     @app_commands.guilds(*GuildIDs.ALL_GUILDS)
     @app_commands.describe(member="The member to play against.")
-    async def rps(self, ctx: commands.Context, member: discord.Member = None):
+    async def rps(self, ctx: commands.Context, member: discord.Member = None) -> None:
         """Plays a Game of Rock, Paper, Scissors with a mentioned user.
         Or the bot, if you do not mention a user.
         """
@@ -1026,7 +1046,7 @@ class Games(commands.Cog):
     @commands.hybrid_command(aliases=["ttt"])
     @app_commands.guilds(*GuildIDs.ALL_GUILDS)
     @app_commands.describe(member="The member to play against.")
-    async def tictactoe(self, ctx: commands.Context, member: discord.Member):
+    async def tictactoe(self, ctx: commands.Context, member: discord.Member) -> None:
         """Starts a game of Tic Tac Toe vs another User."""
         # Basic checks for users.
         if member == ctx.author:
@@ -1047,7 +1067,7 @@ class Games(commands.Cog):
     @commands.hybrid_command(aliases=["21", "vingtetun", "vingtun"])
     @app_commands.guilds(*GuildIDs.ALL_GUILDS)
     @app_commands.describe(member="The member to play against.")
-    async def blackjack(self, ctx: commands.Context, member: discord.Member):
+    async def blackjack(self, ctx: commands.Context, member: discord.Member) -> None:
         """Starts a game of Blackjack vs another User."""
 
         if member == ctx.author:
@@ -1067,7 +1087,7 @@ class Games(commands.Cog):
 
     @commands.hybrid_command(name="2048")
     @app_commands.guilds(*GuildIDs.ALL_GUILDS)
-    async def _2048(self, ctx: commands.Context):
+    async def _2048(self, ctx: commands.Context) -> None:
         """Starts a game of 2048."""
 
         view = _2048Game(ctx.author)
@@ -1101,7 +1121,7 @@ class Games(commands.Cog):
     @commands.hybrid_command()
     @app_commands.guilds(*GuildIDs.ALL_GUILDS)
     @app_commands.describe(member="The member to play against.")
-    async def memory(self, ctx: commands.Context, member: discord.Member):
+    async def memory(self, ctx: commands.Context, member: discord.Member) -> None:
         """Plays a game of memory with the mentioned member."""
         if member == ctx.author:
             await ctx.send("Please don't play matches with yourself.")
@@ -1123,7 +1143,7 @@ class Games(commands.Cog):
     @app_commands.describe(mine_count="The amount of mines, from 2-12 (Default: 5).")
     async def minesweeper(
         self, ctx: commands.Context, mine_count: commands.Range[int, 2, 12] = 5
-    ):
+    ) -> None:
         """Starts a game of Minesweeper."""
         view = MinesweeperGame(ctx.author, mine_count)
 
@@ -1132,7 +1152,9 @@ class Games(commands.Cog):
         )
 
     @rps.error
-    async def rps_error(self, ctx, error):
+    async def rps_error(
+        self, ctx: commands.Context, error: commands.CommandError
+    ) -> None:
         if isinstance(
             error, (commands.MissingRequiredArgument, commands.MemberNotFound)
         ):
@@ -1141,7 +1163,9 @@ class Games(commands.Cog):
             raise error
 
     @tictactoe.error
-    async def tictactoe_error(self, ctx, error):
+    async def tictactoe_error(
+        self, ctx: commands.Context, error: commands.CommandError
+    ) -> None:
         if isinstance(
             error, (commands.MissingRequiredArgument, commands.MemberNotFound)
         ):
@@ -1150,7 +1174,9 @@ class Games(commands.Cog):
             raise error
 
     @blackjack.error
-    async def blackjack_error(self, ctx, error):
+    async def blackjack_error(
+        self, ctx: commands.Context, error: commands.CommandError
+    ) -> None:
         if isinstance(
             error, (commands.MissingRequiredArgument, commands.MemberNotFound)
         ):
@@ -1159,7 +1185,9 @@ class Games(commands.Cog):
             raise error
 
     @memory.error
-    async def memory_error(self, ctx, error):
+    async def memory_error(
+        self, ctx: commands.Context, error: commands.CommandError
+    ) -> None:
         if isinstance(
             error, (commands.MissingRequiredArgument, commands.MemberNotFound)
         ):
@@ -1168,13 +1196,15 @@ class Games(commands.Cog):
             raise error
 
     @minesweeper.error
-    async def minesweeper_error(self, ctx, error):
+    async def minesweeper_error(
+        self, ctx: commands.Context, error: commands.CommandError
+    ):
         if isinstance(error, commands.BadArgument):
             await ctx.send("Please input a mine count between 2 and 12!")
         else:
             raise error
 
 
-async def setup(bot):
+async def setup(bot) -> None:
     await bot.add_cog(Games(bot))
     print("Games cog loaded")

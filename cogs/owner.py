@@ -11,14 +11,14 @@ class Owner(commands.Cog):
     that relate to basic functionality of the bot.
     """
 
-    def __init__(self, bot):
+    def __init__(self, bot: commands.Bot) -> None:
         self.bot = bot
 
     @commands.command(aliases=["sync", "syncommands"])
     @commands.is_owner()
     async def synccommands(
         self, ctx: commands.Context, target_guild: discord.Guild = None
-    ):
+    ) -> None:
         """Syncs the locally added application commands to the discord client."""
 
         initial_message = await ctx.send("Syncing Commands...")
@@ -51,7 +51,7 @@ class Owner(commands.Cog):
 
     @commands.command(aliases=["reloadcog"])
     @commands.is_owner()
-    async def reloadcogs(self, ctx: commands.Context, *, cogs: str = None):
+    async def reloadcogs(self, ctx: commands.Context, *, cogs: str = None) -> None:
         """Command for manually reloading all cogs.
         Can only be used by the owner of the bot.
         """
@@ -102,20 +102,24 @@ class Owner(commands.Cog):
         await ctx.send(embed=embed)
 
     @reloadcogs.error
-    async def reloadcogs_error(self, ctx, error):
+    async def reloadcogs_error(
+        self, ctx: commands.Context, error: commands.CommandError
+    ) -> None:
         if isinstance(error, commands.NotOwner):
             await ctx.send("You are not the owner of this bot!")
         else:
             raise error
 
     @synccommands.error
-    async def synccommands_error(self, ctx, error):
+    async def synccommands_error(
+        self, ctx: commands.Context, error: commands.CommandError
+    ) -> None:
         if isinstance(error, commands.NotOwner):
             await ctx.send("You are not the owner of this bot!")
         else:
             raise error
 
 
-async def setup(bot):
+async def setup(bot) -> None:
     await bot.add_cog(Owner(bot))
     print("Owner cog loaded")

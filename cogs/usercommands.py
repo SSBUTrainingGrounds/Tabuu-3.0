@@ -13,12 +13,12 @@ from utils.ids import GuildIDs
 class Usercommands(commands.Cog):
     """Mostly contains various commands which did not fit with the other cogs."""
 
-    def __init__(self, bot):
+    def __init__(self, bot: commands.Bot) -> None:
         self.bot = bot
 
     @commands.hybrid_command()
     @app_commands.guilds(*GuildIDs.ALL_GUILDS)
-    async def ping(self, ctx: commands.Context):
+    async def ping(self, ctx: commands.Context) -> None:
         """Gets you the ping of the bot."""
 
         pingtime = self.bot.latency * 1000
@@ -26,7 +26,7 @@ class Usercommands(commands.Cog):
 
     @commands.hybrid_command(aliases=["coinflip", "flipcoin", "flip"])
     @app_commands.guilds(*GuildIDs.ALL_GUILDS)
-    async def coin(self, ctx: commands.Context):
+    async def coin(self, ctx: commands.Context) -> None:
         """Tosses a coin."""
 
         coin = ["Coin toss: **Heads!**", "Coin toss: **Tails!**"]
@@ -34,7 +34,7 @@ class Usercommands(commands.Cog):
 
     @commands.hybrid_command()
     @app_commands.guilds(*GuildIDs.ALL_GUILDS)
-    async def stagelist(self, ctx: commands.Context):
+    async def stagelist(self, ctx: commands.Context) -> None:
         """Picture with our stagelist on it.
         We dont send a link because that could change over time.
         An image saved locally is just more reliable.
@@ -45,7 +45,7 @@ class Usercommands(commands.Cog):
     @commands.hybrid_command(aliases=["r"])
     @app_commands.guilds(*GuildIDs.ALL_GUILDS)
     @app_commands.describe(dice="The dice to roll, in NdN format. Example: 2d20")
-    async def roll(self, ctx: commands.Context, dice: str):
+    async def roll(self, ctx: commands.Context, dice: str) -> None:
         """A dice roll, in NdN format."""
 
         try:
@@ -78,7 +78,7 @@ class Usercommands(commands.Cog):
     @commands.hybrid_command()
     @app_commands.guilds(*GuildIDs.ALL_GUILDS)
     @app_commands.describe(count="The number to count down from.")
-    async def countdown(self, ctx: commands.Context, count: int):
+    async def countdown(self, ctx: commands.Context, count: int) -> None:
         """Counts down from a number less than 50."""
 
         if count > 50:
@@ -109,7 +109,9 @@ class Usercommands(commands.Cog):
     @commands.hybrid_command(aliases=["icon"])
     @app_commands.guilds(*GuildIDs.ALL_GUILDS)
     @app_commands.describe(member="The member you want to see the avatar of.")
-    async def avatar(self, ctx: commands.Context, member: discord.Member = None):
+    async def avatar(
+        self, ctx: commands.Context, member: discord.Member = None
+    ) -> None:
         """Gets you the avatar of a mentioned member, or yourself."""
 
         if member is None:
@@ -119,7 +121,9 @@ class Usercommands(commands.Cog):
     @commands.hybrid_command()
     @app_commands.guilds(*GuildIDs.ALL_GUILDS)
     @app_commands.describe(member="The member you want to see the banner of.")
-    async def banner(self, ctx: commands.Context, member: discord.Member = None):
+    async def banner(
+        self, ctx: commands.Context, member: discord.Member = None
+    ) -> None:
         """Gets you the banner of a mentioned member, or yourself."""
 
         if member is None:
@@ -137,7 +141,7 @@ class Usercommands(commands.Cog):
     @app_commands.describe(
         question="Your question for the poll.",
     )
-    async def poll(self, ctx: commands.Context, *, question: str):
+    async def poll(self, ctx: commands.Context, *, question: str) -> None:
         """Creates a new poll with 2 to 5 options.
         Sends a button, which if you click it, opens a modal to submit the options.
         Afterwards sends out an embed with the poll and reacts with the reactions.
@@ -246,7 +250,7 @@ class Usercommands(commands.Cog):
     @commands.hybrid_command(aliases=["emote"])
     @app_commands.guilds(*GuildIDs.ALL_GUILDS)
     @app_commands.describe(emoji="The emoji you want to see the stats of.")
-    async def emoji(self, ctx: commands.Context, emoji: str):
+    async def emoji(self, ctx: commands.Context, emoji: str) -> None:
         """Gives you information about an Emoji."""
         # Since discord doesnt allow emojis as an argument,
         # we convert it ourselves with the partial emoji converter.
@@ -297,7 +301,9 @@ class Usercommands(commands.Cog):
     @app_commands.describe(
         member="The member you want to see the current spotify listening status of."
     )
-    async def spotify(self, ctx: commands.Context, member: discord.Member = None):
+    async def spotify(
+        self, ctx: commands.Context, member: discord.Member = None
+    ) -> None:
         """Posts the Spotify Song Link the member (or yourself) is listening to.
         You need to enable the feature that displays the current Song as your Activity for this to work.
         Still is finicky on Mobile though.
@@ -327,7 +333,7 @@ class Usercommands(commands.Cog):
 
     @commands.hybrid_command(aliases=["currenttime"])
     @app_commands.guilds(*GuildIDs.ALL_GUILDS)
-    async def time(self, ctx: commands.Context):
+    async def time(self, ctx: commands.Context) -> None:
         """Shows the current time as a timezone aware object."""
 
         await ctx.send(
@@ -339,7 +345,7 @@ class Usercommands(commands.Cog):
     @app_commands.describe(
         conversion_input="The input you want to convert to metric or imperial."
     )
-    async def convert(self, ctx: commands.Context, *, conversion_input: str):
+    async def convert(self, ctx: commands.Context, *, conversion_input: str) -> None:
         """Converts your input between metric and imperial
         and the other way around.
         Works with most commonly used measurements.
@@ -349,7 +355,7 @@ class Usercommands(commands.Cog):
     @commands.hybrid_command()
     @app_commands.guilds(*GuildIDs.ALL_GUILDS)
     @app_commands.describe(message="The string or message to translate.")
-    async def translate(self, ctx: commands.Context, *, message: str = None):
+    async def translate(self, ctx: commands.Context, *, message: str = None) -> None:
         """Translates a message from any language to english.
         Specify a string to translate, or a message to translate by either using message ID/Link,
         or replying to a message.
@@ -392,21 +398,27 @@ class Usercommands(commands.Cog):
         await ctx.send(embed=embed)
 
     @avatar.error
-    async def avatar_error(self, ctx, error):
+    async def avatar_error(
+        self, ctx: commands.Context, error: commands.CommandError
+    ) -> None:
         if isinstance(error, commands.MemberNotFound):
             await ctx.send("You need to mention a member, or just leave it blank.")
         else:
             raise error
 
     @banner.error
-    async def banner_error(self, ctx, error):
+    async def banner_error(
+        self, ctx: commands.Context, error: commands.CommandError
+    ) -> None:
         if isinstance(error, commands.MemberNotFound):
             await ctx.send("You need to mention a member, or just leave it blank.")
         else:
             raise error
 
     @poll.error
-    async def poll_error(self, ctx, error):
+    async def poll_error(
+        self, ctx: commands.Context, error: commands.CommandError
+    ) -> None:
         if isinstance(error, (commands.MissingRequiredArgument, commands.BadArgument)):
             await ctx.send(
                 "Please provide a question for your poll.\n"
@@ -416,7 +428,9 @@ class Usercommands(commands.Cog):
             raise error
 
     @roll.error
-    async def roll_error(self, ctx, error):
+    async def roll_error(
+        self, ctx: commands.Context, error: commands.CommandError
+    ) -> None:
         if isinstance(error, commands.MissingRequiredArgument):
             await ctx.send(
                 "Wrong format!\n" f"Try something like: `{ctx.prefix}roll 1d100`"
@@ -425,7 +439,9 @@ class Usercommands(commands.Cog):
             raise error
 
     @countdown.error
-    async def countdown_error(self, ctx, error):
+    async def countdown_error(
+        self, ctx: commands.Context, error: commands.CommandError
+    ) -> None:
         if isinstance(error, commands.MissingRequiredArgument):
             await ctx.send("You need to input a number!")
         elif isinstance(error, commands.BadArgument):
@@ -434,7 +450,9 @@ class Usercommands(commands.Cog):
             raise error
 
     @emoji.error
-    async def emote_error(self, ctx, error):
+    async def emote_error(
+        self, ctx: commands.Context, error: commands.CommandError
+    ) -> None:
         if isinstance(error, commands.MissingRequiredArgument):
             await ctx.send("You need to specify an emoji!")
         elif isinstance(error, commands.PartialEmojiConversionFailure):
@@ -445,21 +463,27 @@ class Usercommands(commands.Cog):
             raise error
 
     @sticker.error
-    async def sticker_error(self, ctx, error):
+    async def sticker_error(
+        self, ctx: commands.Context, error: commands.CommandError
+    ) -> None:
         if isinstance(error, commands.CommandInvokeError):
             await ctx.send("I could not find any information on this sticker!")
         else:
             raise error
 
     @spotify.error
-    async def spotify_error(self, ctx, error):
+    async def spotify_error(
+        self, ctx: commands.Context, error: commands.CommandError
+    ) -> None:
         if isinstance(error, commands.MemberNotFound):
             await ctx.send("You need to mention a member, or just leave it blank.")
         else:
             raise error
 
     @convert.error
-    async def convert_error(self, ctx, error):
+    async def convert_error(
+        self, ctx: commands.Context, error: commands.CommandError
+    ) -> None:
         if isinstance(
             error,
             (
@@ -473,7 +497,9 @@ class Usercommands(commands.Cog):
             raise error
 
     @translate.error
-    async def translate_error(self, ctx, error):
+    async def translate_error(
+        self, ctx: commands.Context, error: commands.CommandError
+    ) -> None:
         if isinstance(
             error, (commands.CommandInvokeError, commands.HybridCommandError)
         ):
@@ -482,6 +508,6 @@ class Usercommands(commands.Cog):
             raise error
 
 
-async def setup(bot):
+async def setup(bot) -> None:
     await bot.add_cog(Usercommands(bot))
     print("Usercommands cog loaded")

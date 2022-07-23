@@ -19,7 +19,7 @@ from utils.ids import (
 class Ranking(commands.Cog):
     """Contains the ranked portion of our matchmaking system."""
 
-    def __init__(self, bot):
+    def __init__(self, bot: commands.Bot) -> None:
         self.bot = bot
 
     async def get_ranked_role(
@@ -120,14 +120,16 @@ class Ranking(commands.Cog):
 
         return adjacent_roles
 
-    async def remove_ranked_roles(self, member: discord.Member, guild: discord.Guild):
+    async def remove_ranked_roles(
+        self, member: discord.Member, guild: discord.Guild
+    ) -> None:
         """Removes every ranked role a user has."""
         elo_roles = self.get_all_ranked_roles(guild)
         await member.remove_roles(*elo_roles)
 
     async def update_ranked_role(
         self, member: discord.Member, guild: discord.Guild, threshold: int = 5
-    ):
+    ) -> None:
         """This function updates the ranked roles of a member.
         The role change only triggers if the user does not have their current elo role,
         so its fine to remove ALL others first and then give the new one out.
@@ -153,7 +155,7 @@ class Ranking(commands.Cog):
                 await self.remove_ranked_roles(member, guild)
                 await member.add_roles(role)
 
-    async def create_ranked_profile(self, member: discord.Member):
+    async def create_ranked_profile(self, member: discord.Member) -> None:
         """Creates an entry in the ranked file for a user,
         if the user is not already in there.
         """
@@ -218,7 +220,7 @@ class Ranking(commands.Cog):
         winnerelo: int,
         loser: discord.Member,
         loserelo: int,
-    ):
+    ) -> None:
         """Updates the stats of both players after a match."""
         async with aiosqlite.connect("./db/database.db") as db:
             await db.execute(
@@ -242,7 +244,7 @@ class Ranking(commands.Cog):
 
     def store_ranked_ping(
         self, ctx: commands.Context, role: discord.Role, timestamp: float
-    ):
+    ) -> None:
         """Stores your ranked ping."""
         with open(r"./json/rankedpings.json", "r", encoding="utf-8") as f:
             rankedusers = json.load(f)
@@ -257,7 +259,7 @@ class Ranking(commands.Cog):
         with open(r"./json/rankedpings.json", "w", encoding="utf-8") as f:
             json.dump(rankedusers, f, indent=4)
 
-    def delete_ranked_ping(self, ctx: commands.Context):
+    def delete_ranked_ping(self, ctx: commands.Context) -> None:
         """Deletes your ranked ping."""
         with open(r"./json/rankedpings.json", "r", encoding="utf-8") as f:
             rankedusers = json.load(f)
@@ -304,7 +306,7 @@ class Ranking(commands.Cog):
     @commands.hybrid_command(aliases=["rankedmm", "rankedmatchmaking", "rankedsingles"])
     @commands.cooldown(1, 120, commands.BucketType.user)
     @app_commands.guilds(*GuildIDs.ALL_GUILDS)
-    async def ranked(self, ctx: commands.Context):
+    async def ranked(self, ctx: commands.Context) -> None:
         """Used for 1v1 competitive ranked matchmaking."""
         if ctx.channel.id not in TGArenaChannelIDs.RANKED_ARENAS:
             await ctx.send(
@@ -363,7 +365,7 @@ class Ranking(commands.Cog):
     @commands.guild_only()
     @app_commands.guilds(*GuildIDs.ALL_GUILDS)
     @app_commands.describe(user="The user you beat in the ranked match.")
-    async def reportmatch(self, ctx: commands.Context, user: discord.Member):
+    async def reportmatch(self, ctx: commands.Context, user: discord.Member) -> None:
         """The winner of the match uses this to report a ranked set.
         Updates the elo values and ranked roles of the players automatically.
         """
@@ -395,7 +397,7 @@ class Ranking(commands.Cog):
             ctx.command.reset_cooldown(ctx)
             return
 
-        def check(message):
+        def check(message) -> bool:
             return (
                 message.content.lower() == "y"
                 and message.author == user
@@ -442,7 +444,7 @@ class Ranking(commands.Cog):
     @commands.cooldown(1, 41, commands.BucketType.user)
     async def forcereportmatch(
         self, ctx: commands.Context, winner: discord.Member, loser: discord.Member
-    ):
+    ) -> None:
         """Forcefully reports a match, in case someone abandons it or fails to report."""
 
         if ctx.guild.id != GuildIDs.TRAINING_GROUNDS:
@@ -490,7 +492,9 @@ class Ranking(commands.Cog):
     @commands.hybrid_command(aliases=["rankedstats"])
     @app_commands.guilds(*GuildIDs.ALL_GUILDS)
     @app_commands.describe(member="The user you want to see the ranked stats of.")
-    async def rankstats(self, ctx: commands.Context, member: discord.User = None):
+    async def rankstats(
+        self, ctx: commands.Context, member: discord.User = None
+    ) -> None:
         """Gets you the ranked stats of a member, or your own if you dont specify a member.
         If you get your own, you get a choice of removing/adding your ranked role.
         """
@@ -562,7 +566,7 @@ class Ranking(commands.Cog):
     @app_commands.guilds(*GuildIDs.ALL_GUILDS)
     @app_commands.default_permissions(administrator=True)
     @utils.check.is_moderator()
-    async def leaderboard(self, ctx: commands.Context):
+    async def leaderboard(self, ctx: commands.Context) -> None:
         """The Top 10 Players of our Ranked Matchmaking."""
         async with aiosqlite.connect("./db/database.db") as db:
             all_users = await db.execute_fetchall(
@@ -588,7 +592,9 @@ class Ranking(commands.Cog):
         await ctx.send(embed=embed)
 
     @reportmatch.error
-    async def reportmatch_error(self, ctx, error):
+    async def reportmatch_error(
+        self, ctx: commands.Context, error: commands.CommandError
+    ) -> None:
         if isinstance(error, commands.CommandOnCooldown):
             await ctx.send(
                 f"You are on cooldown! Try again in {round(error.retry_after)} seconds."
@@ -605,7 +611,9 @@ class Ranking(commands.Cog):
             raise error
 
     @forcereportmatch.error
-    async def forcereportmatch_error(self, ctx, error):
+    async def forcereportmatch_error(
+        self, ctx: commands.Context, error: commands.CommandError
+    ) -> None:
         if isinstance(error, commands.MissingPermissions):
             await ctx.send("Nice try, but you don't have the permissions to do that!")
         elif isinstance(
@@ -623,7 +631,9 @@ class Ranking(commands.Cog):
             raise error
 
     @rankstats.error
-    async def rankstats_error(self, ctx, error):
+    async def rankstats_error(
+        self, ctx: commands.Context, error: commands.CommandError
+    ) -> None:
         if isinstance(
             error, (commands.CommandInvokeError, commands.HybridCommandError)
         ):
@@ -636,7 +646,9 @@ class Ranking(commands.Cog):
             raise error
 
     @ranked.error
-    async def ranked_error(self, ctx, error):
+    async def ranked_error(
+        self, ctx: commands.Context, error: commands.CommandError
+    ) -> None:
         if isinstance(error, commands.CommandOnCooldown):
             if ctx.channel.id not in TGArenaChannelIDs.RANKED_ARENAS:
                 await ctx.send(
@@ -664,13 +676,15 @@ class Ranking(commands.Cog):
             raise error
 
     @leaderboard.error
-    async def leaderboard_error(self, ctx, error):
+    async def leaderboard_error(
+        self, ctx: commands.Context, error: commands.CommandError
+    ) -> None:
         if isinstance(error, commands.MissingPermissions):
             await ctx.send("Nice try, but you don't have the permissions to do that!")
         else:
             raise error
 
 
-async def setup(bot):
+async def setup(bot) -> None:
     await bot.add_cog(Ranking(bot))
     print("Ranking cog loaded")

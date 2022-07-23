@@ -11,7 +11,7 @@ from utils.ids import BGChannelIDs, GuildIDs, TGChannelIDs
 class Logging(commands.Cog):
     """Logs every little user update or message update into the logs channel."""
 
-    def __init__(self, bot):
+    def __init__(self, bot: commands.Bot) -> None:
         self.bot = bot
 
     def get_logchannel(self, guild_id: int) -> Optional[int]:
@@ -26,7 +26,7 @@ class Logging(commands.Cog):
         return None
 
     @commands.Cog.listener()
-    async def on_user_update(self, before: discord.User, after: discord.User):
+    async def on_user_update(self, before: discord.User, after: discord.User) -> None:
         # Username change.
         if before.name != after.name:
             embed = discord.Embed(
@@ -78,7 +78,9 @@ class Logging(commands.Cog):
                     await logs.send(embed=embed)
 
     @commands.Cog.listener()
-    async def on_member_update(self, before: discord.Member, after: discord.Member):
+    async def on_member_update(
+        self, before: discord.Member, after: discord.Member
+    ) -> None:
         # If someone changes their nickname on this server.
         if before.display_name != after.display_name:
             embed = discord.Embed(
@@ -130,7 +132,7 @@ class Logging(commands.Cog):
                     await logs.send(embed=embed)
 
     @commands.Cog.listener()
-    async def on_member_join(self, member: discord.Member):
+    async def on_member_join(self, member: discord.Member) -> None:
         embed = discord.Embed(
             title="**🎆 New member joined 🎆**",
             description=f"{member.mention} has joined the server!\n\n"
@@ -145,7 +147,7 @@ class Logging(commands.Cog):
             await logs.send(embed=embed)
 
     @commands.Cog.listener()
-    async def on_member_remove(self, member: discord.Member):
+    async def on_member_remove(self, member: discord.Member) -> None:
         # @everyone is considered a role too, so we remove that from the list.
         everyonerole = discord.utils.get(member.guild.roles, name="@everyone")
         roles = [role.mention for role in member.roles if role is not everyonerole]
@@ -165,7 +167,9 @@ class Logging(commands.Cog):
             await logs.send(embed=embed)
 
     @commands.Cog.listener()
-    async def on_message_edit(self, before: discord.Message, after: discord.Message):
+    async def on_message_edit(
+        self, before: discord.Message, after: discord.Message
+    ) -> None:
         # Dont want dms to be included, same in the below listeners.
         if not after.guild:
             return
@@ -208,7 +212,7 @@ class Logging(commands.Cog):
             await logs.send(embed=embed)
 
     @commands.Cog.listener()
-    async def on_message_delete(self, message: discord.Message):
+    async def on_message_delete(self, message: discord.Message) -> None:
         if not message.guild:
             return
 
@@ -237,7 +241,7 @@ class Logging(commands.Cog):
             await logs.send(embed=embed)
 
     @commands.Cog.listener()
-    async def on_bulk_message_delete(self, messages: list[discord.Message]):
+    async def on_bulk_message_delete(self, messages: list[discord.Message]) -> None:
         embed = discord.Embed(
             title=f"**❌ Bulk message deletion in {messages[0].channel.name}! ❌**",
             description=f"{len(messages)} messages were deleted!",
@@ -268,7 +272,7 @@ class Logging(commands.Cog):
                 await logs.send(embed=embed)
 
     @commands.Cog.listener()
-    async def on_member_ban(self, guild: discord.Guild, user: discord.User):
+    async def on_member_ban(self, guild: discord.Guild, user: discord.User) -> None:
         embed = discord.Embed(
             title="**🚫 New ban! 🚫**",
             description=f"{user.mention} has been banned from this server!",
@@ -282,7 +286,7 @@ class Logging(commands.Cog):
             await logs.send(embed=embed)
 
     @commands.Cog.listener()
-    async def on_member_unban(self, guild: discord.Guild, user: discord.User):
+    async def on_member_unban(self, guild: discord.Guild, user: discord.User) -> None:
         embed = discord.Embed(
             title="**🔓 New unban! 🔓**",
             description=f"{user.mention} has been unbanned from this server!",
@@ -296,7 +300,9 @@ class Logging(commands.Cog):
             await logs.send(embed=embed)
 
     @commands.Cog.listener()
-    async def on_guild_update(self, before: discord.Guild, after: discord.Guild):
+    async def on_guild_update(
+        self, before: discord.Guild, after: discord.Guild
+    ) -> None:
         if before.name != after.name:
             embed = discord.Embed(
                 title="🏠 Server name updated! 🏠",
@@ -360,7 +366,7 @@ class Logging(commands.Cog):
                 await logs.send(embed=embed)
 
     @commands.Cog.listener()
-    async def on_guild_channel_create(self, channel: discord.abc.GuildChannel):
+    async def on_guild_channel_create(self, channel: discord.abc.GuildChannel) -> None:
         embed = discord.Embed(
             title="📜 New channel created! 📜",
             description=f"Name: #{channel.name}\nCategory: {channel.category}",
@@ -375,7 +381,7 @@ class Logging(commands.Cog):
             await logs.send(embed=embed)
 
     @commands.Cog.listener()
-    async def on_guild_channel_delete(self, channel: discord.abc.GuildChannel):
+    async def on_guild_channel_delete(self, channel: discord.abc.GuildChannel) -> None:
         embed = discord.Embed(
             title="❌ Channel deleted! ❌",
             description=f"Name: #{channel.name}\nCategory: {channel.category}",
@@ -392,7 +398,7 @@ class Logging(commands.Cog):
     @commands.Cog.listener()
     async def on_guild_channel_update(
         self, before: discord.abc.GuildChannel, after: discord.abc.GuildChannel
-    ):
+    ) -> None:
         # We just log those two here, since the other stuff doesnt make much sense to log, imo.
         # position would get very spammy and permissions are hard to display in an embed.
         if before.name != after.name:
@@ -429,7 +435,7 @@ class Logging(commands.Cog):
         guild: discord.Guild,
         before: Sequence[discord.Emoji],
         after: Sequence[discord.Emoji],
-    ):
+    ) -> None:
         if len(before) > len(after):
             old_emoji = next(emoji for emoji in before if emoji not in after)
 
@@ -472,7 +478,7 @@ class Logging(commands.Cog):
         guild: discord.Guild,
         before: Sequence[discord.Sticker],
         after: Sequence[discord.Sticker],
-    ):
+    ) -> None:
         if len(before) > len(after):
             old_sticker = next(sticker for sticker in before if sticker not in after)
 
@@ -510,7 +516,7 @@ class Logging(commands.Cog):
                 await logs.send(embed=embed)
 
     @commands.Cog.listener()
-    async def on_invite_create(self, invite: discord.Invite):
+    async def on_invite_create(self, invite: discord.Invite) -> None:
         invite_uses = invite.max_uses if invite.max_uses > 0 else "Unlimited"
         expiration = (
             discord.utils.format_dt(invite.expires_at) if invite.expires_at else "Never"
@@ -531,7 +537,7 @@ class Logging(commands.Cog):
             await logs.send(embed=embed)
 
     @commands.Cog.listener()
-    async def on_guild_role_create(self, role: discord.Role):
+    async def on_guild_role_create(self, role: discord.Role) -> None:
         embed = discord.Embed(
             title="✨ New role created! ✨",
             description=f"Name: {role.name}\nID: {role.id}",
@@ -546,7 +552,7 @@ class Logging(commands.Cog):
             await logs.send(embed=embed)
 
     @commands.Cog.listener()
-    async def on_guild_role_delete(self, role: discord.Role):
+    async def on_guild_role_delete(self, role: discord.Role) -> None:
         embed = discord.Embed(
             title="❌ Role deleted! ❌",
             description=f"Name: {role.name}\nID: {role.id}",
@@ -564,7 +570,9 @@ class Logging(commands.Cog):
             await logs.send(embed=embed)
 
     @commands.Cog.listener()
-    async def on_guild_role_update(self, before: discord.Role, after: discord.Role):
+    async def on_guild_role_update(
+        self, before: discord.Role, after: discord.Role
+    ) -> None:
         if before.name != after.name:
             embed = discord.Embed(
                 title="🔧 Role name updated! 🔧",
@@ -639,7 +647,7 @@ class Logging(commands.Cog):
                 await logs.send(embed=embed)
 
     @commands.Cog.listener()
-    async def on_thread_create(self, thread: discord.Thread):
+    async def on_thread_create(self, thread: discord.Thread) -> None:
         embed = discord.Embed(
             title="🧵 New thread created! 🧵",
             description=f"Name: {thread.name}\nID: {thread.id}\n"
@@ -657,7 +665,7 @@ class Logging(commands.Cog):
             await logs.send(embed=embed)
 
     @commands.Cog.listener()
-    async def on_thread_delete(self, thread: discord.Thread):
+    async def on_thread_delete(self, thread: discord.Thread) -> None:
         embed = discord.Embed(
             title="❌ Thread deleted! ❌",
             description=f"Name: {thread.name}\nID: {thread.id}\n"
@@ -673,7 +681,9 @@ class Logging(commands.Cog):
             await logs.send(embed=embed)
 
     @commands.Cog.listener()
-    async def on_thread_update(self, before: discord.Thread, after: discord.Thread):
+    async def on_thread_update(
+        self, before: discord.Thread, after: discord.Thread
+    ) -> None:
         # This event doesnt seem to fire if the thread gets un-archived,
         # so we only log it when a thread gets archived, and not the other way around.
         if not before.archived and after.archived:
@@ -710,7 +720,7 @@ class Logging(commands.Cog):
                 await logs.send(embed=embed)
 
     @commands.Cog.listener()
-    async def on_scheduled_event_create(self, event: discord.ScheduledEvent):
+    async def on_scheduled_event_create(self, event: discord.ScheduledEvent) -> None:
         end_time = discord.utils.format_dt(event.end_time) if event.end_time else "None"
 
         embed = discord.Embed(
@@ -734,6 +744,6 @@ class Logging(commands.Cog):
             await logs.send(embed=embed)
 
 
-async def setup(bot):
+async def setup(bot) -> None:
     await bot.add_cog(Logging(bot))
     print("Logging cog loaded")
