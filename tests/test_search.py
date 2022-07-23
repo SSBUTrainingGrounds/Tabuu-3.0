@@ -6,7 +6,7 @@ from utils.search import autocomplete_choices
 
 
 class TestSearch(unittest.TestCase):
-    def test_autocomplete_choices(self):
+    def test_autocomplete_choices(self) -> None:
         query = "test"
 
         available_choices = [

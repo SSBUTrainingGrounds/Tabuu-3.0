@@ -1,10 +1,11 @@
 # Tabuu 3.0
 # by Phxenix for SSBU Training Grounds
-# Version: 9.21.0
-# Last Changes: 10 July 2022
+# Version: 9.21.1
+# Last Changes: 23 July 2022
 # Contact me on Discord: Phxenix#1104
 
 import os
+from logging import Logger
 
 import discord
 from discord.ext import commands
@@ -14,7 +15,7 @@ import utils.sqlite
 
 
 class Tabuu3(commands.Bot):
-    def __init__(self):
+    def __init__(self) -> None:
         super().__init__(
             command_prefix="%",
             intents=discord.Intents.all(),
@@ -25,14 +26,14 @@ class Tabuu3(commands.Bot):
         self.main_prefix = "%"
 
         # To be used in the stats command.
-        self.version_number = "9.21.0"
+        self.version_number = "9.21.1"
         self.commands_ran = 0
         self.events_listened_to = 0
 
         # A check to make sure persistent buttons do not get added twice.
         self.modmail_button_added = None
 
-    async def setup_hook(self):
+    async def setup_hook(self) -> None:
         # We need to set up some stuff at startup.
         utils.logger.create_logger()
         await utils.sqlite.setup_db()
@@ -41,11 +42,11 @@ class Tabuu3(commands.Bot):
             if filename.endswith(".py"):
                 await self.load_extension(f"cogs.{filename[:-3]}")
 
-    def get_logger(self, name: str):
+    def get_logger(self, name: str) -> Logger:
         # Just attaching it to the bot so we dont have to import it everywhere.
         return utils.logger.get_logger(name)
 
-    async def on_ready(self):
+    async def on_ready(self) -> None:
         print(
             f"Lookin' good, connected as: {str(bot.user)}, at: {discord.utils.utcnow().strftime('%d-%m-%Y %H:%M:%S')} UTC"
         )

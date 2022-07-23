@@ -1,6 +1,5 @@
-# Here is the place where the unique IDs are stored,
-# change them around as you wish, but importantly keep the names and the types.
-# Using Classes as Namespaces, who cares.
+# Here is the place where the unique IDs are stored.
+# Change them as you wish, but keep the names and the types.
 import discord
 
 

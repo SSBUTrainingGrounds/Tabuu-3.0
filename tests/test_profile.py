@@ -6,7 +6,7 @@ from cogs.profile import Profile
 
 
 class TestTime(unittest.TestCase):
-    def test_match_character(self):
+    def test_match_character(self) -> None:
         # some basic matching
         self.assertEqual(
             Profile.match_character(self, "mario"), ["<:Mario:929067419861913680>"]
@@ -31,7 +31,7 @@ class TestTime(unittest.TestCase):
             ],
         )
 
-    def test_character_autocomplete(self):
+    def test_character_autocomplete(self) -> None:
         incin_query = [
             Choice(name="Incineroar", value="Incineroar"),
             Choice(name="Inkling", value="Inkling"),

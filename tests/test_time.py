@@ -6,7 +6,7 @@ from utils.time import convert_time, convert_to_utc
 
 
 class TestTime(unittest.TestCase):
-    def test_convert_time(self):
+    def test_convert_time(self) -> None:
         # common use
         self.assertEqual(convert_time("3h"), (10800, "3 hours"))
         # bit more special
@@ -37,7 +37,7 @@ class TestTime(unittest.TestCase):
         with self.assertRaises(ValueError):
             convert_time("whatever invalid string here")
 
-    def test_convert_to_utc(self):
+    def test_convert_to_utc(self) -> None:
         # checking for some timezones with DST within the same day
         timezones = ["Europe/Berlin", "US/Eastern", "Pacific/Auckland"]
         expected_times = [1, -5, 12]

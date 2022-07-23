@@ -2,7 +2,7 @@ import logging
 from logging.handlers import TimedRotatingFileHandler
 
 
-def create_logger():
+def create_logger() -> None:
     """Creates a basic logger for discord.
     Creates a new file on midnight UTC time and keeps 7 backups.
     """
