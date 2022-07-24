@@ -499,7 +499,7 @@ class Ranking(commands.Cog):
         If you get your own, you get a choice of removing/adding your ranked role.
         """
         selfcheck = False
-        if member is None:
+        if member is None or member == ctx.author:
             member = ctx.author
             selfcheck = True
 
