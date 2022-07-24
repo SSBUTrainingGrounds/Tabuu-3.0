@@ -1,4 +1,4 @@
-from typing import Union
+from typing import Mapping, Optional, Union
 
 import discord
 from discord import app_commands
@@ -320,7 +320,9 @@ class CustomHelp(commands.HelpCommand):
 
         return embed
 
-    async def send_bot_help(self, mapping) -> None:
+    async def send_bot_help(
+        self, mapping: Mapping[Optional[commands.Cog], list[commands.Command]]
+    ) -> None:
         """Sends you the dropdown with every command and explanation on how to use it.
         The user can choose which dropdown they wanna see,
         it is intentionally grouped different than in our cogs.

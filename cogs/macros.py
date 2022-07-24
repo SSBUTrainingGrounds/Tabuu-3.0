@@ -219,7 +219,9 @@ class Macros(commands.Cog):
         return utils.search.autocomplete_choices(current, [m[0] for m in macros])
 
     @createmacro.error
-    async def createmacro_error(self, ctx, error) -> None:
+    async def createmacro_error(
+        self, ctx: commands.Context, error: commands.CommandError
+    ) -> None:
         if isinstance(error, commands.MissingPermissions):
             await ctx.send("Nice try, but you don't have the permissions to do that!")
         elif isinstance(error, commands.MissingRequiredArgument):
@@ -236,7 +238,9 @@ class Macros(commands.Cog):
             raise error
 
     @deletemacro.error
-    async def deletemacro_error(self, ctx, error) -> None:
+    async def deletemacro_error(
+        self, ctx: commands.Context, error: commands.CommandError
+    ) -> None:
         if isinstance(error, commands.MissingPermissions):
             await ctx.send("Nice try, but you don't have the permissions to do that!")
         elif isinstance(error, commands.MissingRequiredArgument):

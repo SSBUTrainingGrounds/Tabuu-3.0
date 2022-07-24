@@ -19,7 +19,7 @@ class Reminder(commands.Cog):
 
         self.reminder_loop.start()
 
-    def cog_unload(self):
+    def cog_unload(self) -> None:
         self.reminder_loop.cancel()
 
     async def notify_user(

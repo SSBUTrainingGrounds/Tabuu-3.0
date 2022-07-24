@@ -1198,7 +1198,7 @@ class Games(commands.Cog):
     @minesweeper.error
     async def minesweeper_error(
         self, ctx: commands.Context, error: commands.CommandError
-    ):
+    ) -> None:
         if isinstance(error, commands.BadArgument):
             await ctx.send("Please input a mine count between 2 and 12!")
         else:

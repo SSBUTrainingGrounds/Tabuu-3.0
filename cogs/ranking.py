@@ -397,7 +397,7 @@ class Ranking(commands.Cog):
             ctx.command.reset_cooldown(ctx)
             return
 
-        def check(message) -> bool:
+        def check(message: discord.Message) -> bool:
             return (
                 message.content.lower() == "y"
                 and message.author == user
@@ -453,7 +453,7 @@ class Ranking(commands.Cog):
             )
             return
 
-        def check(message):
+        def check(message: discord.Message) -> bool:
             return (
                 message.content.lower() == "y"
                 and message.author == ctx.author
@@ -540,7 +540,9 @@ class Ranking(commands.Cog):
             await embed_message.add_reaction("🔔")
             await embed_message.add_reaction("🔕")
 
-            def reaction_check(reaction, member):
+            def reaction_check(
+                reaction: discord.Reaction, member: discord.Member
+            ) -> bool:
                 return (
                     member.id == ctx.author.id
                     and reaction.message.id == embed_message.id

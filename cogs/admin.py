@@ -53,7 +53,7 @@ class Admin(commands.Cog):
         Tries to DM the user the reasoning along with the ban records.
         """
 
-        def check(m):
+        def check(m: discord.Message) -> bool:
             return (
                 m.content.lower() in ("y", "n")
                 and m.author == ctx.author
@@ -169,7 +169,7 @@ class Admin(commands.Cog):
         Tries to DM the user the reasoning, similar to the ban command.
         """
 
-        def check(m):
+        def check(m: discord.Message) -> bool:
             return (
                 m.content.lower() in ("y", "n")
                 and m.author == ctx.author
@@ -319,7 +319,7 @@ class Admin(commands.Cog):
         self, ctx: commands.Context, role: discord.Role, hex_colour: str
     ) -> None:
         """Edits the colour of a role, use a hex colour code."""
-        # hex colour codes are 7 digits long and start with #
+        # Hex colour codes are 7 digits long and start with #
         if not hex_colour.startswith("#") or len(hex_colour) != 7:
             await ctx.send(
                 "Please choose a valid hex colour code. "
@@ -429,7 +429,7 @@ class Admin(commands.Cog):
     @app_commands.guilds(*GuildIDs.ALL_GUILDS)
     @app_commands.default_permissions(administrator=True)
     @utils.check.is_moderator()
-    async def records(self, ctx: commands.Context):
+    async def records(self, ctx: commands.Context) -> None:
         """Links our ban records google doc."""
         await ctx.send(f"Link to our ban records:\n{AdminVars.BAN_RECORDS}")
 

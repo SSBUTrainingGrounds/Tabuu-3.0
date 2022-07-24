@@ -32,7 +32,7 @@ class Events(commands.Cog):
         self.tos_ping.start()
         self.dt_ping.start()
 
-    def cog_unload(self):
+    def cog_unload(self) -> None:
         self.change_status.cancel()
         self.so_ping.cancel()
         self.tos_ping.cancel()

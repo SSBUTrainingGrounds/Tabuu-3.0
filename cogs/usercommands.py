@@ -166,7 +166,7 @@ class Usercommands(commands.Cog):
         # The modal for filling out the poll options.
         # We define it in the function so we have access to the needed variables.
         class PollOptions(discord.ui.Modal, title=shortened_question):
-            def __init__(self):
+            def __init__(self) -> None:
                 super().__init__()
                 self.add_item(
                     discord.ui.TextInput(
@@ -178,7 +178,7 @@ class Usercommands(commands.Cog):
                     )
                 )
 
-            async def on_submit(self, interaction: discord.Interaction):
+            async def on_submit(self, interaction: discord.Interaction) -> None:
                 await interaction.response.send_message(
                     "Creating poll...", ephemeral=True
                 )
@@ -221,17 +221,17 @@ class Usercommands(commands.Cog):
         # Theoretically we only need this when you use a normal text based command,
         # but to keep them both the same we just do it no matter what.
         class PollButton(discord.ui.View):
-            def __init__(self):
+            def __init__(self) -> None:
                 super().__init__(timeout=60)
 
             @discord.ui.button(label=f"Select the options for: {shortened_question}.")
             async def poll_button(
                 self, interaction: discord.Interaction, button: discord.Button
-            ):
+            ) -> None:
                 await interaction.response.send_modal(PollOptions())
                 self.stop()
 
-            async def interaction_check(self, interaction: discord.Interaction):
+            async def interaction_check(self, interaction: discord.Interaction) -> bool:
                 return interaction.user == ctx.author
 
         view = PollButton()
@@ -275,7 +275,7 @@ class Usercommands(commands.Cog):
         await ctx.send(embed=embed)
 
     @commands.command()
-    async def sticker(self, ctx: commands.Context):
+    async def sticker(self, ctx: commands.Context) -> None:
         """Gives you information about a Sticker.
         Note that Stickers work very differently from Emojis.
         They count as a message attachment, so we fetch the first of those.
