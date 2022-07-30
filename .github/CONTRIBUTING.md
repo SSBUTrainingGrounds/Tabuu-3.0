@@ -16,7 +16,7 @@ If you just need to ask a question, head over to the [GitHub Discussions Tab](ht
 
 ## Getting started with contributing
 
-If you are just getting started, please read [the `README.md` on how to get the bot running in your environment](https://github.com/SSBUTrainingGrounds/Tabuu-3.0#running-the-bot).  
+If you are just getting started, please read [the `README.md` on how to get the bot running in your environment](https://github.com/SSBUTrainingGrounds/Tabuu-3.0/blob/main/running.md).  
 Generally speaking, some knowledge of Python, [discord.py](https://github.com/Rapptz/discord.py), and other tools used would be beneficial.
 
 ## Bug reports

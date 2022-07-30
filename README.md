@@ -28,30 +28,14 @@ Made by Phxenix#1104. If you have any questions feel free to contact me on Disco
 - Lots of other useful General User Commands
 - Lots of other not-so-useful General User Commands
 
-**The full list of commands with an explanation on how to use them can be found within the [CommandList.md](CommandList.md) file.**
+**The full list of commands with an explanation on how to use them can be found within the [commands.md](commands.md) file.**
 
 ## Running the bot
 
 Since this bot is only intended to be used on the SSBU Training Grounds Server, this means that **you cannot just invite a running instance of the bot to your own server.**  
-What you can do instead is run your own instance of this bot. Please keep in mind however that this bot is highly tailored to the SSBU Training Grounds Server. If you are looking for an easy-to-setup, highly customisable discord bot, you should probably look elsewhere. With all that being said...  
+What you can do instead is run your own instance of this bot. Please keep in mind however that this bot is being developed with only the SSBU Training Grounds Server and affiliated Servers in mind, as a result this is likely to not be ideal for your own Discord Server.  
 
-### Here's how to run the bot yourself  
-
-1) Clone this repository.  
-2) Install at least Python 3.9 or newer and the latest version of the [discord.py](https://github.com/Rapptz/discord.py) alpha, as well as the other packages needed with `pip install -r requirements.txt`.  
-3) [Create your own Discord Bot](https://discord.com/developers/applications).  
-4) This bot needs *a lot* of server-specific IDs to function properly, so you need to modify the values in the [`./utils/ids.py`](utils/ids.py) file with the unique IDs of your servers/channels/roles.  
-5) Replace the contents of [`./files/badwords.txt`](files/badwords.txt) with words that will get you automatically warned on usage.  
-6) Create a file named `token.txt` in the [`./files/`](files/) directory and paste your discord bot token into it.  
-7) Run `main.py` and enjoy!  
-
-**Optional steps to consider:**  
-
-1) The Mee6 Leaderboard is from the Training Grounds but you can change it to your own, in the [`./cogs/mee6api.py`](cogs/mee6api.py) file. Make sure that Mee6 is present in your server and the leaderboard is enabled and set to public.  
-2) The stagelist file [`./files/stagelist.png`](files/stagelist.png) shows our current stagelist. Feel free to replace the image, just keep the same file name.  
-3) The emojis used in the profile commands are stored in [`./files/characters.json`](files/characters.json), change them if you have your own. If the bot does not have access to emojis it will just display `:EmojiName:`, so it will still *kind of* work.  
-
-While these are entirely optional, if you are planning on seriously using this bot for your own server, I would highly recommend following these steps for appearance purposes.  
+With all that being said, head over to the [running.md](/running.md) file for a detailed guide on how to set up this bot in your own environment.
 
 ## Contributing to Tabuu 3.0
 
@@ -63,8 +47,8 @@ You can view the guidelines and how to get started [here](.github/CONTRIBUTING.m
 A collection of the most important links, for quick access.
 
 - [Discord server](https://discord.gg/ssbutg)
-- [List of every command available](/CommandList.md)
-- [How to run the bot](/README.md#running-the-bot)
+- [List of every command available](/commands.md)
+- [How to run the bot](/running.md)
 - [Contributing guidelines](.github/CONTRIBUTING.md)
 - [Code of conduct](.github/CODE_OF_CONDUCT.md)
 - [License](/LICENSE)
