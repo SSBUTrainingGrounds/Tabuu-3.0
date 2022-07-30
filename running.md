@@ -12,7 +12,7 @@ First up, here's what you need to have installed on your machine:
 1) [Create a new Discord Bot](https://discord.com/developers/applications)  
 2) Clone this repository: `git clone https://github.com/SSBUTrainingGrounds/Tabuu-3.0`
 
-    - Optional, but recommended: Create a virtual environment: `python -m venv venv` and activate it: `./venv/Scripts/activate`
+    - Optional, but recommended: Create a [virtual environment](https://docs.python.org/3/tutorial/venv.html): `python -m venv venv` and activate it: `./venv/Scripts/activate`
 
 3) Install requirements: `pip install -r requirements.txt`
 4) Modify the values in the [`./utils/ids.py`](utils/ids.py) file with the unique IDs of your servers/channels/roles  
