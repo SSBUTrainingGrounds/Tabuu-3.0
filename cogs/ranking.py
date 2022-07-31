@@ -184,25 +184,22 @@ class Ranking(commands.Cog):
 
                 await db.commit()
 
-    async def calculate_elo(
-        self, winner: discord.Member, loser: discord.Member, k: int = 32
+    async def get_elo(self, member: discord.Member) -> int:
+        """Gets the elo of a given member."""
+        async with aiosqlite.connect("./db/database.db") as db:
+            matching_member = await db.execute_fetchall(
+                """SELECT elo FROM ranking WHERE user_id = :winner_id""",
+                {"winner_id": member.id},
+            )
+
+        return matching_member[0][0]
+
+    def calculate_elo(
+        self, winner_elo: int, loser_elo: int, k: int = 32
     ) -> tuple[int, int, int]:
         """Calculates the new Elo value of the winner and loser.
         Uses the classic Elo calculations.
         """
-        async with aiosqlite.connect("./db/database.db") as db:
-            matching_winner = await db.execute_fetchall(
-                """SELECT elo FROM ranking WHERE user_id = :winner_id""",
-                {"winner_id": winner.id},
-            )
-            matching_loser = await db.execute_fetchall(
-                """SELECT elo FROM ranking WHERE user_id = :loser_id""",
-                {"loser_id": loser.id},
-            )
-
-        winner_elo = matching_winner[0][0]
-        loser_elo = matching_loser[0][0]
-
         winner_expected = 1 / (1 + 10 ** ((loser_elo - winner_elo) / 400))
         loser_expected = 1 / (1 + 10 ** ((winner_elo - loser_elo) / 400))
 
@@ -419,8 +416,11 @@ class Ranking(commands.Cog):
         await self.create_ranked_profile(ctx.author)
         await self.create_ranked_profile(user)
 
-        winnerupdate, loserupdate, difference = await self.calculate_elo(
-            ctx.author, user
+        winner_elo = await self.get_elo(ctx.author)
+        loser_elo = await self.get_elo(user)
+
+        winnerupdate, loserupdate, difference = self.calculate_elo(
+            winner_elo, loser_elo
         )
 
         await self.update_ranked_stats(ctx.author, winnerupdate, user, loserupdate)
@@ -475,7 +475,12 @@ class Ranking(commands.Cog):
         await self.create_ranked_profile(winner)
         await self.create_ranked_profile(loser)
 
-        winnerupdate, loserupdate, difference = await self.calculate_elo(winner, loser)
+        winner_elo = await self.get_elo(winner)
+        loser_elo = await self.get_elo(loser)
+
+        winnerupdate, loserupdate, difference = self.calculate_elo(
+            winner_elo, loser_elo
+        )
 
         await self.update_ranked_stats(winner, winnerupdate, loser, loserupdate)
 
