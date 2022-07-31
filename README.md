@@ -28,14 +28,14 @@ Made by Phxenix#1104. If you have any questions feel free to contact me on Disco
 - Lots of other useful General User Commands
 - Lots of other not-so-useful General User Commands
 
-**The full list of commands with an explanation on how to use them can be found within the [commands.md](commands.md) file.**
+**The full list of commands with an explanation on how to use them can be found within the [COMMANDS.md](COMMANDS.md) file.**
 
 ## Running the bot
 
 Since this bot is only intended to be used on the SSBU Training Grounds Server, this means that **you cannot just invite a running instance of the bot to your own server.**  
 What you can do instead is run your own instance of this bot. Please keep in mind however that this bot is being developed with only the SSBU Training Grounds Server and affiliated Servers in mind, as a result this is likely to not be ideal for your own Discord Server.  
 
-With all that being said, head over to the [running.md](/running.md) file for a detailed guide on how to set up this bot in your own environment.
+With all that being said, head over to the [RUNNING.md](/RUNNING.md) file for a detailed guide on how to set up this bot in your own environment.
 
 ## Contributing to Tabuu 3.0
 
@@ -47,8 +47,8 @@ You can view the guidelines and how to get started [here](.github/CONTRIBUTING.m
 A collection of the most important links, for quick access.
 
 - [Discord server](https://discord.gg/ssbutg)
-- [List of every command available](/commands.md)
-- [How to run the bot](/running.md)
+- [List of every command available](/COMMANDS.md)
+- [How to run the bot](/RUNNING.md)
 - [Contributing guidelines](.github/CONTRIBUTING.md)
 - [Code of conduct](.github/CODE_OF_CONDUCT.md)
 - [License](/LICENSE)
