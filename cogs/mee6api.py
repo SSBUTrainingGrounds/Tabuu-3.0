@@ -7,9 +7,7 @@ from mee6_py_api import API
 
 from utils.ids import GuildIDs, GuildNames, TGLevelRoleIDs
 
-# this is purposefully not made into GuildIDs.TRAINING_GROUNDS.
-# even in testing i want the TG leaderboard, not the leaderboard of my testing server. change it if you want to.
-mee6API = API(739299507795132486)
+mee6API = API(GuildIDs.LEADERBOARD_GUILD)
 
 
 class Mee6api(commands.Cog):
@@ -146,8 +144,6 @@ class Mee6api(commands.Cog):
     async def update_roles(self) -> None:
         """Updates the Level Roles of every User in the Server automatically, every 23 hours.
         Pretty much the same as the Command above, with a few minor tweaks.
-        Right now we have 4000 Members and this takes around 1:10 Minutes.
-        We'll see how this scales in the future.
         """
 
         logger = self.bot.get_logger("bot.level")
@@ -166,7 +162,10 @@ class Mee6api(commands.Cog):
                 # We only do this for members in the server and above level 10 though,
                 # otherwise this would take ages.
                 if int(user["id"]) in all_guild_member_ids and user["level"] >= 10:
-                    member = await guild.fetch_member(user["id"])
+                    # We first try to find the member in the cache, if thats not working we have to fetch it.
+                    # Fetching members is a pretty slow process if you have a lot of members.
+                    if not (member := guild.get_member(user["id"])):
+                        member = await guild.fetch_member(user["id"])
                     await self.update_level_role(member, user["level"], guild)
 
         logger.info("Successfully updated level roles!")

@@ -23,6 +23,9 @@ class GuildIDs:
     # The list of guilds where mutes/timeouts etc. carry over.
     # This is its own list, since you might want to add the bot to guilds where mutes do not apply.
     MOD_GUILDS = [TRAINING_GROUNDS, BATTLEGROUNDS]
+    # This is the guild with the Mee6 Leaderboard enabled.
+    # Make sure to set the visibility to public in the Mee6 Dashboard.
+    LEADERBOARD_GUILD = 739299507795132486
 
 
 class AdminVars:

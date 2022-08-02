@@ -7,7 +7,7 @@ First up, here's what you need to have installed on your machine:
 - [Python 3.9 or later](https://www.python.org/downloads/)
 - [git](https://git-scm.com/)
 
-## Setup
+## Set up Tabuu 3.0 in your environment
 
 1) [Create a new Discord Bot](https://discord.com/developers/applications)  
 2) Clone this repository: `git clone https://github.com/SSBUTrainingGrounds/Tabuu-3.0`
@@ -24,10 +24,11 @@ First up, here's what you need to have installed on your machine:
 
 7) Run the bot: `python main.py`
 
-## Optional Steps
+## Optional Steps for your own Bot
 
-- The Mee6 Leaderboard is from the Training Grounds but you can change it to your own, in the [`./cogs/mee6api.py`](cogs/mee6api.py) file. Make sure that Mee6 is present in your server and the leaderboard is enabled and set to public.  
+If you want to host your own bot using Tabuu 3.0 as a template, I recommend to follow these optional steps:
+
 - The stagelist file [`./files/stagelist.png`](files/stagelist.png) shows our current stagelist. Feel free to replace the image, just keep the same file name.  
 - The emojis used in the profile commands are stored in [`./files/characters.json`](files/characters.json), change them if you have your own. If the bot does not have access to emojis it will just display `:EmojiName:`, so it will still *kind of* work. Note that this limitation is only present on message commands.  
 
-While these are entirely optional, if you are planning on seriously using this bot for your own server, I would highly recommend following these steps for appearance purposes.  
+Have fun!
