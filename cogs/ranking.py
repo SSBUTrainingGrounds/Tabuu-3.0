@@ -384,7 +384,7 @@ class Ranking(commands.Cog):
                 return
 
         # To prevent any kind of abuse.
-        if user is ctx.author:
+        if user.id is ctx.author.id:
             await ctx.send("Don't report matches with yourself please.")
             ctx.command.reset_cooldown(ctx)
             return
