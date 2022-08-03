@@ -524,12 +524,14 @@ class Ranking(commands.Cog):
         gamelist = gamelist.replace("W", Emojis.WIN_EMOJI)
         gamelist = gamelist.replace("L", Emojis.LOSE_EMOJI)
 
-        ranked_role = await self.get_ranked_role(member, ctx.guild)
+        ranked_role = await self.get_ranked_role(
+            member, self.bot.get_guild(GuildIDs.TRAINING_GROUNDS)
+        )
 
         embed = discord.Embed(title=f"Ranked stats of {str(member)}", colour=0x3498DB)
         embed.set_thumbnail(url=member.display_avatar.url)
         embed.add_field(name="Elo Score", value=f"**{elo}**", inline=True)
-        embed.add_field(name="Rank", value=ranked_role.mention, inline=True)
+        embed.add_field(name="Rank", value=ranked_role.name, inline=True)
         embed.add_field(name="Games Played", value=f"{wins + losses}")
         embed.add_field(name="Wins", value=wins, inline=True)
         embed.add_field(name="Losses", value=losses, inline=True)
