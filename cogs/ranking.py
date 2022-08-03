@@ -23,13 +23,13 @@ class Ranking(commands.Cog):
         self.bot = bot
 
     async def get_ranked_role(
-        self, member: discord.Member, guild: discord.Guild
+        self, user: discord.User, guild: discord.Guild
     ) -> discord.Role:
-        """Retrieves the ranked role of a member."""
+        """Retrieves the ranked role of a user."""
         async with aiosqlite.connect("./db/database.db") as db:
             matching_player = await db.execute_fetchall(
                 """SELECT elo FROM ranking WHERE user_id = :user_id""",
-                {"user_id": member.id},
+                {"user_id": user.id},
             )
 
         # If the player is not in the database,
@@ -524,14 +524,21 @@ class Ranking(commands.Cog):
         gamelist = gamelist.replace("W", Emojis.WIN_EMOJI)
         gamelist = gamelist.replace("L", Emojis.LOSE_EMOJI)
 
+        ranked_role = await self.get_ranked_role(member, ctx.guild)
+
         embed = discord.Embed(title=f"Ranked stats of {str(member)}", colour=0x3498DB)
         embed.set_thumbnail(url=member.display_avatar.url)
-        embed.add_field(name="Elo score", value=elo, inline=True)
+        embed.add_field(name="Elo Score", value=f"**{elo}**", inline=True)
+        embed.add_field(name="Rank", value=ranked_role.mention, inline=True)
+        embed.add_field(name="Games Played", value=f"{wins + losses}")
         embed.add_field(name="Wins", value=wins, inline=True)
         embed.add_field(name="Losses", value=losses, inline=True)
+        embed.add_field(
+            name="Win Percentage", value=f"{round(wins/(wins+losses) * 100)}%"
+        )
         embed.add_field(name="Last Matches", value=gamelist, inline=True)
         if (
-            selfcheck is True
+            selfcheck
             and ctx.guild is not None
             and ctx.guild.id == GuildIDs.TRAINING_GROUNDS
         ):
@@ -575,25 +582,46 @@ class Ranking(commands.Cog):
     @utils.check.is_moderator()
     async def leaderboard(self, ctx: commands.Context) -> None:
         """The Top 10 Players of our Ranked Matchmaking."""
-        async with aiosqlite.connect("./db/database.db") as db:
-            all_users = await db.execute_fetchall(
-                """SELECT * FROM ranking ORDER BY elo DESC"""
-            )
+        # This command could take a while to run, so we need to defer the slash version.
+        # Typing does that in the slash version, and in the message version it displays the bot as typing in chat.
+        await ctx.typing()
 
-        embed_description = []
-        # Only gets the top 10.
-        for rank, user in enumerate(all_users[:10], start=1):
-            user_id, wins, losses, elo, _ = user
-            embed_description.append(
-                f"{rank} | <@!{user_id}> | {elo} | {wins}/{losses}\n"
+        async with aiosqlite.connect("./db/database.db") as db:
+            top_10 = await db.execute_fetchall(
+                """SELECT * FROM ranking ORDER BY elo DESC LIMIT 10"""
             )
-        embedstats = "".join(embed_description)
 
         embed = discord.Embed(
             title=f"Top 10 Players of {GuildNames.TRAINING_GROUNDS} Ranked Matchmaking",
-            description=f"**Rank | Username | Elo score | W/L**\n{embedstats}",
-            colour=discord.Colour.blue(),
+            description="**Place - Player**\nRank **| Elo Score |** Wins / Losses (Win Percentage)",
+            colour=0x3498DB,
         )
+
+        async with aiosqlite.connect("./db/database.db") as db:
+            for r, u in enumerate(top_10, start=1):
+                user_id, wins, losses, elo, _ = u
+
+                # Getting the mains of the players, too.
+                mains = await db.execute_fetchall(
+                    """SELECT mains FROM profile WHERE user_id = :user_id""",
+                    {"user_id": user_id},
+                )
+                # If they don't have any registered mains, we just display nothing.
+                display_mains = f"{mains[0][0]}" if mains else ""
+
+                # Trying to see if the user is in the cache, if not we have to fetch them.
+                # This takes up the majority of the commands time.
+                if not (user := self.bot.get_user(user_id)):
+                    user = await self.bot.fetch_user(user_id)
+
+                rank = await self.get_ranked_role(user, ctx.guild)
+
+                embed.add_field(
+                    name=f"#{r} - {str(user)} {display_mains}",
+                    value=f"{rank.name} **| {elo} |** {wins}/{losses} ({round(wins/(wins+losses) * 100)}%)",
+                    inline=False,
+                )
+
         embed.set_thumbnail(url=ctx.guild.icon.url)
         embed.timestamp = discord.utils.utcnow()
         await ctx.send(embed=embed)
