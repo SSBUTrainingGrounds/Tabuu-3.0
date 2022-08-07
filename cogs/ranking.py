@@ -616,7 +616,9 @@ class Ranking(commands.Cog):
                 if not (user := self.bot.get_user(user_id)):
                     user = await self.bot.fetch_user(user_id)
 
-                rank = await self.get_ranked_role(user, ctx.guild)
+                rank = await self.get_ranked_role(
+                    user, self.bot.get_guild(GuildIDs.TRAINING_GROUNDS)
+                )
 
                 embed.add_field(
                     name=f"#{r} - {str(user)} {display_mains}",
