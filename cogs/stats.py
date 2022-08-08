@@ -2,6 +2,7 @@ import datetime
 import os
 import platform
 import time
+from functools import reduce
 
 import aiosqlite
 import discord
@@ -140,42 +141,82 @@ class Stats(commands.Cog):
     @commands.hybrid_command(aliases=["listroles"])
     @app_commands.guilds(*GuildIDs.ALL_GUILDS)
     @app_commands.describe(
-        role="The role you want to get info about. Matches to your closest input."
+        roles="The role, or roles, you want to search the members of. Matches to your closest input."
     )
-    async def listrole(self, ctx: commands.Context, *, role: str) -> None:
-        """Lists every member of a role.
-        Well up to 60 members at least.
-        """
-        matching_role = utils.search.search_role(ctx.guild, role)
-
-        members = matching_role.members
-        if len(members) > 60:
-            await ctx.send(
-                f"Users with the {matching_role} role ({len(matching_role.members)}):\n`Too many users to list!`"
-            )
-            return
-        if len(members) == 0:
-            await ctx.send(f"No user currently has the {matching_role} role!")
-            return
-
-        memberlist = [
-            f"{discord.utils.escape_markdown(member.name)}#{member.discriminator}"
-            for member in members
+    async def listrole(self, ctx: commands.Context, *, roles: str) -> None:
+        """Lists every member of a role, or the overlap of members of multiple roles.
+        If you want to search for multiple roles, separate them with a comma."""
+        # First we match each role with an actual role using the search_role utility function.
+        role_list = [
+            utils.search.search_role(ctx.guild, role) for role in roles.split(",")
         ]
 
-        all_members = ", ".join(memberlist)
+        # Need different messages for singular and plural.
+        if len(role_list) == 1:
+            role_message = f"{role_list[0].name} role"
+        else:
+            role_message = f"{', '.join(role.name for role in role_list)} roles"
 
-        await ctx.send(
-            f"Users with the {matching_role} role ({len(matching_role.members)}):\n{all_members}"
+        # Getting the overlap between all of the role's members.
+        intersect = list(
+            reduce(set.intersection, [set(role.members) for role in role_list])
         )
 
-    @listrole.autocomplete("role")
+        # If there are too many or no members, we send a special message.
+        if len(intersect) > 60:
+            await ctx.send(
+                f"Users with the {role_message} ({len(intersect)}):\n`Too many users to list!`"
+            )
+            return
+        if not intersect:
+            await ctx.send(f"No user currently has the {role_message}!")
+            return
+
+        await ctx.send(
+            f"Users with the {role_message} ({len(intersect)}):\n{', '.join(str(member) for member in intersect)}"
+        )
+
+    @listrole.autocomplete("roles")
     async def listrole_autocomplete(
         self, interaction: discord.Interaction, current: str
     ) -> list[app_commands.Choice]:
-        return utils.search.autocomplete_choices(
-            current, [role.name for role in interaction.guild.roles]
+        existing_roles = None
+        choices = []
+
+        if "," in current:
+            existing_roles, current_role = current.rsplit(",", 1)
+        else:
+            current_role = current
+
+        # We dont use the autocomplete function here from utils.search,
+        # cause we need some customisation here.
+        match = Match(ignore_case=True, include_partial=True, latinise=True)
+
+        match_list = match.get_best_matches(
+            current_role,
+            [role.name for role in interaction.guild.roles],
+            score=40,
+            limit=25,
         )
+
+        # We append the existing chars to the current choices,
+        # so you can select multiple roles at once and the autocomplete still works.
+        if existing_roles:
+            choices.extend(
+                # Choices can be up to 100 chars in length,
+                # which we could exceed with enough roles, so we have to cut it off.
+                app_commands.Choice(
+                    name=f"{existing_roles}, {match}"[:100],
+                    value=f"{existing_roles}, {match}"[:100],
+                )
+                for match in match_list
+            )
+        else:
+            choices.extend(
+                app_commands.Choice(name=match, value=match) for match in match_list
+            )
+
+        return choices[:25]
 
     @commands.hybrid_command(aliases=["serverinfo"])
     @app_commands.guilds(*GuildIDs.ALL_GUILDS)
@@ -424,8 +465,9 @@ Events parsed: {self.bot.events_listened_to}
             error, (commands.CommandInvokeError, commands.HybridCommandError)
         ):
             await ctx.send(
-                "I didn't find a good match for the role you provided. "
-                "Please be more specific, or mention the role, or use the Role ID."
+                "I could not find a good match for one or more roles you provided. "
+                "Please be more specific, mention the role, or use the Role ID.\n"
+                "If you are searching for multiple roles, be sure to separate them with a comma."
             )
         else:
             raise error
