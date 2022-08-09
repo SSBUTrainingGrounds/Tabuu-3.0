@@ -735,7 +735,7 @@ class MemoryGame(discord.ui.View):
 
             self.check_for_pair(self.compare_emoji, button.emoji)
 
-        await interaction.edit_original_message(
+        await interaction.edit_original_response(
             content=f"Memory:\n🟦{self.player1.mention} vs. 🟩{self.player2.mention}\n{self.turn.mention}'s turn:",
             view=self,
         )

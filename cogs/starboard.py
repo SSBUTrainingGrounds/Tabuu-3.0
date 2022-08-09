@@ -72,7 +72,7 @@ class Starboard(commands.Cog):
         """
         if ctx.interaction:
             await ctx.defer()
-            message = await ctx.interaction.original_message()
+            message = await ctx.interaction.original_response()
         else:
             message = ctx.message
 

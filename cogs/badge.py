@@ -71,7 +71,7 @@ class Badge(commands.Cog):
 
         if ctx.interaction:
             await ctx.defer()
-            message = await ctx.interaction.original_message()
+            message = await ctx.interaction.original_response()
         else:
             message = ctx.message
 
@@ -205,7 +205,7 @@ class Badge(commands.Cog):
         # We first check if its a valid emoji by just reacting to the message.
         if ctx.interaction:
             await ctx.defer()
-            message = await ctx.interaction.original_message()
+            message = await ctx.interaction.original_response()
         else:
             message = ctx.message
 
