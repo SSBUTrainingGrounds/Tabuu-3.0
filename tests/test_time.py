@@ -15,7 +15,7 @@ def test_convert_time() -> None:
     # With regex
     assert convert_time("3days0hrs30sec") == (259230, "3 days, 30 seconds")
     # With the ignored spaces and commas
-    assert convert_time("3days 0 hrs, 30sec"), (259230, "3 days, 30 seconds")
+    assert convert_time("3days 0 hrs, 30sec"), (259230, "3 days, 30 seconds")  # type: ignore
     assert convert_time(" 30 d , 20 hr 1 minutes, 20secs") == (
         2664080,
         "30 days, 20 hours, 1 minute, 20 seconds",

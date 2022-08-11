@@ -11,7 +11,7 @@ def convert_to_utc(dtime: datetime.time, tz: str) -> datetime.time:
     """
     offset = datetime.datetime.now(ZoneInfo(tz)).utcoffset()
     temp_dtime = datetime.datetime.combine(datetime.datetime.now(ZoneInfo(tz)), dtime)
-    return (temp_dtime - offset).time()
+    return (temp_dtime - offset).time() if offset else temp_dtime.time()
 
 
 def append_readable_time(readable_time: str, time: int, duration: str) -> str:
@@ -59,22 +59,22 @@ def convert_time(input_time: str) -> tuple[int, str]:
     # Extracting the values for each entry.
     # Checks if the user hasnt entered anything for the value,
     # or if they entered "0" manually. Who knows what the user will do.
-    days = time_dict.get("days")
+    days = time_dict.get("days", "0")
     if days != "0":
         total_seconds += int(days) * 60 * 60 * 24
         readable_time = append_readable_time(readable_time, int(days), "day")
 
-    hours = time_dict.get("hours")
+    hours = time_dict.get("hours", "0")
     if hours != "0":
         total_seconds += int(hours) * 60 * 60
         readable_time = append_readable_time(readable_time, int(hours), "hour")
 
-    minutes = time_dict.get("minutes")
+    minutes = time_dict.get("minutes", "0")
     if minutes != "0":
         total_seconds += int(minutes) * 60
         readable_time = append_readable_time(readable_time, int(minutes), "minute")
 
-    seconds = time_dict.get("seconds")
+    seconds = time_dict.get("seconds", "0")
     if seconds != "0":
         total_seconds += int(seconds)
         readable_time = append_readable_time(readable_time, int(seconds), "second")

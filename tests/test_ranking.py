@@ -1,3 +1,5 @@
+# type: ignore
+
 from discord.ext import commands
 
 from cogs.ranking import Ranking

@@ -1,3 +1,5 @@
+# type: ignore
+
 from discord.app_commands import Choice
 from discord.ext import commands
 
