@@ -316,10 +316,13 @@ class ArenaButton(discord.ui.View):
 
 
 class PlayerButtons(discord.ui.View):
-    def __init__(self, player_one: discord.Member, player_two: discord.Member) -> None:
+    def __init__(
+        self, player_one: discord.Member, player_two: discord.Member, game_count: int
+    ) -> None:
         super().__init__(timeout=1800)
         self.player_one = player_one
         self.player_two = player_two
+        self.game_count = game_count
         self.player_one_choice: Optional[discord.Member] = None
         self.player_two_choice: Optional[discord.Member] = None
         self.winner: Optional[discord.Member] = None
@@ -360,7 +363,7 @@ class PlayerButtons(discord.ui.View):
             button.style = discord.ButtonStyle.blurple
 
         await interaction.response.edit_message(
-            content="When you're done, click on the button of the winner of Game 1 to report the match.",
+            content=f"When you're done, click on the button of the winner of Game {self.game_count} to report the match.",
             view=self,
         )
 
@@ -418,7 +421,7 @@ class PlayerButtons(discord.ui.View):
     ) -> None:
         """The button for calling a moderator."""
         await interaction.response.edit_message(
-            content="When you're done, click on the button of the winner of Game 1 to report the match.",
+            content=f"When you're done, click on the button of the winner of Game {self.game_count} to report the match.",
             view=self,
         )
         self.cancelled = True
@@ -1034,14 +1037,14 @@ class Ranking(commands.Cog):
             await ctx.send("No stage selected in time.\nCancelling match.")
             return
 
-        game = PlayerButtons(ctx.author, member)
+        game = PlayerButtons(ctx.author, member, game_count + 1)
 
         await ctx.send(
             f"**{stage_select.choice}** selected.\nStart your match! Good luck!\n\n"
         )
 
         await ctx.send(
-            "When you're done, click on the button of the winner of Game 1 to report the match.",
+            f"When you're done, click on the button of the winner of Game {game_count + 1} to report the match.",
             view=game,
         )
 
@@ -1104,7 +1107,7 @@ class Ranking(commands.Cog):
                 await ctx.send("No stage selected in time.\nCancelling match.")
                 return
 
-            next_game = PlayerButtons(ctx.author, member)
+            next_game = PlayerButtons(ctx.author, member, game_count + 1)
 
             # The players can now play the match, and the cycle repeats until a winner is found.
             await ctx.send(
@@ -1112,7 +1115,7 @@ class Ranking(commands.Cog):
             )
 
             await ctx.send(
-                f"When you're done, click on the button of the winner of Game {game_count} to report the match.",
+                f"When you're done, click on the button of the winner of Game {game_count + 1} to report the match.",
                 view=next_game,
             )
 
