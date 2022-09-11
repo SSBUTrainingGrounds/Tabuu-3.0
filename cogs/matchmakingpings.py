@@ -131,7 +131,8 @@ class Matchmakingpings(commands.Cog):
             and after.archived is True
             and (
                 after.parent_id in TGArenaChannelIDs.PUBLIC_ARENAS
-                or after.parent_id in TGArenaChannelIDs.RANKED_ARENAS
+                or after.parent_id in TGArenaChannelIDs.OPEN_RANKED_ARENAS
+                or after.parent_id in TGArenaChannelIDs.CLOSED_RANKED_ARENAS
             )
         ):
             await after.delete()
@@ -212,7 +213,7 @@ class Matchmakingpings(commands.Cog):
 
         # Deleting ranked file.
 
-        with open(r"./json/rankedpings.json", "r", encoding="utf-8") as f:
+        with open(r"./json/ranked.json", "r", encoding="utf-8") as f:
             ranked = json.load(f)
 
         ranked_requests = list(ranked)
@@ -220,7 +221,7 @@ class Matchmakingpings(commands.Cog):
         for user in ranked_requests:
             del ranked[user]
 
-        with open(r"./json/rankedpings.json", "w", encoding="utf-8") as f:
+        with open(r"./json/ranked.json", "w", encoding="utf-8") as f:
             json.dump(ranked, f, indent=4)
 
         logger.info("Ranked file cleared!")

@@ -20,7 +20,7 @@ class Tabuu3(commands.Bot):
         self.main_prefix = "%"
 
         # To be used in the stats command.
-        self.version_number = "9.21.2"
+        self.version_number = "9.22.0"
         self.commands_ran = 0
         self.events_listened_to = 0
 

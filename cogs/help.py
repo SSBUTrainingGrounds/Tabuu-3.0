@@ -164,7 +164,8 @@ class Responses(discord.ui.Select):
 ```{self.prefix}doubles``` - Used for 2v2 matchmaking in our arena channels.
 ```{self.prefix}funnies <message>``` - Used for non-competitive matchmaking in our arena channels.
 ```{self.prefix}ranked``` - Used for 1v1 ranked matchmaking in our ranked channels.
-```{self.prefix}reportmatch <@user>``` - Winner of the set reports the result, <@user> being the person you won against.
+```{self.prefix}startmatch <@user>``` - Starts a ranked match with a user.
+```{self.prefix}reportmatch <@user>``` - Winner of the ranked match can use this as a shortcut for reporting matches.
 ```{self.prefix}rankedstats``` - Your ranked stats.
 ```{self.prefix}recentpings``` - Gets you the recent pings of any matchmaking type.
     """,

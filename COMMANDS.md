@@ -290,11 +290,11 @@ Every other command will be available as both a message- and slash-command.
   - Info: Gets you a random quote from someone.  
   
 - **%ranked**  
-  - Info: Pings your ranked role according to you Elo value and stores your ping for 30 Minutes. Has a 2 minute cooldown and can only be used in our ranked arena channels.  
+  - Info: Pings the ranked role and stores your ping for 30 Minutes. Has a 2 minute cooldown and can only be used in our ranked arena channels.  
   - Aliases: rankedmm, rankedmatchmaking, rankedsingles  
   
 - **%rankstats** `<@user: Optional>`  
-  - Info: Gets you the ranked stats of any optional User. If you dont specify a User, this will get your own stats where you can also choose to remove or add your Elo role.
+  - Info: Gets you the ranked stats of any optional User. If you dont specify a User, this will get your own stats.  
   - Example: `%rankedstats @ExampleUser`  
   - Aliases: rankedstats  
   
@@ -406,6 +406,11 @@ Every other command will be available as both a message- and slash-command.
 - **%starboard threshold** `<number>`  
   - Info: **Moderator only.** Changes the threshold for messages to appear on our starboard.  
   - Example: `%starboard threshold 5`  
+  
+- **%startmatch** `<@member>`  
+  - Info: Starts a ranked match with a user, guiding you through stage bans, etc. Reports the outcome of the match automatically.
+  - Example: `%startmatch @ExampleUser`  
+  - Aliases: startgame, playmatch, playgame  
   
 - **%stats**  
   - Info: Gets you various stats about this bot.  

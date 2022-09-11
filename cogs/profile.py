@@ -7,6 +7,7 @@ from discord.ext import commands
 from stringmatch import Match
 
 import utils.check
+from cogs.ranking import Ranking
 from utils.ids import Emojis, GuildIDs
 
 
@@ -163,10 +164,6 @@ class Profile(commands.Cog):
                 """SELECT * FROM profile WHERE user_id = :user_id""",
                 {"user_id": user.id},
             )
-            matching_user_elo = await db.execute_fetchall(
-                """SELECT elo FROM ranking WHERE user_id = :user_id""",
-                {"user_id": user.id},
-            )
 
         if len(matching_user) == 0:
             await ctx.send("This user did not set up their profile yet.")
@@ -174,7 +171,6 @@ class Profile(commands.Cog):
 
         (_, tag, region, mains, secondaries, pockets, note, colour) = matching_user[0]
 
-        elo = 1000 if len(matching_user_elo) == 0 else matching_user_elo[0][0]
         badges = " ".join(self.get_badges(user))
 
         embed = discord.Embed(title=f"Smash profile of {str(user)}", colour=colour)
@@ -185,7 +181,13 @@ class Profile(commands.Cog):
         if region:
             embed.add_field(name="Region:", value=region, inline=True)
 
-        embed.add_field(name="Elo score:", value=elo, inline=True)
+        player, _, _, _ = await Ranking.get_player(self, user)
+
+        embed.add_field(
+            name="TabuuSkill",
+            value=Ranking.get_display_rank(self, player),
+            inline=True,
+        )
 
         if mains:
             embed.add_field(name="Mains:", value=mains, inline=True)

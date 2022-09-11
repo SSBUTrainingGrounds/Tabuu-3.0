@@ -10,7 +10,7 @@ Made by Phxenix#1104. If you have any questions feel free to contact me on Disco
 ## Features include
 
 - Custom Smash Ultimate Matchmaking
-- Ranking System based on Elo
+- Ranking System based on TrueSkill
 - General Purpose Moderation Commands
 - Custom Cross-Server Warning and Muting System
 - Bad Word and Invite Link filtering

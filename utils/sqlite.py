@@ -43,15 +43,6 @@ async def setup_db(filepath: str = "./db/database.db") -> None:
         )
 
         await db.execute(
-            """CREATE TABLE IF NOT EXISTS ranking(
-                user_id INTEGER,
-                wins INTEGER,
-                losses INTEGER,
-                elo INTEGER,
-                matches TEXT)"""
-        )
-
-        await db.execute(
             """CREATE TABLE IF NOT EXISTS profile(
                 user_id INTEGER,
                 tag TEXT,
@@ -111,6 +102,32 @@ async def setup_db(filepath: str = "./db/database.db") -> None:
                 timestamp INTEGER,
                 mod_id INTEGER,
                 note TEXT)"""
+        )
+
+        await db.execute(
+            """CREATE TABLE IF NOT EXISTS trueskill(
+                user_id INTEGER,
+                rating REAL,
+                deviation REAL,
+                wins INTEGER,
+                losses INTEGER,
+                matches TEXT)"""
+        )
+
+        await db.execute(
+            """CREATE TABLE IF NOT EXISTS matches(
+                match_id INTEGER,
+                winner_id INTEGER,
+                loser_id INTEGER,
+                timestamp INTEGER,
+                old_winner_rating REAL,
+                old_winner_deviation REAL,
+                old_loser_rating REAL,
+                old_loser_deviation REAL,
+                new_winner_rating REAL,
+                new_winner_deviation REAL,
+                new_loser_rating REAL,
+                new_loser_deviation REAL)"""
         )
 
         await db.commit()
