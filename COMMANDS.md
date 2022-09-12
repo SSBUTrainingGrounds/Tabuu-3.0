@@ -298,6 +298,9 @@ Every other command will be available as both a message- and slash-command.
   - Example: `%rankedstats @ExampleUser`  
   - Aliases: rankedstats  
   
+- **%recentmatches**  
+  - Info: **Moderator only.** Lists the 20 most recent matches played in ranked matchmaking.  
+  
 - **%recentpings**  
   - Info: Gets you all pings in the last 30 Minutes of any matchmaking type without pinging the role yourself. Available dropdowns are: Singles, Doubles, Funnies, Ranked.  
   

@@ -115,6 +115,7 @@ class Responses(discord.ui.Select):
 ```{self.prefix}records``` - Shows ban records.
 ```{self.prefix}forcereportmatch <@winner> <@loser>``` - If someone abandons a ranked match.
 ```{self.prefix}leaderboard``` - Leaderboards of ranked matchmaking.
+```{self.prefix}recentmatches``` - Shows the 20 most recent matches of ranked matchmaking.
 ```{self.prefix}rolemenu new <message ID> <emoji> <role>``` - Adds an entry for a role menu.
 ```{self.prefix}rolemenu delete <message ID>``` - Deletes every entry for a Message with a role menu.
 ```{self.prefix}rolemenu modify <message ID> <exclusive> <role(s)>``` - Sets special permissions for a Role menu.

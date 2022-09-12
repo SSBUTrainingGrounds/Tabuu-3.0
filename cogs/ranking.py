@@ -1272,6 +1272,62 @@ class Ranking(commands.Cog):
         embed.timestamp = discord.utils.utcnow()
         await ctx.send(embed=embed)
 
+    @commands.hybrid_command()
+    @app_commands.guilds(*GuildIDs.ALL_GUILDS)
+    @app_commands.default_permissions(administrator=True)
+    @utils.check.is_moderator()
+    async def recentmatches(self, ctx: commands.Context) -> None:
+        """Gets you the last 20 matches played in Ranked Matchmaking."""
+        await ctx.typing()
+
+        async with aiosqlite.connect("./db/database.db") as db:
+            recent_matches = await db.execute_fetchall(
+                """SELECT * FROM matches ORDER BY timestamp DESC LIMIT 20"""
+            )
+
+        embed = discord.Embed(
+            title=f"Last 20 Matches of {GuildNames.TRAINING_GROUNDS} Ranked Matchmaking",
+            description="**Match ID - Timestamp**\n**Winner**: Before → After\n**Loser**: Before → After",
+            colour=0x3498DB,
+        )
+
+        for match in recent_matches:
+            (
+                match_id,
+                winner_id,
+                loser_id,
+                timestamp,
+                old_winner_mu,
+                old_winner_sigma,
+                old_loser_mu,
+                old_loser_sigma,
+                new_winner_mu,
+                new_winner_sigma,
+                new_loser_mu,
+                new_loser_sigma,
+            ) = match
+
+            winner = self.bot.get_user(winner_id)
+            loser = self.bot.get_user(loser_id)
+
+            if not winner:
+                winner = await self.bot.fetch_user(winner_id)
+            if not loser:
+                loser = await self.bot.fetch_user(loser_id)
+
+            embed.add_field(
+                name=f"#{match_id} - <t:{timestamp}:F>",
+                value=f"**{str(winner)}**: {self.get_display_rank(trueskill.Rating(old_winner_mu, old_winner_sigma))}"
+                f" → {self.get_display_rank(trueskill.Rating(new_winner_mu, new_winner_sigma))}\n"
+                f"**{str(loser)}**: {self.get_display_rank(trueskill.Rating(old_loser_mu, old_loser_sigma))}"
+                f" → {self.get_display_rank(trueskill.Rating(new_loser_mu, new_loser_sigma))}",
+                inline=False,
+            )
+
+        embed.set_thumbnail(url=ctx.guild.icon.url)
+        embed.timestamp = discord.utils.utcnow()
+        await ctx.send(embed=embed)
+
     @tasks.loop(time=datetime.time(12, 0, 0))
     async def decay_ratings(self) -> None:
         """Decays the ratings of all inactive players every first of the month at 12:00 CET."""
