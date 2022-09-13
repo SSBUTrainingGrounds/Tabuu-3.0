@@ -485,7 +485,11 @@ class Ranking(commands.Cog):
     ) -> None:
         """Removes every ranked role a user has."""
         roles = self.get_all_ranked_roles(guild)
-        await member.remove_roles(*roles)
+        # Checking if the user has the role before removing it.
+        # Prevents unnecessary API calls which would slow us down.
+        for role in roles:
+            if role in member.roles:
+                await member.remove_roles(role)
 
     async def update_ranked_role(
         self, member: discord.Member, guild: discord.Guild, threshold: int = 5
@@ -502,6 +506,9 @@ class Ranking(commands.Cog):
             if role not in member.roles:
                 await self.remove_ranked_roles(member, guild)
                 await member.add_roles(role)
+        # If the threshold is not met, we remove all ranked roles just in case.
+        else:
+            await self.remove_ranked_roles(member, guild)
 
     async def create_ranked_profile(self, user: discord.User) -> None:
         """Creates an entry in the ranked file for a user,
@@ -1328,6 +1335,125 @@ class Ranking(commands.Cog):
         embed.timestamp = discord.utils.utcnow()
         await ctx.send(embed=embed)
 
+    @commands.hybrid_command()
+    @app_commands.guilds(*GuildIDs.ALL_GUILDS)
+    @app_commands.default_permissions(administrator=True)
+    @utils.check.is_moderator()
+    async def deletematch(self, ctx: commands.Context, match_id: int) -> None:
+        """Deletes a match from the database and restores the previous ratings."""
+        await ctx.typing()
+
+        def check(m: discord.Message) -> bool:
+            return (
+                m.content.lower() in ("y", "n")
+                and m.author == ctx.author
+                and m.channel == ctx.channel
+            )
+
+        async with aiosqlite.connect("./db/database.db") as db:
+            match = await db.execute_fetchall(
+                """SELECT * FROM matches WHERE match_id = :match_id""",
+                {"match_id": match_id},
+            )
+
+            if not match:
+                await ctx.send("Invalid Match ID! Please try again.")
+                return
+
+            winner = match[0][1]
+            loser = match[0][2]
+            timestamp = match[0][3]
+
+            new_match = await db.execute_fetchall(
+                """SELECT * FROM matches WHERE timestamp > :timestamp AND
+                 (winner_id = :winner_id OR loser_id = :loser_id OR winner_id = :loser_id OR loser_id = :winner_id)""",
+                {"timestamp": timestamp, "winner_id": winner, "loser_id": loser},
+            )
+
+            if new_match:
+                await ctx.send(
+                    "Could not delete match as one or both users played another match after this one."
+                )
+                return
+
+            winner_user = self.bot.get_user(winner)
+            loser_user = self.bot.get_user(loser)
+
+            if not winner_user:
+                winner_user = await self.bot.fetch_user(winner)
+            if not loser_user:
+                loser_user = await self.bot.fetch_user(loser)
+
+            embed = discord.Embed(
+                title=f"Match #{match_id}: {str(winner_user)} vs {str(loser_user)}",
+                description=f"**Winner: {str(winner_user)}\n\nRatings Before → After**\n\n"
+                f"**{str(winner_user)}**: {self.get_display_rank(trueskill.Rating(match[0][4], match[0][5]))}"
+                f" → {self.get_display_rank(trueskill.Rating(match[0][8], match[0][9]))}"
+                f"\n**{str(loser_user)}**: {self.get_display_rank(trueskill.Rating(match[0][6], match[0][7]))}"
+                f" → {self.get_display_rank(trueskill.Rating(match[0][10], match[0][11]))}",
+                colour=0x3498DB,
+            )
+            embed.set_thumbnail(url=ctx.guild.icon.url)
+
+            await ctx.send(
+                "Are you sure you want to delete this match and restore the previous ratings?\n"
+                "**Type y to verify** or **Type n to cancel**.",
+                embed=embed,
+            )
+
+            try:
+                msg = await self.bot.wait_for("message", check=check, timeout=60)
+            except asyncio.TimeoutError:
+                await ctx.send(
+                    f"Delete request for Match {match_id} timed out! Please try again."
+                )
+                return
+
+            if msg.content.lower() == "y":
+                await db.execute(
+                    """DELETE FROM matches WHERE match_id = :match_id""",
+                    {"match_id": match_id},
+                )
+                await db.execute(
+                    """UPDATE trueskill SET rating = :rating, deviation = :deviation, wins = wins - 1,
+                     matches = SUBSTR(matches, 1, LENGTH(matches)-1) WHERE user_id = :user_id""",
+                    {
+                        "rating": match[0][4],
+                        "deviation": match[0][5],
+                        "user_id": winner,
+                    },
+                )
+                await db.execute(
+                    """UPDATE trueskill SET rating = :rating, deviation = :deviation, losses = losses - 1,
+                     matches = SUBSTR(matches, 1, LENGTH(matches)-1) WHERE user_id = :user_id""",
+                    {
+                        "rating": match[0][6],
+                        "deviation": match[0][7],
+                        "user_id": loser,
+                    },
+                )
+                await db.commit()
+
+                # Updating the roles, if the member is still on the server.
+                try:
+                    winner_member = await ctx.guild.fetch_member(winner)
+                    await self.update_ranked_role(winner_member, ctx.guild)
+                except (discord.Forbidden, discord.HTTPException, discord.NotFound):
+                    pass
+
+                try:
+                    loser_member = await ctx.guild.fetch_member(loser)
+                    await self.update_ranked_role(loser_member, ctx.guild)
+                except (discord.Forbidden, discord.HTTPException, discord.NotFound):
+                    pass
+
+                await ctx.send(
+                    f"Match #{match_id} deleted successfully! Ratings were restored."
+                )
+            else:
+                await ctx.send(f"Delete request for {match_id} cancelled.")
+                return
+
     @tasks.loop(time=datetime.time(12, 0, 0))
     async def decay_ratings(self) -> None:
         """Decays the ratings of all inactive players every first of the month at 12:00 CET."""
@@ -1486,6 +1612,30 @@ class Ranking(commands.Cog):
     ) -> None:
         if isinstance(error, commands.MissingPermissions):
             await ctx.send("Nice try, but you don't have the permissions to do that!")
+        else:
+            raise error
+
+    @recentmatches.error
+    async def recentmatches_error(
+        self, ctx: commands.Context, error: commands.CommandError
+    ) -> None:
+        if isinstance(error, commands.MissingPermissions):
+            await ctx.send("Nice try, but you don't have the permissions to do that!")
+        else:
+            raise error
+
+    @deletematch.error
+    async def deletematch_error(
+        self, ctx: commands.Context, error: commands.CommandError
+    ) -> None:
+        if isinstance(error, commands.MissingPermissions):
+            await ctx.send("Nice try, but you don't have the permissions to do that!")
+        elif isinstance(error, commands.MissingRequiredArgument):
+            await ctx.send(
+                "Please provide the ID of the match that you want to delete."
+            )
+        elif isinstance(error, commands.BadArgument):
+            await ctx.send("Please provide a valid match ID.")
         else:
             raise error
 

@@ -115,6 +115,10 @@ Every other command will be available as both a message- and slash-command.
   - Info: **Moderator only.** Deletes the specified macro command.  
   - Example: `%deletemacro test`  
   
+- **%deletematch** `<match_id>`  
+  - Info: **Moderator only.** Deletes a match with a given ID from the database and restores previous ratings. Does only work if both users have not played a more recent match.  
+  - Example: `%deletematch 42171517`  
+  
 - **%deleteprofile**  
   - Info: Deletes your own profile.  
   
