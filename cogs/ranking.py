@@ -1236,7 +1236,7 @@ class Ranking(commands.Cog):
 
         async with aiosqlite.connect("./db/database.db") as db:
             top_10 = await db.execute_fetchall(
-                """SELECT * FROM trueskill ORDER BY (rating - 3 * deviation) DESC LIMIT 10"""
+                """SELECT * FROM trueskill WHERE wins + losses > 0 ORDER BY (rating - 3 * deviation) DESC LIMIT 10"""
             )
 
         embed = discord.Embed(
