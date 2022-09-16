@@ -474,11 +474,15 @@ class Events(commands.Cog):
             datetime.datetime.now(ZoneInfo(TournamentReminders.TIMEZONE)).hour
             <= TournamentReminders.LINK_REMINDER_HOUR
         ):
+            guild = self.bot.get_guild(GuildIDs.TRAINING_GROUNDS)
             design_channel = self.bot.get_channel(TGChannelIDs.TOURNAMENT_TEAM)
+            tournament_role = discord.utils.get(
+                guild.roles, id=TGRoleIDs.TOURNAMENT_HEAD_ROLE
+            )
 
             await design_channel.send(
-                "<@474767039454773248> <@690399305785147423> "
-                "Trials of Smash and Smash Overseas is this week! Have you posted the link in announcements?"
+                f"{tournament_role.mention} Trials of Smash and Smash Overseas is this week! "
+                "Have you posted the link in announcements?"
             )
 
     @so_ping.before_loop
