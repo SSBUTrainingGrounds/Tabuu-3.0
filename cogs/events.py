@@ -31,12 +31,14 @@ class Events(commands.Cog):
         self.so_ping.start()
         self.tos_ping.start()
         self.dt_ping.start()
+        self.lm_ping.start()
 
     def cog_unload(self) -> None:
         self.change_status.cancel()
         self.so_ping.cancel()
         self.tos_ping.cancel()
         self.dt_ping.cancel()
+        self.lm_ping.cancel()
 
     # Status cycles through these, update these once in a while to keep it fresh.
     status = cycle(
@@ -367,6 +369,12 @@ class Events(commands.Cog):
         0,
         0,
     )
+    lm_time = datetime.time(
+        TournamentReminders.LINK_REMINDER_HOUR,
+        TournamentReminders.LINK_REMINDER_MINUTE,
+        0,
+        0,
+    )
 
     @tasks.loop(time=utils.time.convert_to_utc(so_time, TournamentReminders.TIMEZONE))
     async def so_ping(self) -> None:
@@ -454,6 +462,25 @@ class Events(commands.Cog):
                 "Who is able to take one or both?\n(Assuming alts have already been collected.)"
             )
 
+    @tasks.loop(time=utils.time.convert_to_utc(lm_time, TournamentReminders.TIMEZONE))
+    async def lm_ping(self) -> None:
+        if not TournamentReminders.PING_ENABLED:
+            return
+
+        if (
+            datetime.datetime.now(ZoneInfo(TournamentReminders.TIMEZONE)).weekday()
+            == TournamentReminders.LINK_REMINDER_DAY
+        ) and (
+            datetime.datetime.now(ZoneInfo(TournamentReminders.TIMEZONE)).hour
+            <= TournamentReminders.LINK_REMINDER_HOUR
+        ):
+            design_channel = self.bot.get_channel(TGChannelIDs.TOURNAMENT_TEAM)
+
+            await design_channel.send(
+                "<@474767039454773248> <@690399305785147423> "
+                "Trials of Smash and Smash Overseas is this week! Have you posted the link in announcements?"
+            )
+
     @so_ping.before_loop
     async def before_so_ping(self) -> None:
         await self.bot.wait_until_ready()
@@ -464,6 +491,10 @@ class Events(commands.Cog):
 
     @dt_ping.before_loop
     async def before_dt_ping(self) -> None:
+        await self.bot.wait_until_ready()
+
+    @lm_ping.before_loop
+    async def before_lm_ping(self) -> None:
         await self.bot.wait_until_ready()
 
 

@@ -60,6 +60,10 @@ class TournamentReminders:
     DESIGN_TEAM_HOUR = 12
     DESIGN_TEAM_MINUTE = 55
 
+    LINK_REMINDER_DAY = 0
+    LINK_REMINDER_HOUR = 12
+    LINK_REMINDER_MINUTE = 55
+
 
 class TGChannelIDs:
     """Contains Channel IDs used throughout the code, specific to the Training Grounds Server."""
