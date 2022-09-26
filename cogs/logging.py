@@ -135,7 +135,7 @@ class Logging(commands.Cog):
     async def on_member_join(self, member: discord.Member) -> None:
         embed = discord.Embed(
             title="**🎆 New member joined 🎆**",
-            description=f"{member.mention} has joined the server!\n\n"
+            description=f"{str(member)} has joined the server!\n\n"
             f"**Account created:**\n{discord.utils.format_dt(member.created_at, style='R')}",
             colour=discord.Colour.green(),
         )
@@ -149,14 +149,18 @@ class Logging(commands.Cog):
     @commands.Cog.listener()
     async def on_member_remove(self, member: discord.Member) -> None:
         # @everyone is considered a role too, so we remove that from the list.
-        everyonerole = discord.utils.get(member.guild.roles, name="@everyone")
-        roles = [role.mention for role in member.roles if role is not everyonerole]
+        everyone_role = discord.utils.get(member.guild.roles, name="@everyone")
+        roles = [role.mention for role in member.roles if role is not everyone_role]
+
+        # We reverse the list so the top roles get mentioned first.
+        roles.reverse()
+
         # Users may leave without a role to their name (except @everyone i guess)
         role_description = f"{' '.join(roles)}" if roles else "No roles"
 
         embed = discord.Embed(
             title="** 🚶 Member left the server 🚶**",
-            description=f"{member.mention} has left the server. \n**Lost roles:** \n{role_description}",
+            description=f"{str(member)} has left the server. \n**Lost roles:** \n{role_description}",
             colour=discord.Colour.dark_red(),
         )
         embed.set_author(
@@ -275,7 +279,7 @@ class Logging(commands.Cog):
     async def on_member_ban(self, guild: discord.Guild, user: discord.User) -> None:
         embed = discord.Embed(
             title="**🚫 New ban! 🚫**",
-            description=f"{user.mention} has been banned from this server!",
+            description=f"{str(user)} has been banned from this server!",
             colour=discord.Colour.dark_red(),
         )
         embed.set_author(
@@ -289,7 +293,7 @@ class Logging(commands.Cog):
     async def on_member_unban(self, guild: discord.Guild, user: discord.User) -> None:
         embed = discord.Embed(
             title="**🔓 New unban! 🔓**",
-            description=f"{user.mention} has been unbanned from this server!",
+            description=f"{str(user)} has been unbanned from this server!",
             colour=discord.Colour.green(),
         )
         embed.set_author(
@@ -651,7 +655,7 @@ class Logging(commands.Cog):
         embed = discord.Embed(
             title="🧵 New thread created! 🧵",
             description=f"Name: {thread.name}\nID: {thread.id}\n"
-            f"Channel: {thread.parent.mention}\nCreator: {thread.owner.mention}\n"
+            f"Channel: {thread.parent.mention}\nCreator: {str(thread.owner)}\n"
             f"Archives after {thread.auto_archive_duration} minutes of inactivity.",
             colour=discord.Colour.blue(),
         )
@@ -669,7 +673,7 @@ class Logging(commands.Cog):
         embed = discord.Embed(
             title="❌ Thread deleted! ❌",
             description=f"Name: {thread.name}\nID: {thread.id}\n"
-            f"Channel: {thread.parent.mention}\nCreator: {thread.owner.mention}",
+            f"Channel: {thread.parent.mention}\nCreator: {str(thread.owner)}",
             colour=discord.Colour.red(),
         )
         embed.set_author(
@@ -690,7 +694,7 @@ class Logging(commands.Cog):
             embed = discord.Embed(
                 title="🗃️ Thread archived! 🗃️",
                 description=f"Name: {before.name}\nID: {before.id}\n"
-                f"Channel: {before.parent.mention}\nCreator: {before.owner.mention}",
+                f"Channel: {before.parent.mention}\nCreator: {str(before.owner)}",
                 colour=discord.Colour.dark_orange(),
             )
 
