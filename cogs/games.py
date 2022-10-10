@@ -148,12 +148,8 @@ class TicTacToeGame(discord.ui.View):
             if winning_list == [2, 2, 2]:
                 return self.member
 
-        # If theres a tie we return false.
-        if 0 not in board:
-            return False
-
-        # If the game is ongoing, we return None.
-        return None
+        # If theres a tie we return false, else the game is still ongoing and we return None.
+        return False if 0 not in board else None
 
     async def game_ending(self, interaction: discord.Interaction) -> None:
         """Handles the game ending for us."""
@@ -356,11 +352,8 @@ class BlackJackButtons(discord.ui.View):
     async def interaction_check(self, interaction: discord.Interaction) -> bool:
         if interaction.user not in (self.author, self.member):
             return False
-        if interaction.user == self.author and self.turn == self.author:
-            return True
-        if interaction.user == self.member and self.turn == self.member:
-            return True
-        return False
+        # We check if it's your turn.
+        return interaction.user.id == self.turn.id
 
     async def on_timeout(self) -> None:
         await self.message.reply(
@@ -785,9 +778,7 @@ class MemoryGame(discord.ui.View):
         if interaction.user not in (self.player1, self.player2):
             return False
         # Checks if its your turn.
-        if interaction.user == self.turn:
-            return True
-        return False
+        return interaction.user.id == self.turn.id
 
     async def on_timeout(self) -> None:
         await self.message.reply(

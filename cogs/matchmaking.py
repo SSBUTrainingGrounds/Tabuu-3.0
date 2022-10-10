@@ -54,14 +54,12 @@ class Matchmaking(commands.Cog):
         list_of_searches = []
 
         for ping in user_pings:
-            ping_channel = user_pings[f"{ping}"]["channel"]
             ping_timestamp = user_pings[f"{ping}"]["time"]
-
             difference = timestamp - ping_timestamp
-
             minutes = round(difference / 60)
 
             if minutes < 31:
+                ping_channel = user_pings[f"{ping}"]["channel"]
                 list_of_searches.append(
                     f"<@!{ping}>, in <#{ping_channel}>, {minutes} minutes ago\n"
                 )

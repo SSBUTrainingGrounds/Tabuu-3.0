@@ -245,12 +245,8 @@ class Funcommands(commands.Cog):
         if not user2:
             user2 = ctx.author
 
-        # We dont just spit out a random number, this is highly scientific stuff.
-        rating = (user1.id + user2.id) % 100
-
-        # Always love yourself.
-        if user1 == user2:
-            rating = 100
+        # The relationship between you and yourself should always be 100, of course.
+        rating = 100 if user1.id == user2.id else (user1.id + user2.id) % 100
 
         message = ("█" * floor(rating / 5)).ljust(20, "░")
 
