@@ -1,6 +1,33 @@
 # Here is the place where the unique IDs are stored.
 # Change them as you wish, but keep the names and the types.
+from typing import Optional
+
 import discord
+
+
+class GetIDFunctions:
+    """Contains functions for getting the correct role or channel IDs, given a guild ID."""
+
+    def get_muted_role(self, guild_id: int) -> Optional[int]:
+        """Gets you the muted role of a given guild."""
+
+        if guild_id == GuildIDs.TRAINING_GROUNDS:
+            return TGRoleIDs.MUTED_ROLE
+        elif guild_id == GuildIDs.BATTLEGROUNDS:
+            return BGRoleIDs.MUTED_ROLE
+        else:
+            return None
+
+    def get_logchannel(self, guild_id: int) -> Optional[int]:
+        """Gets you the Log Channel ID of a given guild."""
+
+        if guild_id == GuildIDs.TRAINING_GROUNDS:
+            return TGChannelIDs.LOGCHANNEL
+
+        elif guild_id == GuildIDs.BATTLEGROUNDS:
+            return BGChannelIDs.LOGCHANNEL
+        else:
+            return None
 
 
 class GuildNames:

@@ -1,6 +1,5 @@
 import asyncio
 from datetime import datetime, timedelta
-from typing import Optional
 
 import aiosqlite
 import discord
@@ -8,7 +7,7 @@ from discord import app_commands
 from discord.ext import commands
 
 import utils.check
-from utils.ids import AdminVars, BGRoleIDs, GuildIDs, TGRoleIDs
+from utils.ids import AdminVars, GetIDFunctions, GuildIDs
 from utils.time import convert_time
 
 
@@ -17,16 +16,6 @@ class Mute(commands.Cog):
 
     def __init__(self, bot: commands.Bot) -> None:
         self.bot = bot
-
-    def get_muted_role(self, guild_id: int) -> Optional[int]:
-        """Gets you the muted role of the server."""
-        if guild_id == GuildIDs.TRAINING_GROUNDS:
-            return TGRoleIDs.MUTED_ROLE
-
-        if guild_id == GuildIDs.BATTLEGROUNDS:
-            return BGRoleIDs.MUTED_ROLE
-
-        return None
 
     async def add_mute(self, member: discord.Member) -> None:
         """Adds the mute entry in the database,
@@ -53,7 +42,7 @@ class Mute(commands.Cog):
         for guild_id in GuildIDs.MOD_GUILDS:
             guild = self.bot.get_guild(guild_id)
             muted_role = discord.utils.get(
-                guild.roles, id=self.get_muted_role(guild_id)
+                guild.roles, id=GetIDFunctions.get_muted_role(guild_id)
             )
             guild_member = guild.get_member(member.id)
             if muted_role and guild_member:
@@ -82,7 +71,7 @@ class Mute(commands.Cog):
         for guild_id in GuildIDs.MOD_GUILDS:
             guild = self.bot.get_guild(guild_id)
             muted_role = discord.utils.get(
-                guild.roles, id=self.get_muted_role(guild_id)
+                guild.roles, id=GetIDFunctions.get_muted_role(guild_id)
             )
             guild_member = guild.get_member(member.id)
             if muted_role and guild_member:
