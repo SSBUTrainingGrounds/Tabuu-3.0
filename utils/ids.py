@@ -8,7 +8,8 @@ import discord
 class GetIDFunctions:
     """Contains functions for getting the correct role or channel IDs, given a guild ID."""
 
-    def get_muted_role(self, guild_id: int) -> Optional[int]:
+    @staticmethod
+    def get_muted_role(guild_id: int) -> Optional[int]:
         """Gets you the muted role of a given guild."""
 
         if guild_id == GuildIDs.TRAINING_GROUNDS:
@@ -18,7 +19,8 @@ class GetIDFunctions:
         else:
             return None
 
-    def get_logchannel(self, guild_id: int) -> Optional[int]:
+    @staticmethod
+    def get_logchannel(guild_id: int) -> Optional[int]:
         """Gets you the Log Channel ID of a given guild."""
 
         if guild_id == GuildIDs.TRAINING_GROUNDS:
