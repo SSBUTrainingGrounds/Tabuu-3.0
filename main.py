@@ -20,12 +20,15 @@ class Tabuu3(commands.Bot):
         self.main_prefix = "%"
 
         # To be used in the stats command.
-        self.version_number = "9.22.0"
+        self.version_number = "9.22.1"
         self.commands_ran = 0
         self.events_listened_to = 0
 
         # A check to make sure persistent buttons do not get added twice.
         self.modmail_button_added = None
+
+        # A consistent colour for embeds.
+        self.colour = 0x007377
 
     async def setup_hook(self) -> None:
         # We need to set up some stuff at startup.

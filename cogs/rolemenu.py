@@ -30,7 +30,7 @@ class Rolemenu(commands.Cog):
             f"`{ctx.prefix}rolemenu modify <message> <exclusive> <roles required>`\n"
             f"`{ctx.prefix}rolemenu delete <message>`\n"
             f"`{ctx.prefix}rolemenu get`\n",
-            colour=0x007377,
+            colour=self.bot.colour,
         )
         embed.set_thumbnail(url=self.bot.user.display_avatar.url)
         await ctx.send(embed=embed)

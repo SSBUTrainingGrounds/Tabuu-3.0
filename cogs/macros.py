@@ -202,7 +202,7 @@ class Macros(commands.Cog):
 
         embed = discord.Embed(
             title="Macro info",
-            color=0x007377,
+            color=self.bot.colour,
             description=f"**Name:** {self.bot.main_prefix}{name}\n**Uses:** {uses}\n"
             f"**Author:**<@{author_id}>\n**Output:**\n{payload}\n",
         )

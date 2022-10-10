@@ -385,7 +385,7 @@ class Usercommands(commands.Cog):
 
         translation = Translator().translate(f"{message}", dest="en")
 
-        embed = discord.Embed(title="Translation", colour=0x007377)
+        embed = discord.Embed(title="Translation", colour=self.bot.colour)
         embed.add_field(
             name=f"Original Text ({translation.src}):",
             value=translation.origin[:1000],

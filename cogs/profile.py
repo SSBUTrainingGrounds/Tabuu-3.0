@@ -631,14 +631,16 @@ class Profile(commands.Cog):
             if not emoji:
                 raise commands.errors.EmojiNotFound
 
-            embed = discord.Embed(title=f"{emoji.name} Players:", colour=0x007377)
+            embed = discord.Embed(
+                title=f"{emoji.name} Players:", colour=self.bot.colour
+            )
             embed.set_thumbnail(url=emoji.url)
         except (
             commands.errors.PartialEmojiConversionFailure,
             commands.errors.EmojiNotFound,
         ):
             embed = discord.Embed(
-                title=f"{matching_character} Players:", colour=0x007377
+                title=f"{matching_character} Players:", colour=self.bot.colour
             )
 
         mains_list = []

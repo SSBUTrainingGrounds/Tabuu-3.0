@@ -281,7 +281,7 @@ class Admin(commands.Cog):
             f"`{ctx.prefix}editrole colour <role> <hex colour>`\n"
             f"`{ctx.prefix}editrole icon <role> <emoji/attachment>`\n"
             f"`{ctx.prefix}editrole mentionable <role> <True/False>`\n",
-            colour=0x007377,
+            colour=self.bot.colour,
         )
         embed.set_thumbnail(url=self.bot.user.display_avatar.url)
         await ctx.send(embed=embed)
@@ -539,7 +539,7 @@ class Admin(commands.Cog):
 
         embed = discord.Embed(
             title=f"Last Known Names of {str(user)} ({user.id})",
-            colour=0x007377,
+            colour=self.bot.colour,
             description=embed_desc,
         )
         embed.set_thumbnail(url=user.display_avatar.url)
@@ -560,7 +560,7 @@ class Admin(commands.Cog):
             description=f"`{ctx.prefix}modnote set <@user> <note>`\n"
             f"`{ctx.prefix}modnote delete <@user> <note_id>`\n"
             f"`{ctx.prefix}modnote view <@user>`\n",
-            colour=0x007377,
+            colour=self.bot.colour,
         )
         embed.set_thumbnail(url=self.bot.user.display_avatar.url)
         await ctx.send(embed=embed)
@@ -619,7 +619,7 @@ class Admin(commands.Cog):
             return
 
         embed = discord.Embed(
-            title=f"Saved notes for {str(user)} ({user.id})", colour=0x007377
+            title=f"Saved notes for {str(user)} ({user.id})", colour=self.bot.colour
         )
 
         # Only getting the last 25, because that is the max number of embed fields.

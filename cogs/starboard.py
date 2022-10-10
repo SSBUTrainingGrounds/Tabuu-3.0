@@ -56,7 +56,7 @@ class Starboard(commands.Cog):
             title="Available subcommands:",
             description=f"`{ctx.prefix}starboard emoji <emoji>`\n"
             f"`{ctx.prefix}starboard threshold <number>`\n",
-            colour=0x007377,
+            colour=self.bot.colour,
         )
         embed.set_thumbnail(url=self.bot.user.display_avatar.url)
         await ctx.send(embed=embed)

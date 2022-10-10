@@ -50,7 +50,7 @@ class Badge(commands.Cog):
             f"`{ctx.prefix}badge remove <user> <badge>`\n"
             f"`{ctx.prefix}badge clear <user>`\n"
             f"`{ctx.prefix}badge setinfo <badge> <info text>`\n",
-            colour=0x007377,
+            colour=self.bot.colour,
         )
         embed.set_thumbnail(url=self.bot.user.display_avatar.url)
         await ctx.send(embed=embed)
@@ -284,13 +284,13 @@ class Badge(commands.Cog):
             if not emoji:
                 raise commands.errors.EmojiNotFound
 
-            embed = discord.Embed(title=f"Badgeinfo of {emoji}", colour=0x007377)
+            embed = discord.Embed(title=f"Badgeinfo of {emoji}", colour=self.bot.colour)
             embed.set_thumbnail(url=emoji.url)
         except (
             commands.errors.PartialEmojiConversionFailure,
             commands.errors.EmojiNotFound,
         ):
-            embed = discord.Embed(title=f"Badgeinfo of {badge}", colour=0x007377)
+            embed = discord.Embed(title=f"Badgeinfo of {badge}", colour=self.bot.colour)
 
         users = [f"<@{user_id[0]}>" for user_id in matching_users]
 

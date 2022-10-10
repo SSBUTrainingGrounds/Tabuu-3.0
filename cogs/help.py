@@ -292,7 +292,9 @@ class CustomHelp(commands.HelpCommand):
         """Creates a help embed with useful information.
         Luckily most things work for both commands and groups.
         """
-        embed = discord.Embed(title=self.get_command_signature(command), color=0x007377)
+        embed = discord.Embed(
+            title=self.get_command_signature(command), color=self.bot.colour
+        )
 
         # The command.help is just the docstring inside every command.
         embed.add_field(name="Help:", value=command.help, inline=False)
@@ -427,7 +429,7 @@ class Help(commands.Cog):
 
         # Unfortunately we need to construct our own embed,
         # since a lot of the stuff used is exclusive to the HelpCommand class
-        embed = discord.Embed(title=full_command, color=0x007377)
+        embed = discord.Embed(title=full_command, color=self.bot.colour)
 
         embed.add_field(name="Help:", value=cmd.help, inline=False)
         embed.set_thumbnail(url=self.bot.user.display_avatar.url)
