@@ -953,7 +953,9 @@ class Ranking(commands.Cog):
 
         await ctx.send(message)
 
-    @commands.hybrid_command(aliases=["startgame", "playmatch", "playgame"])
+    @commands.hybrid_command(
+        aliases=["startgame", "playmatch", "playgame"], cooldown_after_parsing=True
+    )
     @commands.cooldown(1, 61, commands.BucketType.user)
     @commands.guild_only()
     @app_commands.guilds(*GuildIDs.ALL_GUILDS)
@@ -1652,7 +1654,7 @@ class Ranking(commands.Cog):
         elif isinstance(
             error, (commands.MissingRequiredArgument, commands.MemberNotFound)
         ):
-            await ctx.send("Please mention the member that you beat in the match.")
+            await ctx.send("Please mention the member you want to play against.")
         else:
             raise error
 
