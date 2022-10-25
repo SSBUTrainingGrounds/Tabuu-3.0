@@ -1196,6 +1196,13 @@ class Ranking(commands.Cog):
                 old_mu = recent_matches[-1][6]
                 old_sigma = recent_matches[-1][7]
 
+            complete_leaderboard = await db.execute_fetchall(
+                """SELECT row_number() OVER (ORDER BY (rating - 3 * deviation) DESC) as row_num, user_id FROM trueskill WHERE wins + losses > 4"""
+            )
+
+            # This will only yield the top half of the leaderboard.
+            leaderboard_top = complete_leaderboard[: len(complete_leaderboard) // 2]
+
         recent_rating = self.get_display_rank(rating) - self.get_display_rank(
             trueskill.Rating(old_mu, old_sigma)
         )
@@ -1212,7 +1219,34 @@ class Ranking(commands.Cog):
         embed.add_field(
             name="TabuuSkill", value=f"**{self.get_display_rank(rating)}**", inline=True
         )
-        embed.add_field(name="Rank", value=ranked_role.name, inline=True)
+
+        if wins + losses >= 5:
+            embed.add_field(name="Rank", value=ranked_role.name, inline=True)
+        else:
+            embed.add_field(name="Rank", value="Unranked", inline=True)
+
+        if any((pos := i) and member.id == m for (i, m) in leaderboard_top):
+            # Seems like flake8 doesnt like assignment expressions.
+            if pos <= 5:  # noqa: F821
+                index = pos - 1  # noqa: F821
+            elif pos <= 10:  # noqa: F821
+                index = 5
+            elif pos <= 15:  # noqa: F821
+                index = 6
+            elif pos <= 20:  # noqa: F821
+                index = 7
+            # The last index is an empty string.
+            else:
+                index = 8
+
+            embed.add_field(
+                name="Leaderboard",
+                value=f"{Emojis.LEADERBOARD_EMOJIS[index]} **#{pos}**",  # noqa: F821
+                inline=True,
+            )
+        else:
+            embed.add_field(name="Leaderboard", value="N/A", inline=True)
+
         embed.add_field(name="Games Played", value=f"{wins + losses}")
         embed.add_field(name="Wins", value=wins, inline=True)
         embed.add_field(name="Losses", value=losses, inline=True)

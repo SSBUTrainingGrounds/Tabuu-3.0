@@ -246,3 +246,6 @@ class Emojis:
     # If you dont want any, just use "W" & "L".
     WIN_EMOJI = "<:rs_W:956192092454023198>"
     LOSE_EMOJI = "<:rs_L:956193883098853507>"
+
+    # Emojis for the leaderboard ranks, make sure to have 8 with an empty one at the end.
+    LEADERBOARD_EMOJIS = ["🥇", "🥈", "🥉", "💎", "💠", "🌸", "🏵️", "💮", ""]
