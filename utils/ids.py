@@ -121,7 +121,7 @@ class TGChannelIDs:
     # Channel where starboard messages get posted.
     STARBOARD_CHANNEL = 788921409648066610
     # The channels where the bot checks for reactions to put on the starboard.
-    STARBOARD_LISTENING_CHANNELS = (783120161992605706,)
+    STARBOARD_LISTENING_CHANNELS = (1037574984882724895,)
     # Channel to post modmails in.
     MODMAIL_CHANNEL = 806860630073409567
 
