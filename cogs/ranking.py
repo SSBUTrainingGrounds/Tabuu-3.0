@@ -717,8 +717,11 @@ class Ranking(commands.Cog):
         return max(round(((player.mu - 3 * player.sigma) * 100) + 1000), 0)
 
     def decay_deviation(self, player: trueskill.Rating) -> trueskill.Rating:
-        """Decays the deviation of a player by 1%."""
-        return trueskill.Rating(player.mu, min(player.sigma * 1.01, 25 / 3))
+        """Decays the deviation of a player by 3.33%."""
+        # 3.33% was chosen because a decently rated player (~25 games played) has a deviation of ~2.6,
+        # with a 3.33% decay, the deviation will be at the maximum value after 36 decay steps.
+        # We decay the deviation every month, so it will take 3 years.
+        return trueskill.Rating(player.mu, min(player.sigma * (31 / 30), 25 / 3))
 
     def store_ranked_ping(self, ctx: commands.Context, timestamp: float) -> None:
         """Stores your ranked ping."""
