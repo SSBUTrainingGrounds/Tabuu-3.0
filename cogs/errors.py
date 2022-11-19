@@ -16,6 +16,7 @@ class Errors(commands.Cog):
         self, ctx: commands.Context, error: commands.CommandError
     ) -> None:
         logger = self.bot.get_logger("bot.commands")
+        # Set this to logger.warning to not get the console spammed.
         logger.error(
             f"Command triggered an Error: {ctx.prefix}{ctx.invoked_with} "
             f"(invoked by {str(ctx.author)}) - Error message: {error}"

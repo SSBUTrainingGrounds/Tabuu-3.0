@@ -5,44 +5,7 @@ from discord.ext import commands
 import utils.check
 import utils.embed
 from utils.ids import GuildIDs, TGChannelIDs, TGRoleIDs
-
-
-class ConfirmationButtons(discord.ui.View):
-    """The buttons for confirming/cancelling the request."""
-
-    def __init__(self, member: discord.Member = None) -> None:
-        super().__init__()
-
-        self.confirm = None
-        self.member = member
-        self.timeout = 60
-
-    @discord.ui.button(label="Confirm", style=discord.ButtonStyle.green, emoji="✔️")
-    async def confirm_button(
-        self,
-        interaction: discord.Interaction,
-        button: discord.ui.Button,
-    ) -> None:
-        self.confirm = True
-        self.clear_items()
-        await interaction.response.edit_message(content="Creating Thread...", view=self)
-        self.stop()
-
-    @discord.ui.button(label="Cancel", style=discord.ButtonStyle.red, emoji="❌")
-    async def cancel_button(
-        self,
-        interaction: discord.Interaction,
-        button: discord.ui.Button,
-    ) -> None:
-        self.confirm = False
-        self.clear_items()
-        await interaction.response.edit_message(content="Request Cancelled.", view=self)
-        self.stop()
-
-    async def interaction_check(self, interaction: discord.Interaction) -> bool:
-        # We make sure its the right member thats pressing the button.
-        # Not really needed since the message is ephemeral anyways.
-        return interaction.user == self.member
+from views.confirm import ConfirmationButtons
 
 
 class ModmailButton(discord.ui.View):
