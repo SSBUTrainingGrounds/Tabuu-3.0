@@ -1,6 +1,6 @@
 git+https://github.com/atomflunder/stringmatch
 aiosqlite==0.17.0
-discord.py==2.0.1
+discord.py==2.1.0
 googletrans==4.0.0rc1
 mee6_py_api==0.0.1
 psutil==5.9.4
