@@ -714,192 +714,84 @@ class Admin(commands.Cog):
         for command in commands:
             await ctx.invoke(command, user)
 
-    # Error handling for the commands above.
-    # They all are fairly similar
     @kick.error
     async def kick_error(
         self, ctx: commands.Context, error: commands.CommandError
     ) -> None:
-        if isinstance(error, commands.MissingRequiredArgument):
-            await ctx.send("You need to specify a reason for the kick!")
-        elif isinstance(error, commands.MemberNotFound):
-            await ctx.send("You need to mention a member!")
-        elif isinstance(error, commands.MissingPermissions):
-            await ctx.send("Nice try, but you don't have the permissions to do that!")
-        elif isinstance(
+        if isinstance(
             error, (commands.CommandInvokeError, commands.HybridCommandError)
         ):
             await ctx.send(
                 "Invalid ID, please make sure you got the right one, or just mention a member."
             )
-        else:
-            raise error
 
     @ban.error
     async def ban_error(
         self, ctx: commands.Context, error: commands.CommandError
     ) -> None:
-        if isinstance(error, commands.MissingRequiredArgument):
-            await ctx.send("You need to specify a member and a reason for the ban!")
-        elif isinstance(error, commands.UserNotFound):
-            await ctx.send("You need to mention a member!")
-        elif isinstance(error, commands.MissingPermissions):
-            await ctx.send("Nice try, but you don't have the permissions to do that!")
-        elif isinstance(
+        if isinstance(
             error, (commands.CommandInvokeError, commands.HybridCommandError)
         ):
             await ctx.send(
                 "Invalid ID, please make sure you got the right one, or just mention a member."
             )
-        else:
-            raise error
 
     @unban.error
     async def unban_error(
         self, ctx: commands.Context, error: commands.CommandError
     ) -> None:
-        if isinstance(error, commands.MissingRequiredArgument):
-            await ctx.send("You need to specify a member to unban.")
-        elif isinstance(error, commands.MissingPermissions):
-            await ctx.send("Nice try, but you don't have the permissions to do that!")
-        elif isinstance(error, commands.UserNotFound):
-            await ctx.send("I could not find this user!")
-        elif isinstance(
+        if isinstance(
             error, (commands.CommandInvokeError, commands.HybridCommandError)
         ):
             await ctx.send(
                 "I couldn't find a ban for this ID, make sure you have the right one."
             )
-        else:
-            raise error
-
-    @syncbanlist.error
-    async def syncbanlist_error(
-        self, ctx: commands.Context, error: commands.CommandError
-    ) -> None:
-        if isinstance(error, commands.MissingPermissions):
-            await ctx.send("Nice try, but you don't have the permissions to do that!")
-        else:
-            raise error
 
     @addrole.error
     async def addrole_error(
         self, ctx: commands.Context, error: commands.CommandError
     ) -> None:
-        if isinstance(error, commands.MissingRequiredArgument):
-            await ctx.send("You need to specify a member and a role!")
-        elif isinstance(error, commands.MemberNotFound):
-            await ctx.send("You need to mention a member!")
-        elif isinstance(error, commands.RoleNotFound):
-            await ctx.send("You need to name a valid role!")
-        elif isinstance(error, commands.MissingPermissions):
-            await ctx.send("Nice try, but you don't have the permissions to do that!")
-        elif isinstance(
+        if isinstance(
             error, (commands.CommandInvokeError, commands.HybridCommandError)
         ):
             await ctx.send(
                 "I didn't find a good match for the role you provided. "
                 "Please be more specific, or mention the role, or use the Role ID."
             )
-        else:
-            raise error
 
     @removerole.error
     async def removerole_error(
         self, ctx: commands.Context, error: commands.CommandError
     ) -> None:
-        if isinstance(error, commands.MissingRequiredArgument):
-            await ctx.send("You need to specify a member and a role!")
-        elif isinstance(error, commands.MemberNotFound):
-            await ctx.send("You need to mention a member!")
-        elif isinstance(error, commands.RoleNotFound):
-            await ctx.send("You need to name a valid role!")
-        elif isinstance(error, commands.MissingPermissions):
-            await ctx.send("Nice try, but you don't have the permissions to do that!")
-        elif isinstance(
+        if isinstance(
             error, (commands.CommandInvokeError, commands.HybridCommandError)
         ):
             await ctx.send(
                 "I didn't find a good match for the role you provided. "
                 "Please be more specific, or mention the role, or use the Role ID."
             )
-        else:
-            raise error
-
-    @editrole.error
-    async def editrole_error(
-        self, ctx: commands.Context, error: commands.CommandError
-    ) -> None:
-        if isinstance(error, commands.MissingPermissions):
-            await ctx.send("Nice try, but you don't have the permissions to do that!")
-        else:
-            raise error
 
     @editrole_name.error
     async def editrole_name_error(
         self, ctx: commands.Context, error: commands.CommandError
     ) -> None:
-        if isinstance(error, commands.MissingPermissions):
-            await ctx.send("Nice try, but you don't have the permissions to do that!")
-        elif isinstance(error, commands.RoleNotFound):
-            await ctx.send("Please specify a valid role.")
-        elif isinstance(error, commands.MissingRequiredArgument):
-            await ctx.send("Please specify a role and the new name of the role.")
-        elif isinstance(
+        if isinstance(
             error, (commands.CommandInvokeError, commands.HybridCommandError)
         ):
             await ctx.send("Please specify a valid role name.")
-        else:
-            raise error
-
-    @editrole_colour.error
-    async def editrole_colour_error(
-        self, ctx: commands.Context, error: commands.CommandError
-    ) -> None:
-        if isinstance(error, commands.MissingPermissions):
-            await ctx.send("Nice try, but you don't have the permissions to do that!")
-        elif isinstance(error, commands.RoleNotFound):
-            await ctx.send("Please specify a valid role.")
-        elif isinstance(error, commands.MissingRequiredArgument):
-            await ctx.send("Please specify a role and a hex colour code.")
-        else:
-            raise error
-
-    @editrole_icon.error
-    async def editrole_icon_error(
-        self, ctx: commands.Context, error: commands.CommandError
-    ) -> None:
-        if isinstance(error, commands.MissingPermissions):
-            await ctx.send("Nice try, but you don't have the permissions to do that!")
-        elif isinstance(error, commands.RoleNotFound):
-            await ctx.send("Please specify a valid role.")
-        elif isinstance(error, commands.MissingRequiredArgument):
-            await ctx.send("Please specify a role and an optional icon or emoji.")
-        else:
-            raise error
 
     @editrole_mentionable.error
     async def editrole_mentionable_error(
         self, ctx: commands.Context, error: commands.CommandError
     ) -> None:
-        if isinstance(error, commands.MissingPermissions):
-            await ctx.send("Nice try, but you don't have the permissions to do that!")
-        elif isinstance(error, commands.RoleNotFound):
-            await ctx.send("Please specify a valid role.")
-        elif isinstance(error, commands.MissingRequiredArgument):
-            await ctx.send("Please specify a role and if it should be mentionable.")
-        elif isinstance(error, commands.BadBoolArgument):
+        if isinstance(error, commands.BadBoolArgument):
             await ctx.send("Please only use either True or False as the value.")
-        else:
-            raise error
 
     @clear.error
     async def clear_error(
         self, ctx: commands.Context, error: commands.CommandError
     ) -> None:
-        if isinstance(error, commands.MissingPermissions):
-            await ctx.send("Nice try, but you don't have the permissions to do that!")
-        elif isinstance(error, commands.BadArgument):
+        if isinstance(error, commands.BadArgument):
             await ctx.send("Please input a valid number!")
         elif isinstance(
             error, (commands.CommandInvokeError, commands.HybridCommandError)
@@ -908,127 +800,31 @@ class Admin(commands.Cog):
                 "I could not delete one or more of these messages! "
                 "Make sure they were not send too long ago or try a different amount."
             )
-        else:
-            raise error
-
-    @records.error
-    async def records_error(
-        self, ctx: commands.Context, error: commands.CommandError
-    ) -> None:
-        if isinstance(error, commands.MissingPermissions):
-            await ctx.send("Nice try, but you don't have the permissions to do that!")
-        else:
-            raise error
 
     @rename.error
     async def rename_error(
         self, ctx: commands.Context, error: commands.CommandError
     ) -> None:
-        if isinstance(error, commands.MissingPermissions):
-            await ctx.send("Nice try, but you don't have the permissions to do that!")
-        elif isinstance(error, commands.MemberNotFound):
-            await ctx.send("Please enter a valid member.")
-        elif isinstance(error, commands.MissingRequiredArgument):
-            await ctx.send("Please enter a member.")
-        elif isinstance(
+        if isinstance(
             error, (commands.CommandInvokeError, commands.HybridCommandError)
         ):
             await ctx.send("Something went wrong! Please try again.")
-        else:
-            raise error
 
     @say.error
     async def say_error(
         self, ctx: commands.Context, error: commands.CommandError
     ) -> None:
-        if isinstance(error, commands.MissingPermissions):
-            await ctx.send("Nice try, but you don't have the permissions to do that!")
-        elif isinstance(error, commands.MissingRequiredArgument):
-            await ctx.send("Please specify a destination and a message to repeat.")
-        elif isinstance(error, commands.MessageNotFound):
-            await ctx.send("Please make sure to input a valid Message ID or Link.")
-        elif isinstance(
+        if isinstance(
             error, (commands.CommandInvokeError, commands.HybridCommandError)
         ):
             await ctx.send("Please input a valid Channel, Thread or Message ID.")
-        else:
-            raise error
-
-    @names.error
-    async def names_error(
-        self, ctx: commands.Context, error: commands.CommandError
-    ) -> None:
-        if isinstance(error, commands.MissingPermissions):
-            await ctx.send("Nice try, but you don't have the permissions to do that!")
-        elif isinstance(
-            error, (commands.UserNotFound, commands.MissingRequiredArgument)
-        ):
-            await ctx.send("Please input a valid user!")
-        else:
-            raise error
-
-    @modnote.error
-    async def modnote_error(
-        self, ctx: commands.Context, error: commands.CommandError
-    ) -> None:
-        if isinstance(error, commands.MissingPermissions):
-            await ctx.send("Nice try, but you don't have the permissions to do that!")
-        else:
-            raise error
-
-    @modnote_set.error
-    async def modnote_set_error(
-        self, ctx: commands.Context, error: commands.CommandError
-    ) -> None:
-        if isinstance(error, commands.MissingPermissions):
-            await ctx.send("Nice try, but you don't have the permissions to do that!")
-        elif isinstance(error, commands.UserNotFound):
-            await ctx.send("Please input a valid user!")
-        elif isinstance(error, commands.MissingRequiredArgument):
-            await ctx.send("Please input a user and a note!")
-        else:
-            raise error
 
     @modnote_delete.error
     async def modnote_delete_error(
         self, ctx: commands.Context, error: commands.CommandError
     ) -> None:
-        if isinstance(error, commands.MissingPermissions):
-            await ctx.send("Nice try, but you don't have the permissions to do that!")
-        elif isinstance(error, commands.UserNotFound):
-            await ctx.send("Please input a valid user!")
-        elif isinstance(error, commands.MissingRequiredArgument):
-            await ctx.send("Please input a user and a note to delete!")
-        elif isinstance(error, commands.BadArgument):
+        if isinstance(error, commands.BadArgument):
             await ctx.send("Please input a valid note ID!")
-        else:
-            raise error
-
-    @modnote_view.error
-    async def modnote_view_error(
-        self, ctx: commands.Context, error: commands.CommandError
-    ) -> None:
-        if isinstance(error, commands.MissingPermissions):
-            await ctx.send("Nice try, but you don't have the permissions to do that!")
-        elif isinstance(
-            error, (commands.UserNotFound, commands.MissingRequiredArgument)
-        ):
-            await ctx.send("Please input a valid user!")
-        else:
-            raise error
-
-    @lookup.error
-    async def lookup_error(
-        self, ctx: commands.Context, error: commands.CommandError
-    ) -> None:
-        if isinstance(error, commands.MissingPermissions):
-            await ctx.send("Nice try, but you don't have the permissions to do that!")
-        elif isinstance(
-            error, (commands.UserNotFound, commands.MissingRequiredArgument)
-        ):
-            await ctx.send("Please input a valid user!")
-        else:
-            raise error
 
 
 async def setup(bot) -> None:

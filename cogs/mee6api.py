@@ -124,12 +124,6 @@ class Mee6api(commands.Cog):
                 f"{ctx.author.mention}, you are on cooldown for another "
                 f"{round((error.retry_after)/60)} minutes to use this command."
             )
-        elif isinstance(error, commands.NoPrivateMessage):
-            await ctx.send(
-                f"This command can only be used in the {GuildNames.TRAINING_GROUNDS} Discord Server."
-            )
-        elif isinstance(error, commands.MemberNotFound):
-            await ctx.send("Please mention a valid member, or leave it blank.")
         elif isinstance(
             error, (commands.CommandInvokeError, commands.HybridCommandError)
         ):
@@ -137,8 +131,6 @@ class Mee6api(commands.Cog):
                 "Something went wrong! Either the API is down or the user was not in the leaderboard yet. "
                 "Please try again later."
             )
-        else:
-            raise error
 
     @tasks.loop(hours=23)
     async def update_roles(self) -> None:

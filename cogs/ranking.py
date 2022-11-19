@@ -1565,36 +1565,15 @@ class Ranking(commands.Cog):
             await ctx.send(
                 f"You are on cooldown! Try again in {round(error.retry_after)} seconds."
             )
-        elif isinstance(error, commands.NoPrivateMessage):
-            await ctx.send(
-                f"Please only use this command in the {GuildNames.TRAINING_GROUNDS} Discord Server."
-            )
-        elif isinstance(
-            error, (commands.MissingRequiredArgument, commands.MemberNotFound)
-        ):
-            await ctx.send("Please mention the member that you beat in the match.")
-        else:
-            raise error
 
     @forcereportmatch.error
     async def forcereportmatch_error(
         self, ctx: commands.Context, error: commands.CommandError
     ) -> None:
-        if isinstance(error, commands.MissingPermissions):
-            await ctx.send("Nice try, but you don't have the permissions to do that!")
-        elif isinstance(
-            error, (commands.MissingRequiredArgument, commands.MemberNotFound)
-        ):
-            await ctx.send(
-                "Please mention the 2 members that have played in this match. "
-                "First mention the winner, second mention the loser."
-            )
-        elif isinstance(error, commands.CommandOnCooldown):
+        if isinstance(error, commands.CommandOnCooldown):
             await ctx.send(
                 f"You are on cooldown! Try again in {round(error.retry_after)} seconds."
             )
-        else:
-            raise error
 
     @rankstats.error
     async def rankstats_error(
@@ -1604,12 +1583,6 @@ class Ranking(commands.Cog):
             error, (commands.CommandInvokeError, commands.HybridCommandError)
         ):
             await ctx.send("This user hasn't played a ranked match yet.")
-        elif isinstance(error, commands.UserNotFound):
-            await ctx.send(
-                "I couldn't find this member, make sure you have the right one or just leave it blank."
-            )
-        else:
-            raise error
 
     @ranked.error
     async def ranked_error(
@@ -1643,38 +1616,12 @@ class Ranking(commands.Cog):
                 ephemeral=True,
             )
 
-    @leaderboard.error
-    async def leaderboard_error(
-        self, ctx: commands.Context, error: commands.CommandError
-    ) -> None:
-        if isinstance(error, commands.MissingPermissions):
-            await ctx.send("Nice try, but you don't have the permissions to do that!")
-        else:
-            raise error
-
-    @recentmatches.error
-    async def recentmatches_error(
-        self, ctx: commands.Context, error: commands.CommandError
-    ) -> None:
-        if isinstance(error, commands.MissingPermissions):
-            await ctx.send("Nice try, but you don't have the permissions to do that!")
-        else:
-            raise error
-
     @deletematch.error
     async def deletematch_error(
         self, ctx: commands.Context, error: commands.CommandError
     ) -> None:
-        if isinstance(error, commands.MissingPermissions):
-            await ctx.send("Nice try, but you don't have the permissions to do that!")
-        elif isinstance(error, commands.MissingRequiredArgument):
-            await ctx.send(
-                "Please provide the ID of the match that you want to delete."
-            )
-        elif isinstance(error, commands.BadArgument):
+        if isinstance(error, commands.BadArgument):
             await ctx.send("Please provide a valid match ID.")
-        else:
-            raise error
 
     @startmatch.error
     async def startmatch_error(
@@ -1684,16 +1631,6 @@ class Ranking(commands.Cog):
             await ctx.send(
                 f"You are on cooldown! Try again in {round(error.retry_after)} seconds."
             )
-        elif isinstance(error, commands.NoPrivateMessage):
-            await ctx.send(
-                f"Please only use this command in the {GuildNames.TRAINING_GROUNDS} Discord Server."
-            )
-        elif isinstance(
-            error, (commands.MissingRequiredArgument, commands.MemberNotFound)
-        ):
-            await ctx.send("Please mention the member you want to play against.")
-        else:
-            raise error
 
 
 async def setup(bot) -> None:

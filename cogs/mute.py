@@ -349,85 +349,28 @@ class Mute(commands.Cog):
 
         await ctx.send(f"Removed the timeout of {member.mention}")
 
-    @mute.error
-    async def mute_error(
-        self, ctx: commands.Context, error: commands.CommandError
-    ) -> None:
-        if isinstance(error, commands.MissingRequiredArgument):
-            await ctx.send("You need to specify a reason for the mute!")
-        elif isinstance(error, commands.MemberNotFound):
-            await ctx.send("You need to mention a member!")
-        elif isinstance(error, commands.MissingPermissions):
-            await ctx.send("Nice try, but you don't have the permissions to do that!")
-        else:
-            raise error
-
-    @unmute.error
-    async def unmute_error(
-        self, ctx: commands.Context, error: commands.CommandError
-    ) -> None:
-        if isinstance(
-            error, (commands.MissingRequiredArgument, commands.MemberNotFound)
-        ):
-            await ctx.send("You need to mention a member!")
-        elif isinstance(error, commands.MissingPermissions):
-            await ctx.send("Nice try, but you don't have the permissions to do that!")
-        else:
-            raise error
-
     @tempmute.error
     async def tempmute_error(
         self, ctx: commands.Context, error: commands.CommandError
     ) -> None:
-        if isinstance(error, commands.MissingRequiredArgument):
-            await ctx.send(
-                "You need to mention a member, an amount of time, and a reason!"
-            )
-        elif isinstance(error, commands.MemberNotFound):
-            await ctx.send("You need to mention a member!")
-        elif isinstance(error, commands.MissingPermissions):
-            await ctx.send("Nice try, but you don't have the permissions to do that!")
-        elif isinstance(
+        if isinstance(
             error, (commands.CommandInvokeError, commands.HybridCommandError)
         ):
             await ctx.send(
                 "Invalid time format! Please use a number followed by d/h/m/s for days/hours/minutes/seconds."
             )
-        else:
-            raise error
 
     @timeout.error
     async def timeout_error(
         self, ctx: commands.Context, error: commands.CommandError
     ) -> None:
-        if isinstance(error, commands.MissingPermissions):
-            await ctx.send("Nice try, but you don't have the permissions to do that!")
-        elif isinstance(error, commands.MissingRequiredArgument):
-            await ctx.send("Please specify a member, a timeout length and a reason!")
-        elif isinstance(error, commands.MemberNotFound):
-            await ctx.send("You need to mention a member!")
-        elif isinstance(
+        if isinstance(
             error, (commands.CommandInvokeError, commands.HybridCommandError)
         ):
             await ctx.send(
                 "Something went wrong! Either you used an invalid time format or I don't have the required permissons! "
                 "Try using a number followed by d/h/m/s for days/hours/minutes/seconds."
             )
-        else:
-            raise error
-
-    @removetimeout.error
-    async def removetimeout_error(
-        self, ctx: commands.Context, error: commands.CommandError
-    ) -> None:
-        if isinstance(error, commands.MissingPermissions):
-            await ctx.send("Nice try, but you don't have the permissions to do that!")
-        elif isinstance(
-            error, (commands.MissingRequiredArgument, commands.MemberNotFound)
-        ):
-            await ctx.send("You need to mention a member!")
-        else:
-            raise error
 
 
 async def setup(bot) -> None:

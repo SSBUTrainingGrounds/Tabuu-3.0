@@ -270,15 +270,6 @@ class Funcommands(commands.Cog):
             f"**{message} - {rating}%** {emojis[floor(rating / 10)] * 3}"
         )
 
-    @friendship.error
-    async def friendship_error(
-        self, ctx: commands.Context, error: commands.CommandError
-    ) -> None:
-        if isinstance(error, (commands.MissingRequiredArgument, commands.UserNotFound)):
-            await ctx.send("Please enter 1 or 2 valid Users!")
-        else:
-            raise error
-
 
 async def setup(bot) -> None:
     await bot.add_cog(Funcommands(bot))

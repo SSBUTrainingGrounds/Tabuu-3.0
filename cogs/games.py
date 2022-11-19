@@ -1142,58 +1142,12 @@ class Games(commands.Cog):
             f"💣 Minesweeper ({mine_count} Bombs) 💣", view=view
         )
 
-    @rps.error
-    async def rps_error(
-        self, ctx: commands.Context, error: commands.CommandError
-    ) -> None:
-        if isinstance(
-            error, (commands.MissingRequiredArgument, commands.MemberNotFound)
-        ):
-            await ctx.send("You need to mention a valid member.")
-        else:
-            raise error
-
-    @tictactoe.error
-    async def tictactoe_error(
-        self, ctx: commands.Context, error: commands.CommandError
-    ) -> None:
-        if isinstance(
-            error, (commands.MissingRequiredArgument, commands.MemberNotFound)
-        ):
-            await ctx.send("You need to mention a valid member.")
-        else:
-            raise error
-
-    @blackjack.error
-    async def blackjack_error(
-        self, ctx: commands.Context, error: commands.CommandError
-    ) -> None:
-        if isinstance(
-            error, (commands.MissingRequiredArgument, commands.MemberNotFound)
-        ):
-            await ctx.send("You need to mention a valid member.")
-        else:
-            raise error
-
-    @memory.error
-    async def memory_error(
-        self, ctx: commands.Context, error: commands.CommandError
-    ) -> None:
-        if isinstance(
-            error, (commands.MissingRequiredArgument, commands.MemberNotFound)
-        ):
-            await ctx.send("You need to mention a valid member.")
-        else:
-            raise error
-
     @minesweeper.error
     async def minesweeper_error(
         self, ctx: commands.Context, error: commands.CommandError
     ) -> None:
         if isinstance(error, commands.BadArgument):
             await ctx.send("Please input a mine count between 2 and 12!")
-        else:
-            raise error
 
 
 async def setup(bot) -> None:

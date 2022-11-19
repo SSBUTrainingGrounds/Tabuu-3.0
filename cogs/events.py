@@ -5,7 +5,6 @@ from zoneinfo import ZoneInfo
 import aiosqlite
 import discord
 from discord.ext import commands, tasks
-from stringmatch import Match
 
 import utils.time
 from utils.ids import (
@@ -52,7 +51,6 @@ class Events(commands.Cog):
             "Reading menu...",
             "Read the rules!",
             "I'm in your area.",
-            "Join the Battlegrounds!",
             "Gambling... 🎰",
             "1% Evil, 99% Hot Gas.",
             "↑ ↑ ↓ ↓ ← → ← → B A Start",
@@ -268,47 +266,6 @@ class Events(commands.Cog):
                 await after.add_roles(cadetrole)
         except AttributeError:
             pass
-
-    @commands.Cog.listener()
-    async def on_command_error(
-        self, ctx: commands.Context, error: commands.CommandError
-    ) -> None:
-        logger = self.bot.get_logger("bot.commands")
-        logger.warning(
-            f"Command triggered an Error: {ctx.prefix}{ctx.invoked_with} "
-            f"(invoked by {str(ctx.author)}) - Error message: {error}"
-        )
-
-        if isinstance(error, commands.CommandNotFound):
-            command_list = [
-                command.qualified_name for command in self.bot.walk_commands()
-            ]
-
-            async with aiosqlite.connect("./db/database.db") as db:
-                all_macros = await db.execute_fetchall("""SELECT name FROM macros""")
-
-            # Appending all macro names to the list to get those too.
-            command_list.extend(m[0] for m in all_macros)
-
-            if ctx.invoked_with in command_list:
-                return
-
-            match = Match(ignore_case=True, include_partial=True, latinise=True)
-            if command_match := match.get_best_match(
-                ctx.invoked_with, command_list, score=30
-            ):
-                await ctx.send(
-                    "I could not find this command. "
-                    f"Did you mean `{ctx.prefix}{command_match}`?\n"
-                    f"Type `{ctx.prefix}help` for all available commands."
-                )
-            else:
-                await ctx.send(
-                    "I could not find this command.\n"
-                    f"Type `{ctx.prefix}help` for all available commands."
-                )
-        elif ctx.command.has_error_handler() is False:
-            raise error
 
     @commands.Cog.listener()
     async def on_command_completion(self, ctx: commands.Context) -> None:

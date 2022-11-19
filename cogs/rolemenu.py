@@ -396,73 +396,33 @@ class Rolemenu(commands.Cog):
                     payload.user_id
                 ).remove_roles(role_tbd)
 
-    @rolemenu.error
-    async def rolemenu_error(
-        self, ctx: commands.Context, error: commands.CommandError
-    ) -> None:
-        if isinstance(error, commands.MissingPermissions):
-            await ctx.send("Nice try, but you don't have the permissions to do that!")
-        else:
-            raise error
-
     @rolemenu_new.error
     async def rolemenu_new_error(
         self, ctx: commands.Context, error: commands.CommandError
     ) -> None:
-        if isinstance(error, commands.MissingPermissions):
-            await ctx.send("Nice try, but you don't have the permissions to do that!")
-        elif isinstance(
-            error, (commands.BadArgument, commands.MissingRequiredArgument)
-        ):
+        if isinstance(error, commands.BadArgument):
             await ctx.send(
                 "Something was not recognized properly. The syntax for this command is: \n"
                 f"`{ctx.prefix}newrolemenu <message_id> <emoji> <role>`"
             )
-        else:
-            raise error
 
     @rolemenu_delete.error
     async def rolemenu_delete_error(
         self, ctx: commands.Context, error: commands.CommandError
     ) -> None:
-        if isinstance(error, commands.MissingPermissions):
-            await ctx.send("Nice try, but you don't have the permissions to do that!")
-        elif isinstance(
-            error, (commands.MissingRequiredArgument, commands.BadArgument)
-        ):
+        if isinstance(error, commands.BadArgument):
             await ctx.send("You need to input a valid message ID.")
-        else:
-            raise error
 
     @rolemenu_modify.error
     async def rolemenu_modify_error(
         self, ctx: commands.Context, error: commands.CommandError
     ) -> None:
-        if isinstance(error, commands.MissingPermissions):
-            await ctx.send("Nice try, but you don't have the permissions to do that!")
-        elif isinstance(error, commands.RoleNotFound):
-            await ctx.send(
-                "I could not find one or more of these roles! Make sure you got the right ones."
-            )
-        elif isinstance(error, commands.BadBoolArgument):
+        if isinstance(error, commands.BadBoolArgument):
             await ctx.send(
                 "You need to input a boolean value for both arguments, True or False."
             )
-        elif isinstance(
-            error, (commands.MissingRequiredArgument, commands.BadArgument)
-        ):
+        elif isinstance(error, commands.BadArgument):
             await ctx.send("You need to input a valid message ID.")
-        else:
-            raise error
-
-    @rolemenu_get.error
-    async def rolemenu_get_error(
-        self, ctx: commands.Context, error: commands.CommandError
-    ) -> None:
-        if isinstance(error, commands.MissingPermissions):
-            await ctx.send("Nice try, but you don't have the permissions to do that!")
-        else:
-            raise error
 
 
 async def setup(bot) -> None:

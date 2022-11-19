@@ -152,15 +152,6 @@ class Matchmakingpings(commands.Cog):
         self.clear_mmrequests()
         await ctx.send("Cleared the matchmaking pings!")
 
-    @clearmmpings.error
-    async def clearmmpings_error(
-        self, ctx: commands.Context, error: commands.CommandError
-    ) -> None:
-        if isinstance(error, commands.MissingPermissions):
-            await ctx.send("Nice try, but you don't have the permissions to do that!")
-        else:
-            raise error
-
     def clear_mmrequests(self) -> None:
         """Clears every Matchmaking Ping in the Singles, Doubles, Funnies and Ranked Files."""
         logger = self.bot.get_logger("bot.mm")

@@ -222,31 +222,12 @@ class Macros(commands.Cog):
     async def createmacro_error(
         self, ctx: commands.Context, error: commands.CommandError
     ) -> None:
-        if isinstance(error, commands.MissingPermissions):
-            await ctx.send("Nice try, but you don't have the permissions to do that!")
-        elif isinstance(error, commands.MissingRequiredArgument):
-            await ctx.send(
-                "You need to input the macro name and then the desired output."
-            )
-        elif isinstance(
+        if isinstance(
             error, (commands.ExpectedClosingQuoteError, commands.UnexpectedQuoteError)
         ):
             await ctx.send(
                 "Please do not create a macro with the `\"` letter. Use `'` instead."
             )
-        else:
-            raise error
-
-    @deletemacro.error
-    async def deletemacro_error(
-        self, ctx: commands.Context, error: commands.CommandError
-    ) -> None:
-        if isinstance(error, commands.MissingPermissions):
-            await ctx.send("Nice try, but you don't have the permissions to do that!")
-        elif isinstance(error, commands.MissingRequiredArgument):
-            await ctx.send("You need to input the macro you want to delete.")
-        else:
-            raise error
 
 
 async def setup(bot) -> None:

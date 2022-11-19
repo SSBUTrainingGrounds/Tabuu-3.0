@@ -245,42 +245,12 @@ class Starboard(commands.Cog):
                     await self.update_starboard_message(reaction, matching_entry[0][0])
                     return
 
-    @starboard.error
-    async def starboard_error(
-        self, ctx: commands.Context, error: commands.CommandError
-    ) -> None:
-        if isinstance(error, commands.MissingPermissions):
-            await ctx.send("Nice try, but you don't have the permissions to do that!")
-        else:
-            raise error
-
-    @starboard_emoji.error
-    async def starboard_emoji_error(
-        self, ctx: commands.Context, error: commands.CommandError
-    ) -> None:
-        if isinstance(error, commands.MissingPermissions):
-            await ctx.send("Nice try, but you don't have the permissions to do that!")
-        elif isinstance(error, commands.MissingRequiredArgument):
-            await ctx.send(
-                "Please input the emoji you want the starboard to respond to."
-            )
-        else:
-            raise error
-
     @starboard_threshold.error
     async def starboard_threshold_error(
         self, ctx: commands.Context, error: commands.CommandError
     ) -> None:
-        if isinstance(error, commands.MissingPermissions):
-            await ctx.send("Nice try, but you don't have the permissions to do that!")
-        elif isinstance(error, commands.MissingRequiredArgument):
-            await ctx.send(
-                "Please input the number you want the new threshold to be for the starboard."
-            )
-        elif isinstance(error, commands.BadArgument):
+        if isinstance(error, commands.BadArgument):
             await ctx.send("Please input an integer!")
-        else:
-            raise error
 
 
 async def setup(bot) -> None:

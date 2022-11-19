@@ -194,7 +194,7 @@ class Modmail(commands.Cog):
         )
 
     @commands.command()
-    async def modmail(self, ctx: commands.Context, *, args: str) -> None:
+    async def modmail(self, ctx: commands.Context, *, message: str) -> None:
         """Very basic one-way modmail system.
         Only works in the Bots DMs.
         """
@@ -207,7 +207,7 @@ class Modmail(commands.Cog):
             if ctx.message.attachments:
                 atm = " , ".join([i.url for i in ctx.message.attachments])
 
-            complete_message = f"**✉️ New Modmail {mod_role.mention}! ✉️**\nFrom: {ctx.author} \nMessage:\n{args} \n{atm}"
+            complete_message = f"**✉️ New Modmail {mod_role.mention}! ✉️**\nFrom: {ctx.author} \nMessage:\n{message} \n{atm}"
 
             # With the message attachments combined with the normal message lengths,
             # the message can reach over 4k characters, but we can only send 2k at a time.
@@ -232,27 +232,6 @@ class Modmail(commands.Cog):
             await ctx.send(
                 "For the sake of privacy, please only use this command in my DM's. They are always open for you."
             )
-
-    @setupmodmailbutton.error
-    async def setupmodmailbutton_error(
-        self, ctx: commands.Context, error: commands.CommandError
-    ) -> None:
-        if isinstance(error, commands.MissingPermissions):
-            await ctx.send("Nice try, but you don't have the permissions to do that!")
-        else:
-            raise error
-
-    @modmail.error
-    async def modmail_error(
-        self, ctx: commands.Context, error: commands.CommandError
-    ) -> None:
-        if isinstance(error, commands.MissingRequiredArgument):
-            await ctx.send(
-                "Please provide a message to the moderators. It should look something like:\n"
-                f"```{ctx.prefix}modmail (your message here)```"
-            )
-        else:
-            raise error
 
 
 async def setup(bot) -> None:

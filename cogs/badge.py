@@ -302,67 +302,6 @@ class Badge(commands.Cog):
 
         await ctx.send(embed=embed)
 
-    @badge_add.error
-    async def badge_add_error(
-        self, ctx: commands.Context, error: commands.CommandError
-    ) -> None:
-        if isinstance(error, commands.MissingPermissions):
-            await ctx.send("Nice try, but you don't have the permissions to do that!")
-        elif isinstance(error, commands.MissingRequiredArgument):
-            await ctx.send("Please specify the user and badge to add!")
-        elif isinstance(error, commands.UserNotFound):
-            await ctx.send("Please mention a valid user!")
-        else:
-            raise error
-
-    @badge_remove.error
-    async def badge_remove_error(
-        self, ctx: commands.Context, error: commands.CommandError
-    ) -> None:
-        if isinstance(error, commands.MissingPermissions):
-            await ctx.send("Nice try, but you don't have the permissions to do that!")
-        elif isinstance(error, commands.MissingRequiredArgument):
-            await ctx.send("Please specify the user and badge to remove!")
-        elif isinstance(error, commands.UserNotFound):
-            await ctx.send("Please mention a valid user!")
-        else:
-            raise error
-
-    @badge_clear.error
-    async def badge_clear_error(
-        self, ctx: commands.Context, error: commands.CommandError
-    ) -> None:
-        if isinstance(error, commands.MissingPermissions):
-            await ctx.send("Nice try, but you don't have the permissions to do that!")
-        elif isinstance(
-            error, (commands.MissingRequiredArgument, commands.UserNotFound)
-        ):
-            await ctx.send("Please mention a valid user!")
-        else:
-            raise error
-
-    @badge_setinfo.error
-    async def badge_setinfo_error(
-        self, ctx: commands.Context, error: commands.CommandError
-    ) -> None:
-        if isinstance(error, commands.MissingPermissions):
-            await ctx.send("Nice try, but you don't have the permissions to do that!")
-        elif isinstance(error, commands.MissingRequiredArgument):
-            await ctx.send("Please specify the badge and badge information!")
-        else:
-            raise error
-
-    @badgeinfo.error
-    async def badgeinfo_error(
-        self, ctx: commands.Context, error: commands.CommandError
-    ) -> None:
-        if isinstance(error, commands.MissingRequiredArgument):
-            await ctx.send(
-                "Please specify the badge you want to see the information of!"
-            )
-        else:
-            raise error
-
 
 async def setup(bot) -> None:
     await bot.add_cog(Badge(bot))

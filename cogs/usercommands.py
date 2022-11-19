@@ -397,70 +397,22 @@ class Usercommands(commands.Cog):
 
         await ctx.send(embed=embed)
 
-    @avatar.error
-    async def avatar_error(
-        self, ctx: commands.Context, error: commands.CommandError
-    ) -> None:
-        if isinstance(error, commands.MemberNotFound):
-            await ctx.send("You need to mention a member, or just leave it blank.")
-        else:
-            raise error
-
-    @banner.error
-    async def banner_error(
-        self, ctx: commands.Context, error: commands.CommandError
-    ) -> None:
-        if isinstance(error, commands.MemberNotFound):
-            await ctx.send("You need to mention a member, or just leave it blank.")
-        else:
-            raise error
-
     @poll.error
     async def poll_error(
         self, ctx: commands.Context, error: commands.CommandError
     ) -> None:
-        if isinstance(error, (commands.MissingRequiredArgument, commands.BadArgument)):
+        if isinstance(error, commands.BadArgument):
             await ctx.send(
-                "Please provide a question for your poll.\n"
+                "Please provide a valid question for your poll.\n"
                 f"Example: `{ctx.prefix}poll What is your favourite colour?`"
             )
-        else:
-            raise error
-
-    @roll.error
-    async def roll_error(
-        self, ctx: commands.Context, error: commands.CommandError
-    ) -> None:
-        if isinstance(error, commands.MissingRequiredArgument):
-            await ctx.send(
-                "Wrong format!\n" f"Try something like: `{ctx.prefix}roll 1d100`"
-            )
-        else:
-            raise error
 
     @countdown.error
     async def countdown_error(
         self, ctx: commands.Context, error: commands.CommandError
     ) -> None:
-        if isinstance(error, commands.MissingRequiredArgument):
-            await ctx.send("You need to input a number!")
-        elif isinstance(error, commands.BadArgument):
+        if isinstance(error, commands.BadArgument):
             await ctx.send("Invalid number!")
-        else:
-            raise error
-
-    @emoji.error
-    async def emote_error(
-        self, ctx: commands.Context, error: commands.CommandError
-    ) -> None:
-        if isinstance(error, commands.MissingRequiredArgument):
-            await ctx.send("You need to specify an emoji!")
-        elif isinstance(error, commands.PartialEmojiConversionFailure):
-            await ctx.send(
-                "I couldn't find information on this emoji! Make sure this is not a default emoji."
-            )
-        else:
-            raise error
 
     @sticker.error
     async def sticker_error(
@@ -468,33 +420,15 @@ class Usercommands(commands.Cog):
     ) -> None:
         if isinstance(error, commands.CommandInvokeError):
             await ctx.send("I could not find any information on this sticker!")
-        else:
-            raise error
-
-    @spotify.error
-    async def spotify_error(
-        self, ctx: commands.Context, error: commands.CommandError
-    ) -> None:
-        if isinstance(error, commands.MemberNotFound):
-            await ctx.send("You need to mention a member, or just leave it blank.")
-        else:
-            raise error
 
     @convert.error
     async def convert_error(
         self, ctx: commands.Context, error: commands.CommandError
     ) -> None:
         if isinstance(
-            error,
-            (
-                commands.MissingRequiredArgument,
-                commands.CommandInvokeError,
-                commands.HybridCommandError,
-            ),
+            error, (commands.CommandInvokeError, commands.HybridCommandError)
         ):
             await ctx.send("Invalid input! Please try again.")
-        else:
-            raise error
 
     @translate.error
     async def translate_error(
@@ -504,8 +438,6 @@ class Usercommands(commands.Cog):
             error, (commands.CommandInvokeError, commands.HybridCommandError)
         ):
             await ctx.send("Please translate a valid message or string.")
-        else:
-            raise error
 
 
 async def setup(bot) -> None:

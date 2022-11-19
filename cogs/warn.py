@@ -302,65 +302,6 @@ class Warn(commands.Cog):
     async def before_warnloop(self) -> None:
         await self.bot.wait_until_ready()
 
-    @warn.error
-    async def warn_error(
-        self, ctx: commands.Context, error: commands.CommandError
-    ) -> None:
-        if isinstance(error, commands.MissingRequiredArgument):
-            await ctx.send("You need to specify a member and a reason!")
-        elif isinstance(error, commands.MemberNotFound):
-            await ctx.send("You need to mention a member!")
-        elif isinstance(error, commands.MissingPermissions):
-            await ctx.send("Nice try, but you don't have the permissions to do that!")
-        else:
-            raise error
-
-    @warns.error
-    async def warns_error(
-        self, ctx: commands.Context, error: commands.CommandError
-    ) -> None:
-        if isinstance(error, commands.MemberNotFound):
-            await ctx.send("You need to mention a member, or just leave it blank.")
-        else:
-            raise error
-
-    @clearwarns.error
-    async def clearwarns_error(
-        self, ctx: commands.Context, error: commands.CommandError
-    ) -> None:
-        if isinstance(error, commands.MissingRequiredArgument):
-            await ctx.send("You need to mention a member!")
-        elif isinstance(error, commands.MissingPermissions):
-            await ctx.send("Nice try, but you don't have the permissions to do that!")
-        else:
-            raise error
-
-    @deletewarn.error
-    async def deletewarn_error(
-        self, ctx: commands.Context, error: commands.CommandError
-    ) -> None:
-        if isinstance(error, commands.MissingRequiredArgument):
-            await ctx.send("You need to mention a member and specify a warn_id.")
-        elif isinstance(error, commands.MemberNotFound):
-            await ctx.send("You need to mention a valid member.")
-        elif isinstance(error, commands.MissingPermissions):
-            await ctx.send("Nice try, but you don't have the permissions to do that!")
-        else:
-            raise error
-
-    @warndetails.error
-    async def warndetails_error(
-        self, ctx: commands.Context, error: commands.CommandError
-    ) -> None:
-        if isinstance(
-            error, (commands.MissingRequiredArgument, commands.MemberNotFound)
-        ):
-            await ctx.send("You need to mention a valid member.")
-        elif isinstance(error, commands.MissingPermissions):
-            await ctx.send("Nice try, but you don't have the permissions to do that!")
-        else:
-            raise error
-
 
 async def setup(bot) -> None:
     await bot.add_cog(Warn(bot))

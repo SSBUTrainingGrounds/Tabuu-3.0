@@ -444,24 +444,11 @@ Events parsed: {self.bot.events_listened_to}
             current, [m.title() for m in self.mana_dict]
         )
 
-    @userinfo.error
-    async def userinfo_error(
-        self, ctx: commands.Context, error: commands.CommandError
-    ) -> None:
-        if isinstance(error, commands.MemberNotFound):
-            await ctx.send("You need to mention a member, or just leave it blank.")
-        else:
-            raise error
-
     @listrole.error
     async def listrole_error(
         self, ctx: commands.Context, error: commands.CommandError
     ) -> None:
-        if isinstance(error, commands.RoleNotFound):
-            await ctx.send("You need to name a valid role!")
-        elif isinstance(error, commands.MissingPermissions):
-            await ctx.send("Nice try, but you don't have the permissions to do that!")
-        elif isinstance(
+        if isinstance(
             error, (commands.CommandInvokeError, commands.HybridCommandError)
         ):
             await ctx.send(
@@ -469,26 +456,18 @@ Events parsed: {self.bot.events_listened_to}
                 "Please be more specific, mention the role, or use the Role ID.\n"
                 "If you are searching for multiple roles, be sure to separate them with a comma."
             )
-        else:
-            raise error
 
     @roleinfo.error
     async def roleinfo_error(
         self, ctx: commands.Context, error: commands.CommandError
     ) -> None:
-        if isinstance(error, commands.RoleNotFound):
-            await ctx.send("You need to name a valid role!")
-        elif isinstance(error, commands.MissingPermissions):
-            await ctx.send("Nice try, but you don't have the permissions to do that!")
-        elif isinstance(
+        if isinstance(
             error, (commands.CommandInvokeError, commands.HybridCommandError)
         ):
             await ctx.send(
                 "I didn't find a good match for the role you provided. "
                 "Please be more specific, or mention the role, or use the Role ID."
             )
-        else:
-            raise error
 
 
 async def setup(bot) -> None:

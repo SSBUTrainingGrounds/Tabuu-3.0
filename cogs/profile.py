@@ -699,54 +699,6 @@ class Profile(commands.Cog):
     ) -> list[app_commands.Choice]:
         return self.character_autocomplete(current)
 
-    @profile.error
-    async def profile_error(
-        self, ctx: commands.Context, error: commands.CommandError
-    ) -> None:
-        if isinstance(error, commands.UserNotFound):
-            await ctx.send(
-                "I couldn't find this user, make sure you have the right one or just leave it blank."
-            )
-        else:
-            raise error
-
-    @forcedeleteprofile.error
-    async def forcedeleteprofile_error(
-        self, ctx: commands.Context, error: commands.CommandError
-    ) -> None:
-        if isinstance(error, commands.MissingPermissions):
-            await ctx.send("Nice try, but you don't have the permissions to do that!")
-        elif isinstance(error, commands.MissingRequiredArgument):
-            await ctx.send("Please specify which profile to delete.")
-        elif isinstance(error, commands.UserNotFound):
-            await ctx.send(
-                "I couldn't find this user, make sure you have the right one."
-            )
-        else:
-            raise error
-
-    @colour.error
-    async def colour_error(
-        self, ctx: commands.Context, error: commands.CommandError
-    ) -> None:
-        if isinstance(error, commands.MissingRequiredArgument):
-            await ctx.send(
-                f"Please choose a valid hex colour code. Example: `{ctx.prefix}colour #8a0f84`"
-            )
-        else:
-            raise error
-
-    @players.error
-    async def players_error(
-        self, ctx: commands.Context, error: commands.CommandError
-    ) -> None:
-        if isinstance(error, commands.MissingRequiredArgument):
-            await ctx.send(
-                "Please input the character you want to look up players for."
-            )
-        else:
-            raise error
-
 
 async def setup(bot) -> None:
     await bot.add_cog(Profile(bot))
