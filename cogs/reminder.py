@@ -68,10 +68,10 @@ class Reminder(commands.Cog):
                 "Duration is too short! I'm sure you can remember that yourself."
             )
             return
-        # 90 days, maybe increase it to 1 year in the future, not sure yet.
-        if seconds > 7776000:
+        # 2 years or 730 days.
+        if seconds > 63072000:
             await ctx.send(
-                "Duration is too long! Maximum duration is 90 days from now."
+                "Duration is too long! Maximum duration is 2 years from now."
             )
             return
 
@@ -269,7 +269,7 @@ class Reminder(commands.Cog):
             error, (commands.CommandInvokeError, commands.HybridCommandError)
         ):
             await ctx.send(
-                "Invalid time format! Please use a number followed by d/h/m/s for days/hours/minutes/seconds.\n"
+                "Invalid time format! Please use a number followed by years, weeks, days, hours, minutes or seconds.\n"
                 f"Example: `{ctx.prefix}reminder 1h20m your message here`"
             )
 

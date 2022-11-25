@@ -37,6 +37,8 @@ def convert_time(input_time: str) -> tuple[int, str]:
 
     # Matching the input into the appropriate group.
     compiled = re.compile(
+        r"(\s?)(?:(?P<years>[0-9]{1,5})(\s?)(?:years?|yrs?|y))?(\s?(,|and)?)"
+        r"(\s?)(?:(?P<weeks>[0-9]{1,5})(\s?)(?:weeks?|wks?|w))?(\s?(,|and)?)"
         r"(\s?)(?:(?P<days>[0-9]{1,5})(\s?)(?:days?|d))?(\s?(,|and)?)"
         r"(\s?)(?:(?P<hours>[0-9]{1,5})(\s?)(?:hours?|hrs?|h))?(\s?(,|and)?)"
         r"(\s?)(?:(?P<minutes>[0-9]{1,5})(\s?)(?:minutes?|mins?|m))?(\s?(,|and)?)"
@@ -59,6 +61,19 @@ def convert_time(input_time: str) -> tuple[int, str]:
     # Extracting the values for each entry.
     # Checks if the user hasnt entered anything for the value,
     # or if they entered "0" manually. Who knows what the user will do.
+    years = time_dict.get("years", "0")
+    if years != "0":
+        # Not bothering with leap years.
+        total_seconds += int(years) * 60 * 60 * 24 * 365
+        readable_time = append_readable_time(readable_time, int(years), "year")
+
+    # Also not bothering with months.
+
+    weeks = time_dict.get("weeks", "0")
+    if weeks != "0":
+        total_seconds += int(weeks) * 60 * 60 * 24 * 7
+        readable_time = append_readable_time(readable_time, int(weeks), "week")
+
     days = time_dict.get("days", "0")
     if days != "0":
         total_seconds += int(days) * 60 * 60 * 24
