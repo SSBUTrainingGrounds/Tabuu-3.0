@@ -832,7 +832,10 @@ class Ranking(commands.Cog):
         else:
             user = self.bot.get_user(best_win[0][2])
             if not user:
-                user = await self.bot.fetch_user(best_win[0][2])
+                try:
+                    user = await self.bot.fetch_user(best_win[0][2])
+                except discord.NotFound:
+                    user = "Unknown User"
             highest_win = (
                 f"vs. **{str(user)}** "
                 f"({self.get_display_rank(trueskill.Rating(best_win[0][6], best_win[0][7]))}, "
