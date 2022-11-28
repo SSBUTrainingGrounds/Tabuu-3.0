@@ -794,6 +794,73 @@ class Ranking(commands.Cog):
             # This will only yield the top half of the leaderboard.
             leaderboard_top = complete_leaderboard[: len(complete_leaderboard) // 2]
 
+            best_win = await db.execute_fetchall(
+                """SELECT * FROM matches WHERE winner_id = :user_id ORDER BY (old_loser_rating - 3 * old_loser_deviation) DESC LIMIT 1""",
+                {"user_id": member.id},
+            )
+            if not best_win:
+                highest_win = "N/A"
+            else:
+                user = self.bot.get_user(best_win[0][2])
+                if not user:
+                    user = await self.bot.fetch_user(best_win[0][2])
+                highest_win = (
+                    f"vs. {user.mention} "
+                    f"({self.get_display_rank(trueskill.Rating(best_win[0][6], best_win[0][7]))}, "
+                    f"<t:{best_win[0][3]}:d>)"
+                )
+
+            # This sql statement basically fetches either the highest rating after a win, after a loss, or before a loss,
+            # together with a timestamp. You can gain rating by losing, but you cannot lose rating by winning.
+            highest_rating = await db.execute_fetchall(
+                """
+                SELECT
+                    CASE WHEN winner_id = :user_id THEN
+                        new_winner_rating
+                    ELSE
+                        CASE WHEN new_loser_rating - 3 * new_loser_deviation < old_loser_rating - 3 * old_loser_deviation THEN
+                            old_loser_rating
+                        ELSE
+                            new_loser_rating
+                        END
+                    END rating,
+                    CASE WHEN winner_id = :user_id THEN
+                        new_winner_deviation
+                    ELSE
+                        CASE WHEN new_loser_rating - 3 * new_loser_deviation < old_loser_rating - 3 * old_loser_deviation THEN
+                            old_loser_deviation
+                        ELSE
+                            new_loser_deviation
+                        END
+                    END deviation,
+                    timestamp
+                FROM matches
+                WHERE winner_id = :user_id OR loser_id = :user_id
+                ORDER BY rating - 3 * deviation
+                DESC LIMIT 1""",
+                {"user_id": member.id},
+            )
+
+            all_time_win = (
+                # We do not really need the min here, it's just a kind of failsafe.
+                max(
+                    self.get_display_rank(
+                        trueskill.Rating(highest_rating[0][0], highest_rating[0][1])
+                    ),
+                    self.get_display_rank(rating),
+                )
+                if highest_rating
+                else self.get_display_rank(rating)
+            )
+
+            # We basically check double here, because we want the current time stamp
+            # if the player still has the highest rating that they ever achieved.
+            timestamp_win = (
+                round(discord.utils.utcnow().timestamp())
+                if self.get_display_rank(rating) == all_time_win
+                else highest_rating[0][2]
+            )
+
         recent_rating = self.get_display_rank(rating) - self.get_display_rank(
             trueskill.Rating(old_mu, old_sigma)
         )
@@ -846,6 +913,12 @@ class Ranking(commands.Cog):
         )
         embed.add_field(name="Last Matches", value=gamelist, inline=True)
         embed.add_field(name="Recent Performance", value=recent_rating, inline=True)
+        embed.add_field(name="Highest Win", value=highest_win, inline=True)
+        embed.add_field(
+            name="All-Time High",
+            value=f"{all_time_win} (<t:{timestamp_win}:d>)",
+            inline=True,
+        )
 
         await ctx.send(embed=embed)
 
