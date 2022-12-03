@@ -145,10 +145,10 @@ class Matchmakingpings(commands.Cog):
             logger.info(f"Deleting archived thread {after.name} ({after.id})")
             await after.delete()
 
-    @tasks.loop(minutes=10)
+    @tasks.loop(minutes=15)
     async def archive_threads(self) -> None:
-        """Deletes all threads in matchmaking channels that have no activity for 30 minutes.
-        Runs every 10 minutes as to not spam the API too much."""
+        """Deletes all threads in matchmaking channels that have no activity for 60 minutes.
+        Runs every 15 minutes as to not spam the API too much."""
         # Just flattens the list of lists into a single list and iterates over it.
         for channel_id in [
             id
@@ -178,7 +178,7 @@ class Matchmakingpings(commands.Cog):
                 if (
                     discord.utils.utcnow().timestamp()
                     - last_message.created_at.timestamp()
-                    >= 1800
+                    >= 3600
                 ):
                     logger = self.bot.get_logger("bot.matchmaking")
                     logger.info(
