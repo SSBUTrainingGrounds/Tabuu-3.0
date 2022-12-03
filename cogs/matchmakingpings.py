@@ -2,7 +2,7 @@ import json
 
 import discord
 from discord import app_commands
-from discord.ext import commands
+from discord.ext import commands, tasks
 
 import utils.check
 from cogs.matchmaking import Matchmaking
@@ -121,11 +121,17 @@ class Matchmakingpings(commands.Cog):
         # Clears the Matchmaking Pings on Startup.
         self.clear_mmrequests()
 
+        self.archive_threads.start()
+
+    def cog_unload(self) -> None:
+        self.archive_threads.cancel()
+
     @commands.Cog.listener()
     async def on_thread_update(
         self, before: discord.Thread, after: discord.Thread
     ) -> None:
-        # If a matchmaking thread gets inactive, it gets deleted right away to clear space.
+        """If a matchmaking thread is archived, we delete it. This is separate from the archive_threads task,
+        because if a thread is archived manually, we want to delete it as well."""
         if (
             before.archived is False
             and after.archived is True
@@ -135,7 +141,54 @@ class Matchmakingpings(commands.Cog):
                 or after.parent_id in TGArenaChannelIDs.CLOSED_RANKED_ARENAS
             )
         ):
+            logger = self.bot.get_logger("bot.matchmaking")
+            logger.info(f"Deleting archived thread {after.name} ({after.id})")
             await after.delete()
+
+    @tasks.loop(minutes=10)
+    async def archive_threads(self) -> None:
+        """Deletes all threads in matchmaking channels that have no activity for 30 minutes.
+        Runs every 10 minutes as to not spam the API too much."""
+        # Just flattens the list of lists into a single list and iterates over it.
+        for channel_id in [
+            id
+            for channels in [
+                TGArenaChannelIDs.PUBLIC_ARENAS,
+                TGArenaChannelIDs.OPEN_RANKED_ARENAS,
+                TGArenaChannelIDs.CLOSED_RANKED_ARENAS,
+            ]
+            for id in channels
+        ]:
+            channel = self.bot.get_channel(channel_id)
+
+            # These are 100% either going to be GuildChannels or None, but why not rule out everything else too.
+            if not isinstance(channel, discord.abc.GuildChannel):
+                continue
+
+            for thread in channel.threads:
+                # Both the id and the message can be None.
+                if thread.last_message_id is None:
+                    continue
+
+                try:
+                    last_message = await thread.fetch_message(thread.last_message_id)
+                except discord.NotFound:
+                    continue
+
+                if (
+                    discord.utils.utcnow().timestamp()
+                    - last_message.created_at.timestamp()
+                    >= 1800
+                ):
+                    logger = self.bot.get_logger("bot.matchmaking")
+                    logger.info(
+                        f"Deleting thread {thread.name} ({thread.id}) automatically after 30 minutes of inactivity."
+                    )
+                    await thread.delete()
+
+    @archive_threads.before_loop
+    async def before_archive_threads(self) -> None:
+        await self.bot.wait_until_ready()
 
     @commands.hybrid_command()
     @app_commands.guilds(*GuildIDs.ALL_GUILDS)
