@@ -9,10 +9,10 @@ First up, here's what you need to have installed on your machine:
 
 ## Set up Tabuu 3.0 in your environment
 
-1) [Create a new Discord Bot](https://discord.com/developers/applications)  
+1) [Create a new Discord Bot](https://discord.com/developers/applications) and [enable all of the Privileged Gateway Intents](https://i.imgur.com/OJPlthx.png) found in the bot tab.  
 2) Clone this repository: `git clone https://github.com/SSBUTrainingGrounds/Tabuu-3.0`
 
-    - Optional, but recommended: Create a [virtual environment](https://docs.python.org/3/tutorial/venv.html): `python -m venv venv` and activate it: `.\venv\Scripts\activate`
+    2.1) Optional, but recommended: Create a [virtual environment](https://docs.python.org/3/tutorial/venv.html): `python -m venv venv` and activate it: `.\venv\Scripts\activate`
 
 3) Install requirements: `pip install -r requirements.txt`
 
