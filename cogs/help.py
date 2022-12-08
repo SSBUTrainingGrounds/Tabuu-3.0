@@ -293,7 +293,7 @@ class CustomHelp(commands.HelpCommand):
         Luckily most things work for both commands and groups.
         """
         embed = discord.Embed(
-            title=self.get_command_signature(command), color=self.bot.colour
+            title=self.get_command_signature(command), color=self.context.bot.colour
         )
 
         # The command.help is just the docstring inside every command.
