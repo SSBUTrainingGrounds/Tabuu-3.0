@@ -1,6 +1,5 @@
 import asyncio
 import datetime
-import json
 import random
 
 import aiosqlite
@@ -310,131 +309,6 @@ class Ranking(commands.Cog):
         # with a 3.33% decay, the deviation will be at the maximum value after 36 decay steps.
         # We decay the deviation every month, so it will take 3 years.
         return trueskill.Rating(player.mu, min(player.sigma * (31 / 30), 25 / 3))
-
-    def store_ranked_ping(self, ctx: commands.Context, timestamp: float) -> None:
-        """Stores your ranked ping."""
-        with open(r"./json/ranked.json", "r", encoding="utf-8") as f:
-            rankedusers = json.load(f)
-
-        rankedusers[f"{ctx.author.id}"] = {}
-        rankedusers[f"{ctx.author.id}"] = {"channel": ctx.channel.id, "time": timestamp}
-
-        with open(r"./json/ranked.json", "w", encoding="utf-8") as f:
-            json.dump(rankedusers, f, indent=4)
-
-    def delete_ranked_ping(self, ctx: commands.Context) -> None:
-        """Deletes your ranked ping."""
-        with open(r"./json/ranked.json", "r", encoding="utf-8") as f:
-            rankedusers = json.load(f)
-
-        try:
-            del rankedusers[f"{ctx.message.author.id}"]
-        except KeyError:
-            logger = self.bot.get_logger("bot.mm")
-            logger.warning(
-                f"Tried to delete a ranked ping by {str(ctx.message.author)} but the ping was already deleted."
-            )
-
-        with open(r"./json/ranked.json", "w", encoding="utf-8") as f:
-            json.dump(rankedusers, f, indent=4)
-
-    def get_recent_ranked_pings(self, timestamp: float) -> str:
-        """Gets a list with all the recent ranked pings.
-        We need a different approach than unranked here because we also store the rank role here.
-        This is its own function because we need to export it.
-        """
-        with open(r"./json/ranked.json", "r", encoding="utf-8") as f:
-            user_pings = json.load(f)
-
-        list_of_searches = []
-
-        for ping in user_pings:
-            ping_timestamp = user_pings[f"{ping}"]["time"]
-            difference = timestamp - ping_timestamp
-            minutes = round(difference / 60)
-
-            if minutes < 31:
-                ping_channel = user_pings[f"{ping}"]["channel"]
-                list_of_searches.append(
-                    f"<@!{ping}>, in <#{ping_channel}>, {minutes} minutes ago\n"
-                )
-
-        list_of_searches.reverse()
-
-        return "".join(list_of_searches) or "Looks like no one has pinged recently :("
-
-    @commands.hybrid_command(aliases=["rankedmm", "rankedmatchmaking", "rankedsingles"])
-    @commands.cooldown(1, 120, commands.BucketType.user)
-    @app_commands.guilds(*GuildIDs.ALL_GUILDS)
-    async def ranked(self, ctx: commands.Context) -> None:
-        """Used for 1v1 competitive ranked matchmaking."""
-        timestamp = discord.utils.utcnow().timestamp()
-
-        if ctx.message.channel.id in TGArenaChannelIDs.OPEN_RANKED_ARENAS:
-            self.store_ranked_ping(ctx, timestamp)
-
-            # Gets all of the other active pings.
-            searches = self.get_recent_ranked_pings(timestamp)
-
-            embed = discord.Embed(
-                title="Ranked pings in the last 30 Minutes:",
-                description=searches,
-                colour=discord.Colour.blue(),
-            )
-
-            if ctx.interaction:
-                await ctx.send("Processing request...", ephemeral=True)
-
-            mm_message = await ctx.channel.send(
-                f"{ctx.author.mention} is looking for ranked matchmaking games! <@&{TGMatchmakingRoleIDs.RANKED_ROLE}>",
-                embed=embed,
-            )
-            mm_thread = await mm_message.create_thread(
-                name=f"Ranked Arena of {ctx.author.name}", auto_archive_duration=60
-            )
-            await mm_thread.add_user(ctx.author)
-            await mm_thread.send(
-                f"Hi there, {ctx.author.mention}! "
-                "Please use this thread for communicating with your opponent and for reporting matches."
-            )
-
-            # Waits 30 mins and deletes the ping afterwards.
-            await asyncio.sleep(1800)
-
-            self.delete_ranked_ping(ctx)
-
-        elif ctx.message.channel.id in TGArenaChannelIDs.CLOSED_RANKED_ARENAS:
-            searches = self.get_recent_ranked_pings(timestamp)
-
-            embed = discord.Embed(
-                title="Ranked pings in the last 30 Minutes:",
-                description=searches,
-                colour=discord.Colour.blue(),
-            )
-
-            if ctx.interaction:
-                await ctx.send("Processing request...", ephemeral=True)
-
-            mm_message = await ctx.channel.send(
-                f"{ctx.author.mention} is looking for ranked matchmaking games! <@&{TGMatchmakingRoleIDs.RANKED_ROLE}>\n"
-                "Here are the most recent pings in the open ranked arenas:",
-                embed=embed,
-            )
-            mm_thread = await mm_message.create_thread(
-                name=f"Ranked Arena of {ctx.author.name}", auto_archive_duration=60
-            )
-            await mm_thread.add_user(ctx.author)
-            await mm_thread.send(
-                f"Hi there, {ctx.author.mention}! "
-                "Please use this thread for communicating with your opponent and for reporting matches."
-            )
-
-        else:
-            await ctx.send(
-                "Please only use this command in our ranked arena channels!",
-                ephemeral=True,
-            )
-            ctx.command.reset_cooldown(ctx)
 
     @commands.hybrid_command(aliases=["reportgame"], cooldown_after_parsing=True)
     @commands.cooldown(1, 41, commands.BucketType.user)
@@ -1249,38 +1123,6 @@ class Ranking(commands.Cog):
             error, (commands.CommandInvokeError, commands.HybridCommandError)
         ):
             await ctx.send("This user hasn't played a ranked match yet.")
-
-    @ranked.error
-    async def ranked_error(
-        self, ctx: commands.Context, error: commands.CommandError
-    ) -> None:
-        if not isinstance(error, commands.CommandOnCooldown):
-            raise error
-
-        if (
-            ctx.channel.id in TGArenaChannelIDs.OPEN_RANKED_ARENAS
-            or ctx.channel.id in TGArenaChannelIDs.CLOSED_RANKED_ARENAS
-        ):
-            timestamp = discord.utils.utcnow().timestamp()
-
-            searches = self.get_recent_ranked_pings(timestamp)
-
-            embed = discord.Embed(
-                title="Ranked pings in the last 30 Minutes:",
-                description=searches,
-                colour=discord.Colour.blue(),
-            )
-
-            await ctx.send(
-                f"{ctx.author.mention}, you are on cooldown for another {round((error.retry_after)/60)} minutes to use this command. \n"
-                "In the meantime, here are the most recent ranked pings:",
-                embed=embed,
-            )
-        else:
-            await ctx.send(
-                "Please only use this command in the ranked matchmaking arenas.",
-                ephemeral=True,
-            )
 
     @deletematch.error
     async def deletematch_error(

@@ -30,6 +30,9 @@ class Tabuu3(commands.Bot):
         # A consistent colour for embeds.
         self.colour = 0x007377
 
+        # The time we store matchmaking pings for, in seconds.
+        self.matchmaking_ping_time = 1800
+
     async def setup_hook(self) -> None:
         # We need to set up some stuff at startup.
         utils.logger.create_logger()
