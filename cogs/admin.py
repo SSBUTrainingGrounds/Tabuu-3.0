@@ -44,7 +44,8 @@ class Admin(commands.Cog):
     @utils.check.is_moderator()
     async def clear_amount(self, ctx: commands.Context, amount: int = 1) -> None:
         """Deletes a specified amount of messages from the current channel.
-        By default the amount is set to 1."""
+        By default the amount is set to 1.
+        Will not clear pinned messages."""
 
         if amount < 1:
             await ctx.send("Please input a valid number!")
@@ -52,7 +53,10 @@ class Admin(commands.Cog):
 
         await ctx.defer()
 
-        deleted = await ctx.channel.purge(limit=amount + 1)
+        def check(m: discord.Message) -> bool:
+            return m.pinned is False
+
+        deleted = await ctx.channel.purge(limit=amount + 1, check=check)
 
         # Using channel.send for the slash command, it would otherwise try to reply to the deleted message.
         await ctx.channel.send(
@@ -73,7 +77,8 @@ class Admin(commands.Cog):
         message_after: discord.Message,
         message_before: discord.Message = None,
     ) -> None:
-        """Deletes all messages after a specified message, optionally stopping before another given message."""
+        """Deletes all messages after a specified message, optionally stopping before another given message.
+        Will not clear pinned messages."""
 
         if message_before and message_after.channel != message_before.channel:
             await ctx.send("Please input a valid message ID, from this channel!")
@@ -85,8 +90,11 @@ class Admin(commands.Cog):
 
         await ctx.defer()
 
+        def check(m: discord.Message) -> bool:
+            return m.pinned is False
+
         deleted = await ctx.channel.purge(
-            limit=None, after=message_after, before=message_before
+            limit=None, after=message_after, before=message_before, check=check
         )
 
         message = (
@@ -112,7 +120,8 @@ class Admin(commands.Cog):
         self, ctx: commands.Context, user: discord.User, amount: int = 1
     ) -> None:
         """Deletes a specified amount of messages from a specified user in the current channel.
-        By default the amount is set to 1."""
+        By default the amount is set to 1.
+        Will not clear pinned messages."""
 
         if amount < 1:
             await ctx.send("Please input a valid number!")
@@ -125,10 +134,10 @@ class Admin(commands.Cog):
 
             print(deleted_messages)
 
-            if m.author == user:
+            if m.author == user and m.pinned is False:
                 deleted_messages += 1
 
-            return deleted_messages <= amount and m.author == user
+            return deleted_messages <= amount and m.author == user and m.pinned is False
 
         await ctx.defer()
 
