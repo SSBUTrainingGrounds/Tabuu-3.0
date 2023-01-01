@@ -132,8 +132,6 @@ class Admin(commands.Cog):
         def check(m: discord.Message) -> bool:
             nonlocal deleted_messages
 
-            print(deleted_messages)
-
             if m.author == user and m.pinned is False:
                 deleted_messages += 1
 
