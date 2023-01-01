@@ -1042,15 +1042,27 @@ class Ranking(commands.Cog):
 
         # This gets the timestamp of the first day of the last month at 12:00.
         # Timezones really dont matter too much here.
-        first_last_month = datetime.datetime(
-            datetime.datetime.now().year,
-            (datetime.datetime.now().month - 1) % 12,
-            1,
-            12,
-            0,
-            0,
-            0,
-        ).timestamp()
+        first_last_month = (
+            datetime.datetime(
+                datetime.datetime.now().year,
+                (datetime.datetime.now().month - 1),
+                1,
+                12,
+                0,
+                0,
+                0,
+            ).timestamp()
+            if datetime.datetime.now().month != 1
+            else datetime.datetime(
+                (datetime.datetime.now().year - 1),
+                12,
+                1,
+                12,
+                0,
+                0,
+                0,
+            ).timestamp()
+        )
 
         active_players = []
 
