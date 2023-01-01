@@ -18,15 +18,34 @@ class Admin(commands.Cog):
     def __init__(self, bot: commands.Bot) -> None:
         self.bot = bot
 
-    @commands.hybrid_command()
+    @commands.hybrid_group()
+    @app_commands.guilds(*GuildIDs.ALL_GUILDS)
+    @app_commands.default_permissions(administrator=True)
+    @utils.check.is_moderator()
+    async def clear(self, ctx: commands.Context, amount: int = 1) -> None:
+        """Lists the clear commands."""
+        if ctx.invoked_subcommand:
+            return
+
+        embed = discord.Embed(
+            title="Available subcommands:",
+            description=f"`{ctx.prefix}clear amount <number>`\n"
+            f"`{ctx.prefix}clear after <after message> <before message>`\n"
+            f"`{ctx.prefix}clear from <user> <number>`\n",
+            colour=self.bot.colour,
+        )
+        embed.set_thumbnail(url=self.bot.user.display_avatar.url)
+        await ctx.send(embed=embed)
+
+    @clear.command(name="amount")
     @app_commands.guilds(*GuildIDs.ALL_GUILDS)
     @app_commands.describe(amount="The amount of messages to delete.")
     @app_commands.default_permissions(administrator=True)
     @utils.check.is_moderator()
-    async def clear(self, ctx: commands.Context, amount: int = 1) -> None:
-        """Clears the last X messages from the channel the command is used in.
-        If you do not specify an amount it defaults to 1.
-        """
+    async def clear_amount(self, ctx: commands.Context, amount: int = 1) -> None:
+        """Deletes a specified amount of messages from the current channel.
+        By default the amount is set to 1."""
+
         if amount < 1:
             await ctx.send("Please input a valid number!")
             return
@@ -37,8 +56,93 @@ class Admin(commands.Cog):
 
         # Using channel.send for the slash command, it would otherwise try to reply to the deleted message.
         await ctx.channel.send(
+            f"Successfully deleted `{len(deleted) - 1}` messages, {ctx.author.mention}"
+        )
+
+    @clear.command(name="after")
+    @app_commands.guilds(*GuildIDs.ALL_GUILDS)
+    @app_commands.describe(
+        message_after="The message to delete every other message in this channel.",
+        message_before="The message to stop deleting messages at.",
+    )
+    @app_commands.default_permissions(administrator=True)
+    @utils.check.is_moderator()
+    async def clear_after(
+        self,
+        ctx: commands.Context,
+        message_after: discord.Message,
+        message_before: discord.Message = None,
+    ) -> None:
+        """Deletes all messages after a specified message, optionally stopping before another given message."""
+
+        if message_before and message_after.channel != message_before.channel:
+            await ctx.send("Please input a valid message ID, from this channel!")
+            return
+
+        if message_after.channel != ctx.channel:
+            await ctx.send("Please input a valid message ID, from this channel!")
+            return
+
+        await ctx.defer()
+
+        deleted = await ctx.channel.purge(
+            limit=None, after=message_after, before=message_before
+        )
+
+        message = (
             f"Successfully deleted `{len(deleted)}` messages, {ctx.author.mention}"
         )
+
+        # If the message_before is provided, we'll use ctx.send to reply to the defer message.
+        # If it is not provided, the defer message will be deleted as well, and we cannot reply.
+        if message_before:
+            await ctx.send(message)
+        else:
+            await ctx.channel.send(message)
+
+    @clear.command(name="from")
+    @app_commands.guilds(*GuildIDs.ALL_GUILDS)
+    @app_commands.describe(
+        user="The user to delete the messages from in this channel.",
+        amount="The amount of messages to delete from the user.",
+    )
+    @app_commands.default_permissions(administrator=True)
+    @utils.check.is_moderator()
+    async def clear_from(
+        self, ctx: commands.Context, user: discord.User, amount: int = 1
+    ) -> None:
+        """Deletes a specified amount of messages from a specified user in the current channel.
+        By default the amount is set to 1."""
+
+        if amount < 1:
+            await ctx.send("Please input a valid number!")
+            return
+
+        deleted_messages = 0
+
+        def check(m: discord.Message) -> bool:
+            nonlocal deleted_messages
+
+            print(deleted_messages)
+
+            if m.author == user:
+                deleted_messages += 1
+
+            return deleted_messages <= amount and m.author == user
+
+        await ctx.defer()
+
+        deleted = await ctx.channel.purge(limit=None, check=check)
+
+        # If the user is the bot, we cannot reply to the defer message with ctx.send as it also will get deleted.
+        if user == self.bot.user:
+            await ctx.channel.send(
+                f"Successfully deleted `{len(deleted)}` messages, {ctx.author.mention}"
+            )
+        else:
+            await ctx.send(
+                f"Successfully deleted `{len(deleted)}` messages, {ctx.author.mention}"
+            )
 
     @commands.hybrid_command()
     @app_commands.guilds(*GuildIDs.ALL_GUILDS)
@@ -345,6 +449,8 @@ class Admin(commands.Cog):
             await ctx.send("I do not have the required permissions to edit this role.")
 
     @editrole.command(name="icon")
+    @app_commands.guilds(*GuildIDs.ALL_GUILDS)
+    @app_commands.default_permissions(administrator=True)
     @utils.check.is_moderator()
     async def editrole_icon(
         self,
@@ -787,8 +893,34 @@ class Admin(commands.Cog):
         if isinstance(error, commands.BadBoolArgument):
             await ctx.send("Please only use either True or False as the value.")
 
-    @clear.error
-    async def clear_error(
+    @clear_amount.error
+    async def clear_amount_error(
+        self, ctx: commands.Context, error: commands.CommandError
+    ) -> None:
+        if isinstance(error, commands.BadArgument):
+            await ctx.send("Please input a valid number!")
+        elif isinstance(
+            error, (commands.CommandInvokeError, commands.HybridCommandError)
+        ):
+            await ctx.send(
+                "I could not delete one or more of these messages! "
+                "Make sure they were not send too long ago or try a different amount."
+            )
+
+    @clear_after.error
+    async def clear_after_error(
+        self, ctx: commands.Context, error: commands.CommandError
+    ) -> None:
+        if isinstance(
+            error, (commands.CommandInvokeError, commands.HybridCommandError)
+        ):
+            await ctx.send(
+                "I could not delete one or more of these messages! "
+                "Make sure they were not send too long ago."
+            )
+
+    @clear_from.error
+    async def clear_from_error(
         self, ctx: commands.Context, error: commands.CommandError
     ) -> None:
         if isinstance(error, commands.BadArgument):
