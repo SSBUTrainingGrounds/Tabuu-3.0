@@ -139,7 +139,8 @@ class Admin(commands.Cog):
 
         await ctx.defer()
 
-        deleted = await ctx.channel.purge(limit=None, check=check)
+        # Set the limit at 2000, this would take very long in a channel with a lot of messages otherwise.
+        deleted = await ctx.channel.purge(limit=2000, check=check)
 
         # If the user is the bot, we cannot reply to the defer message with ctx.send as it also will get deleted.
         if user == self.bot.user:
