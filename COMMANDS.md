@@ -2,7 +2,7 @@
 
 This here contains every command with a detailed explanation on how to use them. They are ordered alphabetically, search them with Ctrl+F.  
 
-Last updated: 11 July 2022  
+Last updated: 2 January 2023  
 
 ## Things to know before diving in
 
@@ -78,9 +78,20 @@ Every other command will be available as both a message- and slash-command.
 - **%boo**  
   - Info: Comes up with some scary stuff.  
   
-- **%clear** `<amount: Optional>`  
-  - Info: **Moderator only.** Deletes the last X+1 messages in the current channel. Defaults to 1 if you do not specify an amount.  
-  - Example: `%clear 10`  
+- **%clear**
+  - Info: **Slash version unavailable. Moderator only.** Group command that lists the subcommands and their usage. The available properties to edit are: amount, after, from. No slash version because this only lists the other commands.  
+
+- **%clear amount** `<amount: Optional>`  
+  - Info: **Moderator only.** Clears a certain amount of messages. If no amount is given, it will clear 1 messages.  
+  - Example: `%clear amount 50`  
+  
+- **%clear after** `<after Message>` `<before Message: Optional>`  
+  - Info: **Moderator only.** Clears all messages after a certain message, and before another message. If no before message is given, it will clear all messages after the after message.  
+  - Example: `%clear after 123456789012345678 123456789087654321`  
+  
+- **%clear from** `<@user> <amount: Optional>`  
+  - Info: **Moderator only.** Clears a certain amount of messages from a User. If no amount is given, it will clear 1 message.  
+  - Example: `%clear from @ExampleUser 50`  
   
 - **%clearmmpings**  
   - Info: **Moderator only.** Clears all matchmaking pings.  

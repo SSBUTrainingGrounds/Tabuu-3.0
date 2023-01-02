@@ -84,7 +84,9 @@ class Responses(discord.ui.Select):
 ```{self.prefix}ban <@user> <reason>``` - Bans a member from the server.
 ```{self.prefix}unban <@user>``` - Revokes a ban from the server.
 ```{self.prefix}kick <@user> <reason>``` - Kicks a user from the server.
-```{self.prefix}clear <amount>``` - Purges X messages from the channel.
+```{self.prefix}clear amount <amount>``` - Purges X messages from the channel.
+```{self.prefix}clear after <after message> <before message>``` - Deletes every message between the two messages.
+```{self.prefix}clear from <@user> <amount>``` - Purges X messages messages from a user in the current channel.
 ```{self.prefix}mute <@user> <reason>``` - Mutes a user in the server.
 ```{self.prefix}unmute <@user>``` - Unmutes a user in the server.
 ```{self.prefix}tempmute <@user> <time> <reason>``` - Temporarily mutes a user.
