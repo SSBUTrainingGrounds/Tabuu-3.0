@@ -78,7 +78,6 @@ class MessageFilter(commands.Cog):
                 regex_true.search(message.content) is not None
                 and regex_false.search(message.content) is None
             ):
-
                 # Adds the warning.
                 reason = (
                     "Automatic warning for using a blacklisted word:\n"

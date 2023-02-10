@@ -625,7 +625,7 @@ class Admin(commands.Cog):
         ]
 
         nick_embed = []
-        for (_, name, guild_id, timestamp) in nicknames:
+        for _, name, guild_id, timestamp in nicknames:
             guild = self.bot.get_guild(guild_id)
             guild_name = guild.name if guild else "Unknown Server"
             nick_embed.append(
@@ -737,7 +737,7 @@ class Admin(commands.Cog):
         )
 
         # Only getting the last 25, because that is the max number of embed fields.
-        for (note_id, _, timestamp, mod_id, note) in reversed(user_notes[:25]):
+        for note_id, _, timestamp, mod_id, note in reversed(user_notes[:25]):
             embed.add_field(
                 name=f"ID: {note_id}",
                 value=f"**Set at: <t:{timestamp}:F> by: <@{mod_id}>\nContent:**\n{note}\n",

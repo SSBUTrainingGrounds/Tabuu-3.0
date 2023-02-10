@@ -28,7 +28,6 @@ class ModmailButton(discord.ui.View):
         interaction: discord.Interaction,
         button: discord.ui.Button,
     ) -> None:
-
         view = ConfirmationButtons(interaction.user)
 
         await interaction.response.send_message(

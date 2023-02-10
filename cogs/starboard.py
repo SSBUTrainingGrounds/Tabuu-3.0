@@ -99,7 +99,8 @@ class Starboard(commands.Cog):
     @utils.check.is_moderator()
     async def starboard_threshold(self, ctx: commands.Context, threshold: int) -> None:
         """Changes the Starboard threshold.
-        This is the reactions needed for the bot to post the message to the starboard channel."""
+        This is the reactions needed for the bot to post the message to the starboard channel.
+        """
         if threshold < 1:
             await ctx.send("Please input a valid integer.")
             return

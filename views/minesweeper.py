@@ -157,7 +157,6 @@ class MinesweeperGame(discord.ui.View):
             != 0
             or self.mines_list[button_pos]
         ):
-
             shuffle(self.mines_list)
 
     async def interaction_check(self, interaction: discord.Interaction) -> bool:
