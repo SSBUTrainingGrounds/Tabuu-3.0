@@ -118,6 +118,7 @@ class Responses(discord.ui.Select):
 ```{self.prefix}forcereportmatch <@winner> <@loser>``` - If someone abandons a ranked match.
 ```{self.prefix}leaderboard``` - Leaderboards of ranked matchmaking.
 ```{self.prefix}recentmatches``` - Shows the 20 most recent matches of ranked matchmaking.
+```{self.prefix}matchhistory <@user>``` - Shows the 10 most recent matches of a user.
 ```{self.prefix}deletematch <match_id>``` - Deletes a match from the database and restores ratings.
 ```{self.prefix}rolemenu new <message ID> <emoji> <role>``` - Adds an entry for a role menu.
 ```{self.prefix}rolemenu delete <message ID>``` - Deletes every entry for a Message with a role menu.
