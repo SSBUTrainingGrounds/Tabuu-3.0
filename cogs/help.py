@@ -117,6 +117,7 @@ class Responses(discord.ui.Select):
 ```{self.prefix}records``` - Shows ban records.
 ```{self.prefix}forcereportmatch <@winner> <@loser>``` - If someone abandons a ranked match.
 ```{self.prefix}leaderboard``` - Leaderboards of ranked matchmaking.
+```{self.prefix}seasonleaderbaord <start> <end>``` - Leaderboards of ranked matchmaking between two timestamps.
 ```{self.prefix}recentmatches``` - Shows the 20 most recent matches of ranked matchmaking.
 ```{self.prefix}matchhistory <@user>``` - Shows the 10 most recent matches of a user.
 ```{self.prefix}deletematch <match_id>``` - Deletes a match from the database and restores ratings.

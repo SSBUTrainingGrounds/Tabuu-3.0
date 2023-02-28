@@ -857,6 +857,118 @@ class Ranking(commands.Cog):
         await ctx.send(embed=embed)
 
     @commands.hybrid_command()
+    @app_commands.describe(
+        start="The start of the season in the format of a unix timestamp.",
+        end="The end of the season in the format of a unix timestamp.",
+    )
+    @app_commands.guilds(*GuildIDs.ALL_GUILDS)
+    @app_commands.default_permissions(administrator=True)
+    @utils.check.is_moderator()
+    async def seasonleaderboard(
+        self, ctx: commands.Context, start: int, end: int
+    ) -> None:
+        """Shows you the Ranked Matchmaking Leaderboard only counting matches between two timestamps."""
+        await ctx.typing()
+
+        async with aiosqlite.connect("./db/database.db") as db:
+            season_matches = await db.execute_fetchall(
+                """SELECT * FROM matches WHERE timestamp BETWEEN :start AND :end""",
+                {"start": start, "end": end},
+            )
+
+        # Re-calculating the matches, with every player starting at the default rating.
+
+        all_players = []
+
+        for match in season_matches:
+            (_, winner_id, loser_id, _, _, _, _, _, _, _, _, _) = match
+
+            # We need to check if the player is already in the list, if not we add them.
+            if winner_id not in [p["user_id"] for p in all_players]:
+                all_players.append(
+                    {
+                        "user_id": winner_id,
+                        "wins": 0,
+                        "losses": 0,
+                        "rating": trueskill.Rating(),
+                    }
+                )
+            if loser_id not in [p["user_id"] for p in all_players]:
+                all_players.append(
+                    {
+                        "user_id": loser_id,
+                        "wins": 0,
+                        "losses": 0,
+                        "rating": trueskill.Rating(),
+                    }
+                )
+
+            # Then we get both players from the list.
+
+            winner = [p for p in all_players if p["user_id"] == winner_id][0]
+            loser = [p for p in all_players if p["user_id"] == loser_id][0]
+
+            # And update their ratings.
+
+            (new_winner, new_loser) = trueskill.rate_1vs1(
+                winner["rating"], loser["rating"]
+            )
+
+            winner["rating"] = new_winner
+            loser["rating"] = new_loser
+
+            # And finally we update their wins and losses.
+
+            winner["wins"] += 1
+            loser["losses"] += 1
+
+        # Now we get rid of the players that did not play at least 5 matches.
+        all_players = [p for p in all_players if p["wins"] + p["losses"] > 4]
+
+        # Now we sort the list by their display rank.
+        all_players.sort(key=lambda p: self.get_display_rank(p["rating"]), reverse=True)
+
+        top_10 = all_players[:10]
+
+        embed = discord.Embed(
+            title=f"Top 10 Players of {GuildNames.TRAINING_GROUNDS} Ranked Matchmaking from <t:{start}:d> to <t:{end}:d>",
+            description="**Place - Player**\nRank **| TabuuSkill |** Wins / Losses (%)",
+            colour=0x3498DB,
+        )
+
+        async with aiosqlite.connect("./db/database.db") as db:
+            for r, u in enumerate(top_10, start=1):
+                user_id = u["user_id"]
+                player = u["rating"]
+                wins = u["wins"]
+                losses = u["losses"]
+
+                mains = await db.execute_fetchall(
+                    """SELECT mains FROM profile WHERE user_id = :user_id""",
+                    {"user_id": user_id},
+                )
+
+                display_mains = f"{mains[0][0]}" if mains else ""
+
+                if not (user := self.bot.get_user(user_id)):
+                    user = await self.bot.fetch_user(user_id)
+
+                rank = await self.get_ranked_role(
+                    player, self.bot.get_guild(GuildIDs.TRAINING_GROUNDS)
+                )
+
+                embed.add_field(
+                    name=f"#{r} - {str(user)} {display_mains}",
+                    value=f"{rank.name} **| {self.get_display_rank(player)} |**"
+                    f" {wins}/{losses} ({round(wins/(wins+losses) * 100)}%)",
+                    inline=False,
+                )
+
+        embed.set_thumbnail(url=ctx.guild.icon.url)
+        embed.timestamp = discord.utils.utcnow()
+        await ctx.send(embed=embed)
+
+    @commands.hybrid_command()
     @app_commands.guilds(*GuildIDs.ALL_GUILDS)
     @app_commands.default_permissions(administrator=True)
     @utils.check.is_moderator()
@@ -1208,6 +1320,13 @@ class Ranking(commands.Cog):
             await ctx.send(
                 f"You are on cooldown! Try again in {round(error.retry_after)} seconds."
             )
+
+    @seasonleaderboard.error
+    async def seasonleaderboard_error(
+        self, ctx: commands.Context, error: commands.CommandError
+    ) -> None:
+        if isinstance(error, commands.BadArgument):
+            await ctx.send("Please provide a valid start and end Unix Timestamp.")
 
 
 async def setup(bot) -> None:
