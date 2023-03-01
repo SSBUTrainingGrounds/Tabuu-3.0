@@ -867,7 +867,10 @@ class Ranking(commands.Cog):
     async def seasonleaderboard(
         self, ctx: commands.Context, start: int, end: int
     ) -> None:
-        """Shows you the Ranked Matchmaking Leaderboard only counting matches between two timestamps."""
+        """Shows you the Ranked Matchmaking Leaderboard only counting matches between two Unix timestamps.
+        Note that the ratings displayed will not be affected by rating decay.
+        So you might end up seeing a different leaderboard than the one in the leaderboard command.
+        """
         await ctx.typing()
 
         async with aiosqlite.connect("./db/database.db") as db:

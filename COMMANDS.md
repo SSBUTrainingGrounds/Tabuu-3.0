@@ -310,7 +310,7 @@ Last updated: 28 February 2023
     -   Info: **Admin Only.** Repeats the given Message in the given Text Channel, Thread or replies to a message. If you want to reply to a message in another channel, use the ChannelID-MessageID syntax or the link to the message.
     -   Example: `%say #announcements Important Announcement`
 -   **%seasonleaderboard** `<start> <end>`
-    -   Info: **Admin Only.** Gets you the leaderboard of our Ranked Matchmaking System, only counting the matches that have happened in-between the start and end time. Both times are in Unix Timestamp format.
+    -   Info: **Admin Only.** Gets you the leaderboard of our Ranked Matchmaking System, only counting the matches that have happened in-between the start and end time. Both times are in Unix Timestamp format. Note that these ratings do not factor in automatic decay.
     -   Example: `%seasonleaderboard 1672527600 1704063600`
 -   **%secondaries** `<secondary1, secondary2,..: Optional>`
     -   Info: Updates your secondaries listed on your profile. Up to 7 characters, separate them by commas. Accepts names, commonly used nicknames and the Fighter Numbers. Leave the field blank or input invalid characters to delete the characters.
