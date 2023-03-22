@@ -8,6 +8,7 @@ from stringmatch import Match
 
 import utils.check
 from cogs.ranking import Ranking
+from utils.character import match_character
 from utils.ids import Emojis, GuildIDs
 
 
@@ -16,44 +17,6 @@ class Profile(commands.Cog):
 
     def __init__(self, bot: commands.Bot) -> None:
         self.bot = bot
-
-    def match_character(self, profile_input: str) -> list[str]:
-        """Matches the input to one or multiple characters and returns the corresponding emoji.
-        Separates the input by commas.
-        Works with names, commonly used nicknames or Fighters ID Number.
-        Example:
-            Input: incin, wii fit trainer, 4e
-            Output: [
-                <:Incineroar:929086965763145828>,
-                <:WiiFitTrainer:929086966115483748>,
-                <:DarkSamus:929068123020202004>,
-            ]
-        """
-        with open(r"./files/characters.json", "r", encoding="utf-8") as f:
-            characters = json.load(f)
-
-        output_characters = []
-
-        if profile_input is None:
-            return output_characters
-
-        profile_input = profile_input.lower()
-        input_characters = profile_input.split(",")
-
-        for i_char in input_characters:
-            # This strips leading and trailing whitespaces.
-            i_char = i_char.strip()
-
-            for match_char in characters["Characters"]:
-                # 2 characters (pt, aegis) have more than 1 id, so the ids need to be in a list.
-                if (
-                    i_char == match_char["name"]
-                    or i_char in match_char["id"]
-                    or i_char in match_char["aliases"]
-                ) and match_char["emoji"] not in output_characters:
-                    output_characters.append(match_char["emoji"])
-
-        return output_characters
 
     def get_badges(self, user: discord.User) -> list[str]:
         """Gets you all of the badges of a member."""
@@ -263,7 +226,7 @@ class Profile(commands.Cog):
         Echoes have an *e* behind their fighter number.
         """
         # Only getting the first 7 chars, think thats a very generous cutoff.
-        chars = " ".join(self.match_character(mains)[:7])
+        chars = " ".join(match_character(mains)[:7])
 
         await self.make_new_profile(ctx.author)
 
@@ -298,7 +261,7 @@ class Profile(commands.Cog):
         Separates the input by commas, and then matches with names, nicknames and fighter numbers.
         Echoes have an *e* behind their fighter number.
         """
-        chars = " ".join(self.match_character(secondaries)[:7])
+        chars = " ".join(match_character(secondaries)[:7])
 
         await self.make_new_profile(ctx.author)
 
@@ -335,7 +298,7 @@ class Profile(commands.Cog):
         """
         # Since you can have some more pockets, i put it at 10 max.
         # There could be a max of around 25 per embed field however.
-        chars = " ".join(self.match_character(pockets)[:10])
+        chars = " ".join(match_character(pockets)[:10])
 
         await self.make_new_profile(ctx.author)
 
@@ -599,7 +562,7 @@ class Profile(commands.Cog):
         # Also for the slash command version, this defers the interaction which is nice.
         await ctx.typing()
 
-        matching_character = " ".join(self.match_character(character)[:1])
+        matching_character = " ".join(match_character(character)[:1])
 
         if not matching_character:
             await ctx.send("Please input a valid character!")

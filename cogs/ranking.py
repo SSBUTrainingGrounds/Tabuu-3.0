@@ -10,6 +10,7 @@ from discord.ext import commands, tasks
 
 import utils.check
 import utils.time
+from utils.character import match_character
 from utils.ids import (
     Emojis,
     GuildIDs,
@@ -17,6 +18,7 @@ from utils.ids import (
     TGArenaChannelIDs,
     TGMatchmakingRoleIDs,
 )
+from views.character_pick import CharacterView
 from views.ranked import ArenaButton, BestOfButtons, PlayerButtons
 from views.stageban import CounterpickStageButtons, StarterStageButtons
 
@@ -37,9 +39,11 @@ class Ranking(commands.Cog):
         """Retrieves the ranked role of a user."""
         rating = self.get_display_rank(player)
 
-        # We multiply the rating by 100 and add 1000, compared to the original Microsoft TrueSkill algorithm.
-        # So a rating of 5000 equals a rank of 40, the ranks were used in Halo 3 where 50 was the highest rank.
-        # A rating of 40 was also fairly hard to achieve so this is the current max rank for us.
+        # We multiply the rating by 100 and add 1000, compared to the original
+        # Microsoft TrueSkill algorithm. So a rating of 5000 equals a rank of 40,
+        # the ranks were used in Halo 3 where 50 was the highest rank.
+        # A rating of 40 was also fairly hard to achieve
+        # so this is the current max rank for us.
         if rating >= 5000:
             return discord.utils.get(
                 guild.roles, id=TGMatchmakingRoleIDs.GROUNDS_MASTER
@@ -53,7 +57,8 @@ class Ranking(commands.Cog):
         elif rating >= 1800:
             return discord.utils.get(guild.roles, id=TGMatchmakingRoleIDs.TWO_STAR)
         else:
-            # This rank should hopefully also be fairly hard to obtain, if you do not lose every single match.
+            # This rank should hopefully also be fairly hard to obtain,
+            # if you do not lose every single match.
             # This would equal a rank of below 8 in Halo 3.
             return discord.utils.get(guild.roles, id=TGMatchmakingRoleIDs.ONE_STAR)
 
@@ -495,6 +500,28 @@ class Ranking(commands.Cog):
             await ctx.send("You didn't host an arena in time!\nCancelling match.")
             return
 
+        # The players pick their characters.
+        # In Game 1, this is done before the stage bans.
+        # After that, the players pick their characters after the stage bans.
+        character_view = CharacterView(self.bot, ctx.author, member, None)
+
+        character_view.message = await ctx.send(
+            "Pick a character for Game 1!", view=character_view
+        )
+
+        timeout = await character_view.wait()
+
+        if timeout:
+            await ctx.send(
+                "A player did not select their character in time.\nCancelling match."
+            )
+            return
+
+        await ctx.send(
+            f"{ctx.author.mention} - {character_view.player_one_choice} ({match_character(character_view.player_one_choice)[0]}) "
+            f"vs. {member.mention} - {character_view.player_two_choice} ({match_character(character_view.player_two_choice)[0]})"
+        )
+
         # The first stage ban is special, so we cannot move this into the loop.
         stage_select = StarterStageButtons(ctx.author, member)
 
@@ -532,7 +559,7 @@ class Ranking(commands.Cog):
             if game.cancelled:
                 return
 
-            # Incrementing counters, adding stages to the DSR list and assigning the correct view.
+            # Incrementing counters, adding stages to the DSR list and assigning the correct views.
             game_count += 1
             if game.winner == ctx.author:
                 player_one_score += 1
@@ -543,6 +570,8 @@ class Ranking(commands.Cog):
                     player_one_dsr,
                     2 if best_of_view.choice == 5 else 3,
                 )
+                character_view = CharacterView(self.bot, ctx.author, member, ctx.author)
+
             elif game.winner == member:
                 player_two_score += 1
                 player_one_dsr.append(stage_select.choice)
@@ -552,6 +581,7 @@ class Ranking(commands.Cog):
                     player_two_dsr,
                     2 if best_of_view.choice == 5 else 3,
                 )
+                character_view = CharacterView(self.bot, ctx.author, member, member)
 
             # Checking if the score threshold has been reached.
             if best_of_view.choice == 3 and (
@@ -581,12 +611,32 @@ class Ranking(commands.Cog):
 
             next_game = PlayerButtons(ctx.author, member, game_count + 1)
 
-            # The players can now play the match, and the cycle repeats until a winner is found.
-            await ctx.send(
-                f"**{stage_select.choice}** selected.\nStart your match! Good luck!\n\n"
+            await ctx.send(f"**{stage_select.choice}** selected.\n")
+
+            # Then the two players pick their characters.
+            # First the winner and then the loser.
+            character_view.message = await ctx.send(
+                f"{game.winner.mention}, please pick a character for the next Game!",
+                view=character_view,
             )
 
+            timeout = await character_view.wait()
+
+            if timeout:
+                await ctx.send(
+                    "A player did not select their character in time.\nCancelling match."
+                )
+                return
+
             await ctx.send(
+                f"{ctx.author.mention} - {character_view.player_one_choice} ({match_character(character_view.player_one_choice)[0]}) "
+                f"vs. {member.mention} - {character_view.player_two_choice} ({match_character(character_view.player_two_choice)[0]})"
+            )
+
+            # And finally the match starts.
+            # The cycle repeats until the game is over.
+            await ctx.send(
+                "Start your match! Good luck!\n\n"
                 f"When you're done, click on the button of the winner of Game {game_count + 1} to report the match.",
                 view=next_game,
             )
