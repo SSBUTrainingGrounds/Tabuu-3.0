@@ -2,6 +2,7 @@ import json
 from typing import Optional
 
 import discord
+
 from utils.character import match_character
 
 
@@ -218,5 +219,6 @@ class CharacterView(discord.ui.View):
     async def on_timeout(self) -> None:
         for item in self.children:
             item.disabled = True
+        await self.message.edit(view=self)
         await self.message.edit(view=self)
         await self.message.edit(view=self)
