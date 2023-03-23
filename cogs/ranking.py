@@ -5,11 +5,10 @@ import random
 import aiosqlite
 import discord
 import trueskill
-from discord import app_commands
-from discord.ext import commands, tasks
-
 import utils.check
 import utils.time
+from discord import app_commands
+from discord.ext import commands, tasks
 from utils.character import match_character
 from utils.ids import (
     Emojis,
@@ -503,10 +502,11 @@ class Ranking(commands.Cog):
         # The players pick their characters.
         # In Game 1, this is done before the stage bans.
         # After that, the players pick their characters after the stage bans.
-        character_view = CharacterView(self.bot, ctx.author, member, None)
+        character_view = CharacterView(ctx.author, member, None)
 
         character_view.message = await ctx.send(
-            "Pick a character for Game 1!", view=character_view
+            f"{ctx.author.mention} and {member.mention}: Pick a character for Game 1!",
+            view=character_view,
         )
 
         timeout = await character_view.wait()
@@ -521,6 +521,15 @@ class Ranking(commands.Cog):
             f"{ctx.author.mention} - {character_view.player_one_choice} ({match_character(character_view.player_one_choice)[0]}) "
             f"vs. {member.mention} - {character_view.player_two_choice} ({match_character(character_view.player_two_choice)[0]})"
         )
+
+        last_choice_author = [
+            character_view.player_one_choice,
+            match_character(character_view.player_one_choice)[0],
+        ]
+        last_choice_member = [
+            character_view.player_two_choice,
+            match_character(character_view.player_two_choice)[0],
+        ]
 
         # The first stage ban is special, so we cannot move this into the loop.
         stage_select = StarterStageButtons(ctx.author, member)
@@ -570,7 +579,13 @@ class Ranking(commands.Cog):
                     player_one_dsr,
                     2 if best_of_view.choice == 5 else 3,
                 )
-                character_view = CharacterView(self.bot, ctx.author, member, ctx.author)
+                character_view = CharacterView(
+                    ctx.author,
+                    member,
+                    ctx.author,
+                    last_choice_author,
+                    last_choice_member,
+                )
 
             elif game.winner == member:
                 player_two_score += 1
@@ -581,7 +596,9 @@ class Ranking(commands.Cog):
                     player_two_dsr,
                     2 if best_of_view.choice == 5 else 3,
                 )
-                character_view = CharacterView(self.bot, ctx.author, member, member)
+                character_view = CharacterView(
+                    ctx.author, member, member, last_choice_author, last_choice_member
+                )
 
             # Checking if the score threshold has been reached.
             if best_of_view.choice == 3 and (
@@ -627,6 +644,15 @@ class Ranking(commands.Cog):
                     "A player did not select their character in time.\nCancelling match."
                 )
                 return
+
+            last_choice_author = [
+                character_view.player_one_choice,
+                match_character(character_view.player_one_choice)[0],
+            ]
+            last_choice_member = [
+                character_view.player_two_choice,
+                match_character(character_view.player_two_choice)[0],
+            ]
 
             await ctx.send(
                 f"{ctx.author.mention} - {character_view.player_one_choice} ({match_character(character_view.player_one_choice)[0]}) "

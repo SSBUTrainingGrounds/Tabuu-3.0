@@ -2,7 +2,7 @@ import json
 from typing import Optional
 
 import discord
-from discord.ext import commands
+from utils.character import match_character
 
 
 class CharacterDropdown(discord.ui.Select):
@@ -12,10 +12,8 @@ class CharacterDropdown(discord.ui.Select):
 
     def __init__(
         self,
-        bot: commands.Bot,
         characters: list[str, str, str],
     ) -> None:
-        self.bot = bot
 
         options = [
             discord.SelectOption(
@@ -38,7 +36,8 @@ class CharacterDropdown(discord.ui.Select):
         # Then the pick is announced in the channel and the loser picks their character.
         if self.view.turn:
             await interaction.response.send_message(
-                f"{self.view.turn.mention} has chosen {self.values[0]}.",
+                f"{self.view.turn.mention} has chosen {self.values[0]}. "
+                f"({match_character(self.values[0])[0]})"
             )
 
             if self.view.turn.id == self.view.player_one.id:
@@ -49,21 +48,26 @@ class CharacterDropdown(discord.ui.Select):
                 self.view.player_two_choice = self.values[0]
                 self.view.turn = self.view.player_one
 
-            await self.view.message.edit(
-                content=f"{self.view.turn.mention}, please pick a character for the next Game!"
-            )
+            # If there is a turn order, the first child of the view will be the CharacterButton.
+            self.view.children[0].update_label_emoji()
 
             if self.view.player_one_choice and self.view.player_two_choice:
                 for item in self.view.children:
                     item.disabled = True
                 await self.view.message.edit(view=self.view)
                 self.view.stop()
+            else:
+                await self.view.message.edit(
+                    content=f"{self.view.turn.mention}, please pick a character for the next Game!",
+                    view=self.view,
+                )
 
             return
 
         # If there is no turn order, both players will pick their character simultaneously.
         await interaction.response.send_message(
-            f"You have chosen {self.values[0]}.",
+            f"You have chosen {self.values[0]}. "
+            f"({match_character(self.values[0])[0]})",
             ephemeral=True,
         )
 
@@ -80,15 +84,90 @@ class CharacterDropdown(discord.ui.Select):
             self.view.stop()
 
 
+class CharacterButton(discord.ui.Button):
+    def __init__(
+        self,
+        player_one: discord.Member,
+        player_one_character: str,
+        player_one_emoji: str,
+        player_two: discord.Member,
+        player_two_character: str,
+        player_two_emoji: str,
+        turn: discord.Member,
+    ):
+        self.player_one_character = player_one_character
+        self.player_one_emoji = player_one_emoji
+        self.player_two_character = player_two_character
+        self.player_two_emoji = player_two_emoji
+
+        if turn.id == player_one.id:
+            super().__init__(
+                label=f"Stay {self.player_one_character}?",
+                emoji=self.player_one_emoji,
+            )
+        elif turn.id == player_two.id:
+            super().__init__(
+                label=f"Stay {self.player_two_character}?",
+                emoji=self.player_two_emoji,
+            )
+
+    def update_label_emoji(self) -> None:
+        if self.view.player_one_choice and self.view.player_two_choice:
+            self.disabled = True
+            return
+
+        if self.view.turn.id == self.view.player_one.id:
+            self.label = f"Stay {self.player_one_character}?"
+            self.emoji = self.player_one_emoji
+        elif self.view.turn.id == self.view.player_two.id:
+            self.label = f"Stay {self.player_two_character}?"
+            self.emoji = self.player_two_emoji
+
+    async def callback(self, interaction: discord.Interaction):
+        if self.view.turn.id == self.view.player_one.id:
+            await interaction.response.send_message(
+                f"{self.view.turn.mention} has chosen {self.player_one_character}. "
+                f"({self.player_one_emoji})",
+            )
+
+            self.view.player_one_choice = self.player_one_character
+            self.view.turn = self.view.player_two
+
+            self.update_label_emoji()
+
+        elif self.view.turn.id == self.view.player_two.id:
+            await interaction.response.send_message(
+                f"{self.view.turn.mention} has chosen {self.player_two_character}. "
+                f"({self.player_two_emoji})",
+            )
+
+            self.view.player_two_choice = self.player_two_character
+            self.view.turn = self.view.player_one
+
+            self.update_label_emoji()
+
+        if self.view.player_one_choice and self.view.player_two_choice:
+            for item in self.view.children:
+                item.disabled = True
+            await self.view.message.edit(view=self.view)
+            self.view.stop()
+        else:
+            await self.view.message.edit(
+                content=f"{self.view.turn.mention}, please pick a character for the next Game!",
+                view=self.view,
+            )
+
+
 class CharacterView(discord.ui.View):
     """Adds the items to the Dropdown menu."""
 
     def __init__(
         self,
-        bot: commands.Bot,
         player_one: discord.Member,
         player_two: discord.Member,
         turn: Optional[discord.Member],
+        last_choice_one: Optional[tuple[str, str]] = None,
+        last_choice_two: Optional[tuple[str, str]] = None,
     ) -> None:
         super().__init__(timeout=180)
 
@@ -113,10 +192,23 @@ class CharacterView(discord.ui.View):
             for character in characters["Characters"]
         ]
 
-        self.add_item(CharacterDropdown(bot, char_options[:25]))
-        self.add_item(CharacterDropdown(bot, char_options[25:50]))
-        self.add_item(CharacterDropdown(bot, char_options[50:75]))
-        self.add_item(CharacterDropdown(bot, char_options[75:]))
+        if last_choice_one and last_choice_two:
+            self.add_item(
+                CharacterButton(
+                    player_one,
+                    last_choice_one[0],
+                    last_choice_one[1],
+                    player_two,
+                    last_choice_two[0],
+                    last_choice_two[1],
+                    turn,
+                )
+            )
+
+        self.add_item(CharacterDropdown(char_options[:25]))
+        self.add_item(CharacterDropdown(char_options[25:50]))
+        self.add_item(CharacterDropdown(char_options[50:75]))
+        self.add_item(CharacterDropdown(char_options[75:]))
 
     async def interaction_check(self, interaction: discord.Interaction) -> bool:
         if self.turn:
