@@ -220,5 +220,3 @@ class CharacterView(discord.ui.View):
         for item in self.children:
             item.disabled = True
         await self.message.edit(view=self)
-        await self.message.edit(view=self)
-        await self.message.edit(view=self)

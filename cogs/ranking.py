@@ -1412,4 +1412,3 @@ class Ranking(commands.Cog):
 async def setup(bot) -> None:
     await bot.add_cog(Ranking(bot))
     print("Ranking cog loaded")
-    print("Ranking cog loaded")
