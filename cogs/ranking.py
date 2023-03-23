@@ -5,10 +5,11 @@ import random
 import aiosqlite
 import discord
 import trueskill
-import utils.check
-import utils.time
 from discord import app_commands
 from discord.ext import commands, tasks
+
+import utils.check
+import utils.time
 from utils.character import match_character
 from utils.ids import (
     Emojis,
@@ -1410,4 +1411,5 @@ class Ranking(commands.Cog):
 
 async def setup(bot) -> None:
     await bot.add_cog(Ranking(bot))
+    print("Ranking cog loaded")
     print("Ranking cog loaded")

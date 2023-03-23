@@ -14,7 +14,6 @@ class CharacterDropdown(discord.ui.Select):
         self,
         characters: list[str, str, str],
     ) -> None:
-
         options = [
             discord.SelectOption(
                 label=character[0].title(),
