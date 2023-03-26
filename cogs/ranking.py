@@ -519,8 +519,8 @@ class Ranking(commands.Cog):
             return
 
         await ctx.send(
-            f"{ctx.author.mention} - {character_view.player_one_choice} ({match_character(character_view.player_one_choice)[0]}) "
-            f"vs. {member.mention} - {character_view.player_two_choice} ({match_character(character_view.player_two_choice)[0]})"
+            f"{ctx.author.mention} has chosen {character_view.player_one_choice}. ({match_character(character_view.player_one_choice)[0]})\n"
+            f"{member.mention} has chosen {character_view.player_two_choice}. ({match_character(character_view.player_two_choice)[0]})"
         )
 
         last_choice_author = [
@@ -548,14 +548,18 @@ class Ranking(commands.Cog):
 
         game = PlayerButtons(ctx.author, member, game_count + 1)
 
-        await ctx.send(
-            f"**{stage_select.choice}** selected.\nStart your match! Good luck!\n\n"
+        game_message = (
+            f"**Game {game_count + 1}/{best_of_view.choice} - {stage_select.choice}**\n"
+            f"{ctx.author.mention} "
+            f"({character_view.player_one_choice} {match_character(character_view.player_one_choice)[0]}) "
+            f"**{player_one_score}** - **{player_two_score}** "
+            f"{member.mention} "
+            f"{character_view.player_two_choice} ({match_character(character_view.player_two_choice)[0]})\n\n"
+            "Please start your match! Good luck, Have fun!\n\n"
+            f"When you're done, click on the button of the winner of Game {game_count + 1} to report the match."
         )
 
-        await ctx.send(
-            f"When you're done, click on the button of the winner of Game {game_count + 1} to report the match.",
-            view=game,
-        )
+        await ctx.send(game_message, view=game)
 
         timeout = await game.wait()
 
@@ -629,8 +633,6 @@ class Ranking(commands.Cog):
 
             next_game = PlayerButtons(ctx.author, member, game_count + 1)
 
-            await ctx.send(f"**{stage_select.choice}** selected.\n")
-
             # Then the two players pick their characters.
             # First the winner and then the loser.
             character_view.message = await ctx.send(
@@ -655,18 +657,20 @@ class Ranking(commands.Cog):
                 match_character(character_view.player_two_choice)[0],
             ]
 
-            await ctx.send(
-                f"{ctx.author.mention} - {character_view.player_one_choice} ({match_character(character_view.player_one_choice)[0]}) "
-                f"vs. {member.mention} - {character_view.player_two_choice} ({match_character(character_view.player_two_choice)[0]})"
+            game_message = (
+                f"**Game {game_count + 1}/{best_of_view.choice} - {stage_select.choice}**\n"
+                f"{ctx.author.mention} "
+                f"({character_view.player_one_choice} {match_character(character_view.player_one_choice)[0]}) "
+                f"**{player_one_score}** - **{player_two_score}** "
+                f"{member.mention} "
+                f"{character_view.player_two_choice} ({match_character(character_view.player_two_choice)[0]})\n\n"
+                "Please start your match! Good luck, Have fun!\n\n"
+                f"When you're done, click on the button of the winner of Game {game_count + 1} to report the match."
             )
 
             # And finally the match starts.
             # The cycle repeats until the game is over.
-            await ctx.send(
-                "Start your match! Good luck!\n\n"
-                f"When you're done, click on the button of the winner of Game {game_count + 1} to report the match.",
-                view=next_game,
-            )
+            await ctx.send(game_message, view=next_game)
 
             timeout = await next_game.wait()
 

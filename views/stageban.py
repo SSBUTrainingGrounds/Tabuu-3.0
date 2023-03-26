@@ -196,7 +196,7 @@ class CounterpickStageButtons(discord.ui.View):
         if self.turn == self.player_two:
             button.style = discord.ButtonStyle.green
             await interaction.response.edit_message(
-                content=f"**Stage bans**\n{self.turn.mention}, please *pick* a stage:",
+                content=f"**Stage bans**\nThe chosen stage is: **{button.label}**",
                 view=self,
             )
             self.choice = button.label

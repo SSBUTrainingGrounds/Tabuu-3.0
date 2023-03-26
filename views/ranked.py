@@ -19,10 +19,7 @@ class BestOfButtons(discord.ui.View):
         self.choice = 3
         for button in self.children:
             button.disabled = True
-        await interaction.response.edit_message(
-            content=f"{self.player_one.mention}, do you want to play a Best of 3 or a Best of 5?",
-            view=self,
-        )
+        await interaction.response.edit_message(view=self)
         self.stop()
 
     @discord.ui.button(label="Best of 5", emoji="5️⃣", style=discord.ButtonStyle.gray)
@@ -33,10 +30,7 @@ class BestOfButtons(discord.ui.View):
         self.choice = 5
         for button in self.children:
             button.disabled = True
-        await interaction.response.edit_message(
-            content=f"{self.player_one.mention}, do you want to play a Best of 3 or a Best of 5?",
-            view=self,
-        )
+        await interaction.response.edit_message(view=self)
         self.stop()
 
     async def interaction_check(self, interaction: discord.Interaction) -> bool:
@@ -117,10 +111,7 @@ class PlayerButtons(discord.ui.View):
         else:
             button.style = discord.ButtonStyle.blurple
 
-        await interaction.response.edit_message(
-            content=f"When you're done, click on the button of the winner of Game {self.game_count} to report the match.",
-            view=self,
-        )
+        await interaction.response.edit_message(view=self)
 
     async def player_one_button(self, interaction: discord.Interaction) -> None:
         """The button for reporting player one as the match winner."""
@@ -175,10 +166,7 @@ class PlayerButtons(discord.ui.View):
         self, interaction: discord.Interaction, button: discord.ui.Button
     ) -> None:
         """The button for calling a moderator."""
-        await interaction.response.edit_message(
-            content=f"When you're done, click on the button of the winner of Game {self.game_count} to report the match.",
-            view=self,
-        )
+        await interaction.response.edit_message(view=self)
         self.cancelled = True
         self.stop()
         await interaction.channel.send(
