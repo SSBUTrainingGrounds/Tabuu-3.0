@@ -554,7 +554,7 @@ class Ranking(commands.Cog):
             f"({character_view.player_one_choice} {match_character(character_view.player_one_choice)[0]}) "
             f"**{player_one_score}** - **{player_two_score}** "
             f"{member.mention} "
-            f"{character_view.player_two_choice} ({match_character(character_view.player_two_choice)[0]})\n\n"
+            f"({character_view.player_two_choice} {match_character(character_view.player_two_choice)[0]})\n\n"
             "Please start your match! Good luck, Have fun!\n\n"
             f"When you're done, click on the button of the winner of Game {game_count + 1} to report the match."
         )
@@ -663,7 +663,7 @@ class Ranking(commands.Cog):
                 f"({character_view.player_one_choice} {match_character(character_view.player_one_choice)[0]}) "
                 f"**{player_one_score}** - **{player_two_score}** "
                 f"{member.mention} "
-                f"{character_view.player_two_choice} ({match_character(character_view.player_two_choice)[0]})\n\n"
+                f"({character_view.player_two_choice} {match_character(character_view.player_two_choice)[0]})\n\n"
                 "Please start your match! Good luck, Have fun!\n\n"
                 f"When you're done, click on the button of the winner of Game {game_count + 1} to report the match."
             )
@@ -1415,4 +1415,5 @@ class Ranking(commands.Cog):
 
 async def setup(bot) -> None:
     await bot.add_cog(Ranking(bot))
+    print("Ranking cog loaded")
     print("Ranking cog loaded")
