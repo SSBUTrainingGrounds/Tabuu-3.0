@@ -276,7 +276,7 @@ class Ranking(commands.Cog):
             loser_diff_str = f"🠗 {loser_diff}"
 
         return (
-            f"Game #{match_id} successfully reported!\n{winner.mention} won!\n\nUpdated ratings: \n"
+            f"Match #{match_id} successfully reported!\n{winner.mention} won!\n\nUpdated ratings: \n"
             f"{winner.mention}: **{self.get_display_rank(winner_rating)}** → **{self.get_display_rank(new_winner_rating)}** ({winner_diff_str})\n"
             f"{loser.mention}: **{self.get_display_rank(loser_rating)}** → **{self.get_display_rank(new_loser_rating)}** ({loser_diff_str})\n\n"
         )
@@ -620,7 +620,8 @@ class Ranking(commands.Cog):
 
             # The winner of the previous set can ban three stages, then the loser can pick one (that he hasnt won on yet).
             await ctx.send(
-                f"Game {game_count}/{best_of_view.choice} reported! {game.winner.mention} won! (Score: {player_one_score} - {player_two_score})\n"
+                f"Game {game_count}/{best_of_view.choice} reported! {game.winner.mention} won! "
+                f"(Score: **{player_one_score} - {player_two_score})**\n"
                 f"{game.winner.mention}, please ban {2 if best_of_view.choice == 5 else 3} stages:",
                 view=stage_select,
             )
@@ -684,7 +685,10 @@ class Ranking(commands.Cog):
 
         # When the game is over we report the match automatically and update the ratings etc.
         await ctx.send(
-            f"The final score is: {player_one_score} - {player_two_score}! Reporting match automatically.."
+            f"Game {game_count}/{best_of_view.choice} reported! {game.winner.mention} won!\n"
+            "The final result of the match is: "
+            f"{ctx.author.mention} **{player_one_score} - {player_two_score}** {member.mention}!"
+            "\nReporting match automatically.."
         )
 
         if player_one_score > player_two_score:
@@ -865,7 +869,7 @@ class Ranking(commands.Cog):
         else:
             embed.add_field(name="Leaderboard", value="N/A", inline=True)
 
-        embed.add_field(name="Games Played", value=f"{wins + losses}")
+        embed.add_field(name="Matches Played", value=f"{wins + losses}")
         embed.add_field(name="Wins", value=wins, inline=True)
         embed.add_field(name="Losses", value=losses, inline=True)
         embed.add_field(
