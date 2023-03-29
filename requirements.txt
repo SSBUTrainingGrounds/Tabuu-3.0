@@ -5,4 +5,4 @@ mee6_py_api==0.0.1
 psutil==5.9.4
 stringmatch==0.14.1
 trueskill==0.4.5
-tzdata==2023.2
+tzdata==2023.3
