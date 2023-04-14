@@ -296,11 +296,11 @@ class Levels(commands.Cog):
 
             await db.commit()
 
-        xp_progress = self.get_xp_for_level(level + 1) - xp
+        xp_progress = xp - self.get_xp_for_level(level)
         xp_needed = self.get_xp_for_level(level + 1) - self.get_xp_for_level(level)
 
         embed.add_field(name="Level", value=level, inline=False)
-        embed.add_field(name="XP", value=xp, inline=False)
+        embed.add_field(name="XP", value=f"{xp:,}", inline=False)
         embed.add_field(
             name="Progress to next level",
             value=f"{xp_progress:,}/{xp_needed:,} ({round((xp_progress / xp_needed) * 100, 2)}%)",
