@@ -125,6 +125,15 @@ class TGChannelIDs:
     # Channel to post modmails in.
     MODMAIL_CHANNEL = 806860630073409567
 
+    # The channels where the level system does not work.
+    BLACKLISTED_CHANNELS = (
+        739299509401813081,
+        777964337880891412,
+        739299508197917058,
+        739299507937738844,
+        867791858464456724,
+    )
+
 
 class TGArenaChannelIDs:
     """Contains just the IDs of the Matchmaking Channels on the Training Grounds Server."""

@@ -8,7 +8,7 @@ from discord import app_commands
 from discord.ext import commands
 
 import utils
-from utils.ids import GuildIDs, GuildNames, TGLevelRoleIDs
+from utils.ids import GuildIDs, GuildNames, TGChannelIDs, TGLevelRoleIDs
 
 
 class Levels(commands.Cog):
@@ -148,6 +148,9 @@ class Levels(commands.Cog):
             return
 
         if message.guild.id != GuildIDs.TRAINING_GROUNDS:
+            return
+
+        if message.channel.id in TGChannelIDs.BLACKLISTED_CHANNELS:
             return
 
         if self.bot.recent_messages.get(message.author.id) is not None:
