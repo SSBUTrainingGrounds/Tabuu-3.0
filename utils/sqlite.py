@@ -132,9 +132,9 @@ async def setup_db(filepath: str = "./db/database.db") -> None:
 
         await db.execute(
             """CREATE TABLE IF NOT EXISTS level(
-                id INTEGER, 
-                level INTEGER, 
-                xp INTEGER, 
+                id INTEGER,
+                level INTEGER,
+                xp INTEGER,
                 messages INTEGER)"""
         )
 
