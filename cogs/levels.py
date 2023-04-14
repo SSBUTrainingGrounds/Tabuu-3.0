@@ -146,6 +146,9 @@ class Levels(commands.Cog):
     async def on_message(self, message: discord.Message) -> None:
         if message.author.bot:
             return
+        
+        if not message.guild:
+            return
 
         if message.guild.id != GuildIDs.TRAINING_GROUNDS:
             return
