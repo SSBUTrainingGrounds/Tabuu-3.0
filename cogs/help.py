@@ -139,6 +139,8 @@ class Responses(discord.ui.Select):
 ```{self.prefix}badge setinfo <emoji> <message>``` - Adds new information about a badge.
 ```{self.prefix}syncbanlist``` - Syncs the ban list from main server to secondary server.
 ```{self.prefix}setupmodmailbutton``` - Sets up a new modmail button for the bot to listen to.
+```{self.prefix}xp add <@user> <amount>``` - Adds XP to a user.
+```{self.prefix}xp remove <@user> <amount>``` - Removes XP from a user.
     """,
             )
 
@@ -233,7 +235,8 @@ class Responses(discord.ui.Select):
                 color=0x155A00,
                 description=f"""
 ```{self.prefix}modmail <your message>``` - Message the Mod Team privately. Only works in my DM channel.
-```{self.prefix}updatelevel <@user>``` - Updates the level role manually.
+```{self.prefix}rank <@user>``` - Gets you the rank of a user.
+```{self.prefix}levels``` - Gets you the level leaderboard of the server.
 ```{self.prefix}stagelist``` - Our Stagelist for Crew Battles.
 ```{self.prefix}avatar <@user>``` - Gets you the avatar of a user.
 ```{self.prefix}banner <@user>``` - Gets you the banner of a user.

@@ -130,6 +130,14 @@ async def setup_db(filepath: str = "./db/database.db") -> None:
                 new_loser_deviation REAL)"""
         )
 
+        await db.execute(
+            """CREATE TABLE IF NOT EXISTS level(
+                id INTEGER, 
+                level INTEGER, 
+                xp INTEGER, 
+                messages INTEGER)"""
+        )
+
         await db.commit()
 
         logger = utils.logger.get_logger("bot.db")

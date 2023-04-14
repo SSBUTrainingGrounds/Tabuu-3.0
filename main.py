@@ -33,6 +33,9 @@ class Tabuu3(commands.Bot):
         # The time we store matchmaking pings for, in seconds.
         self.matchmaking_ping_time = 1800
 
+        # A dict of recent messages, used for the level system.
+        self.recent_messages = {}
+
     async def setup_hook(self) -> None:
         # We need to set up some stuff at startup.
         utils.logger.create_logger()

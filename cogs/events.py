@@ -4,14 +4,8 @@ import aiosqlite
 import discord
 from discord.ext import commands, tasks
 
-from utils.ids import (
-    BGChannelIDs,
-    BGRoleIDs,
-    GuildIDs,
-    TGChannelIDs,
-    TGLevelRoleIDs,
-    TGRoleIDs,
-)
+from cogs.levels import Levels
+from utils.ids import BGChannelIDs, BGRoleIDs, GuildIDs, TGChannelIDs, TGRoleIDs
 
 
 class Events(commands.Cog):
@@ -65,10 +59,16 @@ class Events(commands.Cog):
 
     @commands.Cog.listener()
     async def on_member_join(self, member: discord.Member) -> None:
+        await Levels.create_new_profile(self, member)
+
         async with aiosqlite.connect("./db/database.db") as db:
             matching_user = await db.execute_fetchall(
                 """SELECT * FROM muted WHERE user_id = :user_id""",
                 {"user_id": member.id},
+            )
+            user_level = await db.execute_fetchall(
+                """SELECT level FROM level WHERE id = :id""",
+                {"id": member.id},
             )
 
         if member.guild.id == GuildIDs.TRAINING_GROUNDS:
@@ -82,12 +82,11 @@ class Events(commands.Cog):
                 muted_role = discord.utils.get(
                     member.guild.roles, id=TGRoleIDs.MUTED_ROLE
                 )
-                cadet = discord.utils.get(
-                    member.guild.roles, id=TGLevelRoleIDs.RECRUIT_ROLE
+                await member.add_roles(muted_role)
+                await Levels.update_level_role(
+                    self, member, user_level[0][0], member.guild
                 )
 
-                await member.add_roles(muted_role)
-                await member.add_roles(cadet)
                 await channel.send(
                     f"Welcome back, {member.mention}! You are still muted, so maybe check back later."
                 )
@@ -247,10 +246,18 @@ class Events(commands.Cog):
                 and not after.pending
                 and before.guild.id == GuildIDs.TRAINING_GROUNDS
             ):
-                cadetrole = discord.utils.get(
-                    before.guild.roles, id=TGLevelRoleIDs.RECRUIT_ROLE
-                )
-                await after.add_roles(cadetrole)
+                await Levels.create_new_profile(self, after)
+
+                async with aiosqlite.connect("./db/database.db") as db:
+                    user_level = await db.execute_fetchall(
+                        """SELECT level FROM level WHERE id = :id""",
+                        {"id": after.id},
+                    )
+
+                    await Levels.update_level_role(
+                        self, after, user_level[0][0], after.guild
+                    )
+
         except AttributeError:
             pass
 

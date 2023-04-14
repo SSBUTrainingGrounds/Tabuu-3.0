@@ -29,7 +29,7 @@ Made by Phxenix#1104. If you have any questions feel free to contact me on Disco
 
 -   Reaction-based Role Menus
 -   Auto-role System
--   Level Roles based on Mee6 Levels
+-   Level System with Role Rewards
 
 ### Miscellaneous
 
