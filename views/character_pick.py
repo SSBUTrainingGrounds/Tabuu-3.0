@@ -7,9 +7,7 @@ from utils.character import match_character
 
 
 class CharacterDropdown(discord.ui.Select):
-    """Handles the Pings and Threads of our Matchmaking System.
-    Also contains the Recentpings command with the Dropdown Menu.
-    """
+    """Contains the Character Dropdown Menu for the Character Select View."""
 
     def __init__(
         self,
@@ -25,7 +23,7 @@ class CharacterDropdown(discord.ui.Select):
         ]
 
         super().__init__(
-            placeholder=f"Characters {characters[0][1][0]} - {characters[-1][1][0]}",
+            placeholder=f"Characters {characters[0][1][0]} - {characters[-1][1][0]} ({characters[0][0].title()} - {characters[-1][0].title()})",
             min_values=1,
             max_values=1,
             options=options,
@@ -169,7 +167,7 @@ class CharacterView(discord.ui.View):
         last_choice_one: Optional[tuple[str, str]] = None,
         last_choice_two: Optional[tuple[str, str]] = None,
     ) -> None:
-        super().__init__(timeout=180)
+        super().__init__(timeout=600)
 
         self.player_one = player_one
         self.player_one_choice = ""

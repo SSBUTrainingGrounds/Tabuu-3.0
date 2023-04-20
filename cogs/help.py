@@ -186,13 +186,13 @@ class Responses(discord.ui.Select):
                 description=f"""
 ```{self.prefix}profile <@user>``` - View a profile of a user.
 ```{self.prefix}players <character>``` - View all players of a character.
-```{self.prefix}mains <main1, main2,...>``` - Set your mains, separated by commas.
-```{self.prefix}secondaries <sec1, sec2,...>``` - Set your secondaries, separated by commas.
-```{self.prefix}pockets <pocket1, pocket2,...>``` - Set your pockets, separated by commas.
+```{self.prefix}mains``` - Set your mains.
+```{self.prefix}secondaries``` - Set your secondaries.
+```{self.prefix}pockets``` - Set your pockets.
 ```{self.prefix}tag <tag>``` - Set your user tag.
-```{self.prefix}region <region>``` - Set your region (continent).
+```{self.prefix}region``` - Set your region.
 ```{self.prefix}note <note>``` - Set your note.
-```{self.prefix}colour <hex colour>``` - Set your profile embed colour, use a hex code.
+```{self.prefix}colour``` - Set your profile embed colour.
 ```{self.prefix}deleteprofile``` - Delete your profile.
     """,
             )
