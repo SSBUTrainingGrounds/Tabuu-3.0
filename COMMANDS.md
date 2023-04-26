@@ -2,7 +2,7 @@
 
 This here contains every command with a detailed explanation on how to use them. They are ordered alphabetically, search them with Ctrl+F.
 
-Last updated: 28 February 2023
+Last updated: 26 April 2023
 
 ## Things to know before diving in
 
@@ -88,9 +88,8 @@ Last updated: 28 February 2023
 -   **%coin**
     -   Info: Flips a coin and gives you the result. Heads or Tails.
     -   Aliases: coinflip, flip, flipcoin
--   **%colour** `<hex colour code>`
-    -   Info: Sets your colour on your profile embed. You need to use a hex colour code.
-    -   Example: `%colour #FFFFFF`
+-   **%colour**
+    -   Info: Sets your colour on your profile embed.
     -   Aliases: color, spcolour, spcolor, setcolour, setcolor
 -   **%convert** `<input>`
     -   Info: Converts the input between metric and imperial, and vice versa. Works with most common units of length, speed, weight, temperature and volume.
@@ -167,6 +166,8 @@ Last updated: 28 February 2023
 -   **%kick** `<@member> <reason>`
     -   Info: **Moderator only.** Kicks a member from the server. Mention the Member or use Member ID. You will be asked for confirmation before the Member gets kicked. The reason will get logged in Audit logs and also DM'd to the Member, if the bot can DM the Member.
     -   Example: `%kick @ExampleUser what an idiot`
+-   **%levels**
+    -   Info: Shows you the current level leaderboard.
 -   **%leaderboard**
     -   Info: **Moderator only.** Gets you the Top 10 rated players of our ranked matchmaking system.
 -   **%listrole** `<role>`
@@ -182,9 +183,8 @@ Last updated: 28 February 2023
 -   **%macro** `<macro: Optional>`
     -   Info: Gives you information about a specific macro, or if you do not specify a macro it will list out all registered macro commands.
     -   Aliases: listmacro, macros, macrostats
--   **%mains** `<main1, main2,..: Optional>`
-    -   Info: Updates your mains listed on your profile. Up to 7 characters, separate them by commas. Accepts names, commonly used nicknames and the Fighter Numbers. Leave the field blank or input invalid characters to delete the characters.
-    -   Example: `%mains incin, wii fit, 4e, paisy`
+-   **%mains**
+    -   Info: Updates your mains listed on your profile.
     -   Aliases: main, setmain, spmains, profilemains
 -   **%matchhistory** `<@user>`
     -   Info: **Moderator only.** Shows you the last 10 matches of a user.
@@ -230,9 +230,8 @@ Last updated: 28 February 2023
 -   **%players** `<character>`
     -   Info: Lists every main, secondary and pocket registered with the profile commands for that character.
     -   Example: `%players incin`
--   **%pockets** `<pocket1, pocket2,..: Optional>`
-    -   Info: Updates your pockets listed on your profile. Up to 10 characters, separate them by commas. Accepts names, commonly used nicknames and the Fighter Numbers. Leave the field blank or input invalid characters to delete the characters.
-    -   Example: `%pockets incin, wii fit, 4e, paisy`
+-   **%pockets**
+    -   Info: Updates your pockets listed on your profile.
     -   Aliases: pocket, setpocket, sppockets, profilepockets
 -   **%poll** `<question>`
     -   Info: Creates a poll for Users to vote on with reactions. Sends a button which, if you click it opens a modal for you to type the choices into, minimum of 2 and maximum of 10 choices available.
@@ -243,6 +242,9 @@ Last updated: 28 February 2023
     -   Aliases: smashprofile, profileinfo
 -   **%randomquote**
     -   Info: Gets you a random quote from someone.
+-   **%rank** `<@user: Optional>`
+    -   Info: Gets you the level rank of the mentioned User, if you dont specify a User, this will get your own.
+    -   Example: `%rank @ExampleUser`
 -   **%ranked**
     -   Info: Pings the ranked role and stores your ping for 30 Minutes. Has a 2 minute cooldown and can only be used in our ranked arena channels.
     -   Aliases: rankedmm, rankedmatchmaking, rankedsingles
@@ -256,9 +258,8 @@ Last updated: 28 February 2023
     -   Info: Gets you all pings in the last 30 Minutes of any matchmaking type without pinging the role yourself. Available dropdowns are: Singles, Doubles, Funnies, Ranked.
 -   **%records**
     -   Info: **Moderator only.** Gets you our ban records.
--   **%region** `<region: Optional>`
-    -   Info: Sets your region on your profile. The regions are the 6 commonly used continents, plus some more for North America, matches some inputs to those. So EU will work, as well as europe. Leave the field blank to delete the region from your profile.
-    -   Example: `%region europe`
+-   **%region**
+    -   Info: Sets your region on your profile.
     -   Aliases: setregion, spregion, country
 -   **%reloadcogs** `<cogs: Optional>`
     -   Info: **Owner only. Slash version unavailable.** Tries to reload the specified cogs separated by commas. If you do not specify any cogs, it reloads all of them, so you don't have to restart it for every little change. Slash version unavailable because this command is only useable by the owner of the bot.
@@ -312,9 +313,8 @@ Last updated: 28 February 2023
 -   **%seasonleaderboard** `<start> <end>`
     -   Info: **Admin Only.** Gets you the leaderboard of our Ranked Matchmaking System, only counting the matches that have happened in-between the start and end time. Both times are in Unix Timestamp format. Note that these ratings do not factor in automatic decay.
     -   Example: `%seasonleaderboard 1672527600 1704063600`
--   **%secondaries** `<secondary1, secondary2,..: Optional>`
-    -   Info: Updates your secondaries listed on your profile. Up to 7 characters, separate them by commas. Accepts names, commonly used nicknames and the Fighter Numbers. Leave the field blank or input invalid characters to delete the characters.
-    -   Example: `%secondaries incin, wii fit, 4e, paisy`
+-   **%secondaries**
+    -   Info: Updates your secondaries listed on your profile.
     -   Aliases: secondary, setsecondary, spsecondaries, profilesecondaries
 -   **%server**
     -   Info: Gets you some information about the server, does not work in DMs for obvious reasons.
@@ -408,3 +408,11 @@ Last updated: 28 February 2023
     -   Example: `%who is the most beautiful user?`
 -   **%wisdom**
     -   Info: Gets you a random piece of wisdom.
+-   **%xp**
+    - Info: **Slash version unavailable. Moderator only.** Group command that lists the subcommands and their usage. The available properties to edit are: add, remove. No slash version because this only lists the other commands.
+-   **%xp add** `<@member> <amount>`
+    - Info: **Moderator only.** Adds the specified amount of XP to the mentioned Member. Mention the Member or use Member ID.
+    - Example: `%xp add @ExampleUser 100`
+-   **%xp remove** `<@member> <amount>`
+    - Info: **Moderator only.** Removes the specified amount of XP from the mentioned Member. Mention the Member or use Member ID.
+    - Example: `%xp remove @ExampleUser 100`
