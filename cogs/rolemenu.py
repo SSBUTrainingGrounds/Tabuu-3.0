@@ -265,13 +265,14 @@ class Rolemenu(commands.Cog):
             # If its the first message in the list, it creates the "header" too.
             if message_id not in unique_messages:
                 unique_messages.append(message_id)
-                embed_description.append(
-                    f"\n**{message_id}:**\nExclusive: {exclusive} | Role(s) required: {rolereq}\n{emoji} = <@&{role}>"
+                embed_description.extend(
+                    (
+                        f"\n- **{message_id}:**",
+                        f"Exclusive: {exclusive} | Role(s) required: {rolereq}",
+                    )
                 )
 
-            # Else it will just append.
-            else:
-                embed_description.append(f"{emoji} = <@&{role}>")
+            embed_description.insert(-1, f"  - {emoji} = <@&{role}>")
 
         embed_description = "\n".join(embed_description)
 

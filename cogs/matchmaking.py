@@ -137,7 +137,7 @@ class Matchmaking(commands.Cog):
             if difference < self.bot.matchmaking_ping_time:
                 ping_channel = user_pings[f"{ping}"]["channel"]
                 list_of_searches.append(
-                    f"<@!{ping}>, in <#{ping_channel}>, <t:{round(ping_timestamp)}:R>\n"
+                    f"- <@!{ping}>, in <#{ping_channel}>, <t:{round(ping_timestamp)}:R>\n"
                 )
 
         list_of_searches.reverse()

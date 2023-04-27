@@ -81,27 +81,27 @@ class Responses(discord.ui.Select):
                 title="🕵️Moderation Commands🕵️",
                 color=0xFF0000,
                 description=f"""
-```{self.prefix}ban <@user> <reason>``` - Bans a member from the server.
-```{self.prefix}unban <@user>``` - Revokes a ban from the server.
-```{self.prefix}kick <@user> <reason>``` - Kicks a user from the server.
-```{self.prefix}clear amount <amount>``` - Purges X messages from the channel.
-```{self.prefix}clear after <after message> <before message>``` - Deletes every message between the two messages.
-```{self.prefix}clear from <@user> <amount>``` - Purges X messages messages from a user in the current channel.
-```{self.prefix}mute <@user> <reason>``` - Mutes a user in the server.
-```{self.prefix}unmute <@user>``` - Unmutes a user in the server.
-```{self.prefix}tempmute <@user> <time> <reason>``` - Temporarily mutes a user.
-```{self.prefix}timeout <@user> <time> <reason>``` - Times out a user until the time specified.
-```{self.prefix}removetimeout <@user>``` - Removes a timeout from a user.
-```{self.prefix}addrole <@user> <role>``` - Adds a role to a user.
-```{self.prefix}removerole <@user> <role>``` - Removes a role from a user.
-```{self.prefix}warn <@user> <reason>``` - Warns a user.
-```{self.prefix}warndetails <@user>``` - Shows detailed warnings of a user.
-```{self.prefix}deletewarn <@user> <warn_id>``` - Deletes a specific warning.
-```{self.prefix}clearwarns <@user>``` - Clears all the warnings of a user.
-```{self.prefix}modnote set <@user> <note>``` - Sets a new note for moderators to view.
-```{self.prefix}modnote view <@user>``` - Views all modnotes for a user.
-```{self.prefix}modnote delete <@user> <note_id>``` - Deletes a modnote from a user.
-```{self.prefix}lookup <@user>``` - Looks up every little detail of a user.
+- ```{self.prefix}ban <@user> <reason>```\n - Bans a member from the server.
+- ```{self.prefix}unban <@user>```\n - Revokes a ban from the server.
+- ```{self.prefix}kick <@user> <reason>```\n - Kicks a user from the server.
+- ```{self.prefix}clear amount <amount>```\n - Purges X messages from the channel.
+- ```{self.prefix}clear after <after message> <before message>```\n - Deletes every message between the two messages.
+- ```{self.prefix}clear from <@user> <amount>```\n - Purges X messages messages from a user in the current channel.
+- ```{self.prefix}mute <@user> <reason>```\n - Mutes a user in the server.
+- ```{self.prefix}unmute <@user>```\n - Unmutes a user in the server.
+- ```{self.prefix}tempmute <@user> <time> <reason>```\n - Temporarily mutes a user.
+- ```{self.prefix}timeout <@user> <time> <reason>```\n - Times out a user until the time specified.
+- ```{self.prefix}removetimeout <@user>```\n - Removes a timeout from a user.
+- ```{self.prefix}addrole <@user> <role>```\n - Adds a role to a user.
+- ```{self.prefix}removerole <@user> <role>```\n - Removes a role from a user.
+- ```{self.prefix}warn <@user> <reason>```\n - Warns a user.
+- ```{self.prefix}warndetails <@user>```\n - Shows detailed warnings of a user.
+- ```{self.prefix}deletewarn <@user> <warn_id>```\n - Deletes a specific warning.
+- ```{self.prefix}clearwarns <@user>```\n - Clears all the warnings of a user.
+- ```{self.prefix}modnote set <@user> <note>```\n - Sets a new note for moderators to view.
+- ```{self.prefix}modnote view <@user>```\n - Views all modnotes for a user.
+- ```{self.prefix}modnote delete <@user> <note_id>```\n - Deletes a modnote from a user.
+- ```{self.prefix}lookup <@user>```\n - Looks up every little detail of a user.
     """,
             )
 
@@ -110,37 +110,37 @@ class Responses(discord.ui.Select):
                 title="🧰Admin Utility Commands🧰",
                 colour=0x540707,
                 description=f"""
-```{self.prefix}reloadcogs <cogs>``` - Owner only, reloads some or all of the modules of this bot.
-```{self.prefix}synccommands <guild>``` - Owner only, syncs application commands to one or all guilds.
-```{self.prefix}editrole <property> <role> <value>``` - Edits a role's properties to the given value.
-```{self.prefix}clearmmpings``` - Clears all matchmaking pings.
-```{self.prefix}records``` - Shows ban records.
-```{self.prefix}forcereportmatch <@winner> <@loser>``` - If someone abandons a ranked match.
-```{self.prefix}leaderboard``` - Leaderboards of ranked matchmaking.
-```{self.prefix}seasonleaderbaord <start> <end>``` - Leaderboards of ranked matchmaking between two timestamps.
-```{self.prefix}recentmatches``` - Shows the 20 most recent matches of ranked matchmaking.
-```{self.prefix}matchhistory <@user>``` - Shows the 10 most recent matches of a user.
-```{self.prefix}deletematch <match_id>``` - Deletes a match from the database and restores ratings.
-```{self.prefix}rolemenu new <message ID> <emoji> <role>``` - Adds an entry for a role menu.
-```{self.prefix}rolemenu delete <message ID>``` - Deletes every entry for a Message with a role menu.
-```{self.prefix}rolemenu modify <message ID> <exclusive> <role(s)>``` - Sets special permissions for a Role menu.
-```{self.prefix}rolemenu get``` - Gets you every role menu entry currently active.
-```{self.prefix}rename <@user> <name>``` - Sets a new nickname for a user or removes it.
-```{self.prefix}names <@user>``` - Gets the current and past names of a user.
-```{self.prefix}say <channel> <message>``` - Admin only, Repeats the message in the chnanel.
-```{self.prefix}createmacro``` - Creates a new macro.
-```{self.prefix}deletemacro <name>``` - Deletes a macro.
-```{self.prefix}starboard emoji <emoji>``` - Changes the emoji used for the starboard.
-```{self.prefix}starboard threshold <number>``` - Changes the threshold used for the starboard.
-```{self.prefix}forcedeleteprofile <@user>``` - Deletes the profile of a user.
-```{self.prefix}badge add <@user> <emojis>``` - Adds badges to a user.
-```{self.prefix}badge remove <@user> <emoji>``` - Removes one badge from a user.
-```{self.prefix}badge clear <@user>``` - Clears every badge from a user.
-```{self.prefix}badge setinfo <emoji> <message>``` - Adds new information about a badge.
-```{self.prefix}syncbanlist``` - Syncs the ban list from main server to secondary server.
-```{self.prefix}setupmodmailbutton``` - Sets up a new modmail button for the bot to listen to.
-```{self.prefix}xp add <@user> <amount>``` - Adds XP to a user.
-```{self.prefix}xp remove <@user> <amount>``` - Removes XP from a user.
+```{self.prefix}reloadcogs <cogs>```\n - Owner only, reloads some or all of the modules of this bot.
+```{self.prefix}synccommands <guild>```\n - Owner only, syncs application commands to one or all guilds.
+```{self.prefix}editrole <property> <role> <value>```\n - Edits a role's properties to the given value.
+```{self.prefix}clearmmpings```\n - Clears all matchmaking pings.
+```{self.prefix}records```\n - Shows ban records.
+- ```{self.prefix}forcereportmatch <@winner> <@loser>```\n - If someone abandons a ranked match.
+- ```{self.prefix}leaderboard```\n - Leaderboards of ranked matchmaking.
+- ```{self.prefix}seasonleaderbaord <start> <end>```\n - Leaderboards of ranked matchmaking between two timestamps.
+- ```{self.prefix}recentmatches```\n - Shows the 20 most recent matches of ranked matchmaking.
+- ```{self.prefix}matchhistory <@user>```\n - Shows the 10 most recent matches of a user.
+- ```{self.prefix}deletematch <match_id>```\n - Deletes a match from the database and restores ratings.
+- ```{self.prefix}rolemenu new <message ID> <emoji> <role>```\n - Adds an entry for a role menu.
+- ```{self.prefix}rolemenu delete <message ID>```\n - Deletes every entry for a Message with a role menu.
+- ```{self.prefix}rolemenu modify <message ID> <exclusive> <role(s)>```\n - Sets special permissions for a Role menu.
+- ```{self.prefix}rolemenu get```\n - Gets you every role menu entry currently active.
+- ```{self.prefix}rename <@user> <name>```\n - Sets a new nickname for a user or removes it.
+- ```{self.prefix}names <@user>```\n - Gets the current and past names of a user.
+- ```{self.prefix}say <channel> <message>```\n - Admin only, Repeats the message in the chnanel.
+- ```{self.prefix}createmacro```\n - Creates a new macro.
+- ```{self.prefix}deletemacro <name>```\n - Deletes a macro.
+- ```{self.prefix}starboard emoji <emoji>```\n - Changes the emoji used for the starboard.
+- ```{self.prefix}starboard threshold <number>```\n - Changes the threshold used for the starboard.
+- ```{self.prefix}forcedeleteprofile <@user>```\n - Deletes the profile of a user.
+- ```{self.prefix}badge add <@user> <emojis>```\n - Adds badges to a user.
+- ```{self.prefix}badge remove <@user> <emoji>```\n - Removes one badge from a user.
+- ```{self.prefix}badge clear <@user>```\n - Clears every badge from a user.
+- ```{self.prefix}badge setinfo <emoji> <message>```\n - Adds new information about a badge.
+- ```{self.prefix}syncbanlist```\n - Syncs the ban list from main server to secondary server.
+- ```{self.prefix}setupmodmailbutton```\n - Sets up a new modmail button for the bot to listen to.
+- ```{self.prefix}xp add <@user> <amount>```\n - Adds XP to a user.
+- ```{self.prefix}xp remove <@user> <amount>```\n - Removes XP from a user.
     """,
             )
 
@@ -149,17 +149,17 @@ class Responses(discord.ui.Select):
                 title="❓Info Commands❓",
                 color=0x06515F,
                 description=f"""
-```{self.prefix}help <command>``` - Help menu, or specific help with a command.
-```{self.prefix}macro <macro>``` - Info about one macro, or lists every macro registered.
-```{self.prefix}roleinfo <role>``` - Displays Role info.
-```{self.prefix}listrole <role>``` - Displays all the members with a certain Role.
-```{self.prefix}userinfo <member>``` - Shows user info of a mentioned member.
-```{self.prefix}badgeinfo <emoji>``` - Shows information about a badge.
-```{self.prefix}warns <@user>``` - Displays the number of warnings of a user.
-```{self.prefix}server``` - Info about the server.
-```{self.prefix}stats``` - Stats about the bot.
-```{self.prefix}emoji <emoji>``` - Info about an emoji.
-```{self.prefix}sticker <sticker>``` - Info about a sticker.
+- ```{self.prefix}help <command>```\n - Help menu, or specific help with a command.
+- ```{self.prefix}macro <macro>```\n - Info about one macro, or lists every macro registered.
+- ```{self.prefix}roleinfo <role>```\n - Displays Role info.
+- ```{self.prefix}listrole <role>```\n - Displays all the members with a certain Role.
+- ```{self.prefix}userinfo <member>```\n - Shows user info of a mentioned member.
+- ```{self.prefix}badgeinfo <emoji>```\n - Shows information about a badge.
+- ```{self.prefix}warns <@user>```\n - Displays the number of warnings of a user.
+- ```{self.prefix}server```\n - Info about the server.
+- ```{self.prefix}stats```\n - Stats about the bot.
+- ```{self.prefix}emoji <emoji>```\n - Info about an emoji.
+- ```{self.prefix}sticker <sticker>```\n - Info about a sticker.
     """,
             )
 
@@ -168,14 +168,14 @@ class Responses(discord.ui.Select):
                 title="⚔️Matchmaking Commands⚔️",
                 color=0x420202,
                 description=f"""
-```{self.prefix}singles``` - Used for 1v1 matchmaking in our arena channels.
-```{self.prefix}doubles``` - Used for 2v2 matchmaking in our arena channels.
-```{self.prefix}funnies <message>``` - Used for non-competitive matchmaking in our arena channels.
-```{self.prefix}ranked``` - Used for 1v1 ranked matchmaking in our ranked channels.
-```{self.prefix}startmatch <@user>``` - Starts a ranked match with a user.
-```{self.prefix}reportmatch <@user>``` - Winner of the ranked match can use this as a shortcut for reporting matches.
-```{self.prefix}rankedstats``` - Your ranked stats.
-```{self.prefix}recentpings``` - Gets you the recent pings of any matchmaking type.
+- ```{self.prefix}singles```\n - Used for 1v1 matchmaking in our arena channels.
+- ```{self.prefix}doubles```\n - Used for 2v2 matchmaking in our arena channels.
+- ```{self.prefix}funnies <message>```\n - Used for non-competitive matchmaking in our arena channels.
+- ```{self.prefix}ranked```\n - Used for 1v1 ranked matchmaking in our ranked channels.
+- ```{self.prefix}startmatch <@user>```\n - Starts a ranked match with a user.
+- ```{self.prefix}reportmatch <@user>```\n - Winner of the ranked match can use this as a shortcut for reporting matches.
+- ```{self.prefix}rankedstats```\n - Your ranked stats.
+- ```{self.prefix}recentpings```\n - Gets you the recent pings of any matchmaking type.
     """,
             )
 
@@ -184,16 +184,16 @@ class Responses(discord.ui.Select):
                 title="👥Profile Commands👥",
                 color=0x7C3ED,
                 description=f"""
-```{self.prefix}profile <@user>``` - View a profile of a user.
-```{self.prefix}players <character>``` - View all players of a character.
-```{self.prefix}mains``` - Set your mains.
-```{self.prefix}secondaries``` - Set your secondaries.
-```{self.prefix}pockets``` - Set your pockets.
-```{self.prefix}tag <tag>``` - Set your user tag.
-```{self.prefix}region``` - Set your region.
-```{self.prefix}note <note>``` - Set your note.
-```{self.prefix}colour``` - Set your profile embed colour.
-```{self.prefix}deleteprofile``` - Delete your profile.
+- ```{self.prefix}profile <@user>```\n - View a profile of a user.
+- ```{self.prefix}players <character>```\n - View all players of a character.
+- ```{self.prefix}mains```\n - Set your mains.
+- ```{self.prefix}secondaries```\n - Set your secondaries.
+- ```{self.prefix}pockets```\n - Set your pockets.
+- ```{self.prefix}tag <tag>```\n - Set your user tag.
+- ```{self.prefix}region```\n - Set your region.
+- ```{self.prefix}note <note>```\n - Set your note.
+- ```{self.prefix}colour```\n - Set your profile embed colour.
+- ```{self.prefix}deleteprofile```\n - Delete your profile.
     """,
             )
 
@@ -202,16 +202,16 @@ class Responses(discord.ui.Select):
                 title="🔧Utility Commands🔧",
                 color=0x424242,
                 description=f"""
-```{self.prefix}coin``` - Throws a coin.
-```{self.prefix}roll <NdN>``` - Rolling dice, format it like 1d100.
-```{self.prefix}countdown <number>``` - Counts down from number.
-```{self.prefix}time``` - Current time as a timezone aware object.
-```{self.prefix}convert <input>``` - Converts the input from metric to imperial and vice versa.
-```{self.prefix}translate <message>``` - Translates a message or string to english.
-```{self.prefix}poll <question>``` - Starts a poll with your question.
-```{self.prefix}reminder <time> <message>``` - Reminds you about something.
-```{self.prefix}viewreminders``` - Lists your active reminders.
-```{self.prefix}deletereminder <ID>```Deletes one of your reminders by its ID.
+- ```{self.prefix}coin```\n - Throws a coin.
+- ```{self.prefix}roll <NdN>```\n - Rolling dice, format it like 1d100.
+- ```{self.prefix}countdown <number>```\n - Counts down from number.
+- ```{self.prefix}time```\n - Current time as a timezone aware object.
+- ```{self.prefix}convert <input>```\n - Converts the input from metric to imperial and vice versa.
+- ```{self.prefix}translate <message>```\n - Translates a message or string to english.
+- ```{self.prefix}poll <question>```\n - Starts a poll with your question.
+- ```{self.prefix}reminder <time> <message>```\n - Reminds you about something.
+- ```{self.prefix}viewreminders```\n - Lists your active reminders.
+- ```{self.prefix}deletereminder <ID>```Deletes one of your reminders by its ID.
     """,
             )
 
@@ -220,12 +220,12 @@ class Responses(discord.ui.Select):
                 title="🎮Game Commands🎮",
                 colour=0x333333,
                 description=f"""
-```{self.prefix}rps <@user>``` - Plays a match of Rock, Paper, Scissors with the mentioned user.
-```{self.prefix}tictactoe <@user>``` - Plays a match of Tic Tac Toe with the mentioned user.
-```{self.prefix}blackjack <@user>``` - Plays a match of Blackjack with the mentioned user.
-```{self.prefix}memory <@user>``` - Plays a match of Memory with the mentioned user.
-```{self.prefix}2048``` - Plays a game of 2048.
-```{self.prefix}minesweeper <mine_count>``` - Plays a game of Minesweeper with 2-12 Mines (Default: 5).
+- ```{self.prefix}rps <@user>```\n - Plays a match of Rock, Paper, Scissors with the mentioned user.
+- ```{self.prefix}tictactoe <@user>```\n - Plays a match of Tic Tac Toe with the mentioned user.
+- ```{self.prefix}blackjack <@user>```\n - Plays a match of Blackjack with the mentioned user.
+- ```{self.prefix}memory <@user>```\n - Plays a match of Memory with the mentioned user.
+- ```{self.prefix}2048```\n - Plays a game of 2048.
+- ```{self.prefix}minesweeper <mine_count>```\n - Plays a game of Minesweeper with 2-12 Mines (Default: 5).
     """,
             )
 
@@ -234,15 +234,15 @@ class Responses(discord.ui.Select):
                 title="📋Miscellaneous Commands📋",
                 color=0x155A00,
                 description=f"""
-```{self.prefix}modmail <your message>``` - Message the Mod Team privately. Only works in my DM channel.
-```{self.prefix}rank <@user>``` - Gets you the rank of a user.
-```{self.prefix}levels``` - Gets you the level leaderboard of the server.
-```{self.prefix}stagelist``` - Our Stagelist for Crew Battles.
-```{self.prefix}avatar <@user>``` - Gets you the avatar of a user.
-```{self.prefix}banner <@user>``` - Gets you the banner of a user.
-```{self.prefix}spotify <@user>``` - Posts the song the user is currently streaming.
-```{self.prefix}ping``` - Gets the ping of the bot.
-```{self.prefix}mp4 <move>``` - Tells you the Mana Cost of any of Hero's moves.
+- ```{self.prefix}modmail <your message>```\n - Message the Mod Team privately. Only works in my DM channel.
+- ```{self.prefix}rank <@user>```\n - Gets you the rank of a user.
+- ```{self.prefix}levels```\n - Gets you the level leaderboard of the server.
+- ```{self.prefix}stagelist```\n - Our Stagelist for Crew Battles.
+- ```{self.prefix}avatar <@user>```\n - Gets you the avatar of a user.
+- ```{self.prefix}banner <@user>```\n - Gets you the banner of a user.
+- ```{self.prefix}spotify <@user>```\n - Posts the song the user is currently streaming.
+- ```{self.prefix}ping```\n - Gets the ping of the bot.
+- ```{self.prefix}mp4 <move>```\n - Tells you the Mana Cost of any of Hero's moves.
     """,
             )
 
@@ -251,17 +251,17 @@ class Responses(discord.ui.Select):
                 title="😂Fun Commands😂",
                 color=0x841E8B,
                 description=f"""
-```{self.prefix}joke``` - Jokes.
-```{self.prefix}randomquote``` - Quotes.
-```{self.prefix}pickmeup``` - Nice words.
-```{self.prefix}wisdom``` - It's wisdom.
-```{self.prefix}boo``` - Looking for a scare, huh?
-```{self.prefix}tabuwu``` - For the silly people.
-```{self.prefix}john``` - If you need a john.
-```{self.prefix}hypemeup``` - Hypes you up before that next game of smash.
-```{self.prefix}8ball <question>``` - Ask the magic 8-ball.
-```{self.prefix}who <question>``` - Ask a question and get a random user in response.
-```{self.prefix}friendship <@user1> <@user2>``` - The friendship status between 2 users.
+- ```{self.prefix}joke```\n - Jokes.
+- ```{self.prefix}randomquote```\n - Quotes.
+- ```{self.prefix}pickmeup```\n - Nice words.
+- ```{self.prefix}wisdom```\n - It's wisdom.
+- ```{self.prefix}boo```\n - Looking for a scare, huh?
+- ```{self.prefix}tabuwu```\n - For the silly people.
+- ```{self.prefix}john```\n - If you need a john.
+- ```{self.prefix}hypemeup```\n - Hypes you up before that next game of smash.
+- ```{self.prefix}8ball <question>```\n - Ask the magic 8-ball.
+- ```{self.prefix}who <question>```\n - Ask a question and get a random user in response.
+- ```{self.prefix}friendship <@user1> <@user2>```\n - The friendship status between 2 users.
     """,
             )
 

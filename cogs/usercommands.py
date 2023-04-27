@@ -200,7 +200,7 @@ class Usercommands(commands.Cog):
                     return
 
                 embed_description = [
-                    f"{reactions[i]}: {option}" for i, option in enumerate(options)
+                    f"- {reactions[i]}: {option}" for i, option in enumerate(options)
                 ]
 
                 embed = discord.Embed(

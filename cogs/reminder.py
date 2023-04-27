@@ -158,7 +158,7 @@ class Reminder(commands.Cog):
             if (date - dt_now) <= 30:
                 timediff = "Less than a minute..."
             reminder_list.append(
-                f"**ID:** {reminder_id} - **Time remaining:** {timediff} - **Message:** `{message}`\n"
+                f"- **ID:** {reminder_id} - **Time remaining:** {timediff} - **Message:** `{message}`\n"
             )
 
         if not reminder_list:
