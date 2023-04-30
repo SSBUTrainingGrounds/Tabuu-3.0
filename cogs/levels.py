@@ -314,8 +314,16 @@ class Levels(commands.Cog):
     async def rank(self, ctx: commands.Context, user: discord.User = None) -> None:
         """Shows your level and xp, or the level and xp of another user."""
 
+        if not ctx.guild:
+            await ctx.send(
+                f"This command can only be used in the {GuildNames.TRAINING_GROUNDS}"
+            )
+            return
+
         if ctx.guild.id != GuildIDs.TRAINING_GROUNDS:
-            await ctx.send("This command can only be used in the Training Grounds.")
+            await ctx.send(
+                f"This command can only be used in the {GuildNames.TRAINING_GROUNDS}"
+            )
             return
 
         await ctx.typing()
@@ -423,8 +431,16 @@ class Levels(commands.Cog):
     async def levels(self, ctx: commands.Context) -> None:
         """Shows the leaderboard for levels."""
 
+        if not ctx.guild:
+            await ctx.send(
+                f"This command can only be used in the {GuildNames.TRAINING_GROUNDS}"
+            )
+            return
+
         if ctx.guild.id != GuildIDs.TRAINING_GROUNDS:
-            await ctx.send("This command can only be used in the Training Grounds.")
+            await ctx.send(
+                f"This command can only be used in the {GuildNames.TRAINING_GROUNDS}"
+            )
             return
 
         await ctx.typing()
