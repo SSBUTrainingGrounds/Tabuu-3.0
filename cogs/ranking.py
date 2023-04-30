@@ -888,8 +888,6 @@ class Ranking(commands.Cog):
 
     @commands.hybrid_command()
     @app_commands.guilds(*GuildIDs.ALL_GUILDS)
-    @app_commands.default_permissions(administrator=True)
-    @utils.check.is_moderator()
     async def leaderboard(self, ctx: commands.Context) -> None:
         """The Top 10 Players of our Ranked Matchmaking."""
         # This command could take a while to run, so we need to defer the slash version.
@@ -947,8 +945,6 @@ class Ranking(commands.Cog):
         end="The end of the season in the format of a unix timestamp.",
     )
     @app_commands.guilds(*GuildIDs.ALL_GUILDS)
-    @app_commands.default_permissions(administrator=True)
-    @utils.check.is_moderator()
     async def seasonleaderboard(
         self, ctx: commands.Context, start: int, end: int
     ) -> None:
