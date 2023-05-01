@@ -75,13 +75,13 @@ class TournamentReminders:
     PING_ENABLED = True
     # The timezone the other times are based on.
     TIMEZONE = "US/Eastern"
-    # The weekday as an int, keep in mind weeks start at 0 = Monday. Which means that 4 = Friday.
-    SMASH_OVERSEAS_DAY = 4
+    # The weekday as an int, keep in mind weeks start at 0 = Monday. Which means that 5 = Saturday.
+    SMASH_OVERSEAS_DAY = 5
     # This is set to 1 hour & 5 mins before the tournaments.
     SMASH_OVERSEAS_HOUR = 12
     SMASH_OVERSEAS_MINUTE = 55
 
-    TRIALS_OF_SMASH_DAY = 5
+    TRIALS_OF_SMASH_DAY = 4
     TRIALS_OF_SMASH_HOUR = 17
     TRIALS_OF_SMASH_MINUTE = 55
 
