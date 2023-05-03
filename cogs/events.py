@@ -73,9 +73,9 @@ class Events(commands.Cog):
                 {"id": member.id},
             )
 
-        await lvl.update_level_role(member, user_level[0][0], member.guild)
-
         if member.guild.id == GuildIDs.TRAINING_GROUNDS:
+            await lvl.update_level_role(member, user_level[0][0], member.guild)
+
             channel = self.bot.get_channel(TGChannelIDs.GENERAL_CHANNEL)
             rules = self.bot.get_channel(TGChannelIDs.RULES_CHANNEL)
 
