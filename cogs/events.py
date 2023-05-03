@@ -59,7 +59,9 @@ class Events(commands.Cog):
 
     @commands.Cog.listener()
     async def on_member_join(self, member: discord.Member) -> None:
-        await Levels.create_new_profile(self, member)
+        lvl = Levels(self.bot)
+
+        await lvl.create_new_profile(member)
 
         async with aiosqlite.connect("./db/database.db") as db:
             matching_user = await db.execute_fetchall(
@@ -70,6 +72,8 @@ class Events(commands.Cog):
                 """SELECT level FROM level WHERE id = :id""",
                 {"id": member.id},
             )
+
+        await lvl.update_level_role(member, user_level[0][0], member.guild)
 
         if member.guild.id == GuildIDs.TRAINING_GROUNDS:
             channel = self.bot.get_channel(TGChannelIDs.GENERAL_CHANNEL)
@@ -83,9 +87,6 @@ class Events(commands.Cog):
                     member.guild.roles, id=TGRoleIDs.MUTED_ROLE
                 )
                 await member.add_roles(muted_role)
-                await Levels.update_level_role(
-                    self, member, user_level[0][0], member.guild
-                )
 
                 await channel.send(
                     f"Welcome back, {member.mention}! You are still muted, so maybe check back later."
@@ -234,32 +235,6 @@ class Events(commands.Cog):
                             await after.remove_roles(removerole)
                     except discord.HTTPException:
                         pass
-
-        # This here gives out the recruit role on a successful member screening,
-        # on join was terrible because of the android app, for whatever reason.
-        try:
-            if before.bot or after.bot:
-                return
-
-            if (
-                before.pending
-                and not after.pending
-                and before.guild.id == GuildIDs.TRAINING_GROUNDS
-            ):
-                await Levels.create_new_profile(self, after)
-
-                async with aiosqlite.connect("./db/database.db") as db:
-                    user_level = await db.execute_fetchall(
-                        """SELECT level FROM level WHERE id = :id""",
-                        {"id": after.id},
-                    )
-
-                    await Levels.update_level_role(
-                        self, after, user_level[0][0], after.guild
-                    )
-
-        except AttributeError:
-            pass
 
     @commands.Cog.listener()
     async def on_command_completion(self, ctx: commands.Context) -> None:
