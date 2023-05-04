@@ -45,3 +45,7 @@ If you truly want to check all the boxes, feel free to copy those settings.
 
 **You do not meet one or more of these guidelines or are unsure of anything? Please, do not worry and submit your contribution anyways.  
 It will always be greatly appreciated.**  
+
+## Development channel
+
+If you want to be more involved with the development process, ask the moderation team for access to the `#dev-team` channel on the [SSBU Training Grounds Discord Server](https://discord.gg/ssbutg).
