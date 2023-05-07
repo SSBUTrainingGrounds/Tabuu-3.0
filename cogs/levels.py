@@ -205,6 +205,9 @@ class Levels(commands.Cog):
         if self.bot.recent_messages.get(message.author.id) is not None:
             return
 
+        if message.is_system():
+            return
+
         # Doesn't really matter what we set it to, as long as it's not None.
         self.bot.recent_messages[message.author.id] = True
 
