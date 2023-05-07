@@ -63,8 +63,6 @@ class Warn(commands.Cog):
         3 warnings:
             User gets muted indefinitely.
         5 warnings:
-            User gets kicked from the Server.
-        7 warnings:
             User gets banned from the Server.
 
         Also DMs them informing the User of said action.

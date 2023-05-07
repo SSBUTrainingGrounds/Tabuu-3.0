@@ -11,9 +11,7 @@ from utils.ids import GuildIDs, TGArenaChannelIDs, TGMatchmakingRoleIDs
 
 
 class Pings(discord.ui.Select):
-    """Handles the Pings and Threads of our Matchmaking System.
-    Also contains the Recentpings command with the Dropdown Menu.
-    """
+    """Handles the Pings for the recentpings command."""
 
     def __init__(self, bot: commands.Bot) -> None:
         self.bot = bot

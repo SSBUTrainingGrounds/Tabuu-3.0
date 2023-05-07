@@ -17,10 +17,11 @@ class Tabuu3(commands.Bot):
         )
 
         # The main prefix, used for listening to macros and display purposes mainly.
+        # This will only really matter if we set multiple command_prefixes in the future.
         self.main_prefix = "%"
 
         # To be used in the stats command.
-        self.version_number = "9.33.0"
+        self.version_number = "9.35.6"
         self.commands_ran = 0
         self.events_listened_to = 0
 

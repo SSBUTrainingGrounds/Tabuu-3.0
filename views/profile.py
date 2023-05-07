@@ -232,6 +232,7 @@ class ColourDropdown(discord.ui.Select):
             discord.SelectOption(
                 label="Brown", emoji="🟤", value="0xA52A2A", description="#A52A2A"
             ),
+            # Kinda hard to find emojis for some of those colours.
             discord.SelectOption(
                 label="Pink", emoji="🧠", value="0xFFC0CB", description="#FFC0CB"
             ),

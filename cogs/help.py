@@ -110,11 +110,11 @@ class Responses(discord.ui.Select):
                 title="🧰Admin Utility Commands🧰",
                 colour=0x540707,
                 description=f"""
-```{self.prefix}reloadcogs <cogs>```\n - Owner only, reloads some or all of the modules of this bot.
-```{self.prefix}synccommands <guild>```\n - Owner only, syncs application commands to one or all guilds.
-```{self.prefix}editrole <property> <role> <value>```\n - Edits a role's properties to the given value.
-```{self.prefix}clearmmpings```\n - Clears all matchmaking pings.
-```{self.prefix}records```\n - Shows ban records.
+- ```{self.prefix}reloadcogs <cogs>```\n - Owner only, reloads some or all of the modules of this bot.
+- ```{self.prefix}synccommands <guild>```\n - Owner only, syncs application commands to one or all guilds.
+- ```{self.prefix}editrole <property> <role> <value>```\n - Edits a role's properties to the given value.
+- ```{self.prefix}clearmmpings```\n - Clears all matchmaking pings.
+- ```{self.prefix}records```\n - Shows ban records.
 - ```{self.prefix}forcereportmatch <@winner> <@loser>```\n - If someone abandons a ranked match.
 - ```{self.prefix}leaderboard```\n - Leaderboards of ranked matchmaking.
 - ```{self.prefix}seasonleaderbaord <start> <end>```\n - Leaderboards of ranked matchmaking between two timestamps.

@@ -698,10 +698,10 @@ class Ranking(commands.Cog):
 
         await ctx.send(message)
 
-    @commands.hybrid_command(aliases=["rankedstats"])
+    @commands.hybrid_command(aliases=["rankstats"])
     @app_commands.guilds(*GuildIDs.ALL_GUILDS)
     @app_commands.describe(member="The user you want to see the ranked stats of.")
-    async def rankstats(
+    async def rankedstats(
         self, ctx: commands.Context, member: discord.User = None
     ) -> None:
         """Gets you the ranked stats of a member, or your own if you dont specify a member.
@@ -1380,8 +1380,8 @@ class Ranking(commands.Cog):
                 f"You are on cooldown! Try again in {round(error.retry_after)} seconds."
             )
 
-    @rankstats.error
-    async def rankstats_error(
+    @rankedstats.error
+    async def rankedstats_error(
         self, ctx: commands.Context, error: commands.CommandError
     ) -> None:
         if isinstance(

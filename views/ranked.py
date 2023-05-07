@@ -6,6 +6,8 @@ from utils.ids import TGRoleIDs
 
 
 class BestOfButtons(discord.ui.View):
+    """Contains buttons for choosing the game format."""
+
     def __init__(self, player_one: discord.Member) -> None:
         super().__init__(timeout=60)
         self.player_one = player_one
@@ -38,6 +40,8 @@ class BestOfButtons(discord.ui.View):
 
 
 class ArenaButton(discord.ui.View):
+    """Contains a single button for the player to click when they're ready."""
+
     def __init__(self, player_one: discord.Member, choice: int) -> None:
         super().__init__(timeout=1500)
         self.player_one = player_one
@@ -65,6 +69,8 @@ class ArenaButton(discord.ui.View):
 
 
 class PlayerButtons(discord.ui.View):
+    """Contains the buttons for reporting the winner of a match, or cancelling the match."""
+
     def __init__(
         self, player_one: discord.Member, player_two: discord.Member, game_count: int
     ) -> None:

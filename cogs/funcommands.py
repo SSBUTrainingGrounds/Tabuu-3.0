@@ -9,9 +9,7 @@ from utils.ids import GuildIDs
 
 
 class Funcommands(commands.Cog):
-    """Contains the "funny" commands.
-    They all pretty much just trigger random responses.
-    """
+    """Contains the "funny" commands."""
 
     def __init__(self, bot: commands.Bot) -> None:
         self.bot = bot

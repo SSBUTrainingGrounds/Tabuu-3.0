@@ -3,6 +3,8 @@ import discord
 
 
 class MacroModal(discord.ui.Modal, title="Create a new macro"):
+    """A modal to create a new macro."""
+
     def __init__(self) -> None:
         super().__init__()
 

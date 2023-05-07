@@ -5,6 +5,8 @@ import discord
 
 
 class BlackJackButtons(discord.ui.View):
+    """Contains the buttons for the blackjack game and handles the game logic."""
+
     def __init__(self, author: discord.Member, member: discord.Member) -> None:
         super().__init__(timeout=60)
         self.author = author

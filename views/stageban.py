@@ -4,6 +4,11 @@ import discord
 
 
 class StarterStageButtons(discord.ui.View):
+    """Contains the buttons for the initial stage banning.
+    Does not contain the stages for counterpicking.
+
+    The stages are banned in a 1-2-1 format."""
+
     def __init__(self, player_one: discord.Member, player_two: discord.Member) -> None:
         super().__init__(timeout=180)
         self.player_one = player_one
@@ -94,6 +99,11 @@ class StarterStageButtons(discord.ui.View):
 
 
 class CounterpickStageButtons(discord.ui.View):
+    """Contains the buttons for counterpicking stages.
+
+    The winner bans 2 or 3 stages (depending on BO3/BO5),
+    and the loser picks from the remaining stages."""
+
     def __init__(
         self,
         player_one: discord.Member,

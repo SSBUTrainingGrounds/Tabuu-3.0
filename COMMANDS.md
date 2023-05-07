@@ -67,9 +67,7 @@ Last updated: 26 April 2023
 -   **%boo**
     -   Info: Comes up with some scary stuff.
 -   **%clear**
-
     -   Info: **Slash version unavailable. Moderator only.** Group command that lists the subcommands and their usage. The available properties to edit are: amount, after, from. No slash version because this only lists the other commands.
-
 -   **%clear amount** `<amount: Optional>`
     -   Info: **Moderator only.** Clears a certain amount of messages. If no amount is given, it will clear 1 messages.
     -   Example: `%clear amount 50`
@@ -169,7 +167,7 @@ Last updated: 26 April 2023
 -   **%levels**
     -   Info: Shows you the current level leaderboard.
 -   **%leaderboard**
-    -   Info: **Moderator only.** Gets you the Top 10 rated players of our ranked matchmaking system.
+    -   Info: Gets you the Top 10 rated players of our ranked matchmaking system.
 -   **%listrole** `<role>`
     -   Info: Lists out every Member with a certain role. The bot first tries to use the Role ID or Role mention, after that it searches for the closest match for the role name.
     -   Example: `%listrole first class`
@@ -311,7 +309,7 @@ Last updated: 26 April 2023
     -   Info: **Admin Only.** Repeats the given Message in the given Text Channel, Thread or replies to a message. If you want to reply to a message in another channel, use the ChannelID-MessageID syntax or the link to the message.
     -   Example: `%say #announcements Important Announcement`
 -   **%seasonleaderboard** `<start> <end>`
-    -   Info: **Admin Only.** Gets you the leaderboard of our Ranked Matchmaking System, only counting the matches that have happened in-between the start and end time. Both times are in Unix Timestamp format. Note that these ratings do not factor in automatic decay.
+    -   Info: Gets you the leaderboard of our Ranked Matchmaking System, only counting the matches that have happened in-between the start and end time. Both times are in Unix Timestamp format. Note that these ratings do not factor in automatic decay.
     -   Example: `%seasonleaderboard 1672527600 1704063600`
 -   **%secondaries**
     -   Info: Updates your secondaries listed on your profile.
@@ -383,9 +381,6 @@ Last updated: 26 April 2023
 -   **%unmute** `<@member>`
     -   Info: **Moderator only.** Unmutes a Member in both servers. Please use this in all cases to unmute someone. Mention the Member or use Member ID.
     -   Example: `%unmute @ExampleUser`
--   **%updatelevel** `<@member: Optional>`
-    -   Info: Updates your level role or the one of the mentioned Member according to your MEE6 level manually. Has a 5 minute cooldown. Note that this gets done anyways every 23 hours for everyone in the server. Only works in the Training Grounds server.
-    -   Example: `%updatelevel @ExampleUser`
 -   **%userinfo** `<@member: Optional>`
     -   Info: Gets you various information about a Member. If you haven't specified a Member, this will get your own info. Mention the Member or use Member ID. Does not work in DMs.
     -   Example: `%userinfo @ExampleUser`
