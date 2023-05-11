@@ -308,6 +308,10 @@ class Ranking(commands.Cog):
         # But we multiply by 100 and add 1000 to get a nicer number.
         return max(round(((player.mu - 3 * player.sigma) * 100) + 1000), 0)
 
+    def get_potential(self, player: trueskill.Rating) -> float:
+        """Gets the maximum rank of a player, scaled."""
+        return max(round(((player.mu + 3 * player.sigma) * 100) + 1000), 0)
+
     def decay_deviation(self, player: trueskill.Rating) -> trueskill.Rating:
         """Decays the deviation of a player by 3.33%."""
         # 3.33% was chosen because a decently rated player (~25 games played) has a deviation of ~2.6,
@@ -740,6 +744,26 @@ class Ranking(commands.Cog):
                 {"user_id": member.id},
             )
 
+            average_opponents = await db.execute_fetchall(
+                """
+                SELECT
+                    CASE WHEN winner_id = :user_id THEN
+                        old_loser_rating
+                    ELSE
+                        old_winner_rating
+                    END rating,
+                    CASE WHEN winner_id = :user_id THEN
+                        old_loser_deviation
+                    ELSE
+                        old_winner_deviation
+                    END deviation
+                FROM matches
+                WHERE winner_id = :user_id OR loser_id = :user_id
+                
+                """,
+                {"user_id": member.id},
+            )
+
             # This sql statement basically fetches either the highest rating after a win, after a loss, or before a loss,
             # together with a timestamp. You can gain rating by losing, but you cannot lose rating by winning.
             highest_rating = await db.execute_fetchall(
@@ -801,6 +825,15 @@ class Ranking(commands.Cog):
                 f"<t:{best_win[0][3]}:d>)"
             )
 
+        if not average_opponents:
+            average_opponent = "N/A"
+        else:
+            average_ratings = [
+                self.get_display_rank(trueskill.Rating(opponent[0], opponent[1]))
+                for opponent in average_opponents
+            ]
+            average_opponent = f"{sum(average_ratings) / len(average_ratings):.2f}"
+
         recent_rating = self.get_display_rank(rating) - self.get_display_rank(
             trueskill.Rating(old_mu, old_sigma)
         )
@@ -825,6 +858,17 @@ class Ranking(commands.Cog):
             else self.get_display_rank(rating)
         )
 
+        # Getting the longest and current winstreak.
+        longest_winstreak = 0
+        current_winstreak = 0
+        for m in matches:
+            if m == "W":
+                current_winstreak += 1
+                longest_winstreak = max(longest_winstreak, current_winstreak)
+            else:
+                longest_winstreak = max(longest_winstreak, current_winstreak)
+                current_winstreak = 0
+
         # We basically check double here, because we want the current time stamp
         # if the player still has the highest rating that they ever achieved.
         timestamp_win = (
@@ -837,6 +881,12 @@ class Ranking(commands.Cog):
         embed.set_thumbnail(url=member.display_avatar.url)
         embed.add_field(
             name="TabuuSkill", value=f"**{self.get_display_rank(rating)}**", inline=True
+        )
+        embed.add_field(
+            name="Deviation", value=f"**±{round(rating.sigma * 100, 2)}**", inline=True
+        )
+        embed.add_field(
+            name="Max Potential", value=f"**{self.get_potential(rating)}**", inline=True
         )
 
         if wins + losses >= 5:
@@ -861,13 +911,19 @@ class Ranking(commands.Cog):
             else:
                 index = 8
 
+            percent = min(
+                max(round(((pos - 1) / len(complete_leaderboard)) * 100, 2), 0.01), 100
+            )
+
             embed.add_field(
                 name="Leaderboard",
-                value=f"{Emojis.LEADERBOARD_EMOJIS[index]} **#{pos}**",  # noqa: F821
+                value=f"{Emojis.LEADERBOARD_EMOJIS[index]} **#{pos}** (Top {percent}%)",  # noqa: F821
                 inline=True,
             )
         else:
             embed.add_field(name="Leaderboard", value="N/A", inline=True)
+
+        embed.add_field(name="Average Opponent", value=average_opponent, inline=True)
 
         embed.add_field(name="Matches Played", value=f"{wins + losses}")
         embed.add_field(name="Wins", value=wins, inline=True)
@@ -876,6 +932,11 @@ class Ranking(commands.Cog):
             name="Win Percentage", value=f"{round(wins/(wins+losses) * 100)}%"
         )
         embed.add_field(name="Last Matches", value=gamelist, inline=True)
+        embed.add_field(
+            name="Longest Winstreak",
+            value=f"{longest_winstreak} (Current: {current_winstreak})",
+            inline=True,
+        )
         embed.add_field(name="Recent Performance", value=recent_rating, inline=True)
         embed.add_field(name="Highest Win", value=highest_win, inline=True)
         embed.add_field(
