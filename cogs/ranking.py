@@ -759,7 +759,6 @@ class Ranking(commands.Cog):
                     END deviation
                 FROM matches
                 WHERE winner_id = :user_id OR loser_id = :user_id
-                
                 """,
                 {"user_id": member.id},
             )
