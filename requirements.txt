@@ -1,7 +1,7 @@
 aiosqlite==0.19.0
+dateparser==1.1.8
 discord.py==2.2.3
 googletrans==4.0.0rc1
 psutil==5.9.5
 stringmatch==0.14.1
 trueskill==0.4.5
-tzdata==2023.3

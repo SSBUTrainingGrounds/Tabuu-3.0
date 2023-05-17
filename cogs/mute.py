@@ -199,9 +199,11 @@ class Mute(commands.Cog):
         # Converts the input into the seconds, and also a human-readable-string.
         seconds, time_muted = convert_time(mute_time)
 
-        # Just checking the duration is not at a crazy high/low value.
-        if seconds < 30:
-            await ctx.send("Duration is too short! Minimum duration is 30 seconds.")
+        if not seconds:
+            raise commands.CommandInvokeError("Invalid time format!")
+
+        if seconds <= 0:
+            await ctx.send("The end of the timeout cannot be in the past.")
             return
 
         # This is one day.
@@ -281,6 +283,14 @@ class Mute(commands.Cog):
         Very similar to the mute command, but with the built in time out function."""
         # Converts the time again, we dont need the read_time string though.
         seconds, _ = convert_time(mute_time)
+
+        if not seconds:
+            raise commands.CommandInvokeError("Invalid time format!")
+
+        if seconds <= 0:
+            await ctx.send("The end of the timeout cannot be in the past.")
+            return
+
         if seconds > 2419199:
             await ctx.send(
                 "The maximum allowed time for a timeout is just under 28 days."

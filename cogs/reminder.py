@@ -63,15 +63,18 @@ class Reminder(commands.Cog):
 
         seconds, reminder_time = convert_time(time)
 
-        if seconds < 30:
+        if not seconds:
+            raise commands.CommandInvokeError("Invalid time format!")
+
+        if seconds <= 0:
             await ctx.send(
-                "Duration is too short! I'm sure you can remember that yourself."
+                "Please provide a time in the future! I can't remind you of the past."
             )
             return
-        # 2 years or 730 days.
-        if seconds > 63072000:
+        # 5 years in seconds (+ 2 days in case of leap years).
+        if seconds > 157852800:
             await ctx.send(
-                "Duration is too long! Maximum duration is 2 years from now."
+                "Duration is too long! Maximum duration is 5 years from now."
             )
             return
 

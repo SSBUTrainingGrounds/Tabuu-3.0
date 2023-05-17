@@ -70,7 +70,8 @@ class TournamentReminders:
 
     # Change this to False to disable pings.
     PING_ENABLED = True
-    # The timezone the other times are based on.
+    # The timezone the other times are based on. Also used as a default for %reminder.
+    # The list of available timezones can be found here: https://en.wikipedia.org/wiki/List_of_tz_database_time_zones.
     TIMEZONE = "US/Eastern"
     # The weekday as an int, keep in mind weeks start at 0 = Monday. Which means that 5 = Saturday.
     SMASH_OVERSEAS_DAY = 5

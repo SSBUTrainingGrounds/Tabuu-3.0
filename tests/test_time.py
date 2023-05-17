@@ -8,31 +8,24 @@ from utils.time import convert_time, convert_to_utc
 
 def test_convert_time() -> None:
     # Common use
-    assert convert_time("3h") == (10800, "3 hours")
+    assert convert_time("3h") == (10800, "3:00:00")
     # Bit more special
-    assert convert_time("0d20h5m1s") == (72301, "20 hours, 5 minutes, 1 second")
+    assert convert_time("0d20h5m1s") == (72301, "20:05:01")
 
     # With regex
-    assert convert_time("3days0hrs30sec") == (259230, "3 days, 30 seconds")
+    assert convert_time("3days0hrs30sec") == (259230, "3 days, 0:00:30")
     # With the ignored spaces and commas
-    assert convert_time("3days 0 hrs, 30sec"), (259230, "3 days, 30 seconds")  # type: ignore
+    assert convert_time("3days 0 hrs, 30sec"), (259230, "3 days, 0:00:30")  # type: ignore
     assert convert_time(" 30 d , 20 hr 1 minutes, 20secs") == (
         2664080,
-        "30 days, 20 hours, 1 minute, 20 seconds",
+        "30 days, 20:01:20",
     )
     assert convert_time("30 days and 20 hrs and 1 m and 20 second") == (
         2664080,
-        "30 days, 20 hours, 1 minute, 20 seconds",
+        "30 days, 20:01:20",
     )
 
-    assert convert_time("00001m") == (60, "1 minute")
-
-    # Some error checking
-    with pytest.raises(ValueError):
-        convert_time("-1d")
-
-    with pytest.raises(ValueError):
-        convert_time("whatever invalid string here")
+    assert convert_time("00001m") == (60, "0:01:00")
 
 
 def test_convert_to_utc() -> None:
