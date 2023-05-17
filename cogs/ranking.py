@@ -810,7 +810,7 @@ class Ranking(commands.Cog):
             old_sigma = recent_matches[-1][7]
 
         if not best_win:
-            highest_win = "N/A"
+            highest_win = "*N/A*"
         else:
             user = self.bot.get_user(best_win[0][2])
             if not user:
@@ -819,19 +819,21 @@ class Ranking(commands.Cog):
                 except discord.NotFound:
                     user = "Unknown User"
             highest_win = (
-                f"vs. **{str(user)}** "
-                f"({self.get_display_rank(trueskill.Rating(best_win[0][6], best_win[0][7]))}, "
-                f"<t:{best_win[0][3]}:d>)"
+                f"vs. **{str(user)}**\n"
+                f"***({self.get_display_rank(trueskill.Rating(best_win[0][6], best_win[0][7]))}**, "
+                f"<t:{best_win[0][3]}:d>)*"
             )
 
         if not average_opponents:
-            average_opponent = "N/A"
+            average_opponent = "*N/A*"
         else:
             average_ratings = [
                 self.get_display_rank(trueskill.Rating(opponent[0], opponent[1]))
                 for opponent in average_opponents
             ]
-            average_opponent = f"{sum(average_ratings) / len(average_ratings):.2f}"
+            average_opponent = (
+                f"**≈{round(sum(average_ratings) / len(average_ratings))}**"
+            )
 
         recent_rating = self.get_display_rank(rating) - self.get_display_rank(
             trueskill.Rating(old_mu, old_sigma)
@@ -857,16 +859,21 @@ class Ranking(commands.Cog):
             else self.get_display_rank(rating)
         )
 
-        # Getting the longest and current winstreak.
+        # Getting the longest and current win and lose streaks.
         longest_winstreak = 0
         current_winstreak = 0
+        longest_losestreak = 0
+        current_losestreak = 0
         for m in matches:
             if m == "W":
                 current_winstreak += 1
-                longest_winstreak = max(longest_winstreak, current_winstreak)
+                current_losestreak = 0
             else:
-                longest_winstreak = max(longest_winstreak, current_winstreak)
+                current_losestreak += 1
                 current_winstreak = 0
+
+            longest_winstreak = max(longest_winstreak, current_winstreak)
+            longest_losestreak = max(longest_losestreak, current_losestreak)
 
         # We basically check double here, because we want the current time stamp
         # if the player still has the highest rating that they ever achieved.
@@ -882,16 +889,23 @@ class Ranking(commands.Cog):
             name="TabuuSkill", value=f"**{self.get_display_rank(rating)}**", inline=True
         )
         embed.add_field(
-            name="Deviation", value=f"**±{round(rating.sigma * 100, 2)}**", inline=True
+            name="Deviation", value=f"**{round(rating.sigma * 100, 2)}?**", inline=True
         )
         embed.add_field(
-            name="Max Potential", value=f"**{self.get_potential(rating)}**", inline=True
+            name="All-Time High",
+            value=f"**{all_time_win}** *(<t:{timestamp_win}:d>)*",
+            inline=True,
         )
 
         if wins + losses >= 5:
-            embed.add_field(name="Rank", value=ranked_role.name, inline=True)
+            if ctx.guild and ranked_role.guild.id == ctx.guild.id:
+                embed.add_field(name="Rank", value=ranked_role.mention, inline=True)
+            else:
+                embed.add_field(
+                    name="Rank", value=f"**{ranked_role.name}**", inline=True
+                )
         else:
-            embed.add_field(name="Rank", value="Unranked", inline=True)
+            embed.add_field(name="Rank", value="*Unranked*", inline=True)
 
         # This will only yield the top half of the leaderboard.
         leaderboard_top = complete_leaderboard[: len(complete_leaderboard) // 2]
@@ -916,33 +930,34 @@ class Ranking(commands.Cog):
 
             embed.add_field(
                 name="Leaderboard",
-                value=f"{Emojis.LEADERBOARD_EMOJIS[index]} **#{pos}** (Top {percent}%)",  # noqa: F821
+                value=f"{Emojis.LEADERBOARD_EMOJIS[index]} **#{pos}** *(Top {percent}%)*",  # noqa: F821
                 inline=True,
             )
         else:
-            embed.add_field(name="Leaderboard", value="N/A", inline=True)
+            embed.add_field(name="Leaderboard", value="*N/A*", inline=True)
 
+        embed.add_field(name="Matches Played", value=f"**{wins + losses}**")
+        embed.add_field(name="Wins", value=f"**{wins}**", inline=True)
+        embed.add_field(name="Losses", value=f"**{losses}**", inline=True)
+        embed.add_field(
+            name="Win Percentage", value=f"**{round(wins/(wins+losses) * 100)}%**"
+        )
+        embed.add_field(name="Last Matches", value=f"**{gamelist}**", inline=True)
+        embed.add_field(
+            name="Longest Winning Streak",
+            value=f"**{longest_winstreak}** *(Current: {current_winstreak})*",
+            inline=True,
+        )
+        embed.add_field(
+            name="Longest Losing Streak",
+            value=f"**{longest_losestreak}** *(Current: {current_losestreak})*",
+            inline=True,
+        )
+        embed.add_field(
+            name="Recent Performance", value=f"**{recent_rating}**", inline=True
+        )
         embed.add_field(name="Average Opponent", value=average_opponent, inline=True)
-
-        embed.add_field(name="Matches Played", value=f"{wins + losses}")
-        embed.add_field(name="Wins", value=wins, inline=True)
-        embed.add_field(name="Losses", value=losses, inline=True)
-        embed.add_field(
-            name="Win Percentage", value=f"{round(wins/(wins+losses) * 100)}%"
-        )
-        embed.add_field(name="Last Matches", value=gamelist, inline=True)
-        embed.add_field(
-            name="Longest Winstreak",
-            value=f"{longest_winstreak} (Current: {current_winstreak})",
-            inline=True,
-        )
-        embed.add_field(name="Recent Performance", value=recent_rating, inline=True)
         embed.add_field(name="Highest Win", value=highest_win, inline=True)
-        embed.add_field(
-            name="All-Time High",
-            value=f"{all_time_win} (<t:{timestamp_win}:d>)",
-            inline=True,
-        )
 
         await ctx.send(embed=embed)
 
