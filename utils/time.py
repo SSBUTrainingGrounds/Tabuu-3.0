@@ -28,6 +28,15 @@ def convert_time(input_time: str) -> tuple[int, str]:
             "PREFER_DATES_FROM": "future",
             "TIMEZONE": TournamentReminders.TIMEZONE,
             "RETURN_AS_TIMEZONE_AWARE": True,
+            # We want the relative time to be parsed first, since it's the most common one.
+            # Also there would be false positives with "1h" being parsed as 1:00am for example.
+            "PARSERS": [
+                "relative-time",
+                "timestamp",
+                "custom-formats",
+                "absolute-time",
+                "no-spaces-time",
+            ],
         },
     )
 
