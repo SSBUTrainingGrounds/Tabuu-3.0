@@ -1,4 +1,5 @@
 import datetime
+import re
 from math import ceil
 from zoneinfo import ZoneInfo
 
@@ -20,6 +21,9 @@ def convert_to_utc(dtime: datetime.time, tz: str) -> datetime.time:
 
 def convert_time(input_time: str) -> tuple[int, str]:
     """Converts the given input into raw seconds, plus a readable string."""
+
+    # 1d1h1m1s -> 1d 1h 1m 1s, also done for preventing false positives with absolute times.
+    input_time = re.sub(r"([dhms])(\d)", r"\1 \2", input_time)
 
     dt = parse(
         input_time,
