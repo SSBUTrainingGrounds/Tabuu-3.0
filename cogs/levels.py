@@ -1,5 +1,6 @@
 import asyncio
 import random
+from math import floor
 from typing import Optional
 
 import aiosqlite
@@ -173,20 +174,20 @@ class Levels(commands.Cog):
         if current_level >= 75:
             return (
                 100 - current_level,
-                self.get_xp_for_level(100) - current_xp,
+                self.get_xp_for_level(100),
                 level100,
             )
 
         if current_level >= 50:
-            return (75 - current_level, self.get_xp_for_level(75) - current_xp, level75)
+            return (75 - current_level, self.get_xp_for_level(75), level75)
 
         if current_level >= 25:
-            return (50 - current_level, self.get_xp_for_level(50) - current_xp, level50)
+            return (50 - current_level, self.get_xp_for_level(50), level50)
 
         if current_level >= 10:
-            return (25 - current_level, self.get_xp_for_level(25) - current_xp, level25)
+            return (25 - current_level, self.get_xp_for_level(25), level25)
 
-        return (10 - current_level, self.get_xp_for_level(10) - current_xp, level10)
+        return (10 - current_level, self.get_xp_for_level(10), level10)
 
     @commands.Cog.listener()
     async def on_message(self, message: discord.Message) -> None:
@@ -367,30 +368,38 @@ class Levels(commands.Cog):
             xp, level, ctx.guild
         )
 
-        embed.add_field(name="Level", value=level, inline=False)
-        embed.add_field(name="XP", value=f"{xp:,}", inline=False)
+        percent_next = round((xp_progress / xp_needed) * 100, 2)
+        # I wanted to do this with 20 characters, but it cuts off on mobile at 17.
+        progress_bar_next = ("█" * floor(percent_next / 6.25)).ljust(16, "░")
+
+        percent_level = round((xp / next_role_xp) * 100, 2)
+        progress_bar_level = ("█" * floor(percent_level / 6.25)).ljust(16, "░")
+
+        embed.add_field(name="Level", value=f"**{level}**", inline=True)
+        embed.add_field(
+            name="Rank",
+            value=f"**#{rank}**",
+            inline=True,
+        )
+        embed.add_field(name="XP", value=f"**{xp:,}**", inline=True)
         embed.add_field(
             name="Progress to next level",
-            value=f"{xp_progress:,}/{xp_needed:,} ({round((xp_progress / xp_needed) * 100, 2)}%)",
+            value=f"{xp_progress:,}XP/{xp_needed:,}XP *({percent_next}%)*\n{progress_bar_next}",
             inline=False,
         )
         if next_role:
             embed.add_field(
-                name="Next role",
-                value=f"{next_role.mention}\nLevels needed: {next_role_level}\nXP needed: {next_role_xp:,}",
+                name="Progress to next role",
+                value=f"{next_role.mention} *({next_role_level} Level needed)*\n"
+                f"{xp:,}XP/{next_role_xp:,}XP *({percent_level}%)*\n{progress_bar_level}",
                 inline=False,
             )
         else:
             embed.add_field(
-                name="Next role",
+                name="Progress to next role",
                 value="No more roles to unlock!",
                 inline=False,
             )
-        embed.add_field(
-            name="Rank",
-            value=f"#{rank}",
-            inline=False,
-        )
 
         if prev_user is not None:
             prev_member = self.bot.get_user(prev_user[1])
@@ -402,7 +411,7 @@ class Levels(commands.Cog):
 
             embed.add_field(
                 name="User above",
-                value=f"{str(prev_member)} - Level {prev_user[2]} ({prev_user[3]:,}XP)\n{(prev_user[3] - xp):,}XP behind",
+                value=f"**{str(prev_member)}** - Level {prev_user[2]} *({prev_user[3]:,}XP)*\n{(prev_user[3] - xp):,}XP behind",
                 inline=False,
             )
 
@@ -416,7 +425,7 @@ class Levels(commands.Cog):
 
             embed.add_field(
                 name="User below",
-                value=f"{str(next_member)} - Level {next_user[2]} ({next_user[3]:,}XP)\n{(xp - next_user[3]):,}XP ahead",
+                value=f"**{str(next_member)}** - Level {next_user[2]} *({next_user[3]:,}XP)*\n{(xp - next_user[3]):,}XP ahead",
                 inline=False,
             )
 
