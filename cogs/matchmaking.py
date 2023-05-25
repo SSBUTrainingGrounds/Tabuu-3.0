@@ -1,5 +1,4 @@
 import asyncio
-import json
 from typing import Optional
 
 import discord
