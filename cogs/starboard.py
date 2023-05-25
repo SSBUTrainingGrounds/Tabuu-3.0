@@ -82,12 +82,12 @@ class Starboard(commands.Cog):
             await ctx.send("Please enter a valid emoji.")
             return
 
-        with open(r"./json/starboard.json", "r", encoding="utf-8") as f:
+        with open(r"./files/starboard.json", "r", encoding="utf-8") as f:
             data = json.load(f)
 
         data["emoji"] = emoji
 
-        with open(r"./json/starboard.json", "w", encoding="utf-8") as f:
+        with open(r"./files/starboard.json", "w", encoding="utf-8") as f:
             json.dump(data, f, indent=4)
 
         await ctx.send(f"Changed the emoji to: `{emoji}`")
@@ -105,12 +105,12 @@ class Starboard(commands.Cog):
             await ctx.send("Please input a valid integer.")
             return
 
-        with open(r"./json/starboard.json", "r", encoding="utf-8") as f:
+        with open(r"./files/starboard.json", "r", encoding="utf-8") as f:
             data = json.load(f)
 
         data["threshold"] = threshold
 
-        with open(r"./json/starboard.json", "w", encoding="utf-8") as f:
+        with open(r"./files/starboard.json", "w", encoding="utf-8") as f:
             json.dump(data, f, indent=4)
 
         await ctx.send(f"Changed the threshold to: `{threshold}`")
@@ -124,7 +124,7 @@ class Starboard(commands.Cog):
         if payload.channel_id not in self.listening_channels:
             return
 
-        with open(r"./json/starboard.json", "r", encoding="utf-8") as f:
+        with open(r"./files/starboard.json", "r", encoding="utf-8") as f:
             data = json.load(f)
 
         # These prevent error messages in my console if the setup wasnt done yet.
@@ -210,7 +210,7 @@ class Starboard(commands.Cog):
         if payload.channel_id not in self.listening_channels:
             return
 
-        with open(r"./json/starboard.json", "r", encoding="utf-8") as f:
+        with open(r"./files/starboard.json", "r", encoding="utf-8") as f:
             data = json.load(f)
 
         # These prevent error messages in my console if the setup wasnt done yet.

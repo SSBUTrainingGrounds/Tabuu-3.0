@@ -123,8 +123,7 @@ class Matchmaking(commands.Cog):
     def get_recent_pings(self, mm_type: str, timestamp: float) -> str:
         """Gets a list with every Ping saved, as long it is not older than the cutoff time."""
 
-        with open(rf"./json/{mm_type}.json", "r", encoding="utf-8") as f:
-            user_pings = json.load(f)
+        user_pings = self.bot.matchmaking_pings[mm_type]
 
         list_of_searches = []
 
@@ -143,48 +142,34 @@ class Matchmaking(commands.Cog):
         return "".join(list_of_searches) or "Looks like no one has pinged recently :("
 
     def store_ping(self, ctx: commands.Context, mm_type: str, timestamp: float) -> None:
-        """Saves a Matchmaking Ping of any type in the according file."""
+        """Saves a Matchmaking Ping of any type in the according dict."""
 
-        with open(rf"./json/{mm_type}.json", "r", encoding="utf-8") as f:
-            user_pings = json.load(f)
-
-        user_pings[f"{ctx.author.id}"] = {}
-        user_pings[f"{ctx.author.id}"] = {"channel": ctx.channel.id, "time": timestamp}
-
-        with open(rf"./json/{mm_type}.json", "w", encoding="utf-8") as f:
-            json.dump(user_pings, f, indent=4)
+        self.bot.matchmaking_pings[mm_type][str(ctx.author.id)] = {
+            "time": timestamp,
+            "channel": ctx.channel.id,
+        }
 
     def delete_ping(self, ctx: commands.Context, mm_type: str) -> None:
-        """Deletes a specific Matchmaking Ping of any type from the according file."""
-
-        with open(rf"./json/{mm_type}.json", "r", encoding="utf-8") as f:
-            user_pings = json.load(f)
+        """Deletes a specific Matchmaking Ping of any type from the according dict."""
 
         try:
-            del user_pings[f"{ctx.author.id}"]
+            del self.bot.matchmaking_pings[mm_type][str(ctx.author.id)]
         except KeyError:
             logger = self.bot.get_logger("bot.mm")
             logger.warning(
                 f"Tried to delete a {mm_type} ping by {str(ctx.author)} but the ping was already deleted."
             )
 
-        with open(rf"./json/{mm_type}.json", "w", encoding="utf-8") as f:
-            json.dump(user_pings, f, indent=4)
-
     def clear_mmrequests(self) -> None:
-        """Clears every Matchmaking Ping in the Singles, Doubles, Funnies and Ranked Files."""
+        """Clears every Matchmaking Ping in the Singles, Doubles, Funnies and Ranked dicts."""
         logger = self.bot.get_logger("bot.mm")
-        logger.info("Starting to delete pings in the matchmaking files...")
 
-        for file in ["singles", "doubles", "funnies", "ranked"]:
-            with open(f"./json/{file}.json", "r", encoding="utf-8") as f:
-                data = json.load(f)
-
-            for user in list(data):
-                del data[user]
-
-            with open(f"./json/{file}.json", "w", encoding="utf-8") as f:
-                json.dump(data, f, indent=4)
+        self.bot.matchmaking_pings = {
+            "singles": {},
+            "doubles": {},
+            "funnies": {},
+            "ranked": {},
+        }
 
         logger.info("Successfully deleted all matchmaking pings!")
 
