@@ -2,7 +2,7 @@
 
 This here contains every command with a detailed explanation on how to use them. They are ordered alphabetically, search them with Ctrl+F.
 
-Last updated: 26 April 2023
+Last updated: 26 May 2023
 
 ## Things to know before diving in
 
@@ -36,9 +36,7 @@ Last updated: 26 April 2023
     -   Example: `%avatar @ExampleUser`
     -   Aliases: icon
 -   **%badge**
-
     -   Info: **Slash version unavailable. Moderator only.** Group command that lists the subcommands and their usage. The available properties to edit are: add, remove, clear, setinfo. No slash version because this only lists the other commands.
-
 -   **%badge add** `<@user> <emojis>`
     -   Info: **Moderator only.** Adds one or multiple Badges to a User. Mention the User or use User ID, for the badges they all need to be valid emojis that the bot can use.
     -   Example: `%badge add @ExampleUser :Example1: :Example2:`
@@ -64,8 +62,6 @@ Last updated: 26 April 2023
     -   Info: Starts a game of Blackjack with the mentioned Member.
     -   Example: `%blackjack @ExampleUser`
     -   Aliases: 21, vingtetun, vigntun
--   **%boo**
-    -   Info: Comes up with some scary stuff.
 -   **%clear**
     -   Info: **Slash version unavailable. Moderator only.** Group command that lists the subcommands and their usage. The available properties to edit are: amount, after, from. No slash version because this only lists the other commands.
 -   **%clear amount** `<amount: Optional>`
@@ -221,8 +217,6 @@ Last updated: 26 April 2023
     -   Info: Sets your note on your profile, up to 150 characters long. Leave it blank to delete the note.
     -   Example: `%note test note`
     -   Aliases: setnote, spnote
--   **%pickmeup**
-    -   Info: Gives you an inspiring quote.
 -   **%ping**
     -   Info: Gets the response time of the Bot, _not yourself_. Usually around 100-150ms in optimal conditions.
 -   **%players** `<character>`
@@ -238,8 +232,6 @@ Last updated: 26 April 2023
     -   Info: Gets you the profile of the mentioned User, if you dont specify a User, this will get your own.
     -   Example: `%profile @ExampleUser`
     -   Aliases: smashprofile, profileinfo
--   **%randomquote**
-    -   Info: Gets you a random quote from someone.
 -   **%rank** `<@user: Optional>`
     -   Info: Gets you the level rank of the mentioned User, if you dont specify a User, this will get your own.
     -   Example: `%rank @ExampleUser`
@@ -401,8 +393,6 @@ Last updated: 26 April 2023
 -   **%who** `<question>`
     -   Info: Ask a question and you get a random Member that is currently online as a response. Does not work in DMs.
     -   Example: `%who is the most beautiful user?`
--   **%wisdom**
-    -   Info: Gets you a random piece of wisdom.
 -   **%xp**
     - Info: **Slash version unavailable. Moderator only.** Group command that lists the subcommands and their usage. The available properties to edit are: add, remove. No slash version because this only lists the other commands.
 -   **%xp add** `<@member> <amount>`

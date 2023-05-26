@@ -252,10 +252,6 @@ class Responses(discord.ui.Select):
                 color=0x841E8B,
                 description=f"""
 - ```{self.prefix}joke```\n - Jokes.
-- ```{self.prefix}randomquote```\n - Quotes.
-- ```{self.prefix}pickmeup```\n - Nice words.
-- ```{self.prefix}wisdom```\n - It's wisdom.
-- ```{self.prefix}boo```\n - Looking for a scare, huh?
 - ```{self.prefix}tabuwu```\n - For the silly people.
 - ```{self.prefix}john```\n - If you need a john.
 - ```{self.prefix}hypemeup```\n - Hypes you up before that next game of smash.
