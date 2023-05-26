@@ -36,23 +36,6 @@ class Logging(commands.Cog):
                 ):
                     await logs.send(embed=embed)
 
-        # Discriminator change.
-        if before.discriminator != after.discriminator:
-            embed = discord.Embed(
-                title="**✏️ Discriminator changed ✏️**",
-                description=f"Before: {before.discriminator}\nAfter: {after.discriminator}",
-                colour=discord.Colour.orange(),
-            )
-            embed.set_author(
-                name=f"{str(after)} ({after.id})", icon_url=after.display_avatar.url
-            )
-            embed.timestamp = discord.utils.utcnow()
-            for server in after.mutual_guilds:
-                if logs := self.bot.get_channel(
-                    GetIDFunctions.get_logchannel(server.id)
-                ):
-                    await logs.send(embed=embed)
-
         # Avatar change.
         if before.display_avatar.url != after.display_avatar.url:
             embed = discord.Embed(

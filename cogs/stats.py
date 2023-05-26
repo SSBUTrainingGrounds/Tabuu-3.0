@@ -55,7 +55,7 @@ class Stats(commands.Cog):
         badges = "None" if len(badges) == 0 or badges[0][0] == "" else badges[0][0]
 
         embed = discord.Embed(
-            title=f"Userinfo of {member.name}#{member.discriminator} ({member.id})",
+            title=f"Userinfo of {str(member)} ({member.id})",
             colour=member.colour,
         )
         embed.add_field(name="Name:", value=member.mention, inline=True)
