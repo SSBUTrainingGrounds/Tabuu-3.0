@@ -980,6 +980,8 @@ class Ranking(commands.Cog):
             colour=0x3498DB,
         )
 
+        guild = self.bot.get_guild(GuildIDs.TRAINING_GROUNDS)
+
         async with aiosqlite.connect("./db/database.db") as db:
             for r, u in enumerate(top_10, start=1):
                 user_id, rating, deviation, wins, losses, _ = u
@@ -999,9 +1001,7 @@ class Ranking(commands.Cog):
 
                 player = trueskill.Rating(rating, deviation)
 
-                rank = await self.get_ranked_role(
-                    player, self.bot.get_guild(GuildIDs.TRAINING_GROUNDS)
-                )
+                rank = await self.get_ranked_role(player, guild)
 
                 embed.add_field(
                     name=f"#{r} - {str(user)} {display_mains}",
@@ -1010,7 +1010,7 @@ class Ranking(commands.Cog):
                     inline=False,
                 )
 
-        embed.set_thumbnail(url=ctx.guild.icon.url)
+        embed.set_thumbnail(url=guild.icon.url)
         embed.timestamp = discord.utils.utcnow()
         await ctx.send(embed=embed)
 
@@ -1028,6 +1028,8 @@ class Ranking(commands.Cog):
         So you might end up seeing a different leaderboard than the one in the leaderboard command.
         """
         await ctx.typing()
+
+        guild = self.bot.get_guild(GuildIDs.TRAINING_GROUNDS)
 
         async with aiosqlite.connect("./db/database.db") as db:
             season_matches = await db.execute_fetchall(
@@ -1113,7 +1115,7 @@ class Ranking(commands.Cog):
                     user = await self.bot.fetch_user(user_id)
 
                 rank = await self.get_ranked_role(
-                    player, self.bot.get_guild(GuildIDs.TRAINING_GROUNDS)
+                    player, guild
                 )
 
                 embed.add_field(
@@ -1123,7 +1125,7 @@ class Ranking(commands.Cog):
                     inline=False,
                 )
 
-        embed.set_thumbnail(url=ctx.guild.icon.url)
+        embed.set_thumbnail(url=guild.icon.url)
         embed.timestamp = discord.utils.utcnow()
         await ctx.send(embed=embed)
 
