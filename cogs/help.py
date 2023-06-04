@@ -173,7 +173,7 @@ class Responses(discord.ui.Select):
 - ```{self.prefix}ranked```\n - Used for 1v1 ranked matchmaking in our ranked channels.
 - ```{self.prefix}startmatch <@user>```\n - Starts a ranked match with a user.
 - ```{self.prefix}reportmatch <@user>```\n - Winner of the ranked match can use this as a shortcut for reporting matches.
-- ```{self.prefix}rankedstats```\n - Your ranked stats.
+- ```{self.prefix}rankedstats <@user>```\n - The ranked stats of a user.
 - ```{self.prefix}leaderboard```\n - Leaderboards of ranked matchmaking.
 - ```{self.prefix}seasonleaderbaord <start> <end>```\n - Leaderboards of ranked matchmaking between two timestamps.
     """,
