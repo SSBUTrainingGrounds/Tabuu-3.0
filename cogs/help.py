@@ -116,8 +116,6 @@ class Responses(discord.ui.Select):
 - ```{self.prefix}clearmmpings```\n - Clears all matchmaking pings.
 - ```{self.prefix}records```\n - Shows ban records.
 - ```{self.prefix}forcereportmatch <@winner> <@loser>```\n - If someone abandons a ranked match.
-- ```{self.prefix}leaderboard```\n - Leaderboards of ranked matchmaking.
-- ```{self.prefix}seasonleaderbaord <start> <end>```\n - Leaderboards of ranked matchmaking between two timestamps.
 - ```{self.prefix}recentmatches```\n - Shows the 20 most recent matches of ranked matchmaking.
 - ```{self.prefix}matchhistory <@user>```\n - Shows the 10 most recent matches of a user.
 - ```{self.prefix}deletematch <match_id>```\n - Deletes a match from the database and restores ratings.
@@ -168,6 +166,7 @@ class Responses(discord.ui.Select):
                 title="⚔️Matchmaking Commands⚔️",
                 color=0x420202,
                 description=f"""
+- ```{self.prefix}recentpings```\n - Gets you the recent pings of any matchmaking type.
 - ```{self.prefix}singles```\n - Used for 1v1 matchmaking in our arena channels.
 - ```{self.prefix}doubles```\n - Used for 2v2 matchmaking in our arena channels.
 - ```{self.prefix}funnies <message>```\n - Used for non-competitive matchmaking in our arena channels.
@@ -175,7 +174,8 @@ class Responses(discord.ui.Select):
 - ```{self.prefix}startmatch <@user>```\n - Starts a ranked match with a user.
 - ```{self.prefix}reportmatch <@user>```\n - Winner of the ranked match can use this as a shortcut for reporting matches.
 - ```{self.prefix}rankedstats```\n - Your ranked stats.
-- ```{self.prefix}recentpings```\n - Gets you the recent pings of any matchmaking type.
+- ```{self.prefix}leaderboard```\n - Leaderboards of ranked matchmaking.
+- ```{self.prefix}seasonleaderbaord <start> <end>```\n - Leaderboards of ranked matchmaking between two timestamps.
     """,
             )
 
