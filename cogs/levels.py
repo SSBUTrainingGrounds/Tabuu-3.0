@@ -319,6 +319,10 @@ class Levels(commands.Cog):
     async def rank(self, ctx: commands.Context, user: discord.User = None) -> None:
         """Shows your level and xp, or the level and xp of another user."""
 
+        if user.bot:
+            await ctx.send("This command cannot be used on bots.")
+            return
+
         if not ctx.guild:
             await ctx.send(
                 f"This command can only be used in the {GuildNames.TRAINING_GROUNDS}"
