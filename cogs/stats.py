@@ -14,6 +14,7 @@ from stringmatch import Match
 import utils.check
 import utils.search
 from utils.ids import GuildIDs, TGRoleIDs
+from utils.image import get_dominant_colour
 
 
 class Stats(commands.Cog):
@@ -54,9 +55,11 @@ class Stats(commands.Cog):
 
         badges = "None" if len(badges) == 0 or badges[0][0] == "" else badges[0][0]
 
+        colour = await get_dominant_colour(member.display_avatar)
+
         embed = discord.Embed(
             title=f"Userinfo of {str(member)} ({member.id})",
-            colour=member.colour,
+            colour=colour,
         )
         embed.add_field(name="Name:", value=member.mention, inline=True)
         embed.add_field(name="Top Role:", value=member.top_role.mention, inline=True)

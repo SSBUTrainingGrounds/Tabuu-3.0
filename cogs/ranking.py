@@ -18,6 +18,7 @@ from utils.ids import (
     TGArenaChannelIDs,
     TGMatchmakingRoleIDs,
 )
+from utils.image import get_dominant_colour
 from views.character_pick import CharacterView
 from views.ranked import ArenaButton, BestOfButtons, PlayerButtons
 from views.stageban import CounterpickStageButtons, StarterStageButtons
@@ -728,6 +729,8 @@ class Ranking(commands.Cog):
             rating, self.bot.get_guild(GuildIDs.TRAINING_GROUNDS)
         )
 
+        colour = await get_dominant_colour(member.display_avatar)
+
         # We also go through the players matches to get their recent performance swings.
         async with aiosqlite.connect("./db/database.db") as db:
             recent_matches = await db.execute_fetchall(
@@ -883,7 +886,7 @@ class Ranking(commands.Cog):
             else highest_rating[0][2]
         )
 
-        embed = discord.Embed(title=f"Ranked stats of {str(member)}", colour=0x3498DB)
+        embed = discord.Embed(title=f"Ranked stats of {str(member)}", colour=colour)
         embed.set_thumbnail(url=member.display_avatar.url)
         embed.add_field(
             name="TabuuSkill", value=f"**{self.get_display_rank(rating)}**", inline=True

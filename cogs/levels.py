@@ -10,6 +10,7 @@ from discord.ext import commands
 
 import utils
 from utils.ids import GuildIDs, GuildNames, TGChannelIDs, TGLevelRoleIDs
+from utils.image import get_dominant_colour
 
 
 class Levels(commands.Cog):
@@ -335,9 +336,11 @@ class Levels(commands.Cog):
         if user is None:
             user = ctx.author
 
+        colour = await get_dominant_colour(user.display_avatar)
+
         embed = discord.Embed(
             title=f"Level statistics for {str(user)}",
-            colour=self.bot.colour,
+            colour=colour,
         )
 
         await self.create_new_profile(user)
