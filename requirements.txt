@@ -1,4 +1,4 @@
-aiosqlite==0.17.0
+aiosqlite==0.19.0
 colorthief==0.2.1
 dateparser==1.1.8
 discord.py==2.1.1
