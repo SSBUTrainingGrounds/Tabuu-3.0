@@ -3,6 +3,6 @@ colorthief==0.2.1
 dateparser==1.1.8
 discord.py==2.1.1
 googletrans==4.0.0rc1
-psutil==5.9.2
+psutil==5.9.5
 stringmatch==0.14.1
 trueskill==0.4.5
