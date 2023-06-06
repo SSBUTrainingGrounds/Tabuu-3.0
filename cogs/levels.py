@@ -318,6 +318,8 @@ class Levels(commands.Cog):
     @app_commands.guilds(*GuildIDs.ALL_GUILDS)
     async def rank(self, ctx: commands.Context, user: discord.User = None) -> None:
         """Shows your level and xp, or the level and xp of another user."""
+        if user is None:
+            user = ctx.author
 
         if user.bot:
             await ctx.send("This command cannot be used on bots.")
@@ -336,9 +338,6 @@ class Levels(commands.Cog):
             return
 
         await ctx.typing()
-
-        if user is None:
-            user = ctx.author
 
         colour = await get_dominant_colour(user.display_avatar)
 
