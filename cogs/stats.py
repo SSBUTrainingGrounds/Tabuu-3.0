@@ -296,6 +296,8 @@ class Stats(commands.Cog):
         async with aiosqlite.connect("./db/database.db") as db:
             macro_list = await db.execute_fetchall("""SELECT name FROM macros""")
 
+            all_commands = await db.execute_fetchall("""SELECT uses FROM commands""")
+
         # This also walks through the subcommands of each group command .get_commands() would miss those.
         slash_commands = sum(
             len(
@@ -346,13 +348,7 @@ RAM Usage: {ram_used}GB/{ram_total}GB ({ram_percent}%)
 Number of Message Commands: {message_commands + len(macro_list)}
 Number of Application Commands: {slash_commands}
 Number of Events: {len(self.bot.extra_events)}
-```
-        """
-
-        interactions_description = f"""
-```yml
-Commands executed: {self.bot.commands_ran}
-Events parsed: {self.bot.events_listened_to}
+Commands executed: {sum([command[0] for command in all_commands])}
 ```
         """
 
@@ -362,16 +358,9 @@ Events parsed: {self.bot.events_listened_to}
             url="https://github.com/SSBUTrainingGrounds/Tabuu-3.0",
         )
         embed.add_field(name="Bot", value=bot_description, inline=False)
-        embed.add_field(
-            name="Software Versions", value=software_description, inline=False
-        )
+        embed.add_field(name="Software", value=software_description, inline=False)
         embed.add_field(name="Hardware", value=hardware_description, inline=False)
-        embed.add_field(name="Listeners", value=listeners_description, inline=False)
-        embed.add_field(
-            name="Interactions since last reboot",
-            value=interactions_description,
-            inline=False,
-        )
+        embed.add_field(name="Commands", value=listeners_description, inline=False)
 
         embed.set_footer(text="Creator: Phxenix#1104, hosted on: Raspberry Pi 4")
         embed.set_thumbnail(url=self.bot.user.display_avatar.url)

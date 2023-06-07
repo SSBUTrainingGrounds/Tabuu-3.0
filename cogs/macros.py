@@ -38,7 +38,6 @@ class Macros(commands.Cog):
                     payload = matching_macro[0][0]
                     await message.channel.send(payload)
 
-                    self.bot.commands_ran += 1
                     await db.execute(
                         """UPDATE macros SET uses = uses + 1 WHERE name = :name""",
                         {"name": name},

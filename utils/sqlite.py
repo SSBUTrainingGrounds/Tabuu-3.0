@@ -138,6 +138,13 @@ async def setup_db(filepath: str = "./db/database.db") -> None:
                 messages INTEGER)"""
         )
 
+        await db.execute(
+            """CREATE TABLE IF NOT EXISTS commands(
+                command TEXT,
+                uses INTEGER,
+                last_used INTEGER)"""
+        )
+
         await db.commit()
 
         logger = utils.logger.get_logger("bot.db")

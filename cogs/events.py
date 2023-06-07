@@ -246,19 +246,30 @@ class Events(commands.Cog):
 
     @commands.Cog.listener()
     async def on_command(self, ctx: commands.Context) -> None:
-        self.bot.commands_ran += 1
+        async with aiosqlite.connect("./db/database.db") as db:
+            # If the command is not in the db, add it.
+            matching_command = await db.execute_fetchall(
+                """SELECT * FROM commands WHERE command = :command""",
+                {"command": ctx.command.qualified_name},
+            )
 
-    @commands.Cog.listener()
-    async def on_interaction(self, interaction: discord.Interaction):
-        logger = self.bot.get_logger("bot.app_commands")
-        logger.info(
-            f"Application Command successfully ran: {interaction.id} (invoked by {str(interaction.user)})"
-        )
-        self.bot.commands_ran += 1
+            if len(matching_command) == 0:
+                await db.execute(
+                    """INSERT INTO commands VALUES (:command, 0, 0)""",
+                    {"command": ctx.command.qualified_name},
+                )
+                await db.commit()
 
-    @commands.Cog.listener()
-    async def on_socket_event_type(self, event_type: str) -> None:
-        self.bot.events_listened_to += 1
+            # Update the command usage.
+            await db.execute(
+                """UPDATE commands SET uses = uses + 1, last_used = :last_used WHERE command = :command""",
+                {
+                    "command": ctx.command.qualified_name,
+                    "last_used": int(discord.utils.utcnow().timestamp()),
+                },
+            )
+
+            await db.commit()
 
     # These just log when the bot loses/regains connection
     @commands.Cog.listener()

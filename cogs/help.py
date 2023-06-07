@@ -1,5 +1,6 @@
 from typing import Mapping, Optional, Union
 
+import aiosqlite
 import discord
 from discord import app_commands
 from discord.ext import commands
@@ -299,6 +300,13 @@ class CustomHelp(commands.HelpCommand):
             title=self.get_command_signature(command), color=self.context.bot.colour
         )
 
+        # Gets the usage stats from the database.
+        async with aiosqlite.connect("./db/database.db") as db:
+            matching_command = await db.execute_fetchall(
+                """SELECT uses, last_used FROM commands WHERE command = :command""",
+                {"command": command.qualified_name},
+            )
+
         # The command.help is just the docstring inside every command.
         embed.add_field(name="Help:", value=command.help, inline=False)
         embed.set_thumbnail(url=self.context.bot.user.display_avatar.url)
@@ -318,6 +326,24 @@ class CustomHelp(commands.HelpCommand):
             embed.add_field(name="Usable by you:", value="Yes", inline=False)
         except commands.CommandError as exc:
             embed.add_field(name="Usable by you:", value=f"No:\n{exc}", inline=False)
+
+        last_used = (
+            f"<t:{matching_command[0][1]}:R>"
+            if matching_command and matching_command[0][1]
+            else "N/A"
+        )
+
+        embed.add_field(
+            name="Uses:",
+            value=matching_command[0][0]
+            if matching_command and matching_command[0][0]
+            else 0,
+        )
+
+        embed.add_field(
+            name="Last Used:",
+            value=last_used,
+        )
 
         embed.add_field(
             name="\u200b",
@@ -430,6 +456,13 @@ class Help(commands.Cog):
 
         full_command = f"{ctx.prefix}{command_full_name} {cmd.signature}"
 
+        # Gets the usage stats from the database.
+        async with aiosqlite.connect("./db/database.db") as db:
+            matching_command = await db.execute_fetchall(
+                """SELECT uses, last_used FROM commands WHERE command = :command""",
+                {"command": cmd.qualified_name},
+            )
+
         # Unfortunately we need to construct our own embed,
         # since a lot of the stuff used is exclusive to the HelpCommand class
         embed = discord.Embed(title=full_command, color=self.bot.colour)
@@ -460,6 +493,24 @@ class Help(commands.Cog):
             embed.add_field(name="Usable by you:", value="Yes", inline=False)
         except commands.CommandError as exc:
             embed.add_field(name="Usable by you:", value=f"No:\n{exc}", inline=False)
+
+        last_used = (
+            f"<t:{matching_command[0][1]}:R>"
+            if matching_command and matching_command[0][1]
+            else "N/A"
+        )
+
+        embed.add_field(
+            name="Uses:",
+            value=matching_command[0][0]
+            if matching_command and matching_command[0][0]
+            else 0,
+        )
+
+        embed.add_field(
+            name="Last Used:",
+            value=last_used,
+        )
 
         embed.add_field(
             name="\u200b",
