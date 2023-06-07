@@ -473,6 +473,14 @@ class Levels(commands.Cog):
                 """SELECT row_number() OVER (ORDER BY xp DESC) AS rank, id, level, xp, messages FROM level""",
             )
 
+            total_messages = await db.execute_fetchall(
+                """SELECT SUM(messages) FROM level""",
+            )
+
+            total_xp = await db.execute_fetchall(
+                """SELECT SUM(xp) FROM level""",
+            )
+
             await db.commit()
 
         for rank, user_id, level, xp, messages in leaderboard[:25]:
@@ -485,6 +493,10 @@ class Levels(commands.Cog):
                 value=f"Level {level} - {xp:,}XP ({messages:,} messages)",
                 inline=False,
             )
+
+        embed.set_footer(
+            text=f"Total server stats: {total_xp[0][0]:,}XP - {total_messages[0][0]:,} messages",
+        )
 
         embed.set_thumbnail(url=ctx.guild.icon.url)
 

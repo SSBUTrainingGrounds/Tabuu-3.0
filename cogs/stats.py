@@ -296,7 +296,9 @@ class Stats(commands.Cog):
         async with aiosqlite.connect("./db/database.db") as db:
             macro_list = await db.execute_fetchall("""SELECT name FROM macros""")
 
-            all_commands = await db.execute_fetchall("""SELECT uses FROM commands""")
+            all_commands = await db.execute_fetchall(
+                """SELECT SUM(uses) FROM commands"""
+            )
 
         # This also walks through the subcommands of each group command .get_commands() would miss those.
         slash_commands = sum(
@@ -348,7 +350,7 @@ RAM Usage: {ram_used}GB/{ram_total}GB ({ram_percent}%)
 Number of Message Commands: {message_commands + len(macro_list)}
 Number of Application Commands: {slash_commands}
 Number of Events: {len(self.bot.extra_events)}
-Commands executed: {sum([command[0] for command in all_commands])}
+Commands executed: {all_commands[0][0]}
 ```
         """
 
