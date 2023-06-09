@@ -12,7 +12,7 @@ Generally speaking, the rules of our [discord server](https://discord.gg/ssbutg)
 
 ## Questions
 
-If you just need to ask a question, head over to the [GitHub Discussions Tab](https://github.com/SSBUTrainingGrounds/Tabuu-3.0/discussions), join our [discord server](https://discord.gg/ssbutg) or send a DM to Phxenix#1104.  
+If you just need to ask a question, head over to the [GitHub Discussions Tab](https://github.com/SSBUTrainingGrounds/Tabuu-3.0/discussions), join our [discord server](https://discord.gg/ssbutg) or send a DM to Phxenix.  
 
 ## Getting started with contributing
 

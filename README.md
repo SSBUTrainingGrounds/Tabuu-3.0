@@ -5,7 +5,7 @@
 [![Discord Server](https://discord.com/api/guilds/739299507795132486/embed.png)](https://discord.gg/ssbutg) [![Code style: black](https://img.shields.io/badge/code%20style-black-000000.svg)](https://github.com/psf/black)
 
 A discord bot specifically made for the SSBU Training Grounds discord server, join us at: [discord.gg/ssbutg](https://discord.gg/ssbutg).  
-Made by Phxenix#1104. If you have any questions feel free to contact me on Discord.
+Made by Phxenix. If you have any questions feel free to contact me on Discord.
 
 ## Features include
 

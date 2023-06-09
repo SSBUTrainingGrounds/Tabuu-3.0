@@ -364,7 +364,7 @@ Commands executed: {all_commands[0][0]}
         embed.add_field(name="Hardware", value=hardware_description, inline=False)
         embed.add_field(name="Commands", value=listeners_description, inline=False)
 
-        embed.set_footer(text="Creator: Phxenix#1104, hosted on: Raspberry Pi 4")
+        embed.set_footer(text="Creator: Phxenix, hosted on: Raspberry Pi 4")
         embed.set_thumbnail(url=self.bot.user.display_avatar.url)
         await ctx.send(embed=embed)
 

@@ -8,7 +8,7 @@ assignees: atomflunder
 ---
 
 <!-- Thanks for taking the time to fill out a bug report.   
-For real-time support, join our discord: https://discord.gg/ssbutg, or send a DM to Phxenix#1104.  -->
+For real-time support, join our discord: https://discord.gg/ssbutg, or send a DM to Phxenix.  -->
 
 **Summary**:  
 A clear and concise description of what the bug is.

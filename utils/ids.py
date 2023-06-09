@@ -57,8 +57,7 @@ class GuildIDs:
 class AdminVars:
     """Admin specific strings, like the Server Owner and Head Moderators."""
 
-    # Used in the warn/mute/kick messages, it says: "..contact {GROUNDS_GENERALS}", thats why its worded like that.
-    GROUNDS_GENERALS = "Parz#5811, Phxenix#1104 or Fahim#2800"
+    APPEAL_MESSAGE = "If you would like to discuss your punishment, please contact @parz, @phxenix or @fahimer on discord."
     # Google doc with ban records, leave an empty string if you dont have one.
     BAN_RECORDS = "https://docs.google.com/spreadsheets/d/1EZhyKa69LWerQl0KxeVJZuLFFjBIywMRTNOPUUKyVCc/"
     # Google form for ban appeals, this will get sent to users before they get banned so they know where to appeal.

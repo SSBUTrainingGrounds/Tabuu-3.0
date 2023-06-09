@@ -104,7 +104,7 @@ class MessageFilter(commands.Cog):
                     await message.author.send(
                         f"You have been automatically warned in the {message.guild.name} Server "
                         "for sending a message containing a blacklisted word.\n"
-                        f"If you would like to discuss your punishment, please contact {AdminVars.GROUNDS_GENERALS}."
+                        f"{AdminVars.APPEAL_MESSAGE}"
                     )
                 except discord.HTTPException as exc:
                     logger = self.bot.get_logger("bot.autowarn")

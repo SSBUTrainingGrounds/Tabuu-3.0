@@ -102,7 +102,7 @@ class Warn(commands.Cog):
             try:
                 await member.send(
                     f"You have been automatically muted in the {guild.name} Server for reaching warning #***{warns}***.\n"
-                    f"If you would like to discuss your punishment, please contact {AdminVars.GROUNDS_GENERALS}."
+                    f"{AdminVars.APPEAL_MESSAGE}"
                 )
             except discord.HTTPException as exc:
                 logger = self.bot.get_logger("bot.warn")
@@ -132,7 +132,7 @@ class Warn(commands.Cog):
             await member.send(
                 f"You have been warned in the {ctx.guild.name} Server for the following reason: \n"
                 f"```{reason}```\n"
-                f"If you would like to discuss your punishment, please contact {AdminVars.GROUNDS_GENERALS}."
+                f"{AdminVars.APPEAL_MESSAGE}"
             )
         except discord.HTTPException as exc:
             logger = self.bot.get_logger("bot.warn")
