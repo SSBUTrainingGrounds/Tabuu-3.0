@@ -393,12 +393,12 @@ class Usercommands(commands.Cog):
 
         embed = discord.Embed(title="Translation", colour=self.bot.colour)
         embed.add_field(
-            name=f"Original Text:",
+            name="Original Text:",
             value=message[:1000],
             inline=False,
         )
         embed.add_field(
-            name=f"Translated Text:",
+            name="Translated Text:",
             value=translation[:1000],
             inline=False,
         )
