@@ -2,9 +2,9 @@ import asyncio
 import random
 
 import discord
+from deep_translator import GoogleTranslator
 from discord import app_commands
 from discord.ext import commands
-from googletrans import Translator
 
 import utils.conversion
 from utils.ids import GuildIDs
@@ -383,16 +383,24 @@ class Usercommands(commands.Cog):
             await ctx.send("You need to specify a message to translate!")
             return
 
-        translation = Translator().translate(f"{message}", dest="en")
+        translator = GoogleTranslator(source="auto", target="en")
+
+        translation = translator.translate(message)
+
+        if not translation:
+            await ctx.send("I could not translate this message!")
+            return
 
         embed = discord.Embed(title="Translation", colour=self.bot.colour)
         embed.add_field(
-            name=f"Original Text ({translation.src}):",
-            value=translation.origin[:1000],
+            name=f"Original Text:",
+            value=message[:1000],
             inline=False,
         )
         embed.add_field(
-            name="Translated Text (en):", value=translation.text[:1000], inline=False
+            name=f"Translated Text:",
+            value=translation[:1000],
+            inline=False,
         )
 
         await ctx.send(embed=embed)
