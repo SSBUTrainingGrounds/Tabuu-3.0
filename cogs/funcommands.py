@@ -109,6 +109,7 @@ class Funcommands(commands.Cog):
             "Why are basketball  players afraid of summer vacation?\nThey don't want to get called for travelling!",
             "What did the bees say during the heatwave?\nBoy it's swarm!",
             "What do you do if you get rejected when trying to get a job at the sunscreen company?\nReapply!",
+            "What do you call a funny mountain?\nHill-arious!",
         ]
         await ctx.send(random.choice(messages))
 
