@@ -264,6 +264,38 @@ class Logging(commands.Cog):
                 await logs.send(embed=embed)
 
     @commands.Cog.listener()
+    async def on_reaction_remove(
+        self, reaction: discord.Reaction, user: discord.User
+    ) -> None:
+        if not reaction.message.guild:
+            return
+
+        if user.bot:
+            return
+
+        # TODO: Add support for super reactions when discord.py supports it.
+
+        emoji_id = "Default" if isinstance(reaction.emoji, str) else reaction.emoji.id
+
+        embed = discord.Embed(
+            title="**👎 Reaction removed! 👎**",
+            description=f"Emoji: {reaction.emoji} ({emoji_id})\n"
+            f"Reaction Count: {reaction.count + 1} -> {reaction.count}\nMessage: {reaction.message.jump_url}",
+            colour=discord.Colour.dark_orange(),
+        )
+        embed.set_author(
+            name=f"{str(user)} ({user.id})", icon_url=user.display_avatar.url
+        )
+        embed.set_thumbnail(
+            url=None if isinstance(reaction.emoji, str) else reaction.emoji.url
+        )
+        embed.timestamp = discord.utils.utcnow()
+        if logs := self.bot.get_channel(
+            GetIDFunctions.get_logchannel(reaction.message.guild.id)
+        ):
+            await logs.send(embed=embed)
+
+    @commands.Cog.listener()
     async def on_member_ban(self, guild: discord.Guild, user: discord.User) -> None:
         embed = discord.Embed(
             title="**🚫 New ban! 🚫**",
