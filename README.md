@@ -1,6 +1,6 @@
 # Tabuu 3.0
 
-<img align="right" width="150" height="150" src="https://i.imgur.com/MMNdLom.png">
+<img align="right" width="150" height="150" src="./assets/avatar.png">
 
 [![Discord Server](https://discord.com/api/guilds/739299507795132486/embed.png)](https://discord.gg/ssbutg) [![Code style: black](https://img.shields.io/badge/code%20style-black-000000.svg)](https://github.com/psf/black)
 
