@@ -110,6 +110,12 @@ class Funcommands(commands.Cog):
             "What did the bees say during the heatwave?\nBoy it's swarm!",
             "What do you do if you get rejected when trying to get a job at the sunscreen company?\nReapply!",
             "What do you call a funny mountain?\nHill-arious!",
+            "How does the moon cut his hair?\nE-clips-it!",
+            "The baby corn asked the mama corn 'Where's pop-corn?'",
+            "The waiter asked me 'Do you wanna box for your leftovers?'\nI said 'No, but I'll arm wrestle you for them.'",
+            "Did you know it's illegal to laugh loudly in Hawaii?\nYou have to keep it to a-low-ha!",
+            "How much room does it take for fungi to grow?\nAs mush space as necessary!",
+            "||Help I'm trapped in a joke command!||",
         ]
         await ctx.send(random.choice(messages))
 
