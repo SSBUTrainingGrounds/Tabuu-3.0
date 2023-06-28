@@ -205,11 +205,16 @@ class Matchmaking(commands.Cog):
             else "Please only use this command in our arena channels!"
         )
 
-        thread_message = (
-            f"Hi there, {ctx.author.mention}! Please use this thread for communicating with your opponents."
-            if mm_type == "doubles"
-            else f"Hi there, {ctx.author.mention}! Please use this thread for communicating with your opponent."
-        )
+        if mm_type == "ranked":
+            thread_message = (
+                f"Hi there, {ctx.author.mention}! Please use this thread for communicating with your opponent."
+                f"\nOnce you found an opponent, start your ranked set by using `{self.bot.main_prefix}startmatch @Your Opponent`."
+                "\nGood luck, have fun!"
+            )
+        elif mm_type == "doubles":
+            thread_message = f"Hi there, {ctx.author.mention}! Please use this thread for communicating with your opponents."
+        else:
+            thread_message = f"Hi there, {ctx.author.mention}! Please use this thread for communicating with your opponent."
 
         # If the message is sent in neither public nor private arena channel, we send an error message and return.
         if not open_channel and not private_channel:
