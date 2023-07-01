@@ -914,7 +914,6 @@ class Ranking(commands.Cog):
         leaderboard_top = complete_leaderboard[: len(complete_leaderboard) // 2]
 
         if any((pos := i) and member.id == m for (i, m) in leaderboard_top):
-            # Seems like flake8 doesnt like assignment expressions.
             if pos <= 5:  # noqa: F821
                 index = pos - 1  # noqa: F821
             elif pos <= 10:  # noqa: F821
@@ -928,7 +927,13 @@ class Ranking(commands.Cog):
                 index = 8
 
             percent = min(
-                max(round(((pos - 1) / len(complete_leaderboard)) * 100, 2), 0.01), 100
+                max(
+                    round(
+                        ((pos - 1) / len(complete_leaderboard)) * 100, 2  # noqa: F821
+                    ),
+                    0.01,
+                ),
+                100,
             )
 
             embed.add_field(

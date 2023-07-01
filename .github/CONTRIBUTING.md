@@ -36,16 +36,10 @@ If you want to go above and beyond, it would be incredibly nice if you stick to 
 There are a few tools that are used in this repository to make your Python code look a lot cleaner. These are:  
 
 - [black (Auto formatter)](https://github.com/psf/black)
-- [flake8 (Linter)](https://github.com/PyCQA/flake8)
+- [Ruff (Linter)](https://github.com/astral-sh/ruff)
 - [isort (Sorts your imports)](https://github.com/PyCQA/isort)
 
-I would recommend using these, not only for this project. Look around if there are any integrations of these tools for your IDE.  
-For this repository I am using black with default settings, isort with `--profile "black"` and flake8 with `--ignore=E501,W503,E203`.  
-If you truly want to check all the boxes, feel free to copy those settings.  
+The settings can be found in the [pyproject.toml](../pyproject.toml) file.
 
 **You do not meet one or more of these guidelines or are unsure of anything? Please, do not worry and submit your contribution anyways.  
 It will always be greatly appreciated.**  
-
-## Development channel
-
-If you want to be more involved with the development process, ask the moderation team for access to the `#dev-team` channel on the [SSBU Training Grounds Discord Server](https://discord.gg/ssbutg).
