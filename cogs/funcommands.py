@@ -116,6 +116,10 @@ class Funcommands(commands.Cog):
             "Did you know it's illegal to laugh loudly in Hawaii?\nYou have to keep it to a-low-ha!",
             "How much room does it take for fungi to grow?\nAs mush space as necessary!",
             "||Help I'm trapped in a joke command!||",
+            "Why couldn't the sesame seed leave the casino?\nIt was on a roll!",
+            "How fast is milk?\nIt\'s pasteurize before you know it!",
+            "What kind of music are balloons afraid of?\nPop music!",
+
         ]
         await ctx.send(random.choice(messages))
 
