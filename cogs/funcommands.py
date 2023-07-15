@@ -118,7 +118,8 @@ class Funcommands(commands.Cog):
             "||Help I'm trapped in a joke command!||",
             "Why couldn't the sesame seed leave the casino?\nIt was on a roll!",
             "How fast is milk?\nIt\'s pasteurize before you know it!",
-            "What kind of music are balloons afraid of?\nPop music!"
+            "What kind of music are balloons afraid of?\nPop music!",
+
         ]
         await ctx.send(random.choice(messages))
 
