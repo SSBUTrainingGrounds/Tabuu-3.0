@@ -16,13 +16,13 @@ class Tasks(commands.Cog):
 
         self.so_ping.start()
         self.tos_ping.start()
-        self.dt_ping.start()
+        # self.dt_ping.start()
         self.lm_ping.start()
 
     def cog_unload(self) -> None:
         self.so_ping.cancel()
         self.tos_ping.cancel()
-        self.dt_ping.cancel()
+        # self.dt_ping.cancel()
         self.lm_ping.cancel()
 
     # The times of the tournaments (or well 1 hour & 5 mins before it).
