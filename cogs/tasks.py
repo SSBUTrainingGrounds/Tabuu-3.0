@@ -38,12 +38,12 @@ class Tasks(commands.Cog):
         0,
         0,
     )
-    dt_time = datetime.time(
-        TournamentReminders.DESIGN_TEAM_HOUR,
-        TournamentReminders.DESIGN_TEAM_MINUTE,
-        0,
-        0,
-    )
+    # dt_time = datetime.time(
+    #     TournamentReminders.DESIGN_TEAM_HOUR,
+    #     TournamentReminders.DESIGN_TEAM_MINUTE,
+    #     0,
+    #     0,
+    # )
     lm_time = datetime.time(
         TournamentReminders.LINK_REMINDER_HOUR,
         TournamentReminders.LINK_REMINDER_MINUTE,
@@ -111,27 +111,27 @@ class Tasks(commands.Cog):
                 f"{to_role.mention} Reminder that Trials of Smash begins in 1 hour, who is available?"
             )
 
-    @tasks.loop(time=utils.time.convert_to_utc(dt_time, TournamentReminders.TIMEZONE))
-    async def dt_ping(self) -> None:
-        if not TournamentReminders.PING_ENABLED:
-            return
+    # @tasks.loop(time=utils.time.convert_to_utc(dt_time, TournamentReminders.TIMEZONE))
+    # async def dt_ping(self) -> None:
+    #     if not TournamentReminders.PING_ENABLED:
+    #         return
 
-        if (
-            datetime.datetime.now(ZoneInfo(TournamentReminders.TIMEZONE)).weekday()
-            == TournamentReminders.DESIGN_TEAM_DAY
-        ) and (
-            datetime.datetime.now(ZoneInfo(TournamentReminders.TIMEZONE)).hour
-            <= TournamentReminders.DESIGN_TEAM_HOUR
-        ):
-            guild = self.bot.get_guild(GuildIDs.TRAINING_GROUNDS)
-            design_channel = self.bot.get_channel(TGChannelIDs.DESIGN_TEAM)
-            design_role = discord.utils.get(guild.roles, id=TGRoleIDs.DESIGN_TEAM_ROLE)
-            trial_role = discord.utils.get(guild.roles, id=TGRoleIDs.TRIAL_DESIGN_ROLE)
+    #     if (
+    #         datetime.datetime.now(ZoneInfo(TournamentReminders.TIMEZONE)).weekday()
+    #         == TournamentReminders.DESIGN_TEAM_DAY
+    #     ) and (
+    #         datetime.datetime.now(ZoneInfo(TournamentReminders.TIMEZONE)).hour
+    #         <= TournamentReminders.DESIGN_TEAM_HOUR
+    #     ):
+    #         guild = self.bot.get_guild(GuildIDs.TRAINING_GROUNDS)
+    #         design_channel = self.bot.get_channel(TGChannelIDs.DESIGN_TEAM)
+    #         design_role = discord.utils.get(guild.roles, id=TGRoleIDs.DESIGN_TEAM_ROLE)
+    #         trial_role = discord.utils.get(guild.roles, id=TGRoleIDs.TRIAL_DESIGN_ROLE)
 
-            await design_channel.send(
-                f"{design_role.mention} & {trial_role.mention} Reminder that it is time to get to work on SO/ToS graphics! "
-                "Who is able to take one or both?\n(Assuming alts have already been collected.)"
-            )
+    #         await design_channel.send(
+    #             f"{design_role.mention} & {trial_role.mention} Reminder that it is time to get to work on SO/ToS graphics! "
+    #             "Who is able to take one or both?\n(Assuming alts have already been collected.)"
+    #         )
 
     @tasks.loop(time=utils.time.convert_to_utc(lm_time, TournamentReminders.TIMEZONE))
     async def lm_ping(self) -> None:
@@ -164,9 +164,9 @@ class Tasks(commands.Cog):
     async def before_tos_ping(self) -> None:
         await self.bot.wait_until_ready()
 
-    @dt_ping.before_loop
-    async def before_dt_ping(self) -> None:
-        await self.bot.wait_until_ready()
+    # @dt_ping.before_loop
+    # async def before_dt_ping(self) -> None:
+    #     await self.bot.wait_until_ready()
 
     @lm_ping.before_loop
     async def before_lm_ping(self) -> None:
