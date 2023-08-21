@@ -119,6 +119,18 @@ class Funcommands(commands.Cog):
             "Why couldn't the sesame seed leave the casino?\nIt was on a roll!",
             "How fast is milk?\nIt's pasteurize before you know it!",
             "What kind of music are balloons afraid of?\nPop music!",
+            "What do you call a nervous tree?\nA sweaty palm!",
+            "What role does a baby plant have in the army?\nInfant-tree!",
+            "I can cut down a tree just by looking at it.\nI saw it with my own eyes!",
+            "What did the loaf of bread say after helping a friend?\nIt's the yeast I could do!",
+            "What did the slice of bread say to the slice of cheese?\nYou're the best thing since me!",
+            "How can you spot a radical baker?\nThey always go against the grain!",
+            "Why did the students go on the boat?\nTo get their scholar-ship!",
+            "Why couldn't the sailors play cards?\nThe captain was standing on the deck!",
+            "What do you do with a sick boat?\nTake it to the Doc!",
+            "What do you call a factory that makes ok products?\nA satis-factory!",
+            "Did you hear about the chocolate record player?\nIt sounds pretty sweet!",
+            "I asked my Dog \"What's 2 minus 2?\nShe said nothing!",
         ]
         await ctx.send(random.choice(messages))
 
