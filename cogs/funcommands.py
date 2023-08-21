@@ -130,7 +130,7 @@ class Funcommands(commands.Cog):
             "What do you do with a sick boat?\nTake it to the Doc!",
             "What do you call a factory that makes ok products?\nA satis-factory!",
             "Did you hear about the chocolate record player?\nIt sounds pretty sweet!",
-            'I asked my Dog "What\'s 2 minus 2?\nShe said nothing!',
+            "I asked my Dog \"What's 2 minus 2?\nShe said nothing!",
         ]
         await ctx.send(random.choice(messages))
 
