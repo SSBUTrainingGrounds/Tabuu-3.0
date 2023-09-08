@@ -259,6 +259,7 @@ class Responses(discord.ui.Select):
 - ```{self.prefix}8ball <question>```\n - Ask the magic 8-ball.
 - ```{self.prefix}who <question>```\n - Ask a question and get a random user in response.
 - ```{self.prefix}friendship <@user1> <@user2>```\n - The friendship status between 2 users.
+- ```{self.prefix}parzcoin```\n - The current value of 1 Parz Coin.
     """,
             )
 

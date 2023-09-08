@@ -280,6 +280,17 @@ class Funcommands(commands.Cog):
             f"**{message} - {rating}%** {emojis[floor(rating / 10)] * 3}"
         )
 
+    @commands.hybrid_command()
+    @app_commands.guilds(*GuildIDs.ALL_GUILDS)
+    async def parzcoin(self, ctx: commands.Context) -> None:
+        amount = random.randint(100, 999)
+        percent = random.randint(0, 100)
+        direction = random.choice(["UP 📈", "DOWN 📉"])
+
+        await ctx.send(
+            f"Parz Coin is {direction} {percent}% in the last hour!\nCurrent worth: 0.00000000{amount} USD"
+        )
+
 
 async def setup(bot) -> None:
     await bot.add_cog(Funcommands(bot))
