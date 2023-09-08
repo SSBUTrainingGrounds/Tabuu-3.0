@@ -295,6 +295,7 @@ class Funcommands(commands.Cog):
     @commands.hybrid_command()
     @app_commands.guilds(*GuildIDs.ALL_GUILDS)
     async def parzcoin(self, ctx: commands.Context) -> None:
+        """The current value of Parz Coin."""
         amount = random.randint(100, 999)
         percent = random.randint(0, 100)
         direction = random.choice(["UP 📈", "DOWN 📉"])
