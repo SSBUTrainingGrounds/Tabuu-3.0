@@ -8,6 +8,8 @@ import utils.check
 class CharityEvent(commands.Cog):
     """This is a temporary cog for our 3 year anniversary charity event (August 2023).
     Lots of hardcoded stuff, because it's only meant to be temporary.
+
+    Update Sept 2023: This cog is disabled now.
     """
 
     def __init__(self, bot: commands.Bot) -> None:
@@ -199,7 +201,11 @@ class CharityEvent(commands.Cog):
         )
 
 
-# This will be commented out after the event is over.
 async def setup(bot) -> None:
-    await bot.add_cog(CharityEvent(bot))
-    print("Charity Events cog loaded")
+    # Charity event is over now, so this cog is disabled.
+    # Maybe we'll use it again in the future.
+
+    # await bot.add_cog(CharityEvent(bot))
+    # print("Charity Events cog loaded")
+
+    pass
