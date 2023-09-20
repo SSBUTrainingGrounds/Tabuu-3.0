@@ -3,6 +3,7 @@ import os
 import platform
 import time
 from functools import reduce
+from io import StringIO
 
 import aiosqlite
 import discord
@@ -158,17 +159,26 @@ class Stats(commands.Cog):
         if len(role_list) == 1:
             role_message = f"{role_list[0].name} role"
         else:
-            role_message = f"{', '.join(role.name for role in role_list)} roles"
+            role_message = f"{', '.join(discord.utils.escape_markdown(role.name) for role in role_list)} roles"
 
         # Getting the overlap between all of the role's members.
         intersect = list(
             reduce(set.intersection, [set(role.members) for role in role_list])
         )
 
+        members = [
+            f"{i + 1}) {member.name} - <@{member.id}>"
+            for (i, member) in enumerate(intersect)
+        ]
+
+        buffer = StringIO("\n".join(members))
+        f = discord.File(buffer, filename=f"{role_message}_users.txt")
+
         # If there are too many or no members, we send a special message.
         if len(intersect) > 60:
             await ctx.send(
-                f"Users with the {role_message} ({len(intersect)}):\n`Too many users to list!`"
+                f"Users with the {role_message} ({len(intersect)}):\n`Too many users to list!`",
+                file=f,
             )
             return
         if not intersect:
@@ -176,7 +186,8 @@ class Stats(commands.Cog):
             return
 
         await ctx.send(
-            f"Users with the {role_message} ({len(intersect)}):\n{', '.join(str(member) for member in intersect)}"
+            f"Users with the {role_message} ({len(intersect)}):\n{', '.join(str(member) for member in intersect)}",
+            file=f,
         )
 
     @listrole.autocomplete("roles")
