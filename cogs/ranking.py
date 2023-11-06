@@ -712,6 +712,8 @@ class Ranking(commands.Cog):
         """Gets you the ranked stats of a member, or your own if you dont specify a member.
         If you get your own, you get a choice of removing/adding your ranked role.
         """
+        await ctx.typing()
+
         if member is None:
             member = ctx.author
 
