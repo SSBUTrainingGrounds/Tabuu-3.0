@@ -18,12 +18,18 @@ class Tasks(commands.Cog):
         self.tos_ping.start()
         # self.dt_ping.start()
         self.lm_ping.start()
+        self.lm2_ping.start()
+        self.tos_reminder_ping.start()
+        self.so_reminder_ping.start()
 
     def cog_unload(self) -> None:
         self.so_ping.cancel()
         self.tos_ping.cancel()
         # self.dt_ping.cancel()
         self.lm_ping.cancel()
+        self.lm2_ping.cancel()
+        self.tos_reminder_ping.cancel()
+        self.so_reminder_ping.cancel()
 
     # The times of the tournaments (or well 1 hour & 5 mins before it).
     so_time = datetime.time(
@@ -47,6 +53,24 @@ class Tasks(commands.Cog):
     lm_time = datetime.time(
         TournamentReminders.LINK_REMINDER_HOUR,
         TournamentReminders.LINK_REMINDER_MINUTE,
+        0,
+        0,
+    )
+    lm2_time = datetime.time(
+        TournamentReminders.LINK_REMINDER_2_HOUR,
+        TournamentReminders.LINK_REMINDER_2_MINUTE,
+        0,
+        0,
+    )
+    tos_reminder_time = datetime.time(
+        TournamentReminders.TOS_REMINDER_HOUR,
+        TournamentReminders.TOS_REMINDER_MINUTE,
+        0,
+        0,
+    )
+    so_reminder_time = datetime.time(
+        TournamentReminders.SO_REMINDER_HOUR,
+        TournamentReminders.SO_REMINDER_MINUTE,
         0,
         0,
     )
@@ -156,6 +180,76 @@ class Tasks(commands.Cog):
                 "Have you posted the link in announcements?"
             )
 
+    @tasks.loop(time=utils.time.convert_to_utc(lm2_time, TournamentReminders.TIMEZONE))
+    async def lm2_ping(self) -> None:
+        if not TournamentReminders.PING_ENABLED:
+            return
+
+        if (
+            datetime.datetime.now(ZoneInfo(TournamentReminders.TIMEZONE)).weekday()
+            == TournamentReminders.LINK_REMINDER_2_DAY
+        ) and (
+            datetime.datetime.now(ZoneInfo(TournamentReminders.TIMEZONE)).hour
+            <= TournamentReminders.LINK_REMINDER_2_HOUR
+        ):
+            guild = self.bot.get_guild(GuildIDs.TRAINING_GROUNDS)
+            design_channel = self.bot.get_channel(TGChannelIDs.TOURNAMENT_TEAM)
+            tournament_role = discord.utils.get(
+                guild.roles, id=TGRoleIDs.TOURNAMENT_HEAD_ROLE
+            )
+
+            await design_channel.send(
+                f"{tournament_role.mention} Remember to post the reminder links for Trials of Smash and Smash Overseas this week!"
+            )
+
+    @tasks.loop(
+        time=utils.time.convert_to_utc(tos_reminder_time, TournamentReminders.TIMEZONE)
+    )
+    async def tos_reminder_ping(self) -> None:
+        if not TournamentReminders.PING_ENABLED:
+            return
+
+        if (
+            datetime.datetime.now(ZoneInfo(TournamentReminders.TIMEZONE)).weekday()
+            == TournamentReminders.TOS_REMINDER_DAY
+        ) and (
+            datetime.datetime.now(ZoneInfo(TournamentReminders.TIMEZONE)).hour
+            <= TournamentReminders.TOS_REMINDER_HOUR
+        ):
+            guild = self.bot.get_guild(GuildIDs.TRAINING_GROUNDS)
+            design_channel = self.bot.get_channel(TGChannelIDs.TOURNAMENT_TEAM)
+            tournament_role = discord.utils.get(
+                guild.roles, id=TGRoleIDs.TOURNAMENT_HEAD_ROLE
+            )
+
+            await design_channel.send(
+                f"{tournament_role.mention} Trials of Smash is today! Remember to post the reminder link if we do not have 8 attendees."
+            )
+
+    @tasks.loop(
+        time=utils.time.convert_to_utc(so_reminder_time, TournamentReminders.TIMEZONE)
+    )
+    async def so_reminder_ping(self) -> None:
+        if not TournamentReminders.PING_ENABLED:
+            return
+
+        if (
+            datetime.datetime.now(ZoneInfo(TournamentReminders.TIMEZONE)).weekday()
+            == TournamentReminders.SO_REMINDER_DAY
+        ) and (
+            datetime.datetime.now(ZoneInfo(TournamentReminders.TIMEZONE)).hour
+            <= TournamentReminders.SO_REMINDER_HOUR
+        ):
+            guild = self.bot.get_guild(GuildIDs.TRAINING_GROUNDS)
+            design_channel = self.bot.get_channel(TGChannelIDs.TOURNAMENT_TEAM)
+            tournament_role = discord.utils.get(
+                guild.roles, id=TGRoleIDs.TOURNAMENT_HEAD_ROLE
+            )
+
+            await design_channel.send(
+                f"{tournament_role.mention} Smash Overseas is tomorrow morning! Remember to post the reminder link if we do not have 8 attendees."
+            )
+
     @so_ping.before_loop
     async def before_so_ping(self) -> None:
         await self.bot.wait_until_ready()
@@ -170,6 +264,18 @@ class Tasks(commands.Cog):
 
     @lm_ping.before_loop
     async def before_lm_ping(self) -> None:
+        await self.bot.wait_until_ready()
+
+    @lm2_ping.before_loop
+    async def before_lm2_ping(self) -> None:
+        await self.bot.wait_until_ready()
+
+    @tos_reminder_ping.before_loop
+    async def before_tos_reminder_ping(self) -> None:
+        await self.bot.wait_until_ready()
+
+    @so_reminder_ping.before_loop
+    async def before_so_reminder_ping(self) -> None:
         await self.bot.wait_until_ready()
 
 

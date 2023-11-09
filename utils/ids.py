@@ -90,6 +90,18 @@ class TournamentReminders:
     LINK_REMINDER_HOUR = 12
     LINK_REMINDER_MINUTE = 55
 
+    LINK_REMINDER_2_DAY = 2
+    LINK_REMINDER_2_HOUR = 10
+    LINK_REMINDER_2_MINUTE = 55
+
+    TOS_REMINDER_DAY = 4
+    TOS_REMINDER_HOUR = 10
+    TOS_REMINDER_MINUTE = 55
+
+    SO_REMINDER_DAY = 4
+    SO_REMINDER_HOUR = 21
+    SO_REMINDER_MINUTE = 55
+
 
 class TGChannelIDs:
     """Contains Channel IDs used throughout the code, specific to the Training Grounds Server."""
