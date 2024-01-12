@@ -471,6 +471,10 @@ class Admin(commands.Cog):
 
         await ctx.defer()
 
+        def is_valid_url(url: str) -> bool:
+            url = url.split("?")[0]
+            return url.startswith("http") and url.endswith((".jpg", ".jpeg", ".png"))
+
         async def apply_icon(asset: Union[discord.Emoji, discord.Attachment]):
             """This function reads the asset as a byte-like object
             and tries to insert that as the role icon.
@@ -500,7 +504,7 @@ class Admin(commands.Cog):
 
         # First we check if an Attachment is supplied.
         if attachment:
-            if not attachment.url.endswith((".jpg", ".jpeg", ".png")):
+            if not is_valid_url(attachment.url):
                 await ctx.send(
                     "Please either specify an emoji or attach an image to use as a role icon."
                 )
@@ -517,7 +521,9 @@ class Admin(commands.Cog):
             # We then check if it is a regular emoji.
             try:
                 await role.edit(display_icon=emoji)
-                await ctx.send(f"Edited the display icon of {role.name} to {emoji}.")
+                await ctx.send(
+                    f"Edited the display icon of {role.name} to {emoji}."
+                )
             except (discord.errors.Forbidden, discord.errors.HTTPException) as exc:
                 await ctx.send(f"Something went wrong:\n`{exc}`")
 
