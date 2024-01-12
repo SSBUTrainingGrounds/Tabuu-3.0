@@ -521,9 +521,7 @@ class Admin(commands.Cog):
             # We then check if it is a regular emoji.
             try:
                 await role.edit(display_icon=emoji)
-                await ctx.send(
-                    f"Edited the display icon of {role.name} to {emoji}."
-                )
+                await ctx.send(f"Edited the display icon of {role.name} to {emoji}.")
             except (discord.errors.Forbidden, discord.errors.HTTPException) as exc:
                 await ctx.send(f"Something went wrong:\n`{exc}`")
 
