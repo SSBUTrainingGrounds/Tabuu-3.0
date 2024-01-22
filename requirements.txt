@@ -3,6 +3,6 @@ colorthief==0.2.1
 dateparser==1.2.0
 deep-translator==1.11.4
 discord.py==2.3.2
-psutil==5.9.7
+psutil==5.9.8
 stringmatch==0.14.3
 trueskill==0.4.5
