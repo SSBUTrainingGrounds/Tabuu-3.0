@@ -6,7 +6,7 @@ __pycache__/
 .vscode/
 
 # virtual environment
-.venv/
+venv/
 
 # bot token
 token.txt

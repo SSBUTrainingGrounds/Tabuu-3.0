@@ -336,9 +336,11 @@ class CustomHelp(commands.HelpCommand):
 
         embed.add_field(
             name="Uses:",
-            value=matching_command[0][0]
-            if matching_command and matching_command[0][0]
-            else 0,
+            value=(
+                matching_command[0][0]
+                if matching_command and matching_command[0][0]
+                else 0
+            ),
         )
 
         embed.add_field(
@@ -503,9 +505,11 @@ class Help(commands.Cog):
 
         embed.add_field(
             name="Uses:",
-            value=matching_command[0][0]
-            if matching_command and matching_command[0][0]
-            else 0,
+            value=(
+                matching_command[0][0]
+                if matching_command and matching_command[0][0]
+                else 0
+            ),
         )
 
         embed.add_field(

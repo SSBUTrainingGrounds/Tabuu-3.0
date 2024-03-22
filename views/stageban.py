@@ -49,7 +49,9 @@ class StarterStageButtons(discord.ui.View):
     ) -> None:
         await self.ban_stage(interaction, button)
 
-    @discord.ui.button(label="Town and City", emoji="🚌", style=discord.ButtonStyle.gray)
+    @discord.ui.button(
+        label="Town and City", emoji="🚌", style=discord.ButtonStyle.gray
+    )
     async def town_and_city(
         self,
         interaction: discord.Interaction,
@@ -152,7 +154,9 @@ class CounterpickStageButtons(discord.ui.View):
     ) -> None:
         await self.ban_stage(interaction, button)
 
-    @discord.ui.button(label="Town and City", emoji="🚌", style=discord.ButtonStyle.gray)
+    @discord.ui.button(
+        label="Town and City", emoji="🚌", style=discord.ButtonStyle.gray
+    )
     async def town_and_city(
         self,
         interaction: discord.Interaction,
@@ -190,7 +194,9 @@ class CounterpickStageButtons(discord.ui.View):
     ) -> None:
         await self.ban_stage(interaction, button)
 
-    @discord.ui.button(label="Yoshi's Story", emoji="🐣", style=discord.ButtonStyle.gray)
+    @discord.ui.button(
+        label="Yoshi's Story", emoji="🐣", style=discord.ButtonStyle.gray
+    )
     async def yoshis_story(
         self,
         interaction: discord.Interaction,

@@ -376,7 +376,10 @@ class ColourView(discord.ui.View):
         self.add_item(ColourDropdown(user))
 
     @discord.ui.button(
-        label="Choose a Custom Colour", style=discord.ButtonStyle.gray, emoji="🎨", row=1
+        label="Choose a Custom Colour",
+        style=discord.ButtonStyle.gray,
+        emoji="🎨",
+        row=1,
     )
     async def custom_colour(
         self, interaction: discord.Interaction, button: discord.ui.Button

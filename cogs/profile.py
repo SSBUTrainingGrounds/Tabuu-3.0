@@ -460,9 +460,9 @@ class Profile(commands.Cog):
 
         embed.add_field(
             name="Secondaries:",
-            value=", ".join(secondaries_list)[:1000]
-            if matching_secondaries
-            else "None",
+            value=(
+                ", ".join(secondaries_list)[:1000] if matching_secondaries else "None"
+            ),
             inline=False,
         )
 

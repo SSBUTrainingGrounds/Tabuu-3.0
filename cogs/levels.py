@@ -26,9 +26,7 @@ class Levels(commands.Cog):
         Taken from: https://github.com/Mee6/Mee6-documentation/blob/master/docs/levels_xp.md
         Since we used to use Mee6, we decided to keep the same formula.
         """
-        return max(
-            5 * (current_level**2) + (50 * current_level) + 100 - current_xp, 0
-        )
+        return max(5 * (current_level**2) + (50 * current_level) + 100 - current_xp, 0)
 
     def get_xp_for_level(self, level: int) -> int:
         """Gets you the amount of XP you need to reach a certain level."""
