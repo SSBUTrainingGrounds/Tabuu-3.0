@@ -894,13 +894,13 @@
             ]
         },
         {
-            "name": "steve / alex",
+            "name": "steve",
             "id": [
                 "77"
             ],
             "emoji": "<:Steve:929086965729611876>",
             "aliases": [
-                "steve",
+                "steve / alex",
                 "alex",
                 "enderman",
                 "zombie"
