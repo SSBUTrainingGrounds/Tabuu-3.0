@@ -1,13 +1,13 @@
+from typing import Optional
+
 import aiosqlite
 import discord
 from discord import app_commands
 from discord.ext import commands
 from stringmatch import Match
 
-from typing import Optional
-
-from utils.ids import GuildIDs
 from utils.character import get_single_character_name
+from utils.ids import GuildIDs
 from views.move_select import MoveView
 
 
