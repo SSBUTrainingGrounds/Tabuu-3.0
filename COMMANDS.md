@@ -311,6 +311,10 @@ Last updated: 26 May 2023
     -   Aliases: serverinfo
 -   **%setupmodmailbutton**
     -   Info: **Moderator only. Slash version unavailable.** Sets up a new button to listen to, for creating modmail threads. Should really only be used once. Slash version unavailable deliberately because of that very reason.
+-   **%show** `<character> <move_name: Optional>`  
+    -   Info: Shows you the data of a character's move, sourced from Ultimateframedata. If you do not specify a move, or specify the move "Stats", it will show you the general stats of the character. Tries to match the character name and move name to the closest match, the actual move names will work (Darkest Lariat), as well as the technical names (Neutral B). If the character's name is more than one word **and you are not using the slash command**, you need to wrap the name in quotation marks or use a one-worded alias.
+    -   Example: `%show incin side b`
+    -   Aliases: s, v
 -   **%singles**
     -   Info: Pings the singles role and stores your ping for 30 Minutes. Also creates a thread and invites the User to it. Has a 10 minute cooldown and can only be used in our arena channels.
     -   Aliases: matchmaking, matchmakingsingles, mmsingles, Singles

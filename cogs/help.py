@@ -149,6 +149,7 @@ class Responses(discord.ui.Select):
                 color=0x06515F,
                 description=f"""
 - ```{self.prefix}help <command>```\n - Help menu, or specific help with a command.
+- ```{self.prefix}show <character> <move>```\n - Info about a move of a character, or the character's stats if left empty.
 - ```{self.prefix}macro <macro>```\n - Info about one macro, or lists every macro registered.
 - ```{self.prefix}roleinfo <role>```\n - Displays Role info.
 - ```{self.prefix}listrole <role>```\n - Displays all the members with a certain Role.

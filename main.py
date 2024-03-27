@@ -46,6 +46,7 @@ class Tabuu3(commands.Bot):
         # We need to set up some stuff at startup.
         utils.logger.create_logger()
         await utils.sqlite.setup_db()
+        await utils.sqlite.setup_ufd()
 
         for filename in os.listdir(r"./cogs"):
             if filename.endswith(".py"):
