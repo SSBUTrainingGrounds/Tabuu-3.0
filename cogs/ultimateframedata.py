@@ -364,6 +364,7 @@ class UltimateFrameData(commands.Cog):
         match = Match(ignore_case=True, include_partial=True)
 
         moves = [m[0] for m in raw_moves]
+        moves.append("Stats")
 
         match_list = match.get_best_matches(current, moves, score=40, limit=25)
 
