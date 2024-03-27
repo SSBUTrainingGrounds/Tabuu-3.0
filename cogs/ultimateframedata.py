@@ -95,24 +95,24 @@ class UltimateFrameData(commands.Cog):
         # All of the ranked stats above.
         for i, s in enumerate(rank_list):
             stat = stats[i + 2]
-            [title, value] = stat.split(" — ")
+            [title, value] = stat.split(" — ", 1)
             # The characters are always gonna be 89 for Smash Ultimate now.
             description += f"**{title}**: {value} (#{s}/89)\n"
 
         # SH / FH and Fall Speeds
         for s in stats[len(rank_list) + 2 : len(rank_list) + 4]:
-            [title, value] = s.split(" — ")
+            [title, value] = s.split(" — ", 1)
             description += f"**{title}**: {value}\n"
 
         # These are the Out of Shield options.
         for i, s in enumerate(stats[len(rank_list) + 4 : len(rank_list) + 7]):
-            [title, value] = s.split(" — ")
+            [title, value] = s.split(" — ", 1)
             title = title.replace("Out of Shield, ", f"**OOS #{i + 1}**: ")
             description += f"{title} - {value}\n"
 
         # And then the remaining stats.
         for s in stats[len(rank_list) + 7 :]:
-            [title, value] = s.split(" — ")
+            [title, value] = s.split(" — ", 1)
             description += f"**{title}**: {value}\n"
 
         embed = discord.Embed(
