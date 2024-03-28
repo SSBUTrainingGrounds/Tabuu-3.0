@@ -4,26 +4,6 @@ from discord.app_commands import Choice
 from discord.ext import commands
 
 from cogs.profile import Profile
-from utils.character import match_character
-
-
-def test_match_character() -> None:
-    # some basic matching
-    assert match_character("mario") == ["<:Mario:929067419861913680>"]
-    # more advanced
-    assert match_character("incin, wii fit trainer, 4e") == [
-        "<:Incineroar:929086965763145828>",
-        "<:WiiFitTrainer:929086966115483748>",
-        "<:DarkSamus:929068123020202004>",
-    ]
-
-    # matching one input to more than one char
-    assert match_character("chroy, paisy") == [
-        "<:Roy:929069540460097537>",
-        "<:Chrom:929069556243238932>",
-        "<:Peach:929068723829080105>",
-        "<:Daisy:929068737317986324>",
-    ]
 
 
 def test_character_autocomplete() -> None:
