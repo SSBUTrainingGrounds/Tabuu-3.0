@@ -1,4 +1,4 @@
-from utils.character import match_character, get_single_character_name
+from utils.character import get_single_character_name, match_character
 
 
 def test_match_character() -> None:
