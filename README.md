@@ -9,11 +9,12 @@ Made by Phxenix. If you have any questions feel free to contact me on Discord.
 
 ## Features include
 
-### Smash Matchmaking
+### Smash Bros Ultimate & Matchmaking
 
 -   Ranked Matchmaking based on TrueSkill with Built-In Competitive Rulesets, Leaderboards and more
 -   Unranked Matchmaking: 1v1, 2v2, and Casual Rulesets
 -   Player Profiles for Smash Ultimate
+-   Character Information & Moveset Data (from UltimateFrameData)
 
 ### Moderation
 
