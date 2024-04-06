@@ -17,7 +17,7 @@ Last updated: 26 May 2023
 
 ### Notes about required permissions:
 
--   **Moderator only** means that you have to be the Server Owner, have Administrator Rights or the Moderator Role to use this Command.
+-   **Moderator only** means that you have to be the Server Owner, have Administrator Rights or the Moderator Role to use this Command. These commands only work within approved Guilds.
 -   **Admin only** means that you need to have Administrator Rights in order to use this Command.
 -   **Owner only** means that only the Bot's Owner can use this Command.
 

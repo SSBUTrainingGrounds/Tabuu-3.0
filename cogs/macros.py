@@ -45,7 +45,7 @@ class Macros(commands.Cog):
                     await db.commit()
 
     @commands.hybrid_command()
-    @app_commands.guilds(*GuildIDs.ALL_GUILDS)
+    @app_commands.guilds(*GuildIDs.ADMIN_GUILDS)
     @app_commands.default_permissions(administrator=True)
     @utils.check.is_moderator()
     async def createmacro(self, ctx: commands.Context) -> None:
@@ -55,7 +55,7 @@ class Macros(commands.Cog):
         await ctx.send(view=view)
 
     @commands.hybrid_command()
-    @app_commands.guilds(*GuildIDs.ALL_GUILDS)
+    @app_commands.guilds(*GuildIDs.ADMIN_GUILDS)
     @app_commands.describe(name="The name of the macro.")
     @app_commands.default_permissions(administrator=True)
     @utils.check.is_moderator()

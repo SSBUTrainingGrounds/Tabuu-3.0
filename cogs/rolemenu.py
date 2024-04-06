@@ -16,7 +16,7 @@ class Rolemenu(commands.Cog):
         self.bot = bot
 
     @commands.hybrid_group()
-    @app_commands.guilds(*GuildIDs.ALL_GUILDS)
+    @app_commands.guilds(*GuildIDs.ADMIN_GUILDS)
     @app_commands.default_permissions(administrator=True)
     @utils.check.is_moderator()
     async def rolemenu(self, ctx: commands.Context) -> None:
@@ -36,7 +36,7 @@ class Rolemenu(commands.Cog):
         await ctx.send(embed=embed)
 
     @rolemenu.command(name="new")
-    @app_commands.guilds(*GuildIDs.ALL_GUILDS)
+    @app_commands.guilds(*GuildIDs.ADMIN_GUILDS)
     @app_commands.describe(
         message="The message of the role menu. Make sure to be in the same channel as the message.",
         emoji="The emoji for the role menu entry.",
@@ -97,7 +97,7 @@ class Rolemenu(commands.Cog):
         )
 
     @rolemenu.command(name="modify")
-    @app_commands.guilds(*GuildIDs.ALL_GUILDS)
+    @app_commands.guilds(*GuildIDs.ADMIN_GUILDS)
     @app_commands.describe(
         message="The message of the role menu.",
         exclusive="If you want the role menu to only give out one role.",
@@ -188,7 +188,7 @@ class Rolemenu(commands.Cog):
         return choices[:25]
 
     @rolemenu.command(name="delete")
-    @app_commands.guilds(*GuildIDs.ALL_GUILDS)
+    @app_commands.guilds(*GuildIDs.ADMIN_GUILDS)
     @app_commands.describe(message="The message of the role menu you want to delete.")
     @app_commands.default_permissions(administrator=True)
     @utils.check.is_moderator()
@@ -234,7 +234,7 @@ class Rolemenu(commands.Cog):
         return choices[:25]
 
     @rolemenu.command(name="get")
-    @app_commands.guilds(*GuildIDs.ALL_GUILDS)
+    @app_commands.guilds(*GuildIDs.ADMIN_GUILDS)
     @app_commands.default_permissions(administrator=True)
     @utils.check.is_moderator()
     async def rolemenu_get(self, ctx: commands.Context) -> None:

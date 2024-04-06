@@ -113,7 +113,7 @@ class Mute(commands.Cog):
                     )
 
     @commands.hybrid_command()
-    @app_commands.guilds(*GuildIDs.ALL_GUILDS)
+    @app_commands.guilds(*GuildIDs.ADMIN_GUILDS)
     @app_commands.describe(
         member="The member to mute.", reason="The reason for the mute."
     )
@@ -151,7 +151,7 @@ class Mute(commands.Cog):
             await ctx.send("This user was already muted!")
 
     @commands.hybrid_command()
-    @app_commands.guilds(*GuildIDs.ALL_GUILDS)
+    @app_commands.guilds(*GuildIDs.ADMIN_GUILDS)
     @app_commands.describe(member="The member to unmute.")
     @app_commands.default_permissions(administrator=True)
     @utils.check.is_moderator()
@@ -179,7 +179,7 @@ class Mute(commands.Cog):
             await ctx.send("This user was not muted!")
 
     @commands.hybrid_command()
-    @app_commands.guilds(*GuildIDs.ALL_GUILDS)
+    @app_commands.guilds(*GuildIDs.ADMIN_GUILDS)
     @app_commands.describe(
         member="The member to mute.",
         mute_time="How long the mute should last.",
@@ -263,7 +263,7 @@ class Mute(commands.Cog):
                 )
 
     @commands.hybrid_command()
-    @app_commands.guilds(*GuildIDs.ALL_GUILDS)
+    @app_commands.guilds(*GuildIDs.ADMIN_GUILDS)
     @app_commands.describe(
         member="The member to time out.",
         mute_time="How long the time out should last.",
@@ -332,7 +332,7 @@ class Mute(commands.Cog):
         await ctx.send(message)
 
     @commands.hybrid_command(aliases=["untimeout"])
-    @app_commands.guilds(*GuildIDs.ALL_GUILDS)
+    @app_commands.guilds(*GuildIDs.ADMIN_GUILDS)
     @app_commands.describe(member="The member to remove the time out from.")
     @app_commands.default_permissions(administrator=True)
     @utils.check.is_moderator()

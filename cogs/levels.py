@@ -240,7 +240,7 @@ class Levels(commands.Cog):
             pass
 
     @commands.hybrid_group()
-    @app_commands.guilds(*GuildIDs.ALL_GUILDS)
+    @app_commands.guilds(*GuildIDs.ADMIN_GUILDS)
     @app_commands.default_permissions(administrator=True)
     @utils.check.is_moderator()
     async def xp(self, ctx: commands.Context):
@@ -258,7 +258,7 @@ class Levels(commands.Cog):
         await ctx.send(embed=embed)
 
     @xp.command(name="add")
-    @app_commands.guilds(*GuildIDs.ALL_GUILDS)
+    @app_commands.guilds(*GuildIDs.ADMIN_GUILDS)
     @app_commands.describe(
         user="The user to add the xp to.", amount="The amount of xp to add to the user."
     )
@@ -285,7 +285,7 @@ class Levels(commands.Cog):
         )
 
     @xp.command(name="remove")
-    @app_commands.guilds(*GuildIDs.ALL_GUILDS)
+    @app_commands.guilds(*GuildIDs.ADMIN_GUILDS)
     @app_commands.describe(
         user="The user to remove the xp from.",
         amount="The amount of xp to remove from the user.",

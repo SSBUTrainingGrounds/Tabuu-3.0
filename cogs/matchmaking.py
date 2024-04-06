@@ -418,7 +418,7 @@ class Matchmaking(commands.Cog):
         )
 
     @commands.hybrid_command(aliases=["clearmmrequests", "clearmm", "clearmatchmaking"])
-    @app_commands.guilds(*GuildIDs.ALL_GUILDS)
+    @app_commands.guilds(*GuildIDs.ADMIN_GUILDS)
     @app_commands.default_permissions(administrator=True)
     @utils.check.is_moderator()
     async def clearmmpings(self, ctx: commands.Context) -> None:

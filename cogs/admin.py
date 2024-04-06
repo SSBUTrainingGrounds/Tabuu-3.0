@@ -19,7 +19,7 @@ class Admin(commands.Cog):
         self.bot = bot
 
     @commands.hybrid_group()
-    @app_commands.guilds(*GuildIDs.ALL_GUILDS)
+    @app_commands.guilds(*GuildIDs.ADMIN_GUILDS)
     @app_commands.default_permissions(administrator=True)
     @utils.check.is_moderator()
     async def clear(self, ctx: commands.Context, amount: int = 1) -> None:
@@ -38,7 +38,7 @@ class Admin(commands.Cog):
         await ctx.send(embed=embed)
 
     @clear.command(name="amount")
-    @app_commands.guilds(*GuildIDs.ALL_GUILDS)
+    @app_commands.guilds(*GuildIDs.ADMIN_GUILDS)
     @app_commands.describe(amount="The amount of messages to delete.")
     @app_commands.default_permissions(administrator=True)
     @utils.check.is_moderator()
@@ -64,7 +64,7 @@ class Admin(commands.Cog):
         )
 
     @clear.command(name="after")
-    @app_commands.guilds(*GuildIDs.ALL_GUILDS)
+    @app_commands.guilds(*GuildIDs.ADMIN_GUILDS)
     @app_commands.describe(
         message_after="The message to delete every other message in this channel.",
         message_before="The message to stop deleting messages at.",
@@ -109,7 +109,7 @@ class Admin(commands.Cog):
             await ctx.channel.send(message)
 
     @clear.command(name="from")
-    @app_commands.guilds(*GuildIDs.ALL_GUILDS)
+    @app_commands.guilds(*GuildIDs.ADMIN_GUILDS)
     @app_commands.describe(
         user="The user to delete the messages from in this channel.",
         amount="The amount of messages to delete from the user.",
@@ -153,7 +153,7 @@ class Admin(commands.Cog):
             )
 
     @commands.hybrid_command()
-    @app_commands.guilds(*GuildIDs.ALL_GUILDS)
+    @app_commands.guilds(*GuildIDs.ADMIN_GUILDS)
     @app_commands.describe(user="The user to ban.", reason="The reason for the ban.")
     @app_commands.default_permissions(administrator=True)
     @utils.check.is_moderator()
@@ -219,7 +219,7 @@ class Admin(commands.Cog):
                 return
 
     @commands.hybrid_command()
-    @app_commands.guilds(*GuildIDs.ALL_GUILDS)
+    @app_commands.guilds(*GuildIDs.ADMIN_GUILDS)
     @app_commands.describe(user="The user to unban.")
     @app_commands.default_permissions(administrator=True)
     @utils.check.is_moderator()
@@ -229,7 +229,7 @@ class Admin(commands.Cog):
         await ctx.send(f"{user.mention} has been unbanned!")
 
     @commands.hybrid_command(aliases=["syncbans"])
-    @app_commands.guilds(*GuildIDs.ALL_GUILDS)
+    @app_commands.guilds(discord.Object(GuildIDs.BATTLEGROUNDS))
     @app_commands.default_permissions(administrator=True)
     @utils.check.is_moderator()
     async def syncbanlist(self, ctx: commands.Context):
@@ -267,7 +267,7 @@ class Admin(commands.Cog):
         await ctx.send(f"Ban list was successfully synced. Banned {i} users.")
 
     @commands.hybrid_command()
-    @app_commands.guilds(*GuildIDs.ALL_GUILDS)
+    @app_commands.guilds(*GuildIDs.ADMIN_GUILDS)
     @app_commands.describe(
         member="The user to kick.", reason="The reason for the kick."
     )
@@ -331,7 +331,7 @@ class Admin(commands.Cog):
                 return
 
     @commands.hybrid_command()
-    @app_commands.guilds(*GuildIDs.ALL_GUILDS)
+    @app_commands.guilds(*GuildIDs.ADMIN_GUILDS)
     @app_commands.describe(
         member="The member to add a role to.", role="The role to add."
     )
@@ -355,7 +355,7 @@ class Admin(commands.Cog):
         )
 
     @commands.hybrid_command()
-    @app_commands.guilds(*GuildIDs.ALL_GUILDS)
+    @app_commands.guilds(*GuildIDs.ADMIN_GUILDS)
     @app_commands.describe(
         member="The member to remove a role from.", role="The role to remove."
     )
@@ -379,7 +379,7 @@ class Admin(commands.Cog):
         )
 
     @commands.hybrid_group()
-    @app_commands.guilds(*GuildIDs.ALL_GUILDS)
+    @app_commands.guilds(*GuildIDs.ADMIN_GUILDS)
     @app_commands.default_permissions(administrator=True)
     @utils.check.is_moderator()
     async def editrole(self, ctx: commands.Context) -> None:
@@ -399,7 +399,7 @@ class Admin(commands.Cog):
         await ctx.send(embed=embed)
 
     @editrole.command(name="name")
-    @app_commands.guilds(*GuildIDs.ALL_GUILDS)
+    @app_commands.guilds(*GuildIDs.ADMIN_GUILDS)
     @app_commands.describe(
         role="The role to edit the name of.", name="The new name of the role."
     )
@@ -420,7 +420,7 @@ class Admin(commands.Cog):
             await ctx.send("I do not have the required permissions to edit this role.")
 
     @editrole.command(name="colour", aliases=["color"])
-    @app_commands.guilds(*GuildIDs.ALL_GUILDS)
+    @app_commands.guilds(*GuildIDs.ADMIN_GUILDS)
     @app_commands.describe(
         role="The role to edit the colour of.",
         hex_colour="The new colour, in the hex format.",
@@ -457,7 +457,7 @@ class Admin(commands.Cog):
             await ctx.send("I do not have the required permissions to edit this role.")
 
     @editrole.command(name="icon")
-    @app_commands.guilds(*GuildIDs.ALL_GUILDS)
+    @app_commands.guilds(*GuildIDs.ADMIN_GUILDS)
     @app_commands.default_permissions(administrator=True)
     @utils.check.is_moderator()
     async def editrole_icon(
@@ -526,7 +526,7 @@ class Admin(commands.Cog):
                 await ctx.send(f"Something went wrong:\n`{exc}`")
 
     @editrole.command(name="mentionable", aliases=["mention"])
-    @app_commands.guilds(*GuildIDs.ALL_GUILDS)
+    @app_commands.guilds(*GuildIDs.ADMIN_GUILDS)
     @app_commands.describe(
         role="The role to edit the mentionable status of.",
         mentionable="The new mentionable status (True/False).",
@@ -544,7 +544,7 @@ class Admin(commands.Cog):
             await ctx.send("I do not have the required permissions to edit this role.")
 
     @commands.hybrid_command()
-    @app_commands.guilds(*GuildIDs.ALL_GUILDS)
+    @app_commands.guilds(*GuildIDs.ADMIN_GUILDS)
     @app_commands.default_permissions(administrator=True)
     @utils.check.is_moderator()
     async def records(self, ctx: commands.Context) -> None:
@@ -552,7 +552,7 @@ class Admin(commands.Cog):
         await ctx.send(f"Link to our ban records:\n{AdminVars.BAN_RECORDS}")
 
     @commands.hybrid_command()
-    @app_commands.guilds(*GuildIDs.ALL_GUILDS)
+    @app_commands.guilds(*GuildIDs.ADMIN_GUILDS)
     @app_commands.describe(member="The member to rename.", name="The new name.")
     @app_commands.default_permissions(administrator=True)
     @utils.check.is_moderator()
@@ -566,7 +566,7 @@ class Admin(commands.Cog):
         )
 
     @commands.hybrid_command()
-    @app_commands.guilds(*GuildIDs.ALL_GUILDS)
+    @app_commands.guilds(*GuildIDs.ADMIN_GUILDS)
     @app_commands.describe(
         messageable="Where to send the message/reply to (Channel, Thread, Message).",
         message="The message I will send.",
@@ -602,7 +602,7 @@ class Admin(commands.Cog):
         await ctx.send("Message sent!", ephemeral=True)
 
     @commands.hybrid_command(aliases=["nicknames", "usernames", "aliases"])
-    @app_commands.guilds(*GuildIDs.ALL_GUILDS)
+    @app_commands.guilds(*GuildIDs.ADMIN_GUILDS)
     @app_commands.describe(user="The user you want to see the last tracked names of.")
     @app_commands.default_permissions(administrator=True)
     @utils.check.is_moderator()
@@ -665,7 +665,7 @@ class Admin(commands.Cog):
         await ctx.send(embed=embed)
 
     @commands.hybrid_group()
-    @app_commands.guilds(*GuildIDs.ALL_GUILDS)
+    @app_commands.guilds(*GuildIDs.ADMIN_GUILDS)
     @app_commands.default_permissions(administrator=True)
     @utils.check.is_moderator()
     async def modnote(self, ctx: commands.Context) -> None:
@@ -684,7 +684,7 @@ class Admin(commands.Cog):
         await ctx.send(embed=embed)
 
     @modnote.command(name="set")
-    @app_commands.guilds(*GuildIDs.ALL_GUILDS)
+    @app_commands.guilds(*GuildIDs.ADMIN_GUILDS)
     @app_commands.describe(
         user="The user for which you want to set the note.",
         note="The note of the user.",
@@ -721,7 +721,7 @@ class Admin(commands.Cog):
         )
 
     @modnote.command(name="view")
-    @app_commands.guilds(*GuildIDs.ALL_GUILDS)
+    @app_commands.guilds(*GuildIDs.ADMIN_GUILDS)
     @app_commands.default_permissions(administrator=True)
     @utils.check.is_moderator()
     async def modnote_view(self, ctx: commands.Context, user: discord.User) -> None:
@@ -751,7 +751,7 @@ class Admin(commands.Cog):
         await ctx.send(embed=embed)
 
     @modnote.command(name="delete")
-    @app_commands.guilds(*GuildIDs.ALL_GUILDS)
+    @app_commands.guilds(*GuildIDs.ADMIN_GUILDS)
     @app_commands.describe(
         user="The user for which you want to delete a note from.",
         note_id="The ID of the note you want to delete.",
@@ -808,7 +808,7 @@ class Admin(commands.Cog):
         return choices[:25]
 
     @commands.hybrid_command()
-    @app_commands.guilds(*GuildIDs.ALL_GUILDS)
+    @app_commands.guilds(*GuildIDs.ADMIN_GUILDS)
     @app_commands.describe(user="The user you want to look up.")
     @app_commands.default_permissions(administrator=True)
     @utils.check.is_moderator()

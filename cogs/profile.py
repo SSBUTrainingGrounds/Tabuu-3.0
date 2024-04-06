@@ -190,7 +190,7 @@ class Profile(commands.Cog):
         await ctx.send(f"Successfully deleted your profile, {ctx.author.mention}.")
 
     @commands.hybrid_command()
-    @app_commands.guilds(*GuildIDs.ALL_GUILDS)
+    @app_commands.guilds(*GuildIDs.ADMIN_GUILDS)
     @app_commands.default_permissions(administrator=True)
     @utils.check.is_moderator()
     async def forcedeleteprofile(

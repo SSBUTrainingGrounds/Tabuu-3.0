@@ -111,7 +111,7 @@ class Warn(commands.Cog):
                 )
 
     @commands.hybrid_command()
-    @app_commands.guilds(*GuildIDs.ALL_GUILDS)
+    @app_commands.guilds(*GuildIDs.ADMIN_GUILDS)
     @app_commands.describe(
         member="The member to warn.", reason="The reason for the warning."
     )
@@ -167,7 +167,7 @@ class Warn(commands.Cog):
             await ctx.send(f"{member.mention} has {warns} warning(s).")
 
     @commands.hybrid_command()
-    @app_commands.guilds(*GuildIDs.ALL_GUILDS)
+    @app_commands.guilds(*GuildIDs.ADMIN_GUILDS)
     @app_commands.describe(member="The member to remove all warnings from.")
     @app_commands.default_permissions(administrator=True)
     @utils.check.is_moderator()
@@ -183,7 +183,7 @@ class Warn(commands.Cog):
         await ctx.send(f"Cleared all warnings for {member.mention}.")
 
     @commands.hybrid_command()
-    @app_commands.guilds(*GuildIDs.ALL_GUILDS)
+    @app_commands.guilds(*GuildIDs.ADMIN_GUILDS)
     @app_commands.describe(user="The member to see the warn details of.")
     @app_commands.default_permissions(administrator=True)
     @utils.check.is_moderator()
@@ -220,7 +220,7 @@ class Warn(commands.Cog):
         await ctx.send(embed=embed)
 
     @commands.hybrid_command()
-    @app_commands.guilds(*GuildIDs.ALL_GUILDS)
+    @app_commands.guilds(*GuildIDs.ADMIN_GUILDS)
     @app_commands.describe(
         member="The member to remove a warning of.",
         warn_id="The ID of the warning to remove.",

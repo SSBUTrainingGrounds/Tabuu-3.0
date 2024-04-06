@@ -44,7 +44,7 @@ class Starboard(commands.Cog):
             return
 
     @commands.hybrid_group()
-    @app_commands.guilds(*GuildIDs.ALL_GUILDS)
+    @app_commands.guilds(*GuildIDs.ADMIN_GUILDS)
     @app_commands.default_permissions(administrator=True)
     @utils.check.is_moderator()
     async def starboard(self, ctx: commands.Context) -> None:
@@ -62,7 +62,7 @@ class Starboard(commands.Cog):
         await ctx.send(embed=embed)
 
     @starboard.command(name="emoji")
-    @app_commands.guilds(*GuildIDs.ALL_GUILDS)
+    @app_commands.guilds(*GuildIDs.ADMIN_GUILDS)
     @app_commands.describe(emoji="The new emoji for the starboard.")
     @app_commands.default_permissions(administrator=True)
     @utils.check.is_moderator()
@@ -93,7 +93,7 @@ class Starboard(commands.Cog):
         await ctx.send(f"Changed the emoji to: `{emoji}`")
 
     @starboard.command(name="threshold")
-    @app_commands.guilds(*GuildIDs.ALL_GUILDS)
+    @app_commands.guilds(*GuildIDs.ADMIN_GUILDS)
     @app_commands.describe(threshold="The new threshold for the starboard.")
     @app_commands.default_permissions(administrator=True)
     @utils.check.is_moderator()

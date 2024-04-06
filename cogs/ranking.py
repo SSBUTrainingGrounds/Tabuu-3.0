@@ -386,7 +386,7 @@ class Ranking(commands.Cog):
         await ctx.send(message)
 
     @commands.hybrid_command(aliases=["forcereportgame"], cooldown_after_parsing=True)
-    @app_commands.guilds(*GuildIDs.ALL_GUILDS)
+    @app_commands.guilds(*GuildIDs.ADMIN_GUILDS)
     @app_commands.describe(
         winner="The winner of the match.", loser="The loser of the match."
     )
@@ -1138,7 +1138,7 @@ class Ranking(commands.Cog):
         await ctx.send(embed=embed)
 
     @commands.hybrid_command()
-    @app_commands.guilds(*GuildIDs.ALL_GUILDS)
+    @app_commands.guilds(*GuildIDs.ADMIN_GUILDS)
     @app_commands.default_permissions(administrator=True)
     @utils.check.is_moderator()
     async def recentmatches(self, ctx: commands.Context) -> None:
@@ -1194,7 +1194,7 @@ class Ranking(commands.Cog):
         await ctx.send(embed=embed)
 
     @commands.hybrid_command()
-    @app_commands.guilds(*GuildIDs.ALL_GUILDS)
+    @app_commands.guilds(*GuildIDs.ADMIN_GUILDS)
     @app_commands.default_permissions(administrator=True)
     @utils.check.is_moderator()
     async def matchhistory(self, ctx: commands.Context, user: discord.User) -> None:
@@ -1251,7 +1251,7 @@ class Ranking(commands.Cog):
         await ctx.send(embed=embed)
 
     @commands.hybrid_command()
-    @app_commands.guilds(*GuildIDs.ALL_GUILDS)
+    @app_commands.guilds(*GuildIDs.ADMIN_GUILDS)
     @app_commands.default_permissions(administrator=True)
     @utils.check.is_moderator()
     async def deletematch(self, ctx: commands.Context, match_id: int) -> None:

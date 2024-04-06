@@ -34,7 +34,7 @@ class Badge(commands.Cog):
             await db.commit()
 
     @commands.hybrid_group()
-    @app_commands.guilds(*GuildIDs.ALL_GUILDS)
+    @app_commands.guilds(*GuildIDs.ADMIN_GUILDS)
     @app_commands.default_permissions(administrator=True)
     @utils.check.is_moderator()
     async def badge(self, ctx: commands.Context) -> None:
@@ -56,7 +56,7 @@ class Badge(commands.Cog):
         await ctx.send(embed=embed)
 
     @badge.command(name="add")
-    @app_commands.guilds(*GuildIDs.ALL_GUILDS)
+    @app_commands.guilds(*GuildIDs.ADMIN_GUILDS)
     @app_commands.describe(
         user="The user to add the badges to.", badges="The badge(s) to add."
     )
@@ -117,7 +117,7 @@ class Badge(commands.Cog):
         await ctx.send(f"Added badge(s) {' '.join(added_badges)} to {user.mention}.")
 
     @badge.command(name="remove")
-    @app_commands.guilds(*GuildIDs.ALL_GUILDS)
+    @app_commands.guilds(*GuildIDs.ADMIN_GUILDS)
     @app_commands.describe(
         user="The user to remove the badge from.", badge="The badge to remove."
     )
@@ -165,7 +165,7 @@ class Badge(commands.Cog):
         await ctx.send(f"Removed badge {badge} from {user.mention}.")
 
     @badge.command(name="clear")
-    @app_commands.guilds(*GuildIDs.ALL_GUILDS)
+    @app_commands.guilds(*GuildIDs.ADMIN_GUILDS)
     @app_commands.describe(user="The user to remove all badges from.")
     @app_commands.default_permissions(administrator=True)
     @utils.check.is_moderator()
@@ -191,7 +191,7 @@ class Badge(commands.Cog):
         await ctx.send(f"Cleared all badges from {user.mention}.")
 
     @badge.command(name="setinfo")
-    @app_commands.guilds(*GuildIDs.ALL_GUILDS)
+    @app_commands.guilds(*GuildIDs.ADMIN_GUILDS)
     @app_commands.describe(
         badge="The badge you want to add information about.",
         info_text="The new information text for the badge.",
@@ -245,7 +245,7 @@ class Badge(commands.Cog):
         await ctx.send(f"Updated badgeinfo of {badge} to: \n`{info_text}`")
 
     @commands.hybrid_command()
-    @app_commands.guilds(*GuildIDs.ALL_GUILDS)
+    @app_commands.guilds(*GuildIDs.ADMIN_GUILDS)
     @app_commands.describe(badge="The badge you want to see the details of.")
     async def badgeinfo(self, ctx: commands.Context, badge: str) -> None:
         """Gets you information about a given badge."""
