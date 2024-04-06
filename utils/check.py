@@ -1,7 +1,7 @@
 import discord
 from discord.ext import commands
 
-from utils.ids import BGRoleIDs, TGRoleIDs, GuildIDs
+from utils.ids import BGRoleIDs, GuildIDs, TGRoleIDs
 
 
 def is_moderator():
