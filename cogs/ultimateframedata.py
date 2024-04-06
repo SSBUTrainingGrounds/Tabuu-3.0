@@ -237,7 +237,7 @@ class UltimateFrameData(commands.Cog):
             timed_out = await view.wait()
 
             if timed_out or view.selected_move is None:
-                await ctx.send("You didn't select a move.")
+                await ctx.reply("You didn't select a move.")
                 return
 
             move = view.selected_move
@@ -269,7 +269,7 @@ class UltimateFrameData(commands.Cog):
         timed_out = await view.wait()
 
         if timed_out or view.selected_move is None:
-            await ctx.send("You didn't select a move.")
+            await ctx.reply("You didn't select a move.")
             return
 
         # The move can be either None, "Stats" or a move tuple, directly queried from the database.
