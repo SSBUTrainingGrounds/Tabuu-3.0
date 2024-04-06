@@ -1,7 +1,7 @@
 import discord
 from discord.ext import commands
 
-from utils.ids import BGRoleIDs, TGRoleIDs
+from utils.ids import BGRoleIDs, TGRoleIDs, GuildIDs
 
 
 def is_moderator():
@@ -19,6 +19,11 @@ def is_moderator():
         # If the command is invoked in dm's we return the error immediately.
         if ctx.guild is None:
             raise commands.MissingPermissions(["Moderator"])
+
+        if ctx.guild.id not in [x.id for x in GuildIDs.ADMIN_GUILDS]:
+            raise commands.MissingPermissions(
+                ["This guild is not allowed to do Moderation actions."]
+            )
 
         # First we check if the author is the guild owner.
         if ctx.guild.owner and ctx.guild.owner.id == ctx.author.id:
