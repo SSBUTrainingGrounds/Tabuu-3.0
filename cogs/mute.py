@@ -39,7 +39,7 @@ class Mute(commands.Cog):
                 await db.commit()
 
         # Tries to add the muted roles in each server.
-        for guild_id in GuildIDs.MOD_GUILDS:
+        for guild_id in [x.id for x in GuildIDs.ADMIN_GUILDS]:
             guild = self.bot.get_guild(guild_id)
             muted_role = discord.utils.get(
                 guild.roles, id=GetIDFunctions.get_muted_role(guild_id)
@@ -68,7 +68,7 @@ class Mute(commands.Cog):
             await db.commit()
 
         # Tries to remove the muted roles in each server.
-        for guild_id in GuildIDs.MOD_GUILDS:
+        for guild_id in [x.id for x in GuildIDs.ADMIN_GUILDS]:
             guild = self.bot.get_guild(guild_id)
             muted_role = discord.utils.get(
                 guild.roles, id=GetIDFunctions.get_muted_role(guild_id)
@@ -86,7 +86,7 @@ class Mute(commands.Cog):
     async def add_timeout(self, member: discord.Member, time: datetime) -> None:
         """Tries to add the timeout on both servers."""
 
-        for guild_id in GuildIDs.MOD_GUILDS:
+        for guild_id in [x.id for x in GuildIDs.ADMIN_GUILDS]:
             guild = self.bot.get_guild(guild_id)
             if guild_member := guild.get_member(member.id):
                 try:
@@ -100,7 +100,7 @@ class Mute(commands.Cog):
     async def remove_timeout(self, member: discord.Member) -> None:
         """Tries to remove the timeout on both servers."""
 
-        for guild_id in GuildIDs.MOD_GUILDS:
+        for guild_id in [x.id for x in GuildIDs.ADMIN_GUILDS]:
             guild = self.bot.get_guild(guild_id)
             if guild_member := guild.get_member(member.id):
                 try:

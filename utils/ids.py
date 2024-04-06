@@ -45,13 +45,15 @@ class GuildNames:
 class GuildIDs:
     """The unique Server IDs."""
 
-    TRAINING_GROUNDS = 739299507795132486
-    BATTLEGROUNDS = 915395890775216188
+    TRAINING_GROUNDS = 775528948683374632
+    BATTLEGROUNDS = 928984979508199455
     # This is done for application commands, we need a list of guild objects.
     ALL_GUILDS = [discord.Object(id=TRAINING_GROUNDS), discord.Object(id=BATTLEGROUNDS)]
-    # The list of guilds where mutes/timeouts etc. carry over.
-    # This is its own list, since you might want to add the bot to guilds where mutes do not apply.
-    MOD_GUILDS = [TRAINING_GROUNDS, BATTLEGROUNDS]
+    # The list of guilds where the bot does admin stuff.
+    ADMIN_GUILDS = [
+        discord.Object(id=TRAINING_GROUNDS),
+        discord.Object(id=BATTLEGROUNDS),
+    ]
 
 
 class AdminVars:
