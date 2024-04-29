@@ -6,6 +6,7 @@ from discord.ext import commands
 
 import utils.logger
 import utils.sqlite
+import utils.startup
 
 
 class Tabuu3(commands.Bot):
@@ -21,7 +22,7 @@ class Tabuu3(commands.Bot):
         self.main_prefix = "%"
 
         # To be used in the stats command.
-        self.version_number = "9.36.0"
+        self.version_number = "9.37.0"
 
         self.matchmaking_pings = {
             "singles": {},
@@ -45,6 +46,8 @@ class Tabuu3(commands.Bot):
     async def setup_hook(self) -> None:
         # We need to set up some stuff at startup.
         utils.logger.create_logger()
+        utils.startup.generate_files()
+
         await utils.sqlite.setup_db()
         await utils.sqlite.setup_ufd()
 

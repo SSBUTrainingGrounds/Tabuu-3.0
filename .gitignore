@@ -16,3 +16,9 @@ token.txt
 
 # database
 *.db
+
+# Contains words that get you automatically warned
+badwords.txt
+
+# Contains the bot's starboard config
+starboard.json
