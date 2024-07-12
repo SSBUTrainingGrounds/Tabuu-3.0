@@ -24,4 +24,4 @@ jobs:
           black . --check --verbose
       - name: Run ruff
         run: |
-          ruff . 
+          ruff check . 
