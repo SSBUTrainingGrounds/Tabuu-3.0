@@ -1,5 +1,5 @@
 aiosqlite==0.20.0
-black==24.4.2
+black==24.8.0
 colorthief==0.2.1
 dateparser==1.2.0
 deep-translator==1.11.4
