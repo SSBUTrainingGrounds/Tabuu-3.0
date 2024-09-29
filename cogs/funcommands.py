@@ -308,7 +308,7 @@ class Funcommands(commands.Cog):
             percent = random.randint(1, 150)
             self.parz_coin_value = self.parz_coin_value * (1 + (percent / 100))
         else:
-            percent = random.randint(1, 100)
+            percent = random.randint(1, 85)
             self.parz_coin_value = self.parz_coin_value * (1 - (percent / 100))
 
         await ctx.send(
