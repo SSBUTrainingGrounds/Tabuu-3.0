@@ -13,6 +13,7 @@ class Funcommands(commands.Cog):
 
     def __init__(self, bot: commands.Bot) -> None:
         self.bot = bot
+        self.parz_coin_value = None
 
     @commands.hybrid_command(aliases=["uwu"])
     @app_commands.guilds(*GuildIDs.ALL_GUILDS)
@@ -296,12 +297,21 @@ class Funcommands(commands.Cog):
     @app_commands.guilds(*GuildIDs.ALL_GUILDS)
     async def parzcoin(self, ctx: commands.Context) -> None:
         """The current value of Parz Coin."""
-        amount = random.randint(100, 999)
-        percent = random.randint(0, 100)
+
+        # It will reset every time the bot is restarted, not bothering with persistent storage.
+        if not self.parz_coin_value:
+            self.parz_coin_value = 0.000_000_000_012
+
         direction = random.choice(["UP 📈", "DOWN 📉"])
+        percent = random.randint(1, 100)
+
+        if direction == "UP 📈":
+            self.parz_coin_value = self.parz_coin_value * (1 + (percent / 100))
+        else:
+            self.parz_coin_value = self.parz_coin_value * (1 - (percent / 100))
 
         await ctx.send(
-            f"Parz Coin is {direction} {percent}% in the last hour!\nCurrent worth: 0.00000000{amount} USD"
+            f"Parz Coin is {direction} {percent}% since the last time!\nCurrent worth: {self.parz_coin_value:1.14f} USD"
         )
 
 
