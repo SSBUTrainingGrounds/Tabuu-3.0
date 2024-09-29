@@ -303,11 +303,12 @@ class Funcommands(commands.Cog):
             self.parz_coin_value = 0.000_000_000_012
 
         direction = random.choice(["UP 📈", "DOWN 📉"])
-        percent = random.randint(1, 100)
 
         if direction == "UP 📈":
+            percent = random.randint(1, 150)
             self.parz_coin_value = self.parz_coin_value * (1 + (percent / 100))
         else:
+            percent = random.randint(1, 100)
             self.parz_coin_value = self.parz_coin_value * (1 - (percent / 100))
 
         await ctx.send(
