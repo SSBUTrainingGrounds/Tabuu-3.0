@@ -300,19 +300,26 @@ class Funcommands(commands.Cog):
 
         # It will reset every time the bot is restarted, not bothering with persistent storage.
         if not self.parz_coin_value:
-            self.parz_coin_value = 0.000_000_000_012
+            self.parz_coin_value = 500.0
 
-        direction = random.choice(["UP 📈", "DOWN 📉"])
+        direction = random.choice(["up", "down"])
 
-        if direction == "UP 📈":
+        if self.parz_coin_value > 999.0:
+            direction = "down"
+        elif self.parz_coin_value < 100.0:
+            direction = "up"
+
+        if direction == "up":
             percent = random.randint(1, 150)
-            self.parz_coin_value = self.parz_coin_value * (1 + (percent / 100))
+            self.parz_coin_value *= 1 + (percent / 100)
         else:
-            percent = random.randint(1, 85)
-            self.parz_coin_value = self.parz_coin_value * (1 - (percent / 100))
+            percent = random.randint(1, 75)
+            self.parz_coin_value *= 1 - (percent / 100)
+
+        print_direction = "UP 📈" if direction == "up" else "DOWN 📉"
 
         await ctx.send(
-            f"Parz Coin is {direction} {percent}% since the last time!\nCurrent worth: {self.parz_coin_value:1.14f} USD"
+            f"Parz Coin is **{print_direction} {percent}%** since the last time!\nCurrent value: 0.{self.parz_coin_value:015.0f} USD"
         )
 
 
