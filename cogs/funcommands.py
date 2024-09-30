@@ -304,16 +304,20 @@ class Funcommands(commands.Cog):
 
         direction = random.choice(["up", "down"])
 
+        floor = 1
+
         if self.parz_coin_value > 999.0:
             direction = "down"
+            floor = 40
         elif self.parz_coin_value < 100.0:
             direction = "up"
+            floor = 80
 
         if direction == "up":
-            percent = random.randint(1, 150)
+            percent = random.randint(floor, 150)
             self.parz_coin_value *= 1 + (percent / 100)
         else:
-            percent = random.randint(1, 75)
+            percent = random.randint(floor, 75)
             self.parz_coin_value *= 1 - (percent / 100)
 
         print_direction = "UP 📈" if direction == "up" else "DOWN 📉"
