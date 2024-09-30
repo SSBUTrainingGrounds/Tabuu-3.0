@@ -6,17 +6,17 @@ def test_match_character() -> None:
     assert match_character("mario") == ["<:Mario:929067419861913680>"]
     # more advanced
     assert match_character("incin, wii fit trainer, 4e") == [
-        "<:Incineroar:929086965763145828>",
-        "<:WiiFitTrainer:929086966115483748>",
-        "<:DarkSamus:929068123020202004>",
+        "<:incineroar:1290325020698087435>",
+        "<:wiifittrainer:1290326138907918469>",
+        "<:darksamus:1290324752447049881>",
     ]
 
     # matching one input to more than one char
     assert match_character("chroy, paisy") == [
-        "<:Roy:929069540460097537>",
-        "<:Chrom:929069556243238932>",
-        "<:Peach:929068723829080105>",
-        "<:Daisy:929068737317986324>",
+        "<:roy:1290325851409350729>",
+        "<:chrom:1290324662546464798>",
+        "<:peach:1290325604289220669>",
+        "<:daisy:1290324725612019773>",
     ]
 
 
