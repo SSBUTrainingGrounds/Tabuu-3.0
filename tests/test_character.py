@@ -3,7 +3,7 @@ from utils.character import get_single_character_name, match_character
 
 def test_match_character() -> None:
     # some basic matching
-    assert match_character("mario") == ["<:Mario:929067419861913680>"]
+    assert match_character("mario") == ["<:mario:1290325306351288373>"]
     # more advanced
     assert match_character("incin, wii fit trainer, 4e") == [
         "<:incineroar:1290325020698087435>",
