@@ -304,7 +304,7 @@ class Funcommands(commands.Cog):
 
         direction = random.choice(["up", "down"])
 
-        floor = 1
+        floor = 0
 
         if self.parz_coin_value > 999.0:
             direction = "down"
@@ -320,10 +320,16 @@ class Funcommands(commands.Cog):
             percent = random.randint(floor, 75)
             self.parz_coin_value *= 1 - (percent / 100)
 
-        print_direction = "UP 📈" if direction == "up" else "DOWN 📉"
+        if percent == 0:
+            print_str = "Parz Coin is **UNCHANGED** since last time!"
+        else:
+            print_direction = "UP 📈" if direction == "up" else "DOWN 📉"
+            print_str = (
+                f"Parz Coin is **{print_direction} {percent}%** since last time!"
+            )
 
         await ctx.send(
-            f"Parz Coin is **{print_direction} {percent}%** since the last time!\nCurrent value: 0.{self.parz_coin_value:015.0f} USD"
+            f"{print_str}\nCurrent value: 0.{self.parz_coin_value:015.0f} USD"
         )
 
 
