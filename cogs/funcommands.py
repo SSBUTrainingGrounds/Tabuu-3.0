@@ -302,28 +302,30 @@ class Funcommands(commands.Cog):
         if not self.parz_coin_value:
             self.parz_coin_value = 500.0
 
-        direction = random.choice(["up", "down"])
-
-        floor = 1
+        floor = -75
+        ceiling = 150
 
         if self.parz_coin_value > 999.0:
-            direction = "down"
-            floor = 40
-        elif self.parz_coin_value < 100.0:
-            direction = "up"
+            ceiling = -40
+        elif self.parz_coin_value < 100:
             floor = 80
 
-        if direction == "up":
-            percent = random.randint(floor, 150)
-            self.parz_coin_value *= 1 + (percent / 100)
-        else:
-            percent = random.randint(floor, 75)
-            self.parz_coin_value *= 1 - (percent / 100)
+        # Need the weights for an even distribution of ups and downs
+        weights = [2 if i < 0 else 1 for i in range(floor, ceiling + 1)]
 
-        print_direction = "UP 📈" if direction == "up" else "DOWN 📉"
+        percent = random.choices(range(floor, ceiling + 1), weights=weights, k=1)[0]
+
+        self.parz_coin_value *= 1 + (percent / 100.0)
+
+        if percent > 0:
+            print_message = f"UP 📈 {percent}%"
+        elif percent < 0:
+            print_message = f"DOWN 📉 {abs(percent)}%"
+        else:
+            print_message = "UNCHANGED 😐"
 
         await ctx.send(
-            f"Parz Coin is **{print_direction} {percent}%** since the last time!\nCurrent value: 0.{self.parz_coin_value:015.0f} USD"
+            f"Parz Coin is **{print_message}** since the last time!\nCurrent value: 0.{self.parz_coin_value:015.0f} USD"
         )
 
 
