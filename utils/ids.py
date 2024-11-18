@@ -59,7 +59,7 @@ class GuildIDs:
 class AdminVars:
     """Admin specific strings, like the Server Owner and Head Moderators."""
 
-    APPEAL_MESSAGE = "If you would like to discuss your punishment, please contact @parz, @phxenix or @fahimer on discord."
+    APPEAL_MESSAGE = "If you would like to discuss your punishment, please contact @parz or @phxenix on discord."
     # Google doc with ban records, leave an empty string if you dont have one.
     BAN_RECORDS = "https://docs.google.com/spreadsheets/d/1EZhyKa69LWerQl0KxeVJZuLFFjBIywMRTNOPUUKyVCc/"
     # Google form for ban appeals, this will get sent to users before they get banned so they know where to appeal.
