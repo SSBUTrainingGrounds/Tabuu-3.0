@@ -70,7 +70,7 @@ class TournamentReminders:
     """Contains variables used in the Tournament Reminder Pings."""
 
     # Change this to False to disable pings.
-    PING_ENABLED = True
+    PING_ENABLED = False
     # The timezone the other times are based on. Also used as a default for %reminder.
     # The list of available timezones can be found here: https://en.wikipedia.org/wiki/List_of_tz_database_time_zones.
     TIMEZONE = "US/Eastern"
