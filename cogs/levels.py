@@ -487,7 +487,7 @@ class Levels(commands.Cog):
                 user = await self.bot.fetch_user(user_id)
 
             embed.add_field(
-                name=f"#{rank} - {str(user)}",
+                name=f"#{rank} - {discord.utils.escape_markdown(str(user))}",
                 value=f"Level {level} - {xp:,}XP ({messages:,} messages)",
                 inline=False,
             )

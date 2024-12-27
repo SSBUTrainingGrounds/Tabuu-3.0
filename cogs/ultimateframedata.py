@@ -1,4 +1,4 @@
-from typing import Optional
+from typing import Optional, Union
 
 import aiosqlite
 import discord
@@ -97,23 +97,25 @@ class UltimateFrameData(commands.Cog):
             stat = stats[i + 2]
             [title, value] = stat.split(" — ", 1)
             # The characters are always gonna be 89 for Smash Ultimate now.
-            description += f"**{title}**: {value} (#{s}/89)\n"
+            description += (
+                f"**{title}**: {discord.utils.escape_markdown(value)} (#{s}/89)\n"
+            )
 
         # SH / FH and Fall Speeds
         for s in stats[len(rank_list) + 2 : len(rank_list) + 4]:
             [title, value] = s.split(" — ", 1)
-            description += f"**{title}**: {value}\n"
+            description += f"**{title}**: {discord.utils.escape_markdown(value)}\n"
 
         # These are the Out of Shield options.
         for i, s in enumerate(stats[len(rank_list) + 4 : len(rank_list) + 7]):
             [title, value] = s.split(" — ", 1)
             title = title.replace("Out of Shield, ", f"**OOS #{i + 1}**: ")
-            description += f"{title} - {value}\n"
+            description += f"{title} - {discord.utils.escape_markdown(value)}\n"
 
         # And then the remaining stats.
         for s in stats[len(rank_list) + 7 :]:
             [title, value] = s.split(" — ", 1)
-            description += f"**{title}**: {value}\n"
+            description += f"**{title}**: {discord.utils.escape_markdown(value)}\n"
 
         embed = discord.Embed(
             title=f"{character.title()} - Stats",
@@ -125,7 +127,9 @@ class UltimateFrameData(commands.Cog):
 
         await ctx.send(embed=embed)
 
-    async def get_move_embed(self, move: [str, str, Optional[str]]) -> discord.Embed:
+    async def get_move_embed(
+        self, move: Union[str, str, Optional[str]]
+    ) -> discord.Embed:
         """Gets the move embed for a specific move."""
         movename = f"{move[4].title()}"
 
@@ -148,9 +152,9 @@ class UltimateFrameData(commands.Cog):
         # Starting at 5 because the first 4 elements are the character, input, move name and full move name, and special hitbox.
         for i, title in enumerate(titles):
             if move[i + 5]:
-                description += f"**{title}**: {move[i + 5].replace('**', '--')}\n"
+                description += f"**{title}**: {discord.utils.escape_markdown(move[i + 5].replace('**', '--'))}\n"
 
-        description += f"**Notes**: {move[-1]}"
+        description += f"**Notes**: {discord.utils.escape_markdown(move[-1])}"
 
         embed = discord.Embed(
             title=movename,
@@ -378,7 +382,6 @@ class UltimateFrameData(commands.Cog):
     async def show_error(
         self, ctx: commands.Context, error: commands.CommandError
     ) -> None:
-
         await ctx.send(error)
 
 
