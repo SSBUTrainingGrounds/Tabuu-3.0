@@ -7,5 +7,5 @@ discord.py==2.4.0
 isort==5.13.2
 psutil==6.1.1
 ruff==0.8.4
-stringmatch==0.14.5
+stringmatch==0.14.6
 trueskill==0.4.5
