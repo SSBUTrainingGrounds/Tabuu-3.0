@@ -203,8 +203,8 @@ class UltimateFrameData(commands.Cog):
     ) -> None:
         """Handles displaying the move data for a character."""
 
-        if (" special ") in move_name:
-            move_name.replace(" special ", " B ")
+        if (" special") in move_name:
+            move_name.replace(" special", " B")
 
         move_name = self.replace_common_abbreviations(move_name)
 
