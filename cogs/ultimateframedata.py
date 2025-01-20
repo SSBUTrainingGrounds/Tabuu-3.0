@@ -190,7 +190,6 @@ class UltimateFrameData(commands.Cog):
             "fsmash": "Forward Smash",
             "usmash": "Up Smash",
             "dsmash": "Down Smash",
-            "special": "B",
         }
 
         for k, v in replacements.items():
@@ -203,6 +202,9 @@ class UltimateFrameData(commands.Cog):
         self, ctx: commands.Context, character: str, move_name: str
     ) -> None:
         """Handles displaying the move data for a character."""
+
+        if (" special ") in move_name:
+            move_name.replace(" special ", " B ")
 
         move_name = self.replace_common_abbreviations(move_name)
 
