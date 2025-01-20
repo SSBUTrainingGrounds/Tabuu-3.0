@@ -190,6 +190,7 @@ class UltimateFrameData(commands.Cog):
             "fsmash": "Forward Smash",
             "usmash": "Up Smash",
             "dsmash": "Down Smash",
+            "special": "B",
         }
 
         for k, v in replacements.items():
