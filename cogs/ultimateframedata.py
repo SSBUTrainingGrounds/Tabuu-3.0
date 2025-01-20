@@ -154,7 +154,12 @@ class UltimateFrameData(commands.Cog):
             if move[i + 5]:
                 description += f"**{title}**: {discord.utils.escape_markdown(move[i + 5].replace('**', '--'))}\n"
 
-        description += f"**Notes**: {discord.utils.escape_markdown(move[-1])}"
+        notes = move[-1]
+
+        if not notes:
+            notes = "--"
+
+        description += f"**Notes**: {discord.utils.escape_markdown(notes)}"
 
         embed = discord.Embed(
             title=movename,
