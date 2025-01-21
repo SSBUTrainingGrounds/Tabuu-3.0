@@ -191,7 +191,7 @@ class Stats(commands.Cog):
             return
 
         await ctx.send(
-            f"Users with the {role_message} ({len(intersect)}):\n{', '.join(str(member) for member in intersect)}",
+            f"Users with the {role_message} ({len(intersect)}):\n{', '.join(escape_everything(str(member)) for member in intersect)}",
             file=f,
         )
 
