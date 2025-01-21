@@ -164,8 +164,8 @@ Last updated: 26 May 2023
     -   Info: Shows you the current level leaderboard.
 -   **%leaderboard**
     -   Info: Gets you the Top 10 rated players of our ranked matchmaking system.
--   **%listrole** `<role>`
-    -   Info: Lists out every Member with a certain role. The bot first tries to use the Role ID or Role mention, after that it searches for the closest match for the role name.
+-   **%listrole** `<roles>`
+    -   Info: Lists out every Member with a certain role. If you specify multiple roles, separated by commas, it will give you the intersection of all users with those roles. The bot first tries to use the Role ID or Role mention, after that it searches for the closest match for the role name.
     -   Example: `%listrole first class`
     -   Aliases: listroles
 -   **%lookup** `<@user>`
@@ -311,7 +311,7 @@ Last updated: 26 May 2023
     -   Aliases: serverinfo
 -   **%setupmodmailbutton**
     -   Info: **Moderator only. Slash version unavailable.** Sets up a new button to listen to, for creating modmail threads. Should really only be used once. Slash version unavailable deliberately because of that very reason.
--   **%show** `<character> <move_name: Optional>`  
+-   **%show** `<character> <move_name: Optional>`
     -   Info: Shows you the data of a character's move, sourced from Ultimateframedata. If you do not specify a move, or specify the move "Stats", it will show you the general stats of the character. Tries to match the character name and move name to the closest match, the actual move names will work (Darkest Lariat), as well as the technical names (Neutral B). If the character's name is more than one word **and you are not using the slash command**, you need to wrap the name in quotation marks or use a one-worded alias.
     -   Example: `%show incin side b`
     -   Aliases: s, v
@@ -398,10 +398,11 @@ Last updated: 26 May 2023
     -   Info: Ask a question and you get a random Member that is currently online as a response. Does not work in DMs.
     -   Example: `%who is the most beautiful user?`
 -   **%xp**
-    - Info: **Slash version unavailable. Moderator only.** Group command that lists the subcommands and their usage. The available properties to edit are: add, remove. No slash version because this only lists the other commands.
+    -   Info: **Slash version unavailable. Moderator only.** Group command that lists the subcommands and their usage. The available properties to edit are: add, remove. No slash version because this only lists the other commands.
 -   **%xp add** `<@member> <amount>`
-    - Info: **Moderator only.** Adds the specified amount of XP to the mentioned Member. Mention the Member or use Member ID.
-    - Example: `%xp add @ExampleUser 100`
+    -   Info: **Moderator only.** Adds the specified amount of XP to the mentioned Member. Mention the Member or use Member ID.
+    -   Example: `%xp add @ExampleUser 100`
 -   **%xp remove** `<@member> <amount>`
-    - Info: **Moderator only.** Removes the specified amount of XP from the mentioned Member. Mention the Member or use Member ID.
-    - Example: `%xp remove @ExampleUser 100`
+    -   Info: **Moderator only.** Removes the specified amount of XP from the mentioned Member. Mention the Member or use Member ID.
+    -   Example: `%xp remove @ExampleUser 100`
+

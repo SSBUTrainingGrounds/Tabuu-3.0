@@ -152,7 +152,7 @@ class Responses(discord.ui.Select):
 - ```{self.prefix}show <character> <move>```\n - Info about a move of a character, or the character's stats if left empty.
 - ```{self.prefix}macro <macro>```\n - Info about one macro, or lists every macro registered.
 - ```{self.prefix}roleinfo <role>```\n - Displays Role info.
-- ```{self.prefix}listrole <role>```\n - Displays all the members with a certain Role.
+- ```{self.prefix}listrole <roles>```\n - Displays all the members with a certain Role, or intersections of members with Roles separated by commas.
 - ```{self.prefix}userinfo <member>```\n - Shows user info of a mentioned member.
 - ```{self.prefix}badgeinfo <emoji>```\n - Shows information about a badge.
 - ```{self.prefix}warns <@user>```\n - Displays the number of warnings of a user.

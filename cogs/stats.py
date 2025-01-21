@@ -155,11 +155,16 @@ class Stats(commands.Cog):
             utils.search.search_role(ctx.guild, role) for role in roles.split(",")
         ]
 
+        def escape_everything(input: str) -> str:
+            return discord.utils.escape_mentions(discord.utils.escape_markdown(input))
+
         # Need different messages for singular and plural.
         if len(role_list) == 1:
-            role_message = f"{role_list[0].name} role"
+            role_message = f"{escape_everything(role_list[0].name)} role"
         else:
-            role_message = f"{', '.join(discord.utils.escape_markdown(role.name) for role in role_list)} roles"
+            role_message = (
+                f"{', '.join(escape_everything(role.name) for role in role_list)} roles"
+            )
 
         # Getting the overlap between all of the role's members.
         intersect = list(
