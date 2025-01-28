@@ -4,7 +4,7 @@ colorthief==0.2.1
 dateparser==1.2.0
 deep-translator==1.11.4
 discord.py==2.4.0
-isort==5.13.2
+isort==6.0.0
 psutil==6.1.1
 ruff==0.9.3
 stringmatch==0.14.6
