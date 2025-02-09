@@ -133,7 +133,7 @@ class Modmail(commands.Cog):
 
         # We have to add the context command manually.
         self.bot.tree.add_command(
-            report_message, guilds=GuildIDs.ALL_GUILDS, override=True
+            report_message, guilds=GuildIDs.ADMIN_GUILDS, override=True
         )
 
     @commands.Cog.listener()
