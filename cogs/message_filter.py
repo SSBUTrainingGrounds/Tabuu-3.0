@@ -35,6 +35,9 @@ class MessageFilter(commands.Cog):
         if not message.guild:
             return
 
+        if message.guild.id not in [g.id for g in GuildIDs.ADMIN_GUILDS]:
+            return
+
         # Searches for invite links, no need for regex as there are a million ways to disguise invite links anyways.
         # This is just a basic filter which is not designed to stop 100% of invite links coming in
         if (
