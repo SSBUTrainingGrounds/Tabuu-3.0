@@ -1,35 +1,8 @@
 # Here is the place where the unique IDs are stored.
 # Change them as you wish, but keep the names and the types.
-from typing import Optional
+from typing import Optional, Union
 
 import discord
-
-
-class GetIDFunctions:
-    """Contains functions for getting the correct role or channel IDs, given a guild ID."""
-
-    @staticmethod
-    def get_muted_role(guild_id: int) -> Optional[int]:
-        """Gets you the muted role of a given guild."""
-
-        if guild_id == GuildIDs.TRAINING_GROUNDS:
-            return TGRoleIDs.MUTED_ROLE
-        elif guild_id == GuildIDs.BATTLEGROUNDS:
-            return BGRoleIDs.MUTED_ROLE
-        else:
-            return None
-
-    @staticmethod
-    def get_logchannel(guild_id: int) -> Optional[int]:
-        """Gets you the Log Channel ID of a given guild."""
-
-        if guild_id == GuildIDs.TRAINING_GROUNDS:
-            return TGChannelIDs.LOGCHANNEL
-
-        elif guild_id == GuildIDs.BATTLEGROUNDS:
-            return BGChannelIDs.LOGCHANNEL
-        else:
-            return None
 
 
 class GuildNames:
@@ -273,3 +246,67 @@ class Emojis:
 
     # Emojis for the leaderboard ranks, make sure to have 8 with an empty one at the end.
     LEADERBOARD_EMOJIS = ["🥇", "🥈", "🥉", "💎", "💠", "🌸", "🏵️", "💮", ""]
+
+
+class GetIDFunctions:
+    """Contains functions for getting the correct role or channel IDs, given a guild ID."""
+
+    @staticmethod
+    def get_muted_role(guild_id: int) -> Optional[int]:
+        """Gets you the muted role of a given guild."""
+
+        if guild_id == GuildIDs.TRAINING_GROUNDS:
+            return TGRoleIDs.MUTED_ROLE
+        elif guild_id == GuildIDs.BATTLEGROUNDS:
+            return BGRoleIDs.MUTED_ROLE
+        else:
+            return None
+
+    @staticmethod
+    def get_logchannel(guild_id: int) -> Optional[int]:
+        """Gets you the Log Channel ID of a given guild."""
+
+        if guild_id == GuildIDs.TRAINING_GROUNDS:
+            return TGChannelIDs.LOGCHANNEL
+
+        elif guild_id == GuildIDs.BATTLEGROUNDS:
+            return BGChannelIDs.LOGCHANNEL
+        else:
+            return None
+
+    @staticmethod
+    def get_mm_role_class(
+        guild_id: int,
+    ) -> Optional[Union[TGMatchmakingRoleIDs]]:
+        """Gets you the Role ID Class itself of a given guild."""
+
+        if guild_id == GuildIDs.TRAINING_GROUNDS:
+            return TGMatchmakingRoleIDs
+        else:
+            return None
+
+    @staticmethod
+    def get_mm_channel_class(
+        guild_id: int,
+    ) -> Optional[Union[TGArenaChannelIDs]]:
+        """Gets you the Arena ID Class itself of a given guild."""
+
+        if guild_id == GuildIDs.TRAINING_GROUNDS:
+            return TGArenaChannelIDs
+        else:
+            return None
+
+    @staticmethod
+    def get_all_mm_channels() -> list[int]:
+        """Gets you all the possible Arena Channel IDs in a flat list."""
+
+        return [
+            id
+            for channels in [
+                TGArenaChannelIDs.PUBLIC_ARENAS,
+                TGArenaChannelIDs.PRIVATE_ARENAS,
+                TGArenaChannelIDs.OPEN_RANKED_ARENAS,
+                TGArenaChannelIDs.CLOSED_RANKED_ARENAS,
+            ]
+            for id in channels
+        ]

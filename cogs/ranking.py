@@ -11,13 +11,7 @@ from discord.ext import commands, tasks
 import utils.check
 import utils.time
 from utils.character import match_character
-from utils.ids import (
-    Emojis,
-    GuildIDs,
-    GuildNames,
-    TGArenaChannelIDs,
-    TGMatchmakingRoleIDs,
-)
+from utils.ids import Emojis, GetIDFunctions, GuildIDs, GuildNames
 from utils.image import get_dominant_colour
 from views.character_pick import CharacterView
 from views.ranked import ArenaButton, BestOfButtons, PlayerButtons
@@ -40,37 +34,39 @@ class Ranking(commands.Cog):
         """Retrieves the ranked role of a user."""
         rating = self.get_display_rank(player)
 
+        RoleClass = GetIDFunctions.get_mm_role_class(guild.id)
+
         # We multiply the rating by 100 and add 1000, compared to the original
         # Microsoft TrueSkill algorithm. So a rating of 5000 equals a rank of 40,
         # the ranks were used in Halo 3 where 50 was the highest rank.
         # A rating of 40 was also fairly hard to achieve
         # so this is the current max rank for us.
         if rating >= 5000:
-            return discord.utils.get(
-                guild.roles, id=TGMatchmakingRoleIDs.GROUNDS_MASTER
-            )
+            return discord.utils.get(guild.roles, id=RoleClass.GROUNDS_MASTER)
         elif rating >= 4200:
-            return discord.utils.get(guild.roles, id=TGMatchmakingRoleIDs.FIVE_STAR)
+            return discord.utils.get(guild.roles, id=RoleClass.FIVE_STAR)
         elif rating >= 3400:
-            return discord.utils.get(guild.roles, id=TGMatchmakingRoleIDs.FOUR_STAR)
+            return discord.utils.get(guild.roles, id=RoleClass.FOUR_STAR)
         elif rating >= 2600:
-            return discord.utils.get(guild.roles, id=TGMatchmakingRoleIDs.THREE_STAR)
+            return discord.utils.get(guild.roles, id=RoleClass.THREE_STAR)
         elif rating >= 1800:
-            return discord.utils.get(guild.roles, id=TGMatchmakingRoleIDs.TWO_STAR)
+            return discord.utils.get(guild.roles, id=RoleClass.TWO_STAR)
         else:
             # This rank should hopefully also be fairly hard to obtain,
             # if you do not lose every single match.
             # This would equal a rank of below 8 in Halo 3.
-            return discord.utils.get(guild.roles, id=TGMatchmakingRoleIDs.ONE_STAR)
+            return discord.utils.get(guild.roles, id=RoleClass.ONE_STAR)
 
     def get_all_ranked_roles(self, guild: discord.Guild) -> list[discord.Role]:
         """Gets you every ranked role."""
-        role1 = discord.utils.get(guild.roles, id=TGMatchmakingRoleIDs.ONE_STAR)
-        role2 = discord.utils.get(guild.roles, id=TGMatchmakingRoleIDs.TWO_STAR)
-        role3 = discord.utils.get(guild.roles, id=TGMatchmakingRoleIDs.THREE_STAR)
-        role4 = discord.utils.get(guild.roles, id=TGMatchmakingRoleIDs.FOUR_STAR)
-        role5 = discord.utils.get(guild.roles, id=TGMatchmakingRoleIDs.FIVE_STAR)
-        role6 = discord.utils.get(guild.roles, id=TGMatchmakingRoleIDs.GROUNDS_MASTER)
+        RoleClass = GetIDFunctions.get_mm_role_class(guild.id)
+
+        role1 = discord.utils.get(guild.roles, id=RoleClass.ONE_STAR)
+        role2 = discord.utils.get(guild.roles, id=RoleClass.TWO_STAR)
+        role3 = discord.utils.get(guild.roles, id=RoleClass.THREE_STAR)
+        role4 = discord.utils.get(guild.roles, id=RoleClass.FOUR_STAR)
+        role5 = discord.utils.get(guild.roles, id=RoleClass.FIVE_STAR)
+        role6 = discord.utils.get(guild.roles, id=RoleClass.GROUNDS_MASTER)
         return [role1, role2, role3, role4, role5, role6]
 
     async def remove_ranked_roles(
@@ -329,11 +325,12 @@ class Ranking(commands.Cog):
         """The winner of the match uses this to report a ranked set.
         Updates the rating values and ranked roles of the players automatically.
         """
+        ArenaClass = GetIDFunctions.get_mm_channel_class(ctx.guild.id)
 
         if str(ctx.channel.type) == "public_thread":
             if (
-                ctx.channel.parent_id not in TGArenaChannelIDs.OPEN_RANKED_ARENAS
-                and ctx.channel.parent_id not in TGArenaChannelIDs.CLOSED_RANKED_ARENAS
+                ctx.channel.parent_id not in ArenaClass.OPEN_RANKED_ARENAS
+                and ctx.channel.parent_id not in ArenaClass.CLOSED_RANKED_ARENAS
             ):
                 await ctx.send(
                     "Please only use this command in the ranked matchmaking arenas or the threads within."
@@ -342,8 +339,8 @@ class Ranking(commands.Cog):
                 return
         else:
             if (
-                ctx.channel.id not in TGArenaChannelIDs.OPEN_RANKED_ARENAS
-                and ctx.channel.id not in TGArenaChannelIDs.CLOSED_RANKED_ARENAS
+                ctx.channel.id not in ArenaClass.OPEN_RANKED_ARENAS
+                and ctx.channel.id not in ArenaClass.CLOSED_RANKED_ARENAS
             ):
                 await ctx.send(
                     "Please only use this command in the ranked matchmaking arenas or the threads within."
@@ -439,10 +436,12 @@ class Ranking(commands.Cog):
         """Walks you through a ranked match, includes stage bans and reporting the match.
         For a shortcut, use the reportmatch command."""
         # Since only threads have a parent_id, we need a special case for these to not throw any errors.
+        ArenaClass = GetIDFunctions.get_mm_channel_class(ctx.guild.id)
+
         if str(ctx.channel.type) == "public_thread":
             if (
-                ctx.channel.parent_id not in TGArenaChannelIDs.OPEN_RANKED_ARENAS
-                and ctx.channel.parent_id not in TGArenaChannelIDs.CLOSED_RANKED_ARENAS
+                ctx.channel.parent_id not in ArenaClass.OPEN_RANKED_ARENAS
+                and ctx.channel.parent_id not in ArenaClass.CLOSED_RANKED_ARENAS
             ):
                 await ctx.send(
                     "Please only use this command in the ranked matchmaking arenas or the threads within."
@@ -450,8 +449,8 @@ class Ranking(commands.Cog):
                 ctx.command.reset_cooldown(ctx)
                 return
         elif (
-            ctx.channel.id not in TGArenaChannelIDs.OPEN_RANKED_ARENAS
-            and ctx.channel.id not in TGArenaChannelIDs.CLOSED_RANKED_ARENAS
+            ctx.channel.id not in ArenaClass.OPEN_RANKED_ARENAS
+            and ctx.channel.id not in ArenaClass.CLOSED_RANKED_ARENAS
         ):
             await ctx.send(
                 "Please only use this command in the ranked matchmaking arenas or the threads within."
@@ -931,7 +930,8 @@ class Ranking(commands.Cog):
             percent = min(
                 max(
                     round(
-                        ((pos - 1) / len(complete_leaderboard)) * 100, 2  # noqa: F821
+                        ((pos - 1) / len(complete_leaderboard)) * 100,
+                        2,  # noqa: F821
                     ),
                     0.01,
                 ),

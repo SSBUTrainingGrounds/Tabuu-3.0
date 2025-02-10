@@ -6,7 +6,7 @@ from discord import app_commands
 from discord.ext import commands, tasks
 
 import utils.check
-from utils.ids import GuildIDs, TGArenaChannelIDs, TGMatchmakingRoleIDs
+from utils.ids import GetIDFunctions, GuildIDs
 
 
 class Pings(discord.ui.Select):
@@ -55,7 +55,9 @@ class Pings(discord.ui.Select):
 
         timestamp = discord.utils.utcnow().timestamp()
 
-        searches = Matchmaking.get_recent_pings(self, self.values[0].lower(), timestamp)
+        searches = Matchmaking.get_recent_pings(
+            self, self.values[0].lower(), timestamp, interaction.guild_id
+        )
         colour = Matchmaking.get_embed_colour(self, self.values[0].lower())
 
         embed = discord.Embed(
@@ -108,18 +110,20 @@ class Matchmaking(commands.Cog):
     ) -> Optional[discord.Role]:
         """Returns the role of the Matchmaking Type."""
 
+        RoleClass = GetIDFunctions.get_mm_role_class(guild.id)
+
         if mm_type == "singles":
-            return guild.get_role(TGMatchmakingRoleIDs.SINGLES_ROLE)
+            return guild.get_role(RoleClass.SINGLES_ROLE)
         elif mm_type == "doubles":
-            return guild.get_role(TGMatchmakingRoleIDs.DOUBLES_ROLE)
+            return guild.get_role(RoleClass.DOUBLES_ROLE)
         elif mm_type == "funnies":
-            return guild.get_role(TGMatchmakingRoleIDs.FUNNIES_ROLE)
+            return guild.get_role(RoleClass.FUNNIES_ROLE)
         elif mm_type == "ranked":
-            return guild.get_role(TGMatchmakingRoleIDs.RANKED_ROLE)
+            return guild.get_role(RoleClass.RANKED_ROLE)
         else:
             return None
 
-    def get_recent_pings(self, mm_type: str, timestamp: float) -> str:
+    def get_recent_pings(self, mm_type: str, timestamp: float, guild_id: int) -> str:
         """Gets a list with every Ping saved, as long it is not older than the cutoff time."""
 
         user_pings = self.bot.matchmaking_pings[mm_type]
@@ -132,9 +136,20 @@ class Matchmaking(commands.Cog):
 
             if difference < self.bot.matchmaking_ping_time:
                 ping_channel = user_pings[f"{ping}"]["channel"]
-                list_of_searches.append(
-                    f"- <@!{ping}>, in <#{ping_channel}>, <t:{round(ping_timestamp)}:R>\n"
-                )
+                ping_guild = user_pings[f"{ping}"]["guild"]
+
+                if guild_id == ping_guild:
+                    ping_message = f"- <@!{ping}>, in <#{ping_channel}>, <t:{round(ping_timestamp)}:R>\n"
+                else:
+                    ping_guild_object = self.bot.get_guild(ping_guild)
+                    ping_guild_name = (
+                        ping_guild_object.name
+                        if ping_guild_object
+                        else "Unknown Server"
+                    )
+                    ping_message = f"- <@!{ping}>, in {ping_guild_name}, <t:{round(ping_timestamp)}:R>\n"
+
+                list_of_searches.append(ping_message)
 
         list_of_searches.reverse()
 
@@ -146,6 +161,7 @@ class Matchmaking(commands.Cog):
         self.bot.matchmaking_pings[mm_type][str(ctx.author.id)] = {
             "time": timestamp,
             "channel": ctx.channel.id,
+            "guild": ctx.guild.id,
         }
 
     def delete_ping(self, ctx: commands.Context, mm_type: str) -> None:
@@ -184,19 +200,16 @@ class Matchmaking(commands.Cog):
         # First we find out if the message is sent in a public, or private arena channel, or neither.
         open_channel = False
         private_channel = False
+
+        ArenaClass = GetIDFunctions.get_mm_channel_class(ctx.guild.id)
+
         if (
-            mm_type == "ranked"
-            and ctx.channel.id in TGArenaChannelIDs.OPEN_RANKED_ARENAS
-        ) or (
-            mm_type != "ranked" and ctx.channel.id in TGArenaChannelIDs.PUBLIC_ARENAS
-        ):
+            mm_type == "ranked" and ctx.channel.id in ArenaClass.OPEN_RANKED_ARENAS
+        ) or (mm_type != "ranked" and ctx.channel.id in ArenaClass.PUBLIC_ARENAS):
             open_channel = True
         elif (
-            mm_type == "ranked"
-            and ctx.channel.id in TGArenaChannelIDs.CLOSED_RANKED_ARENAS
-        ) or (
-            mm_type != "ranked" and ctx.channel.id in TGArenaChannelIDs.PRIVATE_ARENAS
-        ):
+            mm_type == "ranked" and ctx.channel.id in ArenaClass.CLOSED_RANKED_ARENAS
+        ) or (mm_type != "ranked" and ctx.channel.id in ArenaClass.PRIVATE_ARENAS):
             private_channel = True
 
         wrong_channel_message = (
@@ -246,7 +259,7 @@ class Matchmaking(commands.Cog):
         if open_channel and not timeout:
             self.store_ping(ctx, mm_type, timestamp)
 
-        searches = self.get_recent_pings(mm_type, timestamp)
+        searches = self.get_recent_pings(mm_type, timestamp, ctx.guild.id)
         embed.description = searches
 
         # If you are on timeout, we still send an embed with the most recent pings in the open arenas.
@@ -280,14 +293,17 @@ class Matchmaking(commands.Cog):
     ) -> None:
         """If a matchmaking thread is archived, we delete it. This is separate from the archive_threads task,
         because if a thread is archived manually, we want to delete it as well."""
+
+        ArenaClass = GetIDFunctions.get_mm_channel_class(before.guild.id)
+
         if (
             before.archived is False
             and after.archived is True
             and (
-                after.parent_id in TGArenaChannelIDs.PUBLIC_ARENAS
-                or after.parent_id in TGArenaChannelIDs.PRIVATE_ARENAS
-                or after.parent_id in TGArenaChannelIDs.OPEN_RANKED_ARENAS
-                or after.parent_id in TGArenaChannelIDs.CLOSED_RANKED_ARENAS
+                after.parent_id in ArenaClass.PUBLIC_ARENAS
+                or after.parent_id in ArenaClass.PRIVATE_ARENAS
+                or after.parent_id in ArenaClass.OPEN_RANKED_ARENAS
+                or after.parent_id in ArenaClass.CLOSED_RANKED_ARENAS
             )
         ):
             logger = self.bot.get_logger("bot.matchmaking")
@@ -298,17 +314,8 @@ class Matchmaking(commands.Cog):
     async def archive_threads(self) -> None:
         """Deletes all threads in matchmaking channels that have no activity for 60 minutes.
         Runs every 15 minutes as to not spam the API too much."""
-        # Just flattens the list of lists into a single list and iterates over it.
-        for channel_id in [
-            id
-            for channels in [
-                TGArenaChannelIDs.PUBLIC_ARENAS,
-                TGArenaChannelIDs.PRIVATE_ARENAS,
-                TGArenaChannelIDs.OPEN_RANKED_ARENAS,
-                TGArenaChannelIDs.CLOSED_RANKED_ARENAS,
-            ]
-            for id in channels
-        ]:
+
+        for channel_id in GetIDFunctions.get_all_mm_channels():
             channel = self.bot.get_channel(channel_id)
 
             # These are 100% either going to be GuildChannels or None, but why not rule out everything else too.
