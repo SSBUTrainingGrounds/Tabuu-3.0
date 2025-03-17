@@ -6,6 +6,6 @@ deep-translator==1.11.4
 discord.py==2.5.2
 isort==6.0.1
 psutil==7.0.0
-ruff==0.10.0
+ruff==0.11.0
 stringmatch==0.14.6
 trueskill==0.4.5
