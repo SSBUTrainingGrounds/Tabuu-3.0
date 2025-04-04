@@ -438,7 +438,7 @@ Commands executed: {all_commands[0][0]}
         match = Match(ignore_case=True)
 
         if closest_match := match.get_best_match(
-            move.lower(), self.mana_dict.keys(), score=40
+            move.lower(), [x for x in self.mana_dict.keys()], score=40
         ):
             await ctx.send(
                 f"Please input a valid move! Did you mean `{closest_match.title()}`?"
