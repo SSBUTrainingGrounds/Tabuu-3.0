@@ -3,7 +3,7 @@ black==25.1.0
 colorthief==0.2.1
 dateparser==1.2.2
 deep-translator==1.11.4
-discord.py==2.6.0
+discord.py==2.6.2
 isort==6.0.1
 psutil==7.0.0
 ruff==0.12.10
