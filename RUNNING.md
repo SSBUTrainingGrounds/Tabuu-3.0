@@ -4,7 +4,7 @@
 
 First up, here's what you need to have installed on your machine:
 
-- [Python 3.9 or later](https://www.python.org/downloads/)
+- [Python 3.10 or later](https://www.python.org/downloads/)
 - [git](https://git-scm.com/)
 
 ## Set up Tabuu 3.0 in your environment
