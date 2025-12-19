@@ -318,6 +318,8 @@ Last updated: 26 May 2023
 -   **%singles**
     -   Info: Pings the singles role and stores your ping for 30 Minutes. Also creates a thread and invites the User to it. Has a 10 minute cooldown and can only be used in our arena channels.
     -   Aliases: matchmaking, matchmakingsingles, mmsingles, Singles
+-   **%slander**
+    -   Info: Gives you a true story about the individual known as 'parz'.
 -   **%spotify** `<@member: Optional>`
     -   Info: Posts the song you are currently listening to on Spotify. You need to enable the setting that displays your Spotify Session as your Discord Status for this to work. Does not work in DMs. Member is optional, if not set this will return your own. Mention the Member or use Member ID.
     -   Example: `%spotify @ExampleUser`

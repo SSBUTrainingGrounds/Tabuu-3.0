@@ -261,6 +261,7 @@ class Responses(discord.ui.Select):
 - ```{self.prefix}who <question>```\n - Ask a question and get a random user in response.
 - ```{self.prefix}friendship <@user1> <@user2>```\n - The friendship status between 2 users.
 - ```{self.prefix}parzcoin```\n - The current value of 1 Parz Coin.
+- ```{self.prefix}slander```\n - True stories about the individual known as 'parz'.
     """,
             )
 
