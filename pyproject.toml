@@ -6,4 +6,4 @@ target-version = ['py39']
 profile = "black"
 
 [tool.ruff]
-ignore = ["E501"]
+lint.ignore = ["E501"]
