@@ -149,7 +149,7 @@ class Reminder(commands.Cog):
 
         for reminder in user_reminders:
             # The underscores are user id, channel id and read_time.
-            (_, reminder_id, _, date, _, message) = reminder
+            _, reminder_id, _, date, _, message = reminder
 
             dt_now = discord.utils.utcnow().timestamp()
             timediff = str(datetime.timedelta(seconds=date - dt_now)).split(
@@ -245,7 +245,7 @@ class Reminder(commands.Cog):
             )
 
             for reminder in expired_reminders:
-                (user_id, reminder_id, channel_id, _, read_time, message) = reminder
+                user_id, reminder_id, channel_id, _, read_time, message = reminder
 
                 logger.info(
                     f"Reminder #{reminder_id} from user {user_id} has passed. Notifying user and deleting reminder..."

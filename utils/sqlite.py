@@ -8,42 +8,33 @@ async def setup_db(filepath: str = "./db/database.db") -> None:
     Only really needed for first-time setup, or when we add a table.
     """
     async with aiosqlite.connect(filepath) as db:
-        await db.execute(
-            """CREATE TABLE IF NOT EXISTS warnings(
+        await db.execute("""CREATE TABLE IF NOT EXISTS warnings(
                 user_id INTEGER,
                 warn_id INTEGER,
                 mod_id INTEGER,
                 reason TEXT,
-                timestamp INTEGER)"""
-        )
+                timestamp INTEGER)""")
 
-        await db.execute(
-            """CREATE TABLE IF NOT EXISTS starboardmessages(
+        await db.execute("""CREATE TABLE IF NOT EXISTS starboardmessages(
                 original_id INTEGER,
-                starboard_id INTEGER)"""
-        )
+                starboard_id INTEGER)""")
 
-        await db.execute(
-            """CREATE TABLE IF NOT EXISTS reminder(
+        await db.execute("""CREATE TABLE IF NOT EXISTS reminder(
                 user_id INTEGER,
                 reminder_id INTEGER,
                 channel_id INTEGER,
                 date INTEGER,
                 read_time TEXT,
-                message TEXT)"""
-        )
+                message TEXT)""")
 
-        await db.execute(
-            """CREATE TABLE IF NOT EXISTS reactrole(
+        await db.execute("""CREATE TABLE IF NOT EXISTS reactrole(
                 message_id INTEGER,
                 exclusive INTEGER,
                 rolereq TEXT,
                 emoji TEXT,
-                role INTEGER)"""
-        )
+                role INTEGER)""")
 
-        await db.execute(
-            """CREATE TABLE IF NOT EXISTS profile(
+        await db.execute("""CREATE TABLE IF NOT EXISTS profile(
                 user_id INTEGER,
                 tag TEXT,
                 region TEXT,
@@ -51,71 +42,53 @@ async def setup_db(filepath: str = "./db/database.db") -> None:
                 secondaries TEXT,
                 pockets TEXT,
                 note TEXT,
-                colour INTEGER)"""
-        )
+                colour INTEGER)""")
 
-        await db.execute(
-            """CREATE TABLE IF NOT EXISTS muted(
+        await db.execute("""CREATE TABLE IF NOT EXISTS muted(
                 user_id INTEGER,
-                muted INTEGER)"""
-        )
+                muted INTEGER)""")
 
-        await db.execute(
-            """CREATE TABLE IF NOT EXISTS macros(
+        await db.execute("""CREATE TABLE IF NOT EXISTS macros(
                 name TEXT,
                 payload TEXT,
                 uses INTEGER,
-                author INTEGER)"""
-        )
+                author INTEGER)""")
 
-        await db.execute(
-            """CREATE TABLE IF NOT EXISTS userbadges(
+        await db.execute("""CREATE TABLE IF NOT EXISTS userbadges(
                 user_id INTEGER,
-                badges TEXT)"""
-        )
+                badges TEXT)""")
 
-        await db.execute(
-            """CREATE TABLE IF NOT EXISTS badgeinfo(
+        await db.execute("""CREATE TABLE IF NOT EXISTS badgeinfo(
                 badge TEXT,
-                info TEXT)"""
-        )
+                info TEXT)""")
 
-        await db.execute(
-            """CREATE TABLE IF NOT EXISTS usernames(
+        await db.execute("""CREATE TABLE IF NOT EXISTS usernames(
                 user_id INTEGER,
                 old_name TEXT,
-                timestamp INTEGER)"""
-        )
+                timestamp INTEGER)""")
 
-        await db.execute(
-            """CREATE TABLE IF NOT EXISTS nicknames(
+        await db.execute("""CREATE TABLE IF NOT EXISTS nicknames(
                 user_id INTEGER,
                 old_name TEXT,
                 guild_id INTEGER,
-                timestamp INTEGER)"""
-        )
+                timestamp INTEGER)""")
 
-        await db.execute(
-            """CREATE TABLE IF NOT EXISTS notes(
+        await db.execute("""CREATE TABLE IF NOT EXISTS notes(
                 note_id INTEGER,
                 user_id INTEGER,
                 timestamp INTEGER,
                 mod_id INTEGER,
-                note TEXT)"""
-        )
+                note TEXT)""")
 
-        await db.execute(
-            """CREATE TABLE IF NOT EXISTS trueskill(
+        await db.execute("""CREATE TABLE IF NOT EXISTS trueskill(
                 user_id INTEGER,
                 rating REAL,
                 deviation REAL,
                 wins INTEGER,
                 losses INTEGER,
-                matches TEXT)"""
-        )
+                matches TEXT)""")
 
-        await db.execute(
-            """CREATE TABLE IF NOT EXISTS matches(
+        await db.execute("""CREATE TABLE IF NOT EXISTS matches(
                 match_id INTEGER,
                 winner_id INTEGER,
                 loser_id INTEGER,
@@ -127,23 +100,18 @@ async def setup_db(filepath: str = "./db/database.db") -> None:
                 new_winner_rating REAL,
                 new_winner_deviation REAL,
                 new_loser_rating REAL,
-                new_loser_deviation REAL)"""
-        )
+                new_loser_deviation REAL)""")
 
-        await db.execute(
-            """CREATE TABLE IF NOT EXISTS level(
+        await db.execute("""CREATE TABLE IF NOT EXISTS level(
                 id INTEGER,
                 level INTEGER,
                 xp INTEGER,
-                messages INTEGER)"""
-        )
+                messages INTEGER)""")
 
-        await db.execute(
-            """CREATE TABLE IF NOT EXISTS commands(
+        await db.execute("""CREATE TABLE IF NOT EXISTS commands(
                 command TEXT,
                 uses INTEGER,
-                last_used INTEGER)"""
-        )
+                last_used INTEGER)""")
 
         await db.commit()
 
@@ -159,8 +127,7 @@ async def setup_ufd(filepath: str = "./db/ultimateframedata.db") -> None:
     Only really needed for first-time setup.
     """
     async with aiosqlite.connect(filepath) as db:
-        await db.execute(
-            """CREATE TABLE IF NOT EXISTS moves(
+        await db.execute("""CREATE TABLE IF NOT EXISTS moves(
                 character TEXT,
                 input TEXT,
                 move_name TEXT,
@@ -177,11 +144,9 @@ async def setup_ufd(filepath: str = "./db/ultimateframedata.db") -> None:
                 actionable_before_landing TEXT,
                 damage TEXT,
                 hitbox_gif TEXT,
-                notes TEXT)"""
-        )
+                notes TEXT)""")
 
-        await db.execute(
-            """CREATE TABLE IF NOT EXISTS stats(
+        await db.execute("""CREATE TABLE IF NOT EXISTS stats(
                 character TEXT,
                 image TEXT,
                 weight TEXT,
@@ -198,5 +163,4 @@ async def setup_ufd(filepath: str = "./db/ultimateframedata.db") -> None:
                 oos3 TEXT,
                 shield_grab TEXT,
                 shield_drop TEXT,
-                jump_squat TEXT)"""
-        )
+                jump_squat TEXT)""")

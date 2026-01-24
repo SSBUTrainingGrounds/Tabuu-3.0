@@ -222,11 +222,11 @@ class Ranking(commands.Cog):
         await self.create_ranked_profile(winner)
         await self.create_ranked_profile(loser)
 
-        (winner_rating, _, _, _) = await self.get_player(winner)
-        (loser_rating, _, _, _) = await self.get_player(loser)
+        winner_rating, _, _, _ = await self.get_player(winner)
+        loser_rating, _, _, _ = await self.get_player(loser)
 
         # Getting the updated ratings and updating the database.
-        (new_winner_rating, new_loser_rating) = trueskill.rate_1vs1(
+        new_winner_rating, new_loser_rating = trueskill.rate_1vs1(
             winner_rating, loser_rating
         )
 
@@ -1052,7 +1052,7 @@ class Ranking(commands.Cog):
         all_players = []
 
         for match in season_matches:
-            (_, winner_id, loser_id, _, _, _, _, _, _, _, _, _) = match
+            _, winner_id, loser_id, _, _, _, _, _, _, _, _, _ = match
 
             # We need to check if the player is already in the list, if not we add them.
             if winner_id not in [p["user_id"] for p in all_players]:
@@ -1081,7 +1081,7 @@ class Ranking(commands.Cog):
 
             # And update their ratings.
 
-            (new_winner, new_loser) = trueskill.rate_1vs1(
+            new_winner, new_loser = trueskill.rate_1vs1(
                 winner["rating"], loser["rating"]
             )
 

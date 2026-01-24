@@ -215,7 +215,7 @@ class Levels(commands.Cog):
 
         await self.create_new_profile(message.author)
 
-        (old_level, new_level, _) = await self.add_xp(message.author.id, xp_amount)
+        old_level, new_level, _ = await self.add_xp(message.author.id, xp_amount)
 
         if old_level != new_level:
             role = await self.update_level_role(
@@ -275,7 +275,7 @@ class Levels(commands.Cog):
 
         await self.create_new_profile(user)
 
-        (old_level, new_level, new_xp) = await self.add_xp(user.id, amount)
+        old_level, new_level, new_xp = await self.add_xp(user.id, amount)
 
         if old_level != new_level:
             await self.update_level_role(user, new_level, ctx.guild)
@@ -303,7 +303,7 @@ class Levels(commands.Cog):
 
         await self.create_new_profile(user)
 
-        (old_level, new_level, new_xp) = await self.add_xp(user.id, -amount)
+        old_level, new_level, new_xp = await self.add_xp(user.id, -amount)
 
         if old_level != new_level:
             await self.update_level_role(user, new_level, ctx.guild)

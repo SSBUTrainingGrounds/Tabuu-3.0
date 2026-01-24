@@ -207,7 +207,7 @@ class Warn(commands.Cog):
         # We can add 25 warnings to the embed, you get banned at 5.
         for i, warning in enumerate(user_warnings, start=1):
             # The first one is the user id, but we dont need it here.
-            (_, warn_id, mod_id, reason, timestamp) = warning
+            _, warn_id, mod_id, reason, timestamp = warning
             if len(reason[150:]) > 0:
                 reason = f"{reason[:147]}..."
 

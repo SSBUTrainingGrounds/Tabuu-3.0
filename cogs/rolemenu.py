@@ -248,7 +248,7 @@ class Rolemenu(commands.Cog):
         embed_description = []
 
         for entry in rolemenu_entries:
-            (message_id, exclusive, rolereq, emoji, role) = entry
+            message_id, exclusive, rolereq, emoji, role = entry
             # To make it more readable.
             exclusive = "False" if exclusive == 0 else "True"
 
@@ -330,7 +330,7 @@ class Rolemenu(commands.Cog):
             if all(role not in payload.member.roles for role in roles_required):
                 # Checks if the user does not have the required roles.
                 for entry in matching_entries:
-                    (_, _, _, emoji, role) = entry
+                    _, _, _, emoji, role = entry
                     # We only send a message if the entry matches.
                     if str(payload.emoji) == emoji:
                         wanted_role = discord.utils.get(
@@ -352,7 +352,7 @@ class Rolemenu(commands.Cog):
 
         if exclusive == 1:
             for entry in matching_entries:
-                (_, _, _, _, role) = entry
+                _, _, _, _, role = entry
                 role_tbd = discord.utils.get(
                     self.bot.get_guild(payload.guild_id).roles, id=role
                 )
@@ -360,7 +360,7 @@ class Rolemenu(commands.Cog):
                     await payload.member.remove_roles(role_tbd)
 
         for entry in matching_entries:
-            (_, _, _, emoji, role) = entry
+            _, _, _, emoji, role = entry
             if str(payload.emoji) == emoji:
                 role_tbd = discord.utils.get(
                     self.bot.get_guild(payload.guild_id).roles, id=role
@@ -383,7 +383,7 @@ class Rolemenu(commands.Cog):
             return
 
         for entry in matching_entries:
-            (_, _, _, emoji, role) = entry
+            _, _, _, emoji, role = entry
             # The last 20 digits are the emoji ID, if it is custom.
             # I have to do this because of animated emojis.
             # And this event here doesnt recognise them properly.

@@ -133,7 +133,7 @@ class Profile(commands.Cog):
             await ctx.send("This user did not set up their profile yet.")
             return
 
-        (_, tag, region, mains, secondaries, pockets, note, colour) = matching_user[0]
+        _, tag, region, mains, secondaries, pockets, note, colour = matching_user[0]
 
         badges = " ".join(self.get_badges(user))
 

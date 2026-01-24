@@ -161,7 +161,18 @@ class Usercommands(commands.Cog):
             shortened_question = f"{question[:42]}..."
 
         # The emojis which will be used for reacting to the poll message.
-        reactions = ["1️⃣", "2️⃣", "3️⃣", "4️⃣", "5️⃣", "6️⃣", "7️⃣", "8️⃣", "9️⃣", "🔟"]
+        reactions = [
+            "1️⃣",
+            "2️⃣",
+            "3️⃣",
+            "4️⃣",
+            "5️⃣",
+            "6️⃣",
+            "7️⃣",
+            "8️⃣",
+            "9️⃣",
+            "🔟",
+        ]
 
         # The modal for filling out the poll options.
         # We define it in the function so we have access to the needed variables.
