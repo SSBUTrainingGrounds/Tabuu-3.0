@@ -22,7 +22,7 @@ class MinesweeperGame(discord.ui.View):
     """Contains the logic for the game."""
 
     def __init__(self, player: discord.Member, mine_count: int) -> None:
-        super().__init__(timeout=60)
+        super().__init__(timeout=180)
         self.player: discord.Member = player
         # The dimensions of the board.
         self.grid_x: int = 5
