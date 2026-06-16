@@ -1,7 +1,7 @@
 aiosqlite==0.22.1
 black==26.5.1
 colorthief==0.2.1
-dateparser==1.4.0
+dateparser==1.4.1
 deep-translator==1.11.4
 discord.py==2.7.1
 isort==8.0.1
