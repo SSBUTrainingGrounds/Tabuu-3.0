@@ -111,7 +111,7 @@ class MinesweeperGame(discord.ui.View):
     def get_emoji(self, bomb_count: int) -> str:
         """Gets the emoji for a given Bomb Count."""
         if bomb_count == 0:
-            return ""
+            return "⬛"
         elif bomb_count == 1:
             return "1️⃣"
         elif bomb_count == 2:
