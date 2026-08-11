@@ -10,7 +10,7 @@ class MinesweeperButtons(discord.ui.Button["MinesweeperGame"]):
 
     def __init__(self, button_pos: int) -> None:
         super().__init__(style=discord.ButtonStyle.gray, row=floor((button_pos) / 5))
-        self.label: str = "\u200b"
+        self.emoji: str = "⬛"
         self.column = button_pos % 5
         self.button_pos = button_pos
 
@@ -108,6 +108,27 @@ class MinesweeperGame(discord.ui.View):
         adjacent_cells = self.get_adjacent_cells(row, column)
         return sum(bool(self.mines_list[cell.button_pos]) for cell in adjacent_cells)
 
+    def get_emoji(self, bomb_count: int) -> str:
+        """Gets the emoji for a given Bomb Count."""
+        if bomb_count == 0:
+            return ""
+        elif bomb_count == 1:
+            return "1️⃣"
+        elif bomb_count == 2:
+            return "2️⃣"
+        elif bomb_count == 3:
+            return "3️⃣"
+        elif bomb_count == 4:
+            return "4️⃣"
+        elif bomb_count == 5:
+            return "5️⃣"
+        elif bomb_count == 6:
+            return "6️⃣"
+        elif bomb_count == 7:
+            return "7️⃣"
+        elif bomb_count == 8:
+            return "8️⃣"
+
     def open_cell(self, cell: discord.Button) -> None:
         """Opens a cell."""
         # We return if the cell is already opened, for opening the mines recursively.
@@ -117,7 +138,7 @@ class MinesweeperGame(discord.ui.View):
         bomb_count = self.get_bomb_count(cell.row, cell.column)
         cell.disabled = True
         self.open_adjacent_cells(cell, bomb_count, cell.row, cell.column)
-        cell.label = bomb_count if bomb_count != 0 else "\u200b"
+        cell.emoji = self.get_emoji(bomb_count)
 
     def open_adjacent_cells(
         self, cell: discord.Button, bomb_count: int, row: int, column: int
@@ -130,7 +151,7 @@ class MinesweeperGame(discord.ui.View):
 
         for cell in adjacent_cells:
             new_bomb_count = self.get_bomb_count(cell.row, cell.column)
-            cell.label = new_bomb_count if new_bomb_count != 0 else "\u200b"
+            cell.emoji = self.get_emoji(new_bomb_count)
             self.open_cell(cell)
             cell.disabled = True
 
