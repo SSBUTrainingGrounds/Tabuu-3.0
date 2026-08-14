@@ -1,20 +1,25 @@
 from math import floor
 from random import shuffle
-from typing import Optional
+from typing import override, cast
 
 import discord
 
 
-class MinesweeperButtons(discord.ui.Button["MinesweeperGame"]):
-    """Contains Buttons for the Memory Game."""
+class MinesweeperButton(discord.ui.Button["MinesweeperGame"]):
+    """A single button in the for the Minesweeper Game."""
 
-    def __init__(self, button_pos: int) -> None:
-        super().__init__(style=discord.ButtonStyle.gray, row=floor((button_pos) / 5))
+    def __init__(self, button_pos: int, max_cols: int) -> None:
+        super().__init__(
+            style=discord.ButtonStyle.gray, row=floor((button_pos) / max_cols)
+        )
         self.emoji: str = "⬛"
-        self.column = button_pos % 5
-        self.button_pos = button_pos
+        self.column: int = button_pos % max_cols
+        self.button_pos: int = button_pos
 
+    @override
     async def callback(self, interaction: discord.Interaction) -> None:
+        if self.view is None:
+            return
         await self.view.handle_turn(self, interaction)
 
 
@@ -28,7 +33,7 @@ class MinesweeperGame(discord.ui.View):
         self.grid_x: int = 5
         self.grid_y: int = 5
 
-        self.message: Optional[discord.Message] = None
+        self.message: discord.Message | None = None
 
         # The list of mines as "True"s and the inverse as "False"s.
         self.mine_count: int = mine_count
@@ -37,11 +42,11 @@ class MinesweeperGame(discord.ui.View):
         )
         shuffle(self.mines_list)
 
-        for i in range(25):
-            self.add_item(MinesweeperButtons(i))
+        for i in range(self.grid_x * self.grid_y):
+            _ = self.add_item(MinesweeperButton(i, self.grid_x))
 
     async def handle_turn(
-        self, button: discord.Button, interaction: discord.Interaction
+        self, button: MinesweeperButton, interaction: discord.Interaction
     ) -> None:
         """Handles clicking on a Square in the Minesweeper Game."""
         self.first_turn(button.button_pos)
@@ -49,6 +54,8 @@ class MinesweeperGame(discord.ui.View):
         # If we hit a mine, its game over immediately.
         if self.mines_list[button.button_pos]:
             for b in self.children:
+                # We know the children are all MinesweeperButtons, so we can safely cast them.
+                b = cast(MinesweeperButton, b)
                 if self.mines_list[b.button_pos]:
                     b.style = discord.ButtonStyle.red
                     b.disabled = True
@@ -63,46 +70,49 @@ class MinesweeperGame(discord.ui.View):
 
         if self.check_game_over():
             for b in self.children:
+                b = cast(MinesweeperButton, b)
                 if self.mines_list[b.button_pos]:
                     b.style = discord.ButtonStyle.green
                     b.emoji = "🚩"
 
             self.stop()
 
-            await interaction.response.edit_message(
+            _ = await interaction.response.edit_message(
                 content="🚩 Minesweeper (Solved!) 🚩", view=self
             )
 
         else:
-            await interaction.response.edit_message(
+            _ = await interaction.response.edit_message(
                 content=f"💣 Minesweeper ({self.mine_count} Bombs) 💣", view=self
             )
 
-    def get_adjacent_cells(self, row: int, column: int) -> list[discord.Button]:
+    def get_adjacent_cells(self, row: int, column: int) -> list[MinesweeperButton]:
         """Gets every adjacent cell from a given cell."""
-        adjacent_cells = []
+        # A list of coordinates.
+        adjacent_cells: list[tuple[int, int]] = []
 
         # There are probably a dozen more efficient ways to do this,
         # but we check if an adjacent cell is in bounds and then add it to the list.
         if row > 0:
             adjacent_cells.append((row - 1, column))
-        if row + 1 < self.grid_x:
+        if row + 1 < self.grid_y:
             adjacent_cells.append((row + 1, column))
         if column > 0:
             adjacent_cells.append((row, column - 1))
-        if column + 1 < self.grid_y:
+        if column + 1 < self.grid_x:
             adjacent_cells.append((row, column + 1))
         if row > 0 and column > 0:
             adjacent_cells.append((row - 1, column - 1))
-        if row + 1 < self.grid_x and column + 1 < self.grid_y:
+        if row + 1 < self.grid_y and column + 1 < self.grid_x:
             adjacent_cells.append((row + 1, column + 1))
-        if row > 0 and column + 1 < self.grid_y:
+        if row > 0 and column + 1 < self.grid_x:
             adjacent_cells.append((row - 1, column + 1))
-        if row + 1 < self.grid_x and column > 0:
+        if row + 1 < self.grid_y and column > 0:
             adjacent_cells.append((row + 1, column - 1))
 
         return [
-            self.children[cell[0] * self.grid_x + cell[1]] for cell in adjacent_cells
+            cast(MinesweeperButton, self.children[cell[0] * self.grid_x + cell[1]])
+            for cell in adjacent_cells
         ]
 
     def get_bomb_count(self, row: int, column: int) -> int:
@@ -130,21 +140,26 @@ class MinesweeperGame(discord.ui.View):
             return "7️⃣"
         elif bomb_count == 8:
             return "8️⃣"
+        # This should never happen, but just in case.
+        else:
+            return "❓"
 
-    def open_cell(self, cell: discord.Button) -> None:
+    def open_cell(self, cell: MinesweeperButton) -> None:
         """Opens a cell."""
         # We return if the cell is already opened, for opening the mines recursively.
         if cell.disabled:
             return
 
+        # Can't really happen if the button was properly initialized.
+        if cell.row is None:
+            return
+
         bomb_count = self.get_bomb_count(cell.row, cell.column)
         cell.disabled = True
-        self.open_adjacent_cells(cell, bomb_count, cell.row, cell.column)
+        self.open_adjacent_cells(bomb_count, cell.row, cell.column)
         cell.emoji = self.get_emoji(bomb_count)
 
-    def open_adjacent_cells(
-        self, cell: discord.Button, bomb_count: int, row: int, column: int
-    ) -> None:
+    def open_adjacent_cells(self, bomb_count: int, row: int, column: int) -> None:
         """Opens every adjacent cell if the adjacent Bomb Count is 0."""
         if bomb_count != 0:
             return
@@ -152,6 +167,9 @@ class MinesweeperGame(discord.ui.View):
         adjacent_cells = self.get_adjacent_cells(row, column)
 
         for cell in adjacent_cells:
+            if cell.row is None:
+                continue
+
             new_bomb_count = self.get_bomb_count(cell.row, cell.column)
             cell.emoji = self.get_emoji(new_bomb_count)
             self.open_cell(cell)
@@ -159,15 +177,17 @@ class MinesweeperGame(discord.ui.View):
 
     def check_game_over(self) -> bool:
         """Returns whether or not there are more non-mine cells to open."""
+        buttons = [cast(MinesweeperButton, cell) for cell in self.children]
         return not any(
             not cell.disabled and not self.mines_list[cell.button_pos]
-            for cell in self.children
+            for cell in buttons
         )
 
     def first_turn(self, button_pos: int) -> None:
         """If its the first cell you click, we want the user to always hit a 0."""
         # If a cell is already disabled, it is not the first turn anymore.
         for cell in self.children:
+            cell = cast(MinesweeperButton, cell)
             if cell.disabled:
                 return
 
@@ -175,17 +195,22 @@ class MinesweeperGame(discord.ui.View):
         # there are probably more efficient ways to go about that.
         while (
             self.get_bomb_count(
-                floor(button_pos / self.grid_x), button_pos % self.grid_y
+                floor(button_pos / self.grid_x), button_pos % self.grid_x
             )
             != 0
             or self.mines_list[button_pos]
         ):
             shuffle(self.mines_list)
 
+    @override
     async def interaction_check(self, interaction: discord.Interaction) -> bool:
         return interaction.user == self.player
 
+    @override
     async def on_timeout(self) -> None:
-        await self.message.reply(
+        if self.message is None:
+            return
+
+        _ = await self.message.reply(
             f"The game timed out! {self.player.mention} took too long to pick something!"
         )
