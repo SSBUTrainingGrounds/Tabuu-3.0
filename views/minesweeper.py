@@ -54,6 +54,8 @@ class MinesweeperGame(discord.ui.View):
                     b.disabled = True
                     b.emoji = "💣"
 
+            button.emoji = "💥"
+
             self.stop()
 
         else:
