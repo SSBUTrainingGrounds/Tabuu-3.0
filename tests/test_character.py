@@ -1,4 +1,8 @@
-from utils.character import clean_character_move_name, get_single_character_name, match_character
+from utils.character import (
+    clean_character_move_name,
+    get_single_character_name,
+    match_character,
+)
 
 
 def test_match_character() -> None:
@@ -37,7 +41,16 @@ def test_get_single_character_name() -> None:
 
 def test_clean_character_move_name() -> None:
     assert clean_character_move_name("mario", "fthrow") == ("mario", "fthrow")
-    assert clean_character_move_name("captain", "falcon falcon punch") == ("captain falcon", "falcon punch")
-    assert clean_character_move_name("falcon", "falcon kick") == ("falcon", "falcon kick")
-    assert clean_character_move_name("wii", "fit trainer side b") == ("wii fit trainer", "side b")
+    assert clean_character_move_name("captain", "falcon falcon punch") == (
+        "captain falcon",
+        "falcon punch",
+    )
+    assert clean_character_move_name("falcon", "falcon kick") == (
+        "falcon",
+        "falcon kick",
+    )
+    assert clean_character_move_name("wii", "fit trainer side b") == (
+        "wii fit trainer",
+        "side b",
+    )
     assert clean_character_move_name("K", "ROOL crown") == ("k rool", "crown")
