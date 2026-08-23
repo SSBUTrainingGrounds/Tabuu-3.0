@@ -702,7 +702,7 @@ class Ranking(commands.Cog):
 
         await ctx.send(message)
 
-    @commands.hybrid_command(aliases=["rankstats"])
+    @commands.hybrid_command(aliases=["rankstats", "rank"])
     @app_commands.guilds(*GuildIDs.ALL_GUILDS)
     @app_commands.describe(member="The user you want to see the ranked stats of.")
     async def rankedstats(

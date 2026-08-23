@@ -163,7 +163,6 @@ Last updated: 26 May 2023
 -   **%level** `<@user: Optional>`
     -   Info: Gets you the level rank of the mentioned User, if you dont specify a User, this will get your own.
     -   Example: `%level @ExampleUser`
-    -   Aliases: rank
 -   **%levels**
     -   Info: Shows you the current level leaderboard.
 -   **%leaderboard**
@@ -242,7 +241,7 @@ Last updated: 26 May 2023
 -   **%rankstats** `<@user: Optional>`
     -   Info: Gets you the ranked stats of any optional User. If you dont specify a User, this will get your own stats.
     -   Example: `%rankedstats @ExampleUser`
-    -   Aliases: rankedstats
+    -   Aliases: rankedstats, rank
 -   **%recentmatches**
     -   Info: **Moderator only.** Lists the 20 most recent matches played in ranked matchmaking.
 -   **%recentpings**
