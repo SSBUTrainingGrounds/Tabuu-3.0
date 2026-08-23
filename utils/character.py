@@ -11,41 +11,51 @@ def clean_character_move_name(character: str, move_name: str) -> tuple[str, str]
         Input: captain, falcon down b
         Output: captain falcon, down b
     """
-    character_names = [
-        "kong",  # diddy kong & donkey kong
-        "samus",  # for dark samus
-        "falcon",
-        "climbers",
-        "mario",  # for dr. mario
-        "link",  # young link & toon link
-        "game & watch",  # for mr. game & watch
-        "game and watch",
-        "& watch",  # for "game and watch"
-        "and watch",
-        "knight",
-        "pit",  # for dark pit
-        "suit samus",
-        "dedede",
-        "man",  # pac man & mega man
-        "fit trainer",
-        "mac",
-        "brawler",
-        "swordfighter",
-        "gunner",
-        "jr.",
-        "jr",
-        "junior",
-        "hunt",
-        "k. rool",
-        "k rool",
-        "plant",
-        "& kazooie",
-        "and kazooie",
-        "kazooie",
-        "min",
-    ]
 
-    for name in character_names:
+    character = character.lower()
+    move_name = move_name.lower()
+
+    character_names = {
+        "bowser": ["jr.", "jr", "junior"],
+        "donkey": ["kong"],
+        "diddy": ["kong"],
+        "dark": ["samus", "pit"],
+        "captain": ["falcon"],
+        "ice": ["climbers"],
+        "dr.": ["mario"],
+        "dr": ["mario"],
+        "doctor": ["mario"],
+        "doc": ["mario"],
+        "young": ["link"],
+        "toon": ["link"],
+        "mr.": ["game & watch", "game and watch", "gnw"],
+        "mr": ["game & watch", "game and watch", "gnw"],
+        "mister": ["game & watch", "game and watch"],
+        "game": ["& watch", "and watch"],
+        "meta": ["knight"],
+        "zero": ["suit samus"],
+        "king": ["dedede", "k. rool", "k rool"],
+        "pac": ["man"],
+        "mega": ["man"],
+        "wii": ["fit trainer"],
+        "little": ["mac"],
+        "lil": ["mac"],
+        "mii": ["brawler", "swordfighter", "gunner"],
+        "k.": ["rool"],
+        "k": ["rool"],
+        "piranha": ["plant"],
+        "banjo": ["& kazooie", "and kazooie"],
+        "min": ["min"],
+        "duck": ["hunt", "hunt duo"],
+        "rosalina": ["& luma", "and luma"],
+        # These do not have any stats but there is a special message when you search for them.
+        "pokemon": ["trainer"],
+        "pokémon": ["trainer"],
+        "pyra": ["and mythra"],
+    }
+
+    potential_character_names = character_names.get(character, [])
+    for name in potential_character_names:
         if move_name.startswith(name):
             character = f"{character} {name}".strip()
             move_name = move_name[len(name) :].strip()
