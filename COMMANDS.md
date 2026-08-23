@@ -160,6 +160,10 @@ Last updated: 26 May 2023
 -   **%kick** `<@member> <reason>`
     -   Info: **Moderator only.** Kicks a member from the server. Mention the Member or use Member ID. You will be asked for confirmation before the Member gets kicked. The reason will get logged in Audit logs and also DM'd to the Member, if the bot can DM the Member.
     -   Example: `%kick @ExampleUser what an idiot`
+-   **%level** `<@user: Optional>`
+    -   Info: Gets you the level rank of the mentioned User, if you dont specify a User, this will get your own.
+    -   Example: `%level @ExampleUser`
+    -   Aliases: rank
 -   **%levels**
     -   Info: Shows you the current level leaderboard.
 -   **%leaderboard**
@@ -232,9 +236,6 @@ Last updated: 26 May 2023
     -   Info: Gets you the profile of the mentioned User, if you dont specify a User, this will get your own.
     -   Example: `%profile @ExampleUser`
     -   Aliases: smashprofile, profileinfo
--   **%rank** `<@user: Optional>`
-    -   Info: Gets you the level rank of the mentioned User, if you dont specify a User, this will get your own.
-    -   Example: `%rank @ExampleUser`
 -   **%ranked**
     -   Info: Pings the ranked role and stores your ping for 30 Minutes. Has a 2 minute cooldown and can only be used in our ranked arena channels.
     -   Aliases: rankedmm, rankedmatchmaking, rankedsingles
@@ -407,4 +408,3 @@ Last updated: 26 May 2023
 -   **%xp remove** `<@member> <amount>`
     -   Info: **Moderator only.** Removes the specified amount of XP from the mentioned Member. Mention the Member or use Member ID.
     -   Example: `%xp remove @ExampleUser 100`
-

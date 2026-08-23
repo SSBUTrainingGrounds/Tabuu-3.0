@@ -312,9 +312,9 @@ class Levels(commands.Cog):
             f"Removed {amount}XP from {user.mention}. They are now level {new_level} with {new_xp}XP."
         )
 
-    @commands.hybrid_command()
+    @commands.hybrid_command(aliases=["rank"])
     @app_commands.guilds(*GuildIDs.ALL_GUILDS)
-    async def rank(self, ctx: commands.Context, user: discord.User = None) -> None:
+    async def level(self, ctx: commands.Context, user: discord.User = None) -> None:
         """Shows your level and xp, or the level and xp of another user."""
         if user is None:
             user = ctx.author

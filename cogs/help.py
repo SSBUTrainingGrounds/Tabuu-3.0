@@ -237,7 +237,7 @@ class Responses(discord.ui.Select):
                 color=0x155A00,
                 description=f"""
 - ```{self.prefix}modmail <your message>```\n - Message the Mod Team privately. Only works in my DM channel.
-- ```{self.prefix}rank <@user>```\n - Gets you the rank of a user.
+- ```{self.prefix}level <@user>```\n - Gets you the level of a user.
 - ```{self.prefix}levels```\n - Gets you the level leaderboard of the server.
 - ```{self.prefix}stagelist```\n - Our Stagelist for Crew Battles.
 - ```{self.prefix}avatar <@user>```\n - Gets you the avatar of a user.
