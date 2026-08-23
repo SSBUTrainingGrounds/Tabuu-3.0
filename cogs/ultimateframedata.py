@@ -6,7 +6,7 @@ from discord import app_commands
 from discord.ext import commands
 from stringmatch import Match
 
-from utils.character import get_single_character_name
+from utils.character import clean_character_move_name, get_single_character_name
 from utils.ids import GuildIDs
 from views.move_select import MoveView
 
@@ -317,6 +317,8 @@ class UltimateFrameData(commands.Cog):
 
         You may need to use "quotes" around the character name if it has multiple words, when using the message command: `%show "duck hunt"`.
         """
+        character, move_name = clean_character_move_name(character, move_name)
+
         character = get_single_character_name(character)
 
         if character is None:

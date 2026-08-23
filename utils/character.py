@@ -2,6 +2,59 @@ import json
 from typing import Optional
 
 
+def clean_character_move_name(character: str, move_name: str) -> tuple[str, str]:
+    """Handles characters with spaces in their names, like 'Captain Falcon' etc.
+    We will store the rest of the character after a space was found in the move_name, this function
+    returns the correct character name and the rest of the move.
+
+    Example:
+        Input: captain, falcon down b
+        Output: captain falcon, down b
+    """
+    character_names = [
+        "kong",  # diddy kong & donkey kong
+        "samus",  # for dark samus
+        "falcon",
+        "climbers",
+        "mario",  # for dr. mario
+        "link",  # young link & toon link
+        "game & watch",  # for mr. game & watch
+        "game and watch",
+        "& watch",  # for "game and watch"
+        "and watch",
+        "knight",
+        "pit",  # for dark pit
+        "suit samus",
+        "dedede",
+        "man",  # pac man & mega man
+        "fit trainer",
+        "mac",
+        "brawler",
+        "swordfighter",
+        "gunner",
+        "jr.",
+        "jr",
+        "junior",
+        "hunt",
+        "k. rool",
+        "k rool",
+        "plant",
+        "& kazooie",
+        "and kazooie",
+        "kazooie",
+        "min",
+    ]
+
+    for name in character_names:
+        if move_name.startswith(name):
+            character = f"{character} {name}".strip()
+            move_name = move_name[len(name) :].strip()
+            break
+
+    move_name = "Stats" if move_name == "" else move_name
+    return character, move_name
+
+
 def get_single_character_name(input_character: str) -> Optional[str]:
     """Returns the name of the character based on the input.
     Works with names, commonly used nicknames or Fighters ID Number.
