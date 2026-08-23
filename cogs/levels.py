@@ -439,6 +439,10 @@ class Levels(commands.Cog):
             inline=False,
         )
 
+        embed.set_footer(
+            text=f"Check out the server leaderboard with {ctx.prefix}levels",
+        )
+
         embed.set_thumbnail(url=user.display_avatar.url)
         await ctx.send(embed=embed)
 
@@ -493,7 +497,7 @@ class Levels(commands.Cog):
             )
 
         embed.set_footer(
-            text=f"Total server stats: {total_xp[0][0]:,}XP - {total_messages[0][0]:,} messages",
+            text=f"Total server stats: {total_xp[0][0]:,}XP - {total_messages[0][0]:,} messages. Check out your own level with {ctx.prefix}level",
         )
 
         embed.set_thumbnail(url=ctx.guild.icon.url)
