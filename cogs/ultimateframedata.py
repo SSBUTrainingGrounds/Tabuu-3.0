@@ -195,6 +195,7 @@ class UltimateFrameData(commands.Cog):
             "fsmash": "Forward Smash",
             "usmash": "Up Smash",
             "dsmash": "Down Smash",
+            "ewgf": "Electric Wind God Fist",
         }
 
         for k, v in replacements.items():
@@ -215,7 +216,7 @@ class UltimateFrameData(commands.Cog):
 
         async with aiosqlite.connect("./db/ultimateframedata.db") as db:
             move = await db.execute_fetchall(
-                """SELECT * FROM moves WHERE character = :character AND TRIM(input) = :move_name COLLATE NOCASE 
+                """SELECT * FROM moves WHERE character = :character AND TRIM(input) = :move_name COLLATE NOCASE
                 OR character = :character AND TRIM(move_name) = :move_name COLLATE NOCASE
                 OR character = :character AND TRIM(full_move_name) = :move_name COLLATE NOCASE""",
                 {"character": character, "move_name": move_name},
