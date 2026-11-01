@@ -80,6 +80,7 @@ class TournamentReminders:
 
 class MediaIDs:
     """Contains some server media related IDs, for automatically changing the server icon and banner."""
+
     # Change this to False to disable the automatic changing of the server icon and banner.
     MEDIA_CHANGE_ENABLED = True
 
@@ -110,7 +111,6 @@ class MediaIDs:
             "banner": "./assets/banners/tg_banner_christmas.jpg",
         },
     }
-
 
 
 class TGChannelIDs:
