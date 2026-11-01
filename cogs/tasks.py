@@ -269,9 +269,7 @@ class Tasks(commands.Cog):
         logger = self.bot.get_logger("bot.tasks")
 
         if new_media is None:
-            logger.warning(
-                f"No media resource found for month {current_month}. Please check the MEDIA_RESOURCES dictionary."
-            )
+            logger.warning(f"No media resource found for month {current_month}.")
             return
 
         guild = self.bot.get_guild(GuildIDs.TRAINING_GROUNDS)
