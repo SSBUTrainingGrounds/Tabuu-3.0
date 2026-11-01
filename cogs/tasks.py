@@ -5,7 +5,7 @@ import discord
 from discord.ext import commands, tasks
 
 import utils.time
-from utils.ids import GuildIDs, TGChannelIDs, TGRoleIDs, TournamentReminders
+from utils.ids import GuildIDs, MediaIDs, TGChannelIDs, TGRoleIDs, TournamentReminders
 
 
 class Tasks(commands.Cog):
@@ -21,6 +21,7 @@ class Tasks(commands.Cog):
         self.lm2_ping.start()
         self.tos_reminder_ping.start()
         self.so_reminder_ping.start()
+        self.change_server_media.start()
 
     def cog_unload(self) -> None:
         self.so_ping.cancel()
@@ -30,6 +31,7 @@ class Tasks(commands.Cog):
         self.lm2_ping.cancel()
         self.tos_reminder_ping.cancel()
         self.so_reminder_ping.cancel()
+        self.change_server_media.cancel()
 
     # The times of the tournaments (or well 1 hour & 5 mins before it).
     so_time = datetime.time(
@@ -250,6 +252,46 @@ class Tasks(commands.Cog):
                 f"{tournament_role.mention} Smash Overseas is tomorrow morning! Remember to post the reminder link if we do not have 8 attendees."
             )
 
+    @tasks.loop(time=datetime.time(18, 0, 0))
+    async def change_server_media(self) -> None:
+        if not MediaIDs.MEDIA_CHANGE_ENABLED:
+            return
+
+        current_day = datetime.datetime.now().day
+
+        if current_day != 1:
+            return
+
+        current_month = datetime.datetime.now().month
+
+        new_media = MediaIDs.MEDIA_RESOURCES.get(current_month, None)
+
+        logger = self.bot.get_logger("bot.tasks")
+
+        if new_media is None:
+            logger.warning(
+                f"No media resource found for month {current_month}. Please check the MEDIA_RESOURCES dictionary."
+            )
+            return
+
+        guild = self.bot.get_guild(GuildIDs.TRAINING_GROUNDS)
+        if guild is None:
+            logger.warning(
+                "Guild not found. Please check the GuildIDs.TRAINING_GROUNDS ID."
+            )
+            return
+
+        with open(new_media["banner"], "rb") as banner_file:
+            banner_data = banner_file.read()
+
+        with open(new_media["icon"], "rb") as icon_file:
+            icon_data = icon_file.read()
+
+        await guild.edit(
+            banner=banner_data,
+            icon=icon_data,
+        )
+
     @so_ping.before_loop
     async def before_so_ping(self) -> None:
         await self.bot.wait_until_ready()
@@ -276,6 +318,10 @@ class Tasks(commands.Cog):
 
     @so_reminder_ping.before_loop
     async def before_so_reminder_ping(self) -> None:
+        await self.bot.wait_until_ready()
+
+    @change_server_media.before_loop
+    async def before_change_server_media(self) -> None:
         await self.bot.wait_until_ready()
 
 

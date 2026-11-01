@@ -78,6 +78,41 @@ class TournamentReminders:
     SO_REMINDER_MINUTE = 55
 
 
+class MediaIDs:
+    """Contains some server media related IDs, for automatically changing the server icon and banner."""
+    # Change this to False to disable the automatic changing of the server icon and banner.
+    MEDIA_CHANGE_ENABLED = True
+
+    # The key of the dictionary is the month, and the value is a dictionary with the icon and banner paths.
+    MEDIA_RESOURCES = {
+        1: {
+            "icon": "./assets/icons/tg_icon.gif",
+            "banner": "./assets/banners/tg_banner.png",
+        },
+        6: {
+            "icon": "./assets/icons/tg_icon_pride.gif",
+            "banner": "./assets/banners/tg_banner_pride.png",
+        },
+        7: {
+            "icon": "./assets/icons/tg_icon.gif",
+            "banner": "./assets/banners/tg_banner.png",
+        },
+        10: {
+            "icon": "./assets/icons/tg_icon_halloween.gif",
+            "banner": "./assets/banners/tg_banner_halloween.png",
+        },
+        11: {
+            "icon": "./assets/icons/tg_icon.gif",
+            "banner": "./assets/banners/tg_banner.png",
+        },
+        12: {
+            "icon": "./assets/icons/tg_icon_christmas.gif",
+            "banner": "./assets/banners/tg_banner_christmas.jpg",
+        },
+    }
+
+
+
 class TGChannelIDs:
     """Contains Channel IDs used throughout the code, specific to the Training Grounds Server."""
 
