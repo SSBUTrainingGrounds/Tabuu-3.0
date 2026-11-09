@@ -120,7 +120,10 @@ class Profile(commands.Cog):
     @app_commands.describe(user="The user you want to see the profile of.")
     async def profile(self, ctx: commands.Context, user: discord.User = None) -> None:
         """Returns the profile of a user, or yourself if you do not specify a user."""
+        missing_message = "This user did not set up their profile yet."
+
         if user is None:
+            missing_message = f"You have no profile yet. Use {ctx.prefix}help to see how to set up your profile."
             user = ctx.author
 
         async with aiosqlite.connect("./db/database.db") as db:
@@ -130,7 +133,7 @@ class Profile(commands.Cog):
             )
 
         if len(matching_user) == 0:
-            await ctx.send("This user did not set up their profile yet.")
+            await ctx.send(missing_message)
             return
 
         _, tag, region, mains, secondaries, pockets, note, colour = matching_user[0]
