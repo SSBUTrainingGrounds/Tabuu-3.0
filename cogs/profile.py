@@ -1,3 +1,4 @@
+import asyncio
 import json
 
 import aiosqlite
@@ -115,17 +116,7 @@ class Profile(commands.Cog):
 
         return choices[:25]
 
-    @commands.hybrid_command(aliases=["smashprofile", "profileinfo"])
-    @app_commands.guilds(*GuildIDs.ALL_GUILDS)
-    @app_commands.describe(user="The user you want to see the profile of.")
-    async def profile(self, ctx: commands.Context, user: discord.User = None) -> None:
-        """Returns the profile of a user, or yourself if you do not specify a user."""
-        missing_message = "This user did not set up their profile yet."
-
-        if user is None:
-            missing_message = f"You have no profile yet. Use {ctx.prefix}help to see how to set up your profile."
-            user = ctx.author
-
+    async def get_profile_embed(self, user: discord.User) -> discord.Embed | None:
         async with aiosqlite.connect("./db/database.db") as db:
             matching_user = await db.execute_fetchall(
                 """SELECT * FROM profile WHERE user_id = :user_id""",
@@ -133,7 +124,6 @@ class Profile(commands.Cog):
             )
 
         if len(matching_user) == 0:
-            await ctx.send(missing_message)
             return
 
         _, tag, region, mains, secondaries, pockets, note, colour = matching_user[0]
@@ -167,30 +157,81 @@ class Profile(commands.Cog):
         if badges:
             embed.add_field(name="Emblems:", value=badges, inline=True)
 
+        return embed
+
+    @commands.hybrid_command(aliases=["smashprofile", "profileinfo"])
+    @app_commands.guilds(*GuildIDs.ALL_GUILDS)
+    @app_commands.describe(user="The user you want to see the profile of.")
+    async def profile(self, ctx: commands.Context, user: discord.User = None) -> None:
+        """Returns the profile of a user, or yourself if you do not specify a user."""
+        missing_message = "This user did not set up their profile yet."
+
+        if user is None:
+            missing_message = f"You have no profile yet. Use {ctx.prefix}help to see how to set up your profile."
+            user = ctx.author
+
+        embed = await self.get_profile_embed(user)
+
+        if not embed:
+            await ctx.send(missing_message)
+            return
+
         await ctx.send(embed=embed)
 
     @commands.hybrid_command()
     @app_commands.guilds(*GuildIDs.ALL_GUILDS)
     async def deleteprofile(self, ctx: commands.Context) -> None:
         """Deletes your profile."""
-        async with aiosqlite.connect("./db/database.db") as db:
-            matching_user = await db.execute_fetchall(
-                """SELECT * FROM profile WHERE user_id = :user_id""",
-                {"user_id": ctx.author.id},
+        def check(m: discord.Message) -> bool:
+            return (
+                m.content.lower() in ("y", "n")
+                and m.author == ctx.author
+                and m.channel == ctx.channel
             )
 
-            if len(matching_user) == 0:
-                await ctx.send("You have no profile saved.")
-                return
+        embed = await self.get_profile_embed(ctx.author)
 
-            await db.execute(
-                """DELETE FROM profile WHERE user_id = :user_id""",
-                {"user_id": ctx.author.id},
+        if not embed:
+            await ctx.send(
+                f"You have no profile to delete. Use {ctx.prefix}help to see how to set up your profile."
             )
+            return
 
-            await db.commit()
+        await ctx.send(
+            f"{ctx.author.mention}, are you sure you want to delete your profile? "
+            "**Type y to verify** or **Type n to cancel**.",
+            embed=embed,
+        )
 
-        await ctx.send(f"Successfully deleted your profile, {ctx.author.mention}.")
+        try:
+            msg = await self.bot.wait_for("message", timeout=30.0, check=check)
+        except asyncio.TimeoutError:
+            await ctx.send(f"Profile deletion for {ctx.author.mention} timed out, try again.")
+            return
+        else:
+            if msg.content.lower() == "y":
+                async with aiosqlite.connect("./db/database.db") as db:
+                    matching_user = await db.execute_fetchall(
+                        """SELECT * FROM profile WHERE user_id = :user_id""",
+                        {"user_id": ctx.author.id},
+                    )
+
+                    if len(matching_user) == 0:
+                        await ctx.send("You have no profile saved.")
+                        return
+
+                    await db.execute(
+                        """DELETE FROM profile WHERE user_id = :user_id""",
+                        {"user_id": ctx.author.id},
+                    )
+
+                    await db.commit()
+
+                await ctx.send(
+                    f"Successfully deleted your profile, {ctx.author.mention}."
+                )
+            else:
+                await ctx.send("Profile deletion cancelled.")
 
     @commands.hybrid_command()
     @app_commands.guilds(*GuildIDs.ADMIN_GUILDS)
@@ -200,26 +241,54 @@ class Profile(commands.Cog):
         self, ctx: commands.Context, user: discord.User
     ) -> None:
         """Deletes the profile of another user, just in case."""
-        async with aiosqlite.connect("./db/database.db") as db:
-            matching_user = await db.execute_fetchall(
-                """SELECT * FROM profile WHERE user_id = :user_id""",
-                {"user_id": user.id},
+        def check(m: discord.Message) -> bool:
+            return (
+                m.content.lower() in ("y", "n")
+                and m.author == ctx.author
+                and m.channel == ctx.channel
             )
 
-            if len(matching_user) == 0:
-                await ctx.send("This user has no profile saved.")
-                return
+        embed = await self.get_profile_embed(user)
 
-            await db.execute(
-                """DELETE FROM profile WHERE user_id = :user_id""",
-                {"user_id": user.id},
-            )
-
-            await db.commit()
+        if not embed:
+            await ctx.send("I could not find a profile to delete")
+            return
 
         await ctx.send(
-            f"{ctx.author.mention}, I have successfully deleted the profile of {discord.utils.escape_markdown(str(user))}."
+            f"{ctx.author.mention}, are you sure you want to delete the profile of {user.mention}? "
+            "**Type y to verify** or **Type n to cancel**.",
+            embed=embed,
         )
+
+        try:
+            msg = await self.bot.wait_for("message", timeout=30.0, check=check)
+        except asyncio.TimeoutError:
+            await ctx.send(f"Profile deletion for {user.mention} timed out, try again.")
+            return
+        else:
+            if msg.content.lower() == "y":
+                async with aiosqlite.connect("./db/database.db") as db:
+                    matching_user = await db.execute_fetchall(
+                        """SELECT * FROM profile WHERE user_id = :user_id""",
+                        {"user_id": user.id},
+                    )
+
+                    if len(matching_user) == 0:
+                        await ctx.send("I could not find a profile to delete")
+                        return
+
+                    await db.execute(
+                        """DELETE FROM profile WHERE user_id = :user_id""",
+                        {"user_id": user.id},
+                    )
+
+                    await db.commit()
+
+                await ctx.send(
+                    f"Successfully deleted the profile of {user.mention}, {ctx.author.mention}."
+                )
+            else:
+                await ctx.send("Profile deletion cancelled.")
 
     @commands.hybrid_command(aliases=["main", "setmain", "spmains", "profilemains"])
     @app_commands.guilds(*GuildIDs.ALL_GUILDS)
