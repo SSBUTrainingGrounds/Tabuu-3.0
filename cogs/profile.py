@@ -182,6 +182,7 @@ class Profile(commands.Cog):
     @app_commands.guilds(*GuildIDs.ALL_GUILDS)
     async def deleteprofile(self, ctx: commands.Context) -> None:
         """Deletes your profile."""
+
         def check(m: discord.Message) -> bool:
             return (
                 m.content.lower() in ("y", "n")
@@ -206,7 +207,9 @@ class Profile(commands.Cog):
         try:
             msg = await self.bot.wait_for("message", timeout=30.0, check=check)
         except asyncio.TimeoutError:
-            await ctx.send(f"Profile deletion for {ctx.author.mention} timed out, try again.")
+            await ctx.send(
+                f"Profile deletion for {ctx.author.mention} timed out, try again."
+            )
             return
         else:
             if msg.content.lower() == "y":
@@ -241,6 +244,7 @@ class Profile(commands.Cog):
         self, ctx: commands.Context, user: discord.User
     ) -> None:
         """Deletes the profile of another user, just in case."""
+
         def check(m: discord.Message) -> bool:
             return (
                 m.content.lower() in ("y", "n")
