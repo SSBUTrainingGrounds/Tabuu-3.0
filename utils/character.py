@@ -37,7 +37,7 @@ def clean_character_move_name(character: str, move_name: str) -> tuple[str, str]
         "king": ["dedede", "k. rool", "k rool"],
         "pac": ["man"],
         "mega": ["man"],
-        "wii": ["fit trainer"],
+        "wii": ["fit trainer", "fit"],
         "little": ["mac"],
         "lil": ["mac"],
         "mii": ["brawler", "swordfighter", "gunner"],
